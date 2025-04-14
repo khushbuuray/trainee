@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Task index{% endblock %}
+
+{% block body %}
+    <h1>Task index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Hobby</th>
+                <th>Image</th>
+                <th>Role</th>               
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for task in tasks %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.name }}</td>
+                <td>{{ task.gender }}</td>
+                <td>{{ task.hobby ? task.hobby|json_encode : '' }}</td>
+                <td>{{ task.image }}</td>
+                <td>{{ task.role }}</td>               
+                <td>
+                    <a href="{{ path('app_task_edit', {'id': task.id}) }}">edit</a>
+                    <button class="btn btn-danger delete-btn" data-id="{{ task.id }}">delete</button>
+
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_task_new') }}">Create new</a>
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!-- DataTables CSS and JS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+ <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+<script>
+    $(document).on('click','.delete-btn',function(){
+var id = $(this).data('id');
+    })
+</script>
+{% endblock %}

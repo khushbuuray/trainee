@@ -1,0 +1,6 @@
+{{ form_start(form) }}
+   <div class="form-group">
+        {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
