@@ -1,0 +1,27 @@
+{
+    "name": "example/example-plugin",
+    "description": "example/example-plugin",
+    "type": "shopware-platform-plugin",
+    "version": "1.0.0",
+    "license": "MIT",
+    "require": {
+        "shopware/core": "~6.6.0"
+    },
+    "extra": {
+        "shopware-plugin-class": "Example\\ExamplePlugin",
+        "label": {
+            "de-DE": "Example plugin",
+            "en-GB": "Example plugin"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Example\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Example\\Tests\\": "tests/"
+        }
+    }
+}
