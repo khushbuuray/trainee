@@ -3,14 +3,135 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
 
-    <card>
-        <title>Minimal configuration</title>
+      <card>
+        <title lang="en-GB">Plugin Settings by khush</title>
+        <title lang="de-DE">Plugin Einstellungen</title>
+
 
         <input-field type="text">
-            <name>textField</name>
-            <label>Test field with default value</label>
-            <defaultValue>test</defaultValue>
+            <name>text</name>
+            <copyable>true</copyable>
+            <label>text</label>
+            <label lang="de-DE">text</label>
+            <placeholder>you@example.com</placeholder>
         </input-field>
-    </card>
+
+         <input-field type="textarea">
+            <name>textarea</name>
+            <copyable>true</copyable>
+            <label>textarea</label>
+            <label lang="de-DE">textarea</label>
+        </input-field>
+
+       <input-field type="text-editor">
+         <name>description</name>
+         <label lang="en-GB">Description</label>
+         <label lang="de-DE">Beschreibung</label>
+       </input-field>
+
+       <input-field type="url">
+         <name>url</name>
+         <label lang="en-GB">URL</label>
+         <label lang="de-DE">URL</label>
+         <copyable>true</copyable>
+         <placeholder>	https://example.com</placeholder>
+         <maxlength>20</maxlength>
+       </input-field>
+
+        <input-field type="password">
+            <name>password</name>
+          <label>Password</label>
+         <helpText>Your secret token for xyz...</helpText>
+        </input-field>
+
+        <input-field type="int">
+            <name>int</name>
+            <label>INT</label>
+        </input-field>
+
+        <input-field type="float">
+            <name>float</name>
+            <label>float</label>
+        </input-field>
+
+         <input-field type="bool">
+            <name>boolean</name>
+            <label>boolean</label>
+        </input-field>
+
+        <input-field type="checkbox">
+            <name>checkbox</name>
+            <label>Checkbox</label>
+        </input-field>
+
+        <input-field type="datetime">
+            <name>datetime</name>
+            <label>DateTime</label>
+        </input-field>
+
+        <input-field type="date">
+            <name>date</name>
+            <label>Date</label>
+        </input-field>
+
+        <input-field type="time">
+            <name>time</name>
+            <label>Time</label>
+        </input-field> 
+
+        <input-field type="colorpicker">
+            <name>colorpicker</name>
+            <label>ColorPicker</label>
+        </input-field>
+
+
+
+    <title lang="en-GB">Settings</title>
+    <title lang="de-DE">Einstellungen</title>
+
+    <input-field type="single-select">
+        <name>language</name>
+
+        <options>
+            <option>
+                <id>english</id>
+                <name>English</name>
+            </option>
+            <option>
+                <id>german</id>
+                <name>German</name>
+            </option>
+        </options>
+
+        <default-value>english</default-value>
+        <label lang="en-GB">Select Language</label>
+        <label lang="de-DE">Sprache auswählen</label>
+    </input-field>
+
+
+    <input-field type="multi-select">
+    <name>languageSelection</name>
+    <options>
+        <option>
+            <id>english</id>
+            <name>English</name>
+        </option>
+        <option>
+            <id>german</id>
+            <name>German</name>
+        </option>
+        <option>
+            <id>french</id>
+            <name>French</name>
+        </option>
+    </options>
+
+    <default-value>english,german</default-value>
+
+    <label lang="en-GB">Select Multi Languages</label>
+    <label lang="de-DE">Sprachen auswählen</label>
+</input-field>
+
+</card>
 
 </config>
