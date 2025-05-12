@@ -15,15 +15,35 @@
                 <argument type="service" id="service_container"/>
             </call>
         </service>
-<!-- 
+
         <service id="Example\Core\Content\Demo\DemoDefinition">
             <tag name="shopware.entity.definition" entity="demo" />
+        </service>
+
+        <service id="Example\Core\Content\Demo\Aggregate\DemoTranslationDefinition">
+            <tag name="shopware.entity.definition" entity="demo_translation" />
         </service>
 
         <service id="Example\Service\CustomFieldsInstaller">
             <argument type="service" id="custom_field_set.repository"/>
             <argument type="service" id="custom_field_set_relation.repository"/>
-        </service> -->
+        </service>
 
+        <service id="Example\Core\Content\Extension\CountryExtension">
+            <tag name="shopware.entity.extension" />
+        </service>
+        <service id="Example\Core\Content\Extension\CountryStateExtension">
+            <tag name="shopware.entity.extension" />
+        </service>
+        <service id="Example\Core\Content\Extension\LanguageExtension">
+            <tag name="shopware.entity.extension" />
+        </service>
+
+        <service id="Example\Core\Content\Extension\ProductExtension">
+            <tag name="shopware.entity.extension" />
+        </service>
+        <service id="Example\Core\Content\Extension\MediaExtension">
+            <tag name="shopware.entity.extension" />
+        </service>
     </services>
 </container>
