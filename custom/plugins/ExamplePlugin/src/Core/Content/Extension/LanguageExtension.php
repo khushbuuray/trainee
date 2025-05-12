@@ -14,9 +14,9 @@ class LanguageExtension extends EntityExtension
     {
         $collection->add(
             new OneToManyAssociationField(
-                propertyName:'demos',
-                referenceClass:DemoTranslationDefinition::class,
-                referenceField:'language_id'
+                'demos',
+                DemoTranslationDefinition::class,
+                'language_id'
             )
         );
     }
