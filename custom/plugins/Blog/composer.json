@@ -1,0 +1,27 @@
+{
+    "name": "blog/blog",
+    "description": "blog/blog",
+    "type": "shopware-platform-plugin",
+    "version": "1.0.0",
+    "license": "MIT",
+    "require": {
+        "shopware/core": "~6.6.0"
+    },
+    "extra": {
+        "shopware-plugin-class": "Blog\\Blog",
+        "label": {
+            "de-DE": "Blog plugin",
+            "en-GB": "Blog plugin"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Blog\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Blog\\Tests\\": "tests/"
+        }
+    }
+}

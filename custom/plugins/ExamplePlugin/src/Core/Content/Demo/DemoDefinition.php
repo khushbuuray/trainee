@@ -60,7 +60,6 @@ class DemoDefinition extends EntityDefinition
 
             new FkField('product_id', 'productId', ProductDefinition::class),
             new ReferenceVersionField(ProductDefinition::class), // Foreign key for the product version
-
             new ManyToOneAssociationField('product', 'product_id', ProductDefinition::class, 'id', false),
 
             (new FkField('media_id', 'mediaId', MediaDefinition::class)),
