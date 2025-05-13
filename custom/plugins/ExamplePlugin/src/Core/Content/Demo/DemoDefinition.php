@@ -31,15 +31,15 @@ class DemoDefinition extends EntityDefinition
         return self::ENTITY_NAME;
     }
 
-    // public function getEntityClass(): string
-    // {
-    //     return DemoEntity::class;
-    // }
+    public function getEntityClass(): string
+    {
+        return DemoEntity::class;
+    }
 
-    // public function getCollectionClass(): string
-    // {
-    //     return DemoCollection::class;
-    // }
+    public function getCollectionClass(): string
+    {
+        return DemoCollection::class;
+    }
 
     protected function defineFields(): FieldCollection
     {
