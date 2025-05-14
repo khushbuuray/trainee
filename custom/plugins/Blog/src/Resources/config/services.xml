@@ -13,11 +13,11 @@
             <tag name="shopware.entity.extension" />
         </service> -->
         
-        <service id="Blog\Core\Content\Blog\BlogProductMappingDefinition">
+        <service id="Blog\Core\Content\BlogProductMapping\BlogProductMappingDefinition">
          <tag name="shopware.entity.definition" />
         </service>
 
-          <service id="Blog\Core\Content\Blog\BlogCategoryMappingDefinition">
+          <service id="Blog\Core\Content\BlogCategoryMapping\BlogCategoryMappingDefinition">
          <tag name="shopware.entity.definition" />
         </service>
 
@@ -25,7 +25,7 @@
          <tag name="shopware.entity.definition" />
         </service>
 
-        <service id="Blog\Core\Content\Blog\BlogCategoryDefinition">
+        <service id="Blog\Core\Content\BlogCategory\BlogCategoryDefinition">
          <tag name="shopware.entity.definition" />
         </service>
 

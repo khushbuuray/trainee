@@ -1,17 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace Blog\Core\Content\Blog;
+namespace Blog\Core\Content\BlogCategoryMapping;
 
-use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Blog\Core\Content\Blog\BlogDefinition;
+use Blog\Core\Content\BlogCategory\BlogCategoryDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;      
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\MappingEntityDefinition;
 
-class BlogCategoryMappingDefinition extends EntityDefinition
+class BlogCategoryMappingDefinition extends MappingEntityDefinition
 {
     public const ENTITY_NAME = 'blog_category_mapping';     
 

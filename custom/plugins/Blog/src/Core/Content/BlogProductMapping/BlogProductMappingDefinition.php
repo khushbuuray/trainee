@@ -1,7 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Blog\Core\Content\Blog;
+namespace Blog\Core\Content\BlogProductMapping;
 
+use Blog\Core\Content\Blog\BlogDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
@@ -15,8 +16,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToManyAssociationFiel
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
+use Shopware\Core\Framework\DataAbstractionLayer\MappingEntityDefinition;
 
-class BlogProductMappingDefinition extends EntityDefinition
+class BlogProductMappingDefinition extends MappingEntityDefinition
 {
     public const ENTITY_NAME = 'blog_product_mapping';  
 
@@ -48,7 +50,6 @@ class BlogProductMappingDefinition extends EntityDefinition
                 ProductDefinition::class,
                 'id',
                 false,
-                'product_version_id' 
             ),
           
         ]);

@@ -1,14 +1,18 @@
 <?php declare(strict_types=1);
 
-namespace Blog\Core\Content\Blog;
+namespace Blog\Core\Content\BlogCategory;
 
+use Blog\Core\Content\BlogCategoryMapping\BlogCategoryMappingDefinition;
+use Blog\Core\Content\Blog\BlogDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;   
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslatedField;
 
 class BlogCategoryDefinition extends EntityDefinition
 {
@@ -23,11 +27,14 @@ class BlogCategoryDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
-            (new StringField('name', 'name'))->addFlags(new Required()),
-            new OneToManyAssociationField(
-                'blogCategoryMappings',
+            (new TranslatedField('name', 'name')),
+            new ManyToManyAssociationField
+            (
+                'blogs',
+                BlogDefinition::class,
                 BlogCategoryMappingDefinition::class,
-                'category_id'
+                'category_id',
+                'blog_id'                   
             ),
            
         ]);

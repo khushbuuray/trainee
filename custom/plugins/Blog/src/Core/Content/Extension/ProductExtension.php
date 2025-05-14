@@ -2,14 +2,13 @@
 
 namespace Blog\Core\Content\Extension;
 
+use Blog\Blog;
 use Blog\Core\Content\Blog\BlogDefinition;
-use Blog\Core\Content\Blog\BlogProductMappingDefinition;
+use Blog\Core\Content\BlogProductMapping\BlogProductMappingDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityExtension;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToManyAssociationField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
 
 class ProductExtension extends EntityExtension
 {
@@ -29,17 +28,9 @@ class ProductExtension extends EntityExtension
                 BlogProductMappingDefinition::class,
                 'product_id',
                 'blog_id',
-                'product_version_id' 
             ),                      
         );
-
-        $collection->add(
-            new OneToManyAssociationField(
-                'blogProductMappings',
-                BlogProductMappingDefinition::class,
-                'product_id'            
-            )
-        );        
+       
     }
 
     public function getDefinitionClass(): string

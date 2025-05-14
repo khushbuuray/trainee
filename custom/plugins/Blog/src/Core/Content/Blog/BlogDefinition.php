@@ -2,8 +2,9 @@
 
 namespace Blog\Core\Content\Blog;
 
-use Blog\Blog;
-use Doctrine\DBAL\Types\StringType;
+use Blog\Core\Content\BlogCategory\BlogCategoryDefinition;
+use Blog\Core\Content\BlogCategoryMapping\BlogCategoryMappingDefinition;
+use Blog\Core\Content\BlogProductMapping\BlogProductMappingDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
@@ -15,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslatedField;
 
 class BlogDefinition extends EntityDefinition
 {
@@ -29,11 +31,11 @@ class BlogDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new Required(),new PrimaryKey()),
-            (new StringField('name', 'name'))->addFlags(new Required()),
-            (new StringField('description', 'description'))->addFlags(new Required()),
+            (new TranslatedField('name', 'name')),
+            (new TranslatedField('description', 'description')),
             (new DateField('release_date', 'release_date'))->addFlags(new Required()),
             (new BoolField('active', 'active')),
-            (new StringField('author', 'author'))->addFlags(new Required()),
+            (new TranslatedField('author', 'author')),
        
             new ManyToManyAssociationField(
                 'categories',
@@ -48,20 +50,7 @@ class BlogDefinition extends EntityDefinition
             BlogProductMappingDefinition::class,
             'blog_id',
             'product_id',
-            'blog_product_mapping', 
-            'product_version_id'
-        ),
-        new OneToManyAssociationField(
-            'categoryMappings',
-            BlogCategoryMappingDefinition::class,
-            'blog_id'
-        ),
-
-        new OneToManyAssociationField(
-            'productMappings',
-            BlogProductMappingDefinition::class,
-            'blog_id'
-        ),
+        ),       
 
         ]);
     }
