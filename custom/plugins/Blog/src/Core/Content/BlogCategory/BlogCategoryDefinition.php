@@ -4,6 +4,7 @@ namespace Blog\Core\Content\BlogCategory;
 
 use Blog\Core\Content\BlogCategoryMapping\BlogCategoryMappingDefinition;
 use Blog\Core\Content\Blog\BlogDefinition;
+use Blog\Core\Content\BlogCategory\Aggregate\BlogCategoryTranslationDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
@@ -13,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslatedField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslationsAssociationField;
 
 class BlogCategoryDefinition extends EntityDefinition
 {
@@ -28,6 +30,7 @@ class BlogCategoryDefinition extends EntityDefinition
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
             (new TranslatedField('name', 'name')),
+            new TranslationsAssociationField(BlogCategoryTranslationDefinition::class, 'blog_category_id'),
             new ManyToManyAssociationField
             (
                 'blogs',

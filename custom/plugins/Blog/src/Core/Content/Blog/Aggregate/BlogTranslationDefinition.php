@@ -3,7 +3,8 @@
 namespace Blog\Core\Content\Blog\Aggregate;
 
 use Blog\Core\Content\Blog\BlogDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityTranslationDefinition;           
+use Shopware\Core\Framework\DataAbstractionLayer\EntityTranslationDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\AllowHtml;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField; 
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
@@ -27,7 +28,7 @@ class BlogTranslationDefinition extends EntityTranslationDefinition
     {
         return new FieldCollection([
             (new StringField('name', 'name'))->addFlags(new Required()),
-            (new LongTextField('description', 'description'))->addFlags(new Required()),
+            (new LongTextField('description', 'description'))->addFlags(new Required(),new AllowHtml()),
             (new StringField('author', 'author'))->addFlags(new Required()),
         ]);
     }

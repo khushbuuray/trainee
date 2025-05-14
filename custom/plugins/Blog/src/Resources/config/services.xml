@@ -9,9 +9,6 @@
             <tag name="shopware.entity.extension" />
         </service>
 
-        <!-- <service id="Blog\Core\Content\Extension\CategoriesExtension">
-            <tag name="shopware.entity.extension" />
-        </service> -->
         
         <service id="Blog\Core\Content\BlogProductMapping\BlogProductMappingDefinition">
          <tag name="shopware.entity.definition" />
@@ -25,14 +22,21 @@
          <tag name="shopware.entity.definition" />
         </service>
 
+         <service id="Blog\Core\Content\Blog\Aggregate\BlogTranslationDefinition">
+            <tag name="shopware.entity.definition" entity="blog_translation" />
+        </service>
+
+          <service id="Blog\Core\Content\BlogCategory\Aggregate\BlogCategoryTranslationDefinition">
+            <tag name="shopware.entity.definition" entity="blog_category_translation" />
+        </service>
+
         <service id="Blog\Core\Content\BlogCategory\BlogCategoryDefinition">
          <tag name="shopware.entity.definition" />
         </service>
+        <service id="Blog\Core\Content\Extension\LanguageExtension">
+            <tag name="shopware.entity.extension" />
+        </service>
 
-
-        <!-- <service id="Blog\Core\Content\Blog\BlogDefinition">
-    <tag name="shopware.entity.extension" />
-</service> -->
 
     </services>
 </container>

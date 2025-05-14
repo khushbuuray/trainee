@@ -33,9 +33,6 @@ class BlogProductMappingDefinition extends MappingEntityDefinition
             (new FkField('blog_id', 'blogId', BlogDefinition::class))->addFlags(new PrimaryKey(), new Required()),
             (new FkField('product_id', 'productId', ProductDefinition::class))->addFlags(new PrimaryKey(), new Required()),
             (new FkField('product_version_id', 'productVersionId', ProductDefinition::class))->addFlags(new PrimaryKey(), new Required()),
-            new CreatedAtField(),
-            new UpdatedAtField(),
-
             new ManyToOneAssociationField(
                 'blog',
                 'blog_id',
