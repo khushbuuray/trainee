@@ -2,6 +2,7 @@
 
 namespace Blog;
 
+use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
@@ -20,7 +21,16 @@ class Blog extends Plugin
     {
         parent::uninstall($uninstallContext);
 
-        if ($uninstallContext->keepUserData()) {
+        if (!$uninstallContext->keepUserData()) {
+            $connection = $this->container->get(Connection::class);
+    
+            $connection->executeStatement('DROP TABLE IF EXISTS `blog_category_mapping`');
+            $connection->executeStatement('DROP TABLE IF EXISTS `blog_translation`');
+            $connection->executeStatement('DROP TABLE IF EXISTS `blog_category_translation`');
+            $connection->executeStatement('DROP TABLE IF EXISTS `blog_product_mapping`');
+            $connection->executeStatement('DROP TABLE IF EXISTS `blog_category`');
+            $connection->executeStatement('DROP TABLE IF EXISTS `blog`');
+
             return;
         }
 
