@@ -25,6 +25,16 @@ class BlogCategoryDefinition extends EntityDefinition
         return self::ENTITY_NAME;
     }       
 
+     public function getEntityClass(): string
+    {
+        return BlogCategoryEntity::class;
+    }
+
+    public function getCollectionClass(): string
+    {
+        return BlogCategoryCollection::class;
+    }
+
     public function defineFields(): FieldCollection
     {
         return new FieldCollection([

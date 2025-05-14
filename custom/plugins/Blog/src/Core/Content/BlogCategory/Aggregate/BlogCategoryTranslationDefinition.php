@@ -17,6 +17,15 @@ public  const ENTITY_NAME = 'blog_category_translation';
     {
         return self::ENTITY_NAME;
     }
+        public function getEntityClass(): string
+    {
+        return BlogCategoryTranslationEntity::class;
+    }
+
+    public function getCollectionClass(): string
+    {
+        return BlogCategoryTranslationCollection::class;
+    }
 
     public function getParentDefinitionClass(): string
     {

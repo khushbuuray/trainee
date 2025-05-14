@@ -19,7 +19,7 @@ class BlogCategoryMappingDefinition extends MappingEntityDefinition
     {
         return self::ENTITY_NAME;
     }
-    
+        
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([

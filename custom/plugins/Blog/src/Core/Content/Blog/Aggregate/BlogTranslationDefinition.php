@@ -19,6 +19,17 @@ class BlogTranslationDefinition extends EntityTranslationDefinition
         return self::ENTITY_NAME;
     }   
 
+         public function getEntityClass(): string
+    {
+        return BlogTranslationEntity::class;
+    }
+
+    public function getCollectionClass(): string
+    {
+        return BlogTranslationCollection::class;
+    }
+
+
     public function getParentDefinitionClass(): string
     {
         return BlogDefinition::class;

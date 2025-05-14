@@ -17,6 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\MappingEntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ReferenceVersionField;
 
 class BlogProductMappingDefinition extends MappingEntityDefinition
 {
@@ -32,7 +33,7 @@ class BlogProductMappingDefinition extends MappingEntityDefinition
         return new FieldCollection([
             (new FkField('blog_id', 'blogId', BlogDefinition::class))->addFlags(new PrimaryKey(), new Required()),
             (new FkField('product_id', 'productId', ProductDefinition::class))->addFlags(new PrimaryKey(), new Required()),
-            (new FkField('product_version_id', 'productVersionId', ProductDefinition::class))->addFlags(new PrimaryKey(), new Required()),
+            new ReferenceVersionField(ProductDefinition::class), 
             new ManyToOneAssociationField(
                 'blog',
                 'blog_id',
