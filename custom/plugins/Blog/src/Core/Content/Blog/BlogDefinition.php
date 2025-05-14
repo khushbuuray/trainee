@@ -38,7 +38,7 @@ class BlogDefinition extends EntityDefinition
             (new TranslatedField('author', 'author')),
        
             new ManyToManyAssociationField(
-                'categories',
+                'blog_categories',
                 BlogCategoryDefinition::class,
                 BlogCategoryMappingDefinition::class,
                 'blog_id',

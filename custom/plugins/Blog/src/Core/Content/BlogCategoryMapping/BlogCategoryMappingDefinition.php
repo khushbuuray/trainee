@@ -24,7 +24,7 @@ class BlogCategoryMappingDefinition extends MappingEntityDefinition
     {
         return new FieldCollection([
             (new FkField('blog_id', 'blogId', BlogDefinition::class))->addFlags(new PrimaryKey(), new Required()),
-            (new FkField('blog_category_id', 'BlogcategoryId', BlogCategoryDefinition::class))->addFlags(new PrimaryKey(), new Required()),
+            (new FkField('blog_category_id', 'blogCategoryId', BlogCategoryDefinition::class))->addFlags(new PrimaryKey(), new Required()),
             new ManyToOneAssociationField('blog', 'blog_id', BlogDefinition::class, 'id', false),
             new ManyToOneAssociationField('blogCategory', 'blog_category_id', BlogCategoryDefinition::class, 'id', false),
         ]);
