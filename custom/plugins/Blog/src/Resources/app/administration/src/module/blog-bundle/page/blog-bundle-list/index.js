@@ -1,5 +1,7 @@
 import template from './blog-bundle-list.html.twig';
 
+const { Criteria } = Shopware.Data;
+
 Shopware.Component.register('blog-bundle-list', {
   template,
 
@@ -11,8 +13,9 @@ Shopware.Component.register('blog-bundle-list', {
             bundles: [],
             repository: null,
              columns: [
-        { property: 'name', label: 'Name' },
+        { property: 'name', label: 'Name' , routerLink: 'blog.bundle.detail'},
         { property: 'title', label: 'Title' }
+        
       ]
         }
     }, 
@@ -29,12 +32,15 @@ Shopware.Component.register('blog-bundle-list', {
     },
     created() {
         this.createdComponent();
+
     },
     methods: {
         createdComponent(){
-            this.repository = this.repositoryFactory.create('blog_bundle');
-            this.repository.search(new Criteria(),Shopware.Context.Context.api).then((result) => {
+            this.repository = this.repositoryFactory.create('blog');
+            this.repository.search(new Criteria(),Shopware.Context.api).then((result) => {
                 this.bundles = result;
+              console.log(result);
+
             });
         }
     },

@@ -1,5 +1,6 @@
 
 import './page/blog-bundle-list';
+import './page/blog-category-create';
 
 Shopware.Module.register('blog-bundle', {
   type: 'plugin',
@@ -20,8 +21,9 @@ Shopware.Module.register('blog-bundle', {
       props: true
     },
     create :{
+      component: 'blog-category-create',
       path: 'create',
-      component: 'blog-bundle-create'
+
     },
 
   },
