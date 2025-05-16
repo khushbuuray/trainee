@@ -1,0 +1,12 @@
+{
+    "blog-bundle":{
+        "general":{
+            "title":"Blogs"
+        },
+        "list":{
+            "addButtonText":"Blog hinzufügen",
+            "columnName":"Name",
+            "placeholderSearchBar":"Suche..."
+        }
+    }
+}

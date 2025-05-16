@@ -1,0 +1,20 @@
+{% block blog_bundle_list %}
+    <sw-page blog-bundle-list>
+    <template #smart-bar-actions>
+    <sw-button variant="primary" :routerLink="{ name:'blog.bundle.create'}">
+    {{ $tc('blog-bundle.list.addButtonText')}}
+    </sw-button>
+    </template>
+
+    <template #content>
+    {% block blog_bundle_list_content %}
+    <sw-entity-listing v-if="bundles" :items="bundles" :repository="repository":showSelection="false":columns="columns" detailRoute="blog.bundle.detail">
+    </sw-entity-listing>
+        
+    {% endblock %}
+    
+    </template>
+    </sw-page>
+{% endblock %} 
+
+

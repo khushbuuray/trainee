@@ -12,8 +12,14 @@
         "label": {
             "de-DE": "Blog plugin",
             "en-GB": "Blog plugin"
-        }
+        },
+        "shopware-app-admin-entrypoints": {
+        "js": [
+            "Resources/app/administration/src/main.js"
+        ]
+    }
     },
+     
     "autoload": {
         "psr-4": {
             "Blog\\": "src/"
