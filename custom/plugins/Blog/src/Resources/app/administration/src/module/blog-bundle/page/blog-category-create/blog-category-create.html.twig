@@ -1,17 +1,11 @@
 {% block blog_category_create %}
 <sw-page>
-
-    {# {% block blog_category_create_header %}
-    <template #smart-bar-header>
-        <h2>{{ placeholder(category, 'name', 'Create Blog Category') }}</h2>
-    </template>
-    {% endblock %} #}
-
     {% block blog_category_create_content %}
     <template #content>
         <sw-card title="Create Blog Category">
             <sw-container>
                 <sw-text-field
+                    v-if="category"
                     v-model:value="category.name"
                     label="Category Name"
                     placeholder="Category Name"
@@ -23,17 +17,7 @@
         </sw-card>
     </template>
     {% endblock %}
-    
-     {# {% block blog_category_create_field_name %}
-      <sw-text-field
-          v-model:value="category.name"
-          label="Category Name"
-          placeholder="Category Name"
-          name="name"
-          validation="required"
-          required
-      />
-      {% endblock %} #}
+   
 
     {% block blog_category_create_actions %}
     <template #smart-bar-actions>
@@ -57,57 +41,5 @@
 </sw-page>
 {% endblock %}
 
-
-{# <template>
-  <sw-page
-    :title="'Create Blog Category'"
-    :isLoading="isLoading"
-    @save="onSave"
-  >
-    <template #content>
-      <sw-card title="Create Blog Category">
-     
-          <sw-field
-            label="Category Name"
-            v-model="category.name"
-            required v-if="category"
-          />
-        </sw-container>
-      </sw-card>
-    </template>
-  </sw-page>
-</template> #}
-{# 
-{% block blog_category_create %}
-<sw-page>
-
-    {% block blog_category_create_header %}
-    <template #smart-bar-header>
-        <h2>{{ placeholder(category, 'name', 'Create Blog Category') }}</h2>
-    </template>
-    {% endblock %}
-
-    {% block blog_category_create_actions %}
-    <template #smart-bar-actions>
-        <sw-button
-            :disabled="isLoading"
-            @click="onCancel"
-        >
-            Cancel
-        </sw-button>
-
-        <sw-button-process
-            :is-loading="isLoading"
-            @click="onSave"
-            variant="primary"
-        >
-            Save
-        </sw-button-process>
-    </template>
-    {% endblock %}
-
-
-</sw-page>
-{% endblock %} #}
 
 

@@ -1,19 +1,35 @@
-{% block blog_bundle_list %}
 
-    <sw-page>
-    <template #content>
-
-    <sw-button variant="primary" :routerLink="{ name:'blog.bundle.create'}" style="margin-left:70%;">Add Blog Category
-    </sw-button>
-
-
-    {% block blog_bundle_list_content %}
-    <sw-entity-listing v-if="bundles" :items="bundles" :repository="repository":showSelection="false":columns="columns" detailRoute="blog.bundle.detail">
-    </sw-entity-listing>
-        
-    {% endblock %}
-    
+{% block blog_category_list %}
+<sw-page>
+    <template #smart-bar-header>
+        <h2>Blog Categories</h2>
     </template>
-    </sw-page>
-{% endblock %} 
+    {% block blog_category_list_actions %}
+          <template #smart-bar-actions>
+          {% block blog_category_list_smart_bar_actions %}
+         <sw-button variant="primary" :routerLink="{ name:'blog.bundle.create'}">Add Blog Category
+         </sw-button>
+        {% endblock %}
 
+    </template>
+
+    {% endblock %}
+  
+    <template #content>
+        <sw-entity-listing
+            v-if="blogCategories"
+            :items="blogCategories"
+            :columns="columns"
+            :is-loading="isLoading"
+            detail-route="blog.bundle.detail"
+            allow-edit
+            :repository="repository"
+
+        />
+    </template>
+</sw-page>
+{% endblock %}
+
+
+
+ 

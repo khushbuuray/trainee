@@ -1,6 +1,7 @@
 
 import './page/blog-bundle-list';
 import './page/blog-category-create';
+// import './page/blog-bundle-detail';
 
 Shopware.Module.register('blog-bundle', {
   type: 'plugin',
@@ -16,16 +17,14 @@ Shopware.Module.register('blog-bundle', {
       path: 'index'
     },
     detail:{
-      component: 'blog-bundle-detail',
+      component: 'blog-category-create', // for edit
       path: 'detail/:id',
       props: true
     },
     create :{
       component: 'blog-category-create',
       path: 'create',
-
     },
-
   },
 
   navigation: [{

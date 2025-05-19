@@ -1,53 +1,48 @@
 import template from './blog-bundle-list.html.twig';
-
 const { Criteria } = Shopware.Data;
 
-Shopware.Component.register('blog-bundle-list', {
-  template,
 
-  inject: [
-      'repositoryFactory'  
-    ],
+Shopware.Component.register('blog-bundle-list', {
+    template,
+
+    inject: ['repositoryFactory','acl'],
+
     data() {
         return {
-            bundles: [],
+            blogCategories: null,
             repository: null,
-             columns: [
-        { property: 'name', label: 'Name' , routerLink: 'blog.bundle.detail'},
-        { property: 'title', label: 'Title' }
-        
-      ]
-        }
-    }, 
-    metaInfo() {
-        return {
-            title: this.$createTitle(),
-        }
+            isLoading: false,
+            total: 0,
+            columns: [
+                { property: 'name', label: 'Name', primary: true, routerLink: 'blog.bundle.detail'}
+            ]
+        };
     },
-    
+
     computed: {
-        columns(){
-            return this.getColumns();
+        criteria() {
+            const criteria = new Criteria();
+            criteria.setPage(1);
+            criteria.setLimit(25);
+            return criteria;
         }
     },
+
     created() {
-        this.createdComponent();
-
+        this.repository = this.repositoryFactory.create('blog_category');
+        this.loadCategories();
     },
+
     methods: {
-        createdComponent(){
-            this.repository = this.repositoryFactory.create('blog');
-            this.repository.search(new Criteria(),Shopware.Context.api).then((result) => {
-                this.bundles = result;
-              console.log(result);
+        loadCategories() {
+            this.isLoading = true;
 
+            this.repository.search(this.criteria, Shopware.Context.api).then((result) => {
+                this.blogCategories = result;
+                this.total = result.total;
+            }).finally(() => {
+                this.isLoading = false;
             });
-        }
-    },
-    getColumns(){
-        return [
-            { property: 'name', label: this.$tc('blog-bundle-list.columnName') },
-            { property: 'description', label: 'Description' },
-        ]
+        },        
     }
 });
