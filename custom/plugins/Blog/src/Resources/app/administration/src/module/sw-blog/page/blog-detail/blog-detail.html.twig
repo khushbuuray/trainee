@@ -1,0 +1,133 @@
+{% block sw_blog_detail %}
+<sw-page>
+
+    {% block sw_blog_detail_content %}
+    <template #content>
+        <sw-card title="Create Blog Category">
+            <sw-container>
+                <sw-text-field
+                    v-if="blog"
+                    v-model:value="blog.name"
+                    label="Name"
+                    placeholder="Name"
+                    name="name"
+                    validation="required"
+                    required
+                />
+
+                 <sw-textarea-field
+                    v-if="blog"
+                    v-model:value="blog.description"
+                    label="Description"
+                    placeholder="Description"
+                    name="description"
+                    validation="required"
+                    required
+                />
+
+                <sw-date-time-field
+                    v-if="blog"
+                    v-model:value="blog.releaseDate"
+                    label="Release Date"
+                    placeholder="Release Date"
+                    name="release_date"
+                    validation="required"
+                    required
+                />
+
+                <sw-switch-field
+                    v-if="blog"
+                    v-model:value="blog.active"
+                    label="Active"
+                    placeholder="Active"
+                    name="active"
+                    validation="required"
+                    required
+                />
+
+                 {# <sw-entity-multi-select
+                 v-model:value="blog.categories"
+              
+                 label="Categories"
+                 placeholder="Select categories"
+                 name="categories"
+                 :criteria="categoryCriteria"
+                    entity-name="blog_category"
+                  :entity-collection="entity[blog.categories]"
+                 required
+                 /> #}
+
+
+
+<sw-entity-multi-select
+    v-if="blog"
+    v-model:value="blog.categories"
+    entity-name="blog_category"
+    :criteria="categoryCriteria"
+    :entity-collection="blog.categories"
+    :placeholder="$tc('Select categories')"
+    label="Categories"
+    name="categories"
+    required
+    @update:entity-collection="onCategoryChange"
+>
+               </sw-entity-multi-select>
+                 <sw-text-field
+                    v-if="blog"
+                    v-model:value="blog.author"
+                    label="Author"
+                    placeholder="Author"
+                    name="author"
+                    validation="required"
+                    required
+                />            
+
+               
+                <sw-entity-multi-select
+    v-if="blog"
+    v-model:value="blog.products"
+    entity-name="product"
+    :criteria="productCriteria"
+    :entity-collection="blog.products"
+    label="Products"
+    placeholder="Select products"
+    name="products"
+    validation="required"
+    required
+    @update:entity-collection="onProductChange"
+
+/>
+
+
+
+                
+            </sw-container>
+        </sw-card>
+    </template>
+    {% endblock %}
+   
+
+    {% block sw_blog_detail_actions %}
+    <template #smart-bar-actions>
+        <sw-button
+            :disabled="isLoading"
+            @click="onCancel"
+        >
+            Cancel
+        </sw-button>
+
+        <sw-button-process
+            :is-loading="isLoading"
+            @click="onSave"
+            variant="primary"
+        >
+        Save
+        </sw-button-process>
+    </template>
+    {% endblock %}
+
+</sw-page>
+{% endblock %}
+
+
+

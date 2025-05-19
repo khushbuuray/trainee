@@ -1,0 +1,36 @@
+
+{% block blog_list %}
+<sw-page>
+    <template #smart-bar-header>
+        <h2>Blog</h2>
+    </template>
+    {% block blog_list_actions %}
+        <template #smart-bar-actions>
+          {% block blog_list_smart_bar_actions %}
+           <sw-button variant="primary" :routerLink="{ name:'sw.blog.create'}">Add Blog 
+           </sw-button>
+          {% endblock %}
+
+        </template>
+
+    {% endblock %}
+
+     <template #content>
+        <sw-entity-listing
+            {# v-if="blogs" #}
+            :items="blogs"
+            :columns="columns"
+            :repository="repository"
+            :is-loading="isLoading"
+
+
+        />
+    </template>
+  
+  
+</sw-page>
+{% endblock %}
+
+
+
+ 

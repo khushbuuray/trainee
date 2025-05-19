@@ -28,7 +28,7 @@ Shopware.Module.register('blog-bundle', {
   },
 
   navigation: [{
-    label: 'Blog',
+    label: 'Blog Category',
     color: '#ff3d58',
     path: 'blog.bundle.index',
     icon: 'default-text-editor-document',

@@ -5,7 +5,7 @@ const { Criteria } = Shopware.Data;
 Shopware.Component.register('blog-bundle-list', {
     template,
 
-    inject: ['repositoryFactory','acl'],
+    inject: ['repositoryFactory'],
 
     data() {
         return {
