@@ -46,7 +46,7 @@ class BlogDefinition extends EntityDefinition
             (new TranslatedField('name', 'name')),
             (new TranslatedField('description', 'description')),
              new TranslationsAssociationField(BlogTranslationDefinition::class, 'blog_id'),
-            (new DateField('release_date', 'release_date'))->addFlags(new Required()),
+            (new DateField('release_date', 'release_date')),
             (new BoolField('active', 'active')),
             (new TranslatedField('author', 'author')),
        

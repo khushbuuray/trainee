@@ -3,7 +3,7 @@
 
     {% block sw_blog_detail_content %}
     <template #content>
-        <sw-card title="Create Blog Category">
+        <sw-card title="Create Blogs">
             <sw-container>
                 <sw-text-field
                     v-if="blog"
@@ -11,8 +11,7 @@
                     label="Name"
                     placeholder="Name"
                     name="name"
-                    validation="required"
-                    required
+                    
                 />
 
                  <sw-textarea-field
@@ -21,18 +20,15 @@
                     label="Description"
                     placeholder="Description"
                     name="description"
-                    validation="required"
-                    required
+                    
                 />
 
-                <sw-date-time-field
+                <sw-datepicker
                     v-if="blog"
                     v-model:value="blog.releaseDate"
                     label="Release Date"
                     placeholder="Release Date"
                     name="release_date"
-                    validation="required"
-                    required
                 />
 
                 <sw-switch-field
@@ -41,23 +37,10 @@
                     label="Active"
                     placeholder="Active"
                     name="active"
-                    validation="required"
-                    required
+                    
                 />
 
-                 {# <sw-entity-multi-select
-                 v-model:value="blog.categories"
-              
-                 label="Categories"
-                 placeholder="Select categories"
-                 name="categories"
-                 :criteria="categoryCriteria"
-                    entity-name="blog_category"
-                  :entity-collection="entity[blog.categories]"
-                 required
-                 /> #}
-
-
+                
 
 <sw-entity-multi-select
     v-if="blog"
@@ -68,18 +51,17 @@
     :placeholder="$tc('Select categories')"
     label="Categories"
     name="categories"
-    required
     @update:entity-collection="onCategoryChange"
 >
-               </sw-entity-multi-select>
+</sw-entity-multi-select>
+
+
                  <sw-text-field
                     v-if="blog"
                     v-model:value="blog.author"
                     label="Author"
                     placeholder="Author"
                     name="author"
-                    validation="required"
-                    required
                 />            
 
                
@@ -92,8 +74,7 @@
     label="Products"
     placeholder="Select products"
     name="products"
-    validation="required"
-    required
+    
     @update:entity-collection="onProductChange"
 
 />

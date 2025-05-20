@@ -18,6 +18,11 @@ Shopware.Module.register('sw-blog', {
             path: 'create',
             component: 'blog-detail',
         },
+        detail: {
+            path: 'detail/:id',
+            component: 'blog-detail',
+            props: true
+        }
     },
 
     navigation: [{

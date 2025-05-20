@@ -17,17 +17,16 @@
 
      <template #content>
         <sw-entity-listing
-            {# v-if="blogs" #}
+            v-if="blogs"
             :items="blogs"
             :columns="columns"
-            :repository="repository"
             :is-loading="isLoading"
-
-
+            detail-route="sw.blog.detail"
+            allow-edit
+            :repository="repository"
         />
     </template>
-  
-  
+
 </sw-page>
 {% endblock %}
 

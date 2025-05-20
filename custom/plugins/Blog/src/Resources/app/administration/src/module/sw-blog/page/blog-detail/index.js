@@ -1,12 +1,13 @@
 import template from './blog-detail.html.twig';
 
 
-const { Criteria, EntityCollection } = Shopware.Data;
+const { Component,Criteria, EntityCollection } = Shopware.Data;
 
 Shopware.Component.register('blog-detail', {
     template,
 
     inject: ['repositoryFactory'],
+    
 
     
 
@@ -31,9 +32,32 @@ Shopware.Component.register('blog-detail', {
         }   
     },
 
+
+    created() {
+    const id = this.$route.params.id;
+    const repository = this.repositoryFactory.create('blog');
+
+    if (id) {
+        repository.get(id, Shopware.Context.api).then((blog) => {
+            this.blog = blog;
+        }).catch(() => {
+            console.log('error loading blog');
+        });
+    } else {
+        this.blog = repository.create(Shopware.Context.api);
+        this.blog.categories = [];
+        this.blog.products = [];
+        console.log(this.blog);
+    }
+
+},
+
+
     computed: {
         categoryCriteria() {
             const criteria = new Criteria(1, 25);
+            criteria.addAssociation('blogCategories');
+
             criteria.addFilter(
                 Criteria.equals('active', true)
             );
@@ -49,55 +73,50 @@ Shopware.Component.register('blog-detail', {
     },
 
     methods: {
-    // onSave() {
-    //     this.isLoading = true;
-
-    //     const repository = this.repositoryFactory.create('blog');
-    //     repository.save(this.blog, Shopware.Context.api).then(() => {
-    //         this.isLoading = false;
-    //             this.$router.push({ name: 'sw.blog.index' });
-    //             // this.$router.back();
-
-    //         // this.createNotificationSuccess({ title: 'Saved', message: 'Blog category saved.' });
-    //     }).catch(() => {
-    //         this.isLoading = false;
-    //         // this.createNotificationError({ title: 'Error', message: 'Save failed.' });
-    //     });
-    // },
     onSave() {
     this.isLoading = true;
+    console.log('Saving blog with data:', this.blog);
 
-    const blogRepository = this.repositoryFactory.create('blog');
 
-    blogRepository.save(this.blog, Shopware.Context.api).then(() => {
+    const repository = this.repositoryFactory.create('blog');
+    this.blog.release_date = new Date().toISOString();
+    console.log(this.blog);
+    
+    repository.save(this.blog, Shopware.Context.api).then(() => {
         this.isLoading = false;
-
-        // Navigate to blog listing or another page
+        
         this.$router.push({ name: 'sw.blog.index' });
-
-        // Optional: show success notification
-        // this.createNotificationSuccess({ title: 'Success', message: 'Blog saved successfully.' });
-    }).catch((error) => {
+    }).catch((e) => {
         this.isLoading = false;
-
-        // Optional: show error notification
-        // this.createNotificationError({ title: 'Error', message: 'Saving blog failed.' });
-
-        console.error('Save failed:', error);
+        console.error('Save failed:', e);
     });
 }
 ,
-
+  
     onCancel() {
         this.$router.back();
     },
-    onCategoryChange(categories) {
-    this.blog.categories = categories;
+    onCategoryChange(categories) {        
+    // this.blog.categories = categories;
+    this.blog.categories = new EntityCollection(
+        'blog_category',
+        'id',
+        Shopware.Context.api,
+        new Criteria(),
+        categories
+    );
     },
     onProductChange(products) {
     this.blog.products = products;
-    },
+    // this.blog.products = new EntityCollection(
+    //     'product',
+    //     'id',
+    //     Shopware.Context.api,
+    //     new Criteria(),
+    //     products
+    // )    
+},
 
     }
 
-});
+  });
