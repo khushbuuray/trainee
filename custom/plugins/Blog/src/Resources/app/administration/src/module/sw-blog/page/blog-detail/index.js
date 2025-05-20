@@ -19,15 +19,8 @@ Shopware.Component.register('blog-detail', {
             name: '',
             description: '',
             release_date: null,
-            active: false,
-            //    categories: new EntityCollection(
-            //    'blogCategories', 
-            //    'id',            
-            //     Shopware.Context.api,
-            //     new Criteria()   
-            // ),
+            active: false,         
             blogCategories: [],
-
             author: '',
             products: new EntityCollection('product', 'id', Shopware.Context.api, new Criteria()),
          }
@@ -54,7 +47,6 @@ Shopware.Component.register('blog-detail', {
         this.blog = repository.create(Shopware.Context.api);
         this.blog.categories = [];
         this.blog.products = [];
-        console.log(this.blog);
     }
 
 },
@@ -93,8 +85,11 @@ Shopware.Component.register('blog-detail', {
         this.isLoading = false;
         console.error('Save failed:', e);
     });
-}
-,
+},
+     onChangeLanguage(languageId) {
+     Shopware.State.commit('context/setApiLanguageId', languageId);
+     this.blog;
+    },
   
     onCancel() {
         this.$router.back();
@@ -107,8 +102,8 @@ Shopware.Component.register('blog-detail', {
     },
     onProductChange(products) {
     this.blog.products = products;      
-},
+    },
 
-    }
+}
 
   });

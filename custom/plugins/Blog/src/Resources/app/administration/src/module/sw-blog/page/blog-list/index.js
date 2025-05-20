@@ -18,7 +18,7 @@ Shopware.Component.register('blog-list', {
                 { property: 'description', label: 'description', primary: true},
                 { property: 'release_date', label: 'release Date', primary: true},
                 { property: 'active', label: 'Active', primary: true},
-                // { property: 'categories', label: 'Categories', primary: true},
+                // { property: 'blogcategories', label: 'Categories', primary: true},
                 { property: 'author', label: 'Author', primary: true},
                 // { property: 'products', label: 'Product', primary: true},
                 
@@ -39,6 +39,10 @@ Shopware.Component.register('blog-list', {
                 this.blogs = result;
                 this.isLoading = false;
             });
+        },
+        onChangeLanguage(languageId) {
+            Shopware.State.commit('context/setApiLanguageId', languageId);
+            this.loadBlogs();
         }
     }
 });

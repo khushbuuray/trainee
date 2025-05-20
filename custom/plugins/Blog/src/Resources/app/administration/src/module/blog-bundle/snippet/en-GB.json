@@ -1,0 +1,12 @@
+{
+  "blog-bundle": {
+    "general": {
+  "mainMenuTitle": "Blog Categories",
+  "descriptionTextModule": "Manage your blog categories here."
+},
+    "list": {
+      "title": "Blog Categories",
+      "addButton": "Add Blog Category"
+    }
+  }
+}

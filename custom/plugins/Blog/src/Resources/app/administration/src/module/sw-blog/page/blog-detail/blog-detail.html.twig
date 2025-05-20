@@ -2,6 +2,10 @@
 <sw-page>
 
     {% block sw_blog_detail_content %}
+
+        <template #language-switch>
+      <sw-language-switch @on-change="onChangeLanguage" />
+    </template>
     <template #content>
         <sw-card title="Create Blogs">
             <sw-container>

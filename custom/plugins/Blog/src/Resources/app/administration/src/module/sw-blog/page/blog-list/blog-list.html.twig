@@ -14,6 +14,9 @@
         </template>
 
     {% endblock %}
+      <template #language-switch>
+      <sw-language-switch @on-change="onChangeLanguage" />
+    </template>
 
      <template #content>
         <sw-entity-listing

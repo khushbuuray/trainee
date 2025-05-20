@@ -43,6 +43,11 @@ Shopware.Component.register('blog-bundle-list', {
             }).finally(() => {
                 this.isLoading = false;
             });
-        },        
+        }, 
+       
+        onChangeLanguage(languageId) {
+         Shopware.State.commit('context/setApiLanguageId', languageId);
+             this.loadCategories(); 
+        },
     }
 });

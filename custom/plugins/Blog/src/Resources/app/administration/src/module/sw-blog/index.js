@@ -1,5 +1,7 @@
 import './page/blog-list';
 import './page/blog-detail';
+import enGB from './snippet/en-GB.json';
+import deDE from './snippet/de-DE.json';
 
 Shopware.Module.register('sw-blog', {
     type: 'plugin',
@@ -8,6 +10,11 @@ Shopware.Module.register('sw-blog', {
     description: 'Blog management',
     color: '#ff3d58',
     icon: 'default-text-editor-document',
+
+      snippets: {
+    'en-GB': enGB,
+    'de-DE': deDE
+    },
 
     routes: {
         index: {

@@ -1,15 +1,22 @@
 
 import './page/blog-bundle-list';
 import './page/blog-category-create';
-// import './page/blog-bundle-detail';
+import enGB from './snippet/en-GB.json';
+import deDE from './snippet/de-DE.json';
+
 
 Shopware.Module.register('blog-bundle', {
   type: 'plugin',
   name: 'BlogBundle',
-  title: 'Blog Bundle',
-  description: 'Blog bundle management',
+  title: 'blog-bundle.general.mainMenuTitle',
+  description: 'blog-bundle.general.descriptionTextModule',
   color: '#ff3d58',
   icon: 'default-text-editor-document',
+
+  snippets: {
+    'en-GB': enGB,
+    'de-DE': deDE
+  },
 
   routes: {
     index: {

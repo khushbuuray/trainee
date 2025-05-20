@@ -2,12 +2,18 @@
 {% block blog_category_list %}
 <sw-page>
     <template #smart-bar-header>
-        <h2>Blog Categories</h2>
+        <h2>{{ $tc('blog-bundle.list.title') }}</h2>
     </template>
+    {% block block_category_list_language_switch %}
+         <template #language-switch>
+      <sw-language-switch @on-change="onChangeLanguage" />
+    </template>
+    {% endblock %}
+   
     {% block blog_category_list_actions %}
           <template #smart-bar-actions>
           {% block blog_category_list_smart_bar_actions %}
-         <sw-button variant="primary" :routerLink="{ name:'blog.bundle.create'}">Add Blog Category
+         <sw-button variant="primary" :routerLink="{ name:'blog.bundle.create'}">{{ $tc('blog-bundle.list.addButton') }}
          </sw-button>
         {% endblock %}
 
