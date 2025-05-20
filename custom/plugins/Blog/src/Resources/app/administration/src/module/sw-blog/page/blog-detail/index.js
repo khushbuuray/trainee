@@ -20,12 +20,14 @@ Shopware.Component.register('blog-detail', {
             description: '',
             releaseDate: null,
             active: false,
-               categories: new EntityCollection(
-               'blog_category', // entity
-               'id',             // entity primary key
-                Shopware.Context.api, // context
-                new Criteria()    // optional criteria
-            ),
+            //    categories: new EntityCollection(
+            //    'blogCategories', 
+            //    'id',            
+            //     Shopware.Context.api,
+            //     new Criteria()   
+            // ),
+            blogCategories: [],
+
             author: '',
             products: new EntityCollection('product', 'id', Shopware.Context.api, new Criteria()),
          }
@@ -38,7 +40,12 @@ Shopware.Component.register('blog-detail', {
     const repository = this.repositoryFactory.create('blog');
 
     if (id) {
-        repository.get(id, Shopware.Context.api).then((blog) => {
+     
+         const criteria = new Criteria();
+        criteria.addAssociation('products');
+        criteria.addAssociation('blogCategories');
+
+        repository.get(id, Shopware.Context.api, criteria).then((blog) => {
             this.blog = blog;
         }).catch(() => {
             console.log('error loading blog');
@@ -54,22 +61,18 @@ Shopware.Component.register('blog-detail', {
 
 
     computed: {
-        categoryCriteria() {
-            const criteria = new Criteria(1, 25);
-            criteria.addAssociation('blogCategories');
-
-            criteria.addFilter(
-                Criteria.equals('active', true)
-            );
-            criteria.addSorting(Criteria.sort('name', 'ASC'));
-            return criteria;
-        },
-          productCriteria() {
-        const criteria = new Criteria(1, 25);
-        criteria.addFilter(Criteria.equals('active', true)); // optional: only active products
-        criteria.addSorting(Criteria.sort('name', 'ASC'));
-        return criteria;
-    }
+       categoryCriteria() {
+    const criteria = new Criteria(1, 25);
+    criteria.addFilter(Criteria.equals('active', true));
+    criteria.addSorting(Criteria.sort('name', 'ASC'));
+    return criteria;
+},
+       productCriteria() {
+    const criteria = new Criteria(1, 25);
+    criteria.addFilter(Criteria.equals('active', true));
+    criteria.addSorting(Criteria.sort('name', 'ASC'));
+    return criteria;
+}
     },
 
     methods: {
@@ -79,7 +82,7 @@ Shopware.Component.register('blog-detail', {
 
 
     const repository = this.repositoryFactory.create('blog');
-    this.blog.release_date = new Date().toISOString();
+    this.blog.releaseDate = new Date().toISOString();
     console.log(this.blog);
     
     repository.save(this.blog, Shopware.Context.api).then(() => {
@@ -96,25 +99,14 @@ Shopware.Component.register('blog-detail', {
     onCancel() {
         this.$router.back();
     },
-    onCategoryChange(categories) {        
-    // this.blog.categories = categories;
-    this.blog.categories = new EntityCollection(
-        'blog_category',
-        'id',
-        Shopware.Context.api,
-        new Criteria(),
-        categories
-    );
+
+    onCategoryChange(blogCategories) {        
+    // this.blog.categories = blogCategories;
+    this.blog.blogCategories = blogCategories;
+
     },
     onProductChange(products) {
-    this.blog.products = products;
-    // this.blog.products = new EntityCollection(
-    //     'product',
-    //     'id',
-    //     Shopware.Context.api,
-    //     new Criteria(),
-    //     products
-    // )    
+    this.blog.products = products;      
 },
 
     }
