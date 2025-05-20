@@ -18,7 +18,7 @@ Shopware.Component.register('blog-detail', {
             blog: {
             name: '',
             description: '',
-            releaseDate: null,
+            release_date: null,
             active: false,
             //    categories: new EntityCollection(
             //    'blogCategories', 
@@ -82,7 +82,7 @@ Shopware.Component.register('blog-detail', {
 
 
     const repository = this.repositoryFactory.create('blog');
-    this.blog.releaseDate = new Date().toISOString();
+    this.blog.release_date = new Date().toISOString();
     console.log(this.blog);
     
     repository.save(this.blog, Shopware.Context.api).then(() => {

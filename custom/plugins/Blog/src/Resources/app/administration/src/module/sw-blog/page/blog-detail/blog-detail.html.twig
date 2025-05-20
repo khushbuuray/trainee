@@ -23,16 +23,7 @@
                     
                 />
 
-                <sw-datepicker
-                    v-if="blog"
-                    v-model:value="blog.releaseDate"
-                    label="Release Date"
-                    placeholder="Release Date"
-                    name="releaseDate"
-                    :show-timepicker="true"
-                />
-
-                <sw-switch-field
+                  <sw-switch-field
                     v-if="blog"
                     v-model:value="blog.active"
                     label="Active"
@@ -41,7 +32,6 @@
                     
                 />
 
-            
                    <sw-entity-multi-select
                    v-if="blog"
                    v-model:value="blog.blogCategories"
@@ -56,7 +46,16 @@
                  </sw-entity-multi-select>
 
 
-                 <sw-text-field
+                <sw-datepicker
+                    v-if="blog"
+                    v-model="blog.release_date"
+                    label="Release Date"
+                    placeholder="Release Date"
+                    name="release_date"
+                    :show-timepicker="true"
+                />
+
+                   <sw-text-field
                     v-if="blog"
                     v-model:value="blog.author"
                     label="Author"
