@@ -12,10 +12,7 @@
       <service id="Blog\Storefront\Controller\HelloworldController" public="true">
           <call method="setContainer">
             <argument type="service" id="service_container"/>
-          </call>
-           <call method="setTwig">
-                <argument type="service" id="twig"/>
-            </call>
+          </call>          
         </service>
      
         <service id="Blog\Core\Content\BlogProductMapping\BlogProductMappingDefinition">

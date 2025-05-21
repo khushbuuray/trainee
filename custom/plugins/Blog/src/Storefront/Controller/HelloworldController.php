@@ -20,10 +20,6 @@ class HelloworldController extends StorefrontController
     )]
     public function index(): Response
     {
-        // return $this->renderStorefront('@Blog/storefront/page/helloworld.html.twig',[
-        //     'example'=>'Hello world'
-        // ]);
-
         return $this->renderStorefront('@Blog/storefront/page/helloworld.html.twig',[
             'example'=>'Hello world'
         ]);
