@@ -1,24 +1,24 @@
-
 {% block blog_list %}
 <sw-page>
     <template #smart-bar-header>
         <h2>Blog</h2>
     </template>
+
     {% block blog_list_actions %}
         <template #smart-bar-actions>
-          {% block blog_list_smart_bar_actions %}
-           <sw-button variant="primary" :routerLink="{ name:'sw.blog.create'}">Add Blog 
-           </sw-button>
-          {% endblock %}
-
+            {% block blog_list_smart_bar_actions %}
+                <sw-button variant="primary" :routerLink="{ name: 'sw.blog.create' }">
+                    Add Blog
+                </sw-button>
+            {% endblock %}
         </template>
-
     {% endblock %}
-      <template #language-switch>
-      <sw-language-switch @on-change="onChangeLanguage" />
+
+    <template #language-switch>
+        <sw-language-switch @on-change="onChangeLanguage" />
     </template>
 
-     <template #content>
+    <template #content>
         <sw-entity-listing
             v-if="blogs"
             :items="blogs"
@@ -27,12 +27,23 @@
             detail-route="sw.blog.detail"
             allow-edit
             :repository="repository"
-        />
-    </template>
+        >
+            <!-- Custom column slot: blogCategories -->
+            <template #column-blogCategories="{ item }">
+                <span v-if="item.blogCategories && item.blogCategories.length">
+                    {{ item.blogCategories.map(cat => cat.name).join(', ') }}
+                </span>
+                <span v-else>–</span>
+            </template>
 
+            <!-- Custom column slot: products -->
+            <template #column-products="{ item }">
+                <span v-if="item.products && item.products.length">
+                    {{ item.products.map(pro => pro.name).join(', ') }}
+                </span>
+                <span v-else>–</span>
+            </template>
+        </sw-entity-listing>
+    </template>
 </sw-page>
 {% endblock %}
-
-
-
- 

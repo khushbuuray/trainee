@@ -18,9 +18,9 @@ Shopware.Component.register('blog-list', {
                 { property: 'description', label: 'description', primary: true},
                 { property: 'release_date', label: 'release Date', primary: true},
                 { property: 'active', label: 'Active', primary: true},
-                // { property: 'blogcategories', label: 'Categories', primary: true},
+                { property: 'blogCategories', label: 'Categories', primary: true},
                 { property: 'author', label: 'Author', primary: true},
-                // { property: 'products', label: 'Product', primary: true},
+                { property: 'products', label: 'Product', primary: true},
                 
             ]
         }
@@ -35,6 +35,9 @@ Shopware.Component.register('blog-list', {
             this.isLoading = true;
 
             const criteria = new Criteria();
+            criteria.addAssociation('blogCategories'); 
+            criteria.addAssociation('products'); 
+
             this.repository.search(criteria, Shopware.Context.api).then((result) => {
                 this.blogs = result;
                 this.isLoading = false;

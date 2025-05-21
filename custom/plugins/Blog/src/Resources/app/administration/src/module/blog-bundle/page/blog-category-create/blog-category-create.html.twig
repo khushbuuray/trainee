@@ -6,7 +6,10 @@
     
     {% block blog_category_create_content %}
     <template #content>
+
         <sw-card title="Create Blog Category">
+            <sw-form>
+
             <sw-container>
                 <sw-text-field
                     v-if="category"
@@ -14,10 +17,11 @@
                     label="Category Name"
                     placeholder="Category Name"
                     name="name"
-                    validation="required"
                     required
                 />
             </sw-container>
+           </sw-form>
+
         </sw-card>
     </template>
     {% endblock %}
@@ -41,7 +45,6 @@
         </sw-button-process>
     </template>
     {% endblock %}
-
 </sw-page>
 {% endblock %}
 
