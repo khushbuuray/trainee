@@ -18,6 +18,7 @@ class ExampleController extends StorefrontController
     )]
     public function showExample(Request $request, SalesChannelContext $context): Response
     {
+        dd('hi');
         return $this->renderStorefront('@ExamplePlugin/storefront/page/example.html.twig', [
             'example' => 'Hello world'
         ]);
