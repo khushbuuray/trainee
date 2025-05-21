@@ -39,7 +39,7 @@ class BlogCategoryDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
-            (new TranslatedField('name', 'name')),
+            (new TranslatedField('name', 'name'))->addFlags(new Required()),
             new TranslationsAssociationField(BlogCategoryTranslationDefinition::class, 'blog_category_id'),
             new ManyToManyAssociationField
             (

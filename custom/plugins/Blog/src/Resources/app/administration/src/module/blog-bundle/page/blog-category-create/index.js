@@ -54,6 +54,17 @@ Shopware.Component.register('blog-category-create', {
 
         onSave() {
             this.isLoading = true;
+            console.log(this.category);
+
+            
+             if (!this.category || !this.category.name || this.category.name.trim() === '') {
+             this.isLoading = false;
+             this.createNotificationError({
+             title: 'Validation Error',
+             message: 'Category name is required.'
+            });
+             return;
+            }            
 
             this.repository.save(this.category, Shopware.Context.api).then(() => {
                  this.createNotificationSuccess({

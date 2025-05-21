@@ -11,6 +11,7 @@
             <sw-form>
 
             <sw-container>
+               {% block blog_category_create_base_info_field_name %}
                 <sw-text-field
                     v-if="category"
                     v-model:value="category.name"
@@ -18,7 +19,10 @@
                     placeholder="Category Name"
                     name="name"
                     required
+                    validation="required"
+                    :error="categoryNameError"
                 />
+                {% endblock %}
             </sw-container>
            </sw-form>
 

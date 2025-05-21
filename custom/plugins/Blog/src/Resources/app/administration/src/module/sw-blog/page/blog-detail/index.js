@@ -1,16 +1,17 @@
 import template from './blog-detail.html.twig';
 
 
-const { Component,Criteria, EntityCollection } = Shopware.Data;
+const { Component,Criteria, EntityCollection,Mixin } = Shopware.Data;
 
 Shopware.Component.register('blog-detail', {
     template,
 
     inject: ['repositoryFactory'],
-    
 
+    mixins: [
+        Shopware.Mixin.getByName('notification'),
+    ],
     
-
     data() {
         return {
            isLoading: false,
@@ -70,16 +71,30 @@ Shopware.Component.register('blog-detail', {
     methods: {
     onSave() {
     this.isLoading = true;
-    console.log('Saving blog with data:', this.blog);
+         console.log('Saving blog with data:', this.blog);
 
+        const blog = this.blog;
+        if (!blog?.name || !blog.description || !blog.release_date || !blog.author || !blog.blogCategories) {
+         if (!this.blog.blogCategories || this.blog.blogCategories.getIds().length === 0) {    
+         console.log('in');
+           this.createNotificationError({
+                  title: 'Validation Error',
+                  message: 'Please fill all required fields.'
+            });
+         this.isLoading = false;
+         return;
+        }
+    }  
 
     const repository = this.repositoryFactory.create('blog');
     this.blog.release_date = new Date().toISOString();
-    console.log(this.blog);
     
     repository.save(this.blog, Shopware.Context.api).then(() => {
         this.isLoading = false;
-        
+        this.createNotificationSuccess({
+            title: 'Success',
+            message: 'Blog saved successfully.'
+        });
         this.$router.push({ name: 'sw.blog.index' });
     }).catch((e) => {
         this.isLoading = false;
