@@ -9,14 +9,20 @@
     <template #content>
         <sw-card title="Create Blogs">
             <sw-container>
+                {% block sw_blog_detail_base_info_field_name %}
+
                 <sw-text-field
                     v-if="blog"
                     v-model:value="blog.name"
                     :label="$tc('sw-blog.general.name')"
-                    :laceholder="$tc('sw-blog.general.placeholderName')"
+                    :placeholder="$tc('sw-blog.general.placeholderName')"
                     name="name"
+                    :error="blogNameError"
                     required
+                    validation="required"
+
                 />
+                 {% endblock %}
 
                  <sw-textarea-field
                     v-if="blog"
@@ -24,7 +30,9 @@
                     :label="$tc('sw-blog.general.description')"
                     :placeholder="$tc('sw-blog.general.placeholderDescription')"
                     name="description"
+                    :error="blogDescriptionError"
                     required
+                    
                     
                 />
 
@@ -58,6 +66,7 @@
                     name="release_date"
                     required
                     :show-timepicker="true"
+                    :error="blogReleaseDateError"
                 />
 
                    <sw-text-field
@@ -66,6 +75,7 @@
                     :label="$tc('sw-blog.general.author')"
                     :placeholder="$tc('sw-blog.general.placeholderAuthor')"
                     name="author"
+                    :error="blogAuthorError"
                     required
                 />            
 

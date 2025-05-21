@@ -10,6 +10,7 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\DateField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\ApiAware;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
@@ -43,12 +44,12 @@ class BlogDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new Required(),new PrimaryKey()),
-            (new TranslatedField('name', 'name')),
+            (new TranslatedField('name', 'name'))->addFlags(new Required(),new ApiAware()),
             (new TranslatedField('description', 'description')),
              new TranslationsAssociationField(BlogTranslationDefinition::class, 'blog_id'),
             (new DateField('release_date', 'release_date'))->addFlags(new Required()),
             (new BoolField('active', 'active'))->addFlags(new Required()),
-            (new TranslatedField('author', 'author')),
+            (new TranslatedField('author', 'author'))->addFlags(new Required()),
        
             new ManyToManyAssociationField(
                 'blogCategories',

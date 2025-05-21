@@ -1,6 +1,8 @@
 import template from './blog-category-create.html.twig';
 
 const { Component, Mixin } = Shopware;
+const { mapPropertyErrors } = Shopware.Component.getComponentHelper();
+
 
 Shopware.Component.register('blog-category-create', {
     template,
@@ -15,7 +17,7 @@ Shopware.Component.register('blog-category-create', {
     data() {
         return {
             category: {
-                name: ''
+                // name: ''
             },
             isLoading: false,
             repository: null
@@ -26,6 +28,10 @@ Shopware.Component.register('blog-category-create', {
         return {
             title: this.$createTitle(this.identifier),
         };
+    },
+
+    computed: {
+        ...mapPropertyErrors('blogCategory', ['name'])
     },
 
 
@@ -55,7 +61,6 @@ Shopware.Component.register('blog-category-create', {
         onSave() {
             this.isLoading = true;
             console.log(this.category);
-
             
              if (!this.category || !this.category.name || this.category.name.trim() === '') {
              this.isLoading = false;
@@ -66,18 +71,23 @@ Shopware.Component.register('blog-category-create', {
 
              return;
             }            
-
+             console.log(this.category);
+            
             this.repository.save(this.category, Shopware.Context.api).then(() => {
                  this.createNotificationSuccess({
                     title: this.$tc('blog-bundle.general.successTitle'),
                     message: this.$tc('blog-bundle.general.successMessage'),
                 });
-                this.$router.push({ name: 'blog.bundle.index' });
-            }).finally(() => {
-                this.isLoading = false;
-            });
-        },
+            this.$router.push({ name: 'blog.bundle.index' });
+            }).catch((exception) => {   
+                 this.isLoading = false;  
+                console.log(exception);                
+                this.createNotificationError({        
+                    message: this.$tc('global.notification.notificationSaveErrorMessageRequiredFieldsInvalid'),   
 
+             });    throw exception;});
+        },
+       
         onCancel() {
             this.$router.back();
         }

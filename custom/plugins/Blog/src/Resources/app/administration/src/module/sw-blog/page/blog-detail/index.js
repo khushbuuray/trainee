@@ -2,6 +2,7 @@ import template from './blog-detail.html.twig';
 
 
 const { Component,Criteria, EntityCollection,Mixin } = Shopware.Data;
+const { mapPropertyErrors } = Shopware.Component.getComponentHelper();
 
 Shopware.Component.register('blog-detail', {
     template,
@@ -10,6 +11,8 @@ Shopware.Component.register('blog-detail', {
 
     mixins: [
         Shopware.Mixin.getByName('notification'),
+        Shopware.Mixin.getByName('placeholder'),
+
     ],
     
     data() {
@@ -34,8 +37,7 @@ Shopware.Component.register('blog-detail', {
     const repository = this.repositoryFactory.create('blog');
 
     if (id) {
-     
-         const criteria = new Criteria();
+        const criteria = new Criteria();
         criteria.addAssociation('products');
         criteria.addAssociation('blogCategories');
 
@@ -49,29 +51,30 @@ Shopware.Component.register('blog-detail', {
         this.blog.categories = [];
         this.blog.products = [];
     }
-
 },
 
 
     computed: {
-       categoryCriteria() {
+    ...mapPropertyErrors('blog', ['name', 'author', 'release_date', 'description']),
+
+    categoryCriteria() {
     const criteria = new Criteria(1, 25);
     criteria.addFilter(Criteria.equals('active', true));
     criteria.addSorting(Criteria.sort('name', 'ASC'));
     return criteria;
-},
-       productCriteria() {
+    },
+    productCriteria() {
     const criteria = new Criteria(1, 25);
     criteria.addFilter(Criteria.equals('active', true));
     criteria.addSorting(Criteria.sort('name', 'ASC'));
     return criteria;
-}
+     },
     },
 
     methods: {
     onSave() {
     this.isLoading = true;
-         console.log('Saving blog with data:', this.blog);
+     console.log('Saving blog with data:', this.blog);
 
         const blog = this.blog;
         if (!blog?.name || !blog.description || !blog.release_date || !blog.author || !blog.blogCategories) {
@@ -98,7 +101,9 @@ Shopware.Component.register('blog-detail', {
         this.$router.push({ name: 'sw.blog.index' });
     }).catch((e) => {
         this.isLoading = false;
-        console.error('Save failed:', e);
+        if (e.response?.data?.errors?.length) {
+        console.error('Validation errors:', e.response.data.errors);
+    }
     });
 },
      onChangeLanguage(languageId) {
@@ -118,7 +123,6 @@ Shopware.Component.register('blog-detail', {
     onProductChange(products) {
     this.blog.products = products;      
     },
-
 }
 
   });
