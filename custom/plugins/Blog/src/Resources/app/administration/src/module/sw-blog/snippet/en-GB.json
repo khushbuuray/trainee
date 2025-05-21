@@ -1,8 +1,26 @@
 {
   "sw-blog": {
     "general": {
-  "mainMenuTitle": "Blog Categories",
-  "descriptionTextModule": "Manage your blog categories here."
+     "mainMenuTitle": "Blog Categories",
+     "descriptionTextModule": "Manage your blog categories here.",
+      "name":"Name",
+      "placeholderName": "Enter a name",
+      "description":"Description",
+      "placeholderDescription": "Enter a description",
+      "active":"Active",
+      "categories":"Categories",
+      "placeholderCategories": "Select Categories",
+      "author":"Author",
+      "placeholderAuthor": "Enter a author",
+      "releaseDate":"Release Date",
+      "products":"Product",
+      "placeholderProducts": "Select Products",
+      "ErrorTitle": "Validation Error",
+      "ErrorMessage": "fields is required.",
+      "successTitle": "Success",
+      "successMessage": "Blog category saved successfully."
+
+
 },
     "list": {
       "title": "Blog Categories",

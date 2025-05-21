@@ -2,7 +2,11 @@
   "blog-bundle": {
       "general": {
       "mainMenuTitle": "Blog-Kategorien",
-      "descriptionTextModule": "Verwalten Sie hier Ihre Blog-Kategorien."
+      "descriptionTextModule": "Verwalten Sie hier Ihre Blog-Kategorien.",
+      "labelCategoryName": "Categorienaam",
+      "placeholderCategoryName": "Voer een categorienaam in",
+       "successTitle": "Gelukt",
+      "successMessage": "Blogcategorie succesvol opgeslagen."
     },
    
     "list": {

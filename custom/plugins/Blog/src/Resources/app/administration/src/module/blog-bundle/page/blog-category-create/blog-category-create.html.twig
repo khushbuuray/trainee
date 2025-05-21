@@ -15,8 +15,8 @@
                 <sw-text-field
                     v-if="category"
                     v-model:value="category.name"
-                    label="Category Name"
-                    placeholder="Category Name"
+                    :label="$tc('blog-bundle.general.labelCategoryName')"
+                    :placeholder="$tc('blog-bundle.general.placeholderCategoryName')"
                     name="name"
                     required
                     validation="required"

@@ -59,17 +59,18 @@ Shopware.Component.register('blog-category-create', {
             
              if (!this.category || !this.category.name || this.category.name.trim() === '') {
              this.isLoading = false;
-             this.createNotificationError({
-             title: 'Validation Error',
-             message: 'Category name is required.'
-            });
+                this.createNotificationError({
+                 title: this.$tc('blog-bundle.general.ErrorTitle'),
+                 message: this.$tc('blog-bundle.general.ErrorMessage'),
+                });
+
              return;
             }            
 
             this.repository.save(this.category, Shopware.Context.api).then(() => {
                  this.createNotificationSuccess({
-                    title: 'Success',
-                    message: 'Blog category saved successfully.'
+                    title: this.$tc('blog-bundle.general.successTitle'),
+                    message: this.$tc('blog-bundle.general.successMessage'),
                 });
                 this.$router.push({ name: 'blog.bundle.index' });
             }).finally(() => {

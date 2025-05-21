@@ -78,9 +78,9 @@ Shopware.Component.register('blog-detail', {
          if (!this.blog.blogCategories || this.blog.blogCategories.getIds().length === 0) {    
          console.log('in');
            this.createNotificationError({
-                  title: 'Validation Error',
-                  message: 'Please fill all required fields.'
-            });
+                    title: this.$tc('sw-blog.general.ErrorTitle'),
+                    message: this.$tc('sw-blog.general.ErrorMessage'),
+                });
          this.isLoading = false;
          return;
         }
@@ -92,9 +92,9 @@ Shopware.Component.register('blog-detail', {
     repository.save(this.blog, Shopware.Context.api).then(() => {
         this.isLoading = false;
         this.createNotificationSuccess({
-            title: 'Success',
-            message: 'Blog saved successfully.'
-        });
+                    title: this.$tc('sw-blog.general.successTitle'),
+                    message: this.$tc('sw-blog.general.successMessage'),
+                });
         this.$router.push({ name: 'sw.blog.index' });
     }).catch((e) => {
         this.isLoading = false;

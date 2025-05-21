@@ -12,18 +12,17 @@
                 <sw-text-field
                     v-if="blog"
                     v-model:value="blog.name"
-                    label="Name"
-                    placeholder="Name"
+                    :label="$tc('sw-blog.general.name')"
+                    :laceholder="$tc('sw-blog.general.placeholderName')"
                     name="name"
-                    {# validation="required" #}
                     required
                 />
 
                  <sw-textarea-field
                     v-if="blog"
                     v-model:value="blog.description"
-                    label="Description"
-                    placeholder="Description"
+                    :label="$tc('sw-blog.general.description')"
+                    :placeholder="$tc('sw-blog.general.placeholderDescription')"
                     name="description"
                     required
                     
@@ -32,11 +31,9 @@
                   <sw-switch-field
                     v-if="blog"
                     v-model:value="blog.active"
-                    label="Active"
-                    placeholder="Active"
+                    :label="$tc('sw-blog.general.active')"
                     name="active"
-                    required
-                    
+                    required                    
                 />
 
                    <sw-entity-multi-select
@@ -45,8 +42,8 @@
                    entity-name="blog_category"
                    :criteria="categoryCriteria"
                    :entity-collection="blog.blogCategories"
-                   :placeholder="$tc('Select categories')"
-                   label="Categories"
+                   :placeholder="$tc('sw-blog.general.placeholderCategories')"
+                   :label="$tc('sw-blog.general.categories')"
                    name="blogCategories"
                    required
                    @update:entity-collection="onCategoryChange"
@@ -57,8 +54,7 @@
                 <sw-datepicker
                     v-if="blog"
                     v-model="blog.release_date"
-                    label="Release Date"
-                    placeholder="Release Date"
+                    :label="$tc('sw-blog.general.releaseDate')"
                     name="release_date"
                     required
                     :show-timepicker="true"
@@ -67,8 +63,8 @@
                    <sw-text-field
                     v-if="blog"
                     v-model:value="blog.author"
-                    label="Author"
-                    placeholder="Author"
+                    :label="$tc('sw-blog.general.author')"
+                    :placeholder="$tc('sw-blog.general.placeholderAuthor')"
                     name="author"
                     required
                 />            
@@ -80,8 +76,8 @@
                  entity-name="product"
                  :criteria="productCriteria"
                  :entity-collection="blog.products"
-                 label="Products"
-                 placeholder="Select products"
+                 :label="$tc('sw-blog.general.products')"
+                 :placeholder="$tc('sw-blog.general.placeholderProducts')"
                  name="products"
                  @update:entity-collection="onProductChange"
                  required

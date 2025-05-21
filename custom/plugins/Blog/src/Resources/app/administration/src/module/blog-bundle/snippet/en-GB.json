@@ -1,8 +1,14 @@
 {
   "blog-bundle": {
-    "general": {
+  "general": {
   "mainMenuTitle": "Blog Categories",
-  "descriptionTextModule": "Manage your blog categories here."
+  "descriptionTextModule": "Manage your blog categories here.",
+  "labelCategoryName":"Category Name",
+  "placeholderCategoryName": "Enter a category name",
+  "ErrorTitle": "Validation Error",
+  "ErrorMessage": "Category name is required.",
+  "successTitle": "Success",
+  "successMessage": "Blog category saved successfully."
 },
     "list": {
       "title": "Blog Categories",
