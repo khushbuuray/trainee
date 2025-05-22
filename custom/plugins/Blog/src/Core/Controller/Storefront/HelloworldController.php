@@ -1,14 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Blog\Storefront\Controller;
+namespace Blog\Core\Controller\Storefront;
 
-use Dom\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route; 
+use Shopware\Storefront\Controller\StorefrontController;
 
 
 
