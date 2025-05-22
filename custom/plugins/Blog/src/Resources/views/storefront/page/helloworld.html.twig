@@ -2,6 +2,15 @@
 
 {% block base_content %}
     <div class="container mt-5">
-        <h1>{{example}}</h1>
+        <h2>Blog List</h2>
+        {% for item in blogList %}
+            <h4>Name:{{item.name}}</h4>
+            <p>{{item.description}}</p>
+            <p>{{item.author}}</p>
+            {% for category in item.blogCategories %}
+                    <p>Category:{{category.name}}</p>
+            {% endfor %}
+
+        {% endfor %}
     </div>
 {% endblock %}
