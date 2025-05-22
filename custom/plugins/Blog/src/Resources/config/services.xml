@@ -14,6 +14,14 @@
             <argument type="service" id="service_container"/>
           </call>          
         </service>
+
+        <service id="Blog\Storefront\Controller\API\BlogController" public="true">
+            <argument type="service" id="blog.repository"/>
+          <!-- <tag name="controller.service_arguments"/> -->
+          <call method="setContainer">
+            <argument type="service" id="service_container"/>
+          </call> 
+        </service>  
      
         <service id="Blog\Core\Content\BlogProductMapping\BlogProductMappingDefinition">
          <tag name="shopware.entity.definition" />
