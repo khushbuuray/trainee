@@ -12,10 +12,18 @@
             {% block block_custom_section_left_text %}
                 {% set element = block.slots.getSlot('left-text') %}
                 {% block block_custom_section_left_text_inner %}
+                <button class="btn btn-primary">Buy</button>
                     {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
                 {% endblock %}
             {% endblock %}
-                      
+
+            {% block block_custom_section_left_button %}
+                {% set element = block.slots.getSlot('left-button') %}
+                {% block block_custom_section_left_button_inner %}
+               {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+            {% endblock %}
+            {% endblock %}
+
         </div>
     {% endblock %}
 
@@ -34,4 +42,5 @@
                     {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
                 {% endblock %}
             {% endblock %}
+      
 {% endblock %}

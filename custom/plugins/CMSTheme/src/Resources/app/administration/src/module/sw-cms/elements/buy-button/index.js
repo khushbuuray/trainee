@@ -8,7 +8,7 @@ import './config';
  * @sw-package discovery
  */
 Shopware.Service("cmsService").registerCmsElement({
-    name:"custom-button",
+    name:"buy-button",
     label:"sw-cms.elements.buyButton.label",
     component:"sw-cms-el-buy-button",
     configComponent:"sw-cms-el-config-buy-button",
@@ -18,7 +18,7 @@ Shopware.Service("cmsService").registerCmsElement({
     defaultConfig:{
         name:{
             source:"static",
-            value:"shop",
+            value:"Buy",
             required:true,
         },
         link:{

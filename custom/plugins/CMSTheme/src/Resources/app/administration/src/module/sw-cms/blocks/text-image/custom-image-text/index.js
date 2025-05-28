@@ -45,6 +45,20 @@ slots: {
                 },
             },
         },
+      'left-button': {
+       type: "button",
+        default: {
+                config: {
+                    name: {
+                        source: "static",
+                        value: "Shop",
+                        required: true,
+                    }
+                },
+            },
+        
+    },
+
         "center-left-image": {
             type: "image",
             default: {
@@ -53,7 +67,7 @@ slots: {
                 },
                 data: {
                     media: {
-                                                value: 'bundles/administration/static/img/cms/preview_camera_small.jpg',
+                                value: 'bundles/administration/static/img/cms/preview_camera_small.jpg',
                         source: 'default',
                     },
                 }
@@ -71,6 +85,22 @@ slots: {
                         sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
                         sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
                         `.trim(),
+                    },
+                },
+            },
+        },
+        "center-left-button": {
+            type: "button",
+            default: {
+                config: {
+                    name: {
+                        source: "static",
+                        value: "Shop",
+                        required: true,
+                    },
+                    link: {
+                        source: "static",
+                        value: null,
                     },
                 },
             },
@@ -105,6 +135,23 @@ slots: {
                 },
             },
         },
+        "center-right-button": {
+            type: "button",
+            default: {
+                config: {
+                    name: {
+                        source: "static",
+                        value: "Shop",
+                        required: true,
+                    },
+                    link: {
+                        source: "static",
+                        value: null,
+                    },
+                },
+            },
+        },
+        
         'right-image': {
             type: 'image',
             default: {
@@ -131,6 +178,22 @@ slots: {
                         sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
                         sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
                         `.trim(),
+                    },
+                },
+            },
+        },
+        "right-button": {
+            type: "button",
+            default: {
+                config: {
+                    name: {
+                        source: "static",
+                        value: "Shop",
+                        required: true,
+                    },
+                    link: {
+                        source: "static",
+                        value: null,
                     },
                 },
             },

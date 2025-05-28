@@ -18,8 +18,10 @@ created(){
     methods: {
 
         createdComponent() {
-            this.initElementConfig('custom-text-image');
-            this.initElementData("button");
+            console.log('element called');
+            
+            this.initElementConfig('buy-button');
+            this.initElementData("buy-button");
         },
     },
 });
