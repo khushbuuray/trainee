@@ -1,0 +1,14 @@
+{% block zen_element_footer_navigation %}
+    <div class="cms-element-{{ element.type }}">
+        {% block zen_element_footer_navigation_element %}
+            <div class="footer-navigation-box">
+                {% block zen_element_footer_navigation_box %}
+                    {% sw_include '@Storefront/storefront/layout/sidebar/category-navigation.html.twig' with {
+                        navigationTree: page.footer.navigation.tree,
+                        activeResult: page.footer.navigation.active
+                    } only %}
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

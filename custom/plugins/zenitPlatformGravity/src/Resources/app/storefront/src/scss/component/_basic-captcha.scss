@@ -1,0 +1,21 @@
+.basic-captcha-content-refresh-icon {
+    @include button-variant($light, $light);
+
+    &:hover {
+        border-color: darken($light, 7.5%);
+        color: color-contrast(darken($light, 7.5%));
+
+        .icon.icon-arrow-switch {
+            color: color-contrast(darken($light, 7.5%));
+        }
+    }
+}
+
+.basic-captcha-content-image {
+    width: auto;
+
+    img {
+        height: $input-height;
+        width: auto;
+    }
+}

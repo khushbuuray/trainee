@@ -1,0 +1,53 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-product-slider.html.twig' %}
+
+{% block element_product_slider %}
+    {# TODO: @zenit - Check again as soon as Shopware solves the bug in the original code itself. #}
+    {% if not config %}
+        {% set config = element.fieldConfig.elements %}
+    {% endif %}
+
+    {% if not sliderConfig %}
+        {% set sliderConfig = element.fieldConfig.elements %}
+    {% endif %}
+
+    {# ... @zenit - in context of crossselling, they include this template with sliderConfig: config #}
+    {# however, config and sliderConfig are used in the mix. So I set both variables to the same value #}
+    {% if not config and sliderConfig %}
+        {% set config = sliderConfig %}
+    {% endif %}
+
+    {% if element.data.products.elements %}
+        <div class="cms-element-{{ element.type }}{% if sliderConfig.displayMode.value == "standard" and sliderConfig.verticalAlign.value %} has-vertical-alignment{% endif %}">
+            {{ block('element_product_slider_alignment') }}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block element_product_slider_slider %}
+    {% set productSliderOptions = productSliderOptions|replace_recursive({
+        slider: {
+            gutter: theme_config('zen-product-listing-card-padding')
+        }
+    }) %}
+
+    {{ parent() }}
+{% endblock %}
+
+{% block element_product_slider_controls_items %}
+    <button
+        class="base-slider-controls-prev product-slider-controls-prev{% if sliderConfig.border.value %} has-border{% endif %}"
+        aria-label="{{ 'general.previous'|trans|striptags }}"
+    >
+        {% block element_product_slider_controls_items_prev_icon %}
+            {% sw_icon 'arrow-head-left' %}
+        {% endblock %}
+    </button>
+    <button
+        class="base-slider-controls-next product-slider-controls-next{% if sliderConfig.border.value %} has-border{% endif %}"
+        aria-label="{{ 'general.next'|trans|striptags }}"
+    >
+        {% block element_product_slider_controls_items_next_icon %}
+            {% sw_icon 'arrow-head-right' %}
+        {% endblock %}
+    </button>
+{% endblock %}

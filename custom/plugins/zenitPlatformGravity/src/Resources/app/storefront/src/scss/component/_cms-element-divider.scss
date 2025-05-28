@@ -1,0 +1,31 @@
+// zenit divider element
+.cms-element-zen-divider {
+    .cms-element-alignment {
+        display: flex;
+        width: 100%;
+    }
+
+    &.has-vertical-alignment {
+        display: flex;
+        height: 100%;
+    }
+
+    .cms-divider-wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .cms-divider-divider {
+        flex: 1;
+    }
+
+    .cms-divider-text {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin: 0 $spacer;
+    }
+}

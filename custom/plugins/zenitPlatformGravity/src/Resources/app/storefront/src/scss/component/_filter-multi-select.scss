@@ -1,0 +1,7 @@
+.filter-multi-select-list-item.disabled {
+    opacity: 0.5;
+
+    @if $zen-category-filter-hide-empty-filter-options == 1 {
+        display: none;
+    }
+}

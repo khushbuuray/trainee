@@ -1,0 +1,322 @@
+{% block zen_element_image_slider %}
+    {% set sliderConfig = element.fieldConfig.elements %}
+    {% set customClasses = sliderConfig.customClasses.value %}
+
+    {% set elemStyles = {
+        'border-radius': sliderConfig.elementBorderRadius.value ? sliderConfig.elementBorderRadiusTopLeft.value ~ ' ' ~ sliderConfig.elementBorderRadiusTopRight.value ~ ' ' ~ sliderConfig.elementBorderRadiusBottomRight.value ~ ' ' ~ sliderConfig.elementBorderRadiusBottomLeft.value : null,
+        overflow: sliderConfig.elementBorderRadius.value ? 'hidden' : null
+    } | filter(item => item is not null) %}
+
+    <style>
+        {% if elemStyles %}
+        .cms-element-{{ element.type }}-{{ element.id }} {
+            {% for property, value in elemStyles %}
+                {{ property }}: {{ value }};
+            {% endfor %}
+        }
+        {% endif %}
+
+        .cms-element-{{ element.type }}-{{ element.id }} .image-slider-item-container .zen-image-slider-item-content {
+            animation-delay: {{ sliderConfig.speed.value }}ms;
+        }
+
+        .cms-element-{{ element.type }}-{{ element.id }} .image-slider-item-container.tns-slide-cloned:last-child .zen-image-slider-item-content {
+            animation: none;
+        }
+
+        .cms-element-{{ element.type }}-{{ element.id }} .image-slider-item-container:last-child .zen-image-slider-item-content {
+            animation-delay: 0s;
+        }
+    </style>
+
+    {% for config in element.data.sliderItems %}
+        {% set itemStyles = {
+            'border-radius': config.imageBorderRadius ? config.imageBorderRadiusTopLeft ~ ' ' ~ config.imageBorderRadiusTopRight ~ ' ' ~ config.imageBorderRadiusBottomRight ~ ' ' ~ config.imageBorderRadiusBottomLeft : null,
+            overflow: config.imageBorderRadius ? 'hidden' : null
+        } | filter(item => item is not null) %}
+
+        {% set imgStyles = {
+            'object-position': sliderConfig.displayMode.value == "cover" ? config.horizontalImageAlign|default('center') ~ ' ' ~ config.verticalImageAlign|default('center') : null
+        } | filter(item => item is not null) %}
+
+        {% set overlayStyles = config.overlay ? {
+            'background-color': config.overlayColor|default('transparent'),
+            opacity: config.overlayOpacity|default('0%'),
+            'border-radius': config.imageBorderRadius ? config.imageBorderRadiusTopLeft ~ ' ' ~ config.imageBorderRadiusTopRight ~ ' ' ~ config.imageBorderRadiusBottomRight ~ ' ' ~ config.imageBorderRadiusBottomLeft : null
+        } | filter(item => item is not null) : null %}
+
+        {% set contentContainerStyles = {
+            'align-items': config.verticalTextAlign|default('flex-start'),
+            'justify-content': config.horizontalTextAlign|default('flex-start')
+        } %}
+
+        {% set textStyles = {
+            'border-radius': config.textBorderRadius ? (config.textBorderRadiusTopLeft ?: '0px') ~ ' ' ~ (config.textBorderRadiusTopRight ?: '0px') ~ ' ' ~ (config.textBorderRadiusBottomRight ?: '0px') ~ ' ' ~ (config.textBorderRadiusBottomLeft ?: '0px') : null,
+            padding: config.textPaddings ? (config.textPaddingTop ?: '0px') ~ ' ' ~ (config.textPaddingRight ?: '0px') ~ ' ' ~ (config.textPaddingBottom ?: '0px') ~ ' ' ~ (config.textPaddingLeft ?: '0px') : null,
+            margin: config.textMargins ? (config.textMarginTop ?: '0px') ~ ' ' ~ (config.textMarginRight ?: '0px') ~ ' ' ~ (config.textMarginBottom ?: '0px') ~ ' ' ~ (config.textMarginLeft ?: '0px') : null,
+            'color': config.color,
+            'background-color': config.backgroundColor,
+            '-webkit-backdrop-filter': config.backgroundBlur ? "blur(#{config.backgroundBlur})" : null,
+            'backdrop-filter': config.backgroundBlur ? "blur(#{config.backgroundBlur})" : null,
+            width: config.textMinWidth and config.textMaxWidth ? 'clamp(' ~ config.textMinWidth ~ ', 50%, ' ~ config.textMaxWidth ~ ')' : config.textMinWidth,
+            'max-width': config.textMinWidth ? null : config.textMaxWidth
+        } | filter(item => item is not null) %}
+
+        <style>
+            {% if overlayStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .zen-slider-item-{{ loop.index }} .zen-image-slider-item-overlay {
+                    {% for property, value in overlayStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+
+            {% if contentContainerStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .zen-slider-item-{{ loop.index }} .zen-image-slider-item-content-container {
+                    {% for property, value in contentContainerStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+
+            {% if itemStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .zen-slider-item-{{ loop.index }} .image-slider-item-inner {
+                    {% for property, value in itemStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+
+            {% if imgStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .zen-slider-item-{{ loop.index }} .image-slider-image {
+                    {% for property, value in imgStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+
+            {% if textStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .zen-slider-item-{{ loop.index }} .zen-image-slider-item-content {
+                    {% for property, value in textStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+        </style>
+    {% endfor %}
+
+    <div id="cms-element-{{ element.type }}-{{ element.id }}"
+         class="cms-element-{{ element.type }}-{{ element.id }} cms-element-{{ element.type }}{% if sliderConfig.displayMode.value == "standard" and sliderConfig.verticalAlign.value %} has-vertical-alignment{% endif %}{% if config.horizontalAlign.value == "center" %} justify-content-center{% elseif config.horizontalAlign.value == "flex-end" %} justify-content-end{% else %} justify-content-start{% endif %}{% if sliderConfig.minHeight.value == "100%" and sliderConfig.displayMode.value == "cover" %} has-full-height{% endif %} is-{{ sliderConfig.displayMode.value }} {{ customClasses }}">
+        {% set baseSliderOptions = {
+            slider: {
+                navPosition: 'bottom',
+                nav: sliderConfig.navigationDots.value ? true : false,
+                controls: sliderConfig.navigationArrows.value ? true : false,
+                autoHeight: (sliderConfig.displayMode.value == "standard") ? true : false,
+                autoplay: sliderConfig.autoplay.value ? true : false,
+                autoplayTimeout: sliderConfig.autoplayTimeout.value is not null ? sliderConfig.autoplayTimeout.value : 5000,
+                autoplayHoverPause: sliderConfig.autoplayHoverPause.value ? true : false,
+                speed: sliderConfig.speed.value is not null ? sliderConfig.speed.value : 500,
+                autoplayButtonOutput: false,
+                mode: sliderConfig.mode.value ? sliderConfig.mode.value : 'carousel',
+                axis: sliderConfig.axis.value ? sliderConfig.axis.value : 'horizontal',
+                animateDelay: 500,
+                rewind: sliderConfig.rewind.value ? sliderConfig.rewind.value : false,
+                loop: sliderConfig.loop.value ? sliderConfig.loop.value : false,
+                gutter: sliderConfig.items.value > 1 ? sliderConfig.gutter.value : 0
+            }
+        } %}
+
+        {% if sliderConfig.multipleItems.value or sliderConfig.items.value > 1 %}
+            {% set baseSliderOptions = baseSliderOptions|replace_recursive({
+                slider: {
+                    responsive: {
+                        xs: {
+                            items: sliderConfig.itemsXS.value|default(1)
+                        },
+                        sm: {
+                            items: sliderConfig.itemsSM.value|default(1)
+                        },
+                        md: {
+                            items: sliderConfig.itemsMD.value != 0 ? sliderConfig.itemsMD.value : sliderConfig.items.value
+                        },
+                        lg: {
+                            items: sliderConfig.itemsLG.value != 0 ? sliderConfig.itemsLG.value : sliderConfig.items.value
+                        },
+                        xl: {
+                            items: sliderConfig.itemsXL.value != 0 ? sliderConfig.itemsXL.value : sliderConfig.items.value
+                        },
+                        xxl: {
+                            items: sliderConfig.items.value
+                        }
+                    },
+                }
+            }) %}
+        {% endif %}
+
+        {% block zen_element_image_slider_alignment %}
+            {% if sliderConfig.verticalAlign.value %}
+                <div class="cms-element-alignment{% if sliderConfig.verticalAlign.value == "center" %} align-self-center{% elseif sliderConfig.verticalAlign.value == "flex-end" %} align-self-end{% else %} align-self-start{% endif %}">
+            {%  endif %}
+            <div class="base-slider image-slider zen-image-slider{% if sliderConfig.navigationArrows.value == "outside" %} has-nav-outside{% endif %}{% if sliderConfig.navigationDots.value == "outside" %} has-dots-outside{% endif %}"
+                 data-base-slider="true"
+                 data-base-slider-options='{{ baseSliderOptions|json_encode }}'>
+
+                {% block zen_element_image_slider_inner %}
+                    <div class="image-slider-container"
+                         data-base-slider-container="true">
+
+                        {% for image in element.data.sliderItems %}
+                            {% set imageElement %}
+                                <div class="zen-image-slider-item-image-container image-slider-item{% if loop.first != true %} is-not-first{% endif %} is-{{ sliderConfig.displayMode.value }}"
+                                     {% if sliderConfig.minHeight.value and sliderConfig.displayMode.value == "cover" %}style="min-height: {{ sliderConfig.minHeight.value }}"{% endif %}>
+
+                                    {% set attributes = {
+                                        alt: (image.media.translated.alt|default(image.media.fileName)),
+                                        title: (image.media.translated.title|default(image.media.fileName))
+                                    } %}
+
+                                    {# ... @zenit - enables lazy loading for images,
+                                        but only on cover mode
+                                        and only on horizonal axis
+                                        because of JS height calculation
+                                    #}
+                                    {% if element.config.displayMode.value == 'cover' and sliderConfig.axis.value == 'horizontal' %}
+                                        {% if config('zenitPlatformGravity.config.lazyloading') %}
+                                            {% set attributes = attributes|merge({ loading: 'lazy' }) %}
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if element.config.displayMode.value == 'cover' or element.config.displayMode.value == 'contain' %}
+                                        {% set attributes = attributes|merge({ 'data-object-fit': element.config.displayMode.value }) %}
+                                    {% endif %}
+
+                                    {% if image.media.getMediaType().getName() === 'VIDEO' %}
+                                        {% set attributes = attributes|merge({
+                                            class: 'img-fluid image-slider-video image-slider-image',
+                                            autoplay: true,
+                                            loop: true,
+                                            muted: true
+                                        }) %}
+
+                                        {% sw_include '@Storefront/storefront/utilities/video.html.twig' with {
+                                            media: image.media,
+                                            attributes: attributes
+                                        } %}
+                                    {% else %}
+                                        {% set attributes = attributes|merge({
+                                            class: 'img-fluid image-slider-image'
+                                        }) %}
+
+                                        {% sw_thumbnails 'cms-image-slider-thumbnails' with {
+                                            media: image.media
+                                        } %}
+                                    {% endif %}
+                                </div>
+                            {% endset %}
+
+                            {% set contentElement %}
+                                {% set animationClasses = [] %}
+                                {% set animationClasses = ['animation-in-' ~ image.animationIn]|merge(animationClasses) %}
+
+                                {% set contentClasses = [] %}
+                                {% set contentClasses = image.headlineScale ? ['has-headline-lg']|merge(contentClasses) : contentClasses %}
+                                {% set contentClasses = image.textScale ? ['has-text-lg']|merge(contentClasses) : contentClasses %}
+
+                                {# sticky header js options #}
+                                {% set parallaxMousemoveOptions = {
+                                    parallaxTargetSelector: '.zen-image-slider-item-text'
+                                } %}
+
+                                {% block zen_element_image_slider_inner_overlay %}
+                                    {% if image.overlay %}
+                                        <div class="zen-image-slider-item-overlay"></div>
+                                    {% endif %}
+                                {% endblock %}
+
+                                {% block zen_element_image_slider_inner_content_container %}
+                                    <div class="zen-image-slider-item-content-container image-slider-item{% if loop.first != true %} is-not-first{% endif %} is-{{ sliderConfig.displayMode.value }}"
+                                         {% if sliderConfig.minHeight.value and sliderConfig.displayMode.value == "cover" %}style="min-height: {{ sliderConfig.minHeight.value }}"{% endif %}
+                                         {% if image.animation == "parallax-mousemove" %}data-parallax-mousemove="true" data-zen-parallax-mousemove-options="{{ parallaxMousemoveOptions|json_encode }}"{% endif %}
+                                    >
+
+                                        {% if image.url %}
+                                            <a href="{{ image.url }}"
+                                               class="image-slider-link"
+                                               {% if image.text %}title="{{ image.text|striptags }}"{% endif %}
+                                                {% if image.newTab %}target="_blank" rel="noopener"{% endif %}>
+                                            </a>
+                                        {% endif %}
+
+                                        {% if image.text %}
+                                            {% set content = image.text|raw %}
+                                            <div class="zen-image-slider-item-content {{ animationClasses|sort|join(' ') }}">
+                                                <div class="zen-image-slider-item-text" data-zen-speed="1">
+                                                    <div class="zen-image-slider-item-text-value {{ contentClasses|sort|join(' ') }}">
+                                                        {% if config('zenitPlatformGravity.config.twigStringLoaderExtension') %}
+                                                            {% sw_include '@zenitPlatformGravity/storefront/utilities/zen-template-from-string.html.twig' with {
+                                                                content: content
+                                                            } %}
+                                                        {% else %}
+                                                            {{ content|raw }}
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endblock %}
+                            {% endset %}
+
+                            {% block zen_element_image_slider_inner_item %}
+                                {% set elemClasses = [] %}
+                                {% set elemClasses = ['animation-' ~ image.animation]|merge(elemClasses) %}
+                                {% set elemClasses = [image.customItemClasses]|merge(elemClasses) %}
+
+                                <div class="image-slider-item-container zen-slider-item-{{ loop.index }} {{ elemClasses|sort|join(' ') }}">
+                                    <div class="image-slider-item-inner cms-element-inner">
+                                        {{ imageElement }}
+                                        {{ contentElement }}
+                                    </div>
+                                </div>
+                            {% endblock %}
+                        {% endfor %}
+                    </div>
+
+                    {% block zen_element_image_slider_controls %}
+                        {% if sliderConfig.navigationArrows.value %}
+                            <div class="image-slider-controls-container">
+                                <div class="base-slider-controls"
+                                     data-base-slider-controls="true">
+                                    {% block zen_element_image_slider_controls_items %}
+                                        {% block zen_element_image_slider_controls_items_arrows %}
+                                            <button
+                                                class="base-slider-controls-prev image-slider-controls-prev{% if sliderConfig.navigationArrows.value == "outside" %} is-nav-prev-outside{% elseif sliderConfig.navigationArrows.value == "inside" %} is-nav-prev-inside{% endif %}"
+                                                aria-label="{{ 'general.previous'|trans|striptags }}"
+                                            >
+                                                {% block zen_element_image_slider_controls_items_prev_icon %}
+                                                    {% sw_icon 'arrow-head-left' %}
+                                                {% endblock %}
+                                            </button>
+                                            <button
+                                                class="base-slider-controls-next image-slider-controls-next{% if sliderConfig.navigationArrows.value == "outside" %} is-nav-next-outside{% elseif sliderConfig.navigationArrows.value == "inside" %} is-nav-next-inside{% endif %}"
+                                                aria-label="{{ 'general.next'|trans|striptags }}"
+                                            >
+                                                {% block zen_element_image_slider_controls_items_next_icon %}
+                                                    {% sw_icon 'arrow-head-right' %}
+                                                {% endblock %}
+                                            </button>
+                                        {% endblock %}
+                                    {% endblock %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endblock %}
+                {% endblock %}
+            </div>
+            {% if sliderConfig.verticalAlign.value %}
+                </div>
+            {% endif %}
+        {% endblock %}
+    </div>
+{% endblock %}

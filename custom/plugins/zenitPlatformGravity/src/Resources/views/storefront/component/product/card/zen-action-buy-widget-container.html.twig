@@ -1,0 +1,109 @@
+{% block zen_component_product_box_action_buy_widget_container %}
+    {% set quantityGridClasses = quantityGridClasses ? quantityGridClasses : 'col-8' %}
+    {% set btnGridClasses = btnGridClasses ? btnGridClasses : 'col-4' %}
+    {% set selectQuantityThreshold = 100 %}
+    {% set purchaseSteps = product.purchaseSteps|default(1) %}
+    {% set selectQuantityThresholdExceeded = (product.calculatedMaxPurchase - product.minPurchase) / purchaseSteps > selectQuantityThreshold %}
+
+    {% block zen_component_product_box_action_buy_widget %}
+        {% set buyButton %}
+            <button class="btn btn-buy btn-icon-only"
+                    title="{{ 'listing.boxAddProduct'|trans|striptags }}">
+                {% sw_icon 'bag' %}
+            </button>
+        {% endset %}
+
+        <div class="buy-widget-container{% if theme_config('zen-buy-quantity-style') is same as ('input') or theme_config('zen-buy-quantity-style') is same as ('default')  or (theme_config('zen-buy-quantity-style') is same as ('select') and selectQuantityThresholdExceeded) %} is-quantity-input{% else %} is-quantity-select{% endif %}">
+
+            {% block zen_component_product_box_action_buy_widget_quantity %}
+                {% if theme_config('zen-buy-quantity-style') is same as ('input') or (theme_config('zen-buy-quantity-style') is same as ('select') and selectQuantityThresholdExceeded) %}
+                    {% block zen_component_product_box_action_buy_widget_quantity_zenit_input %}
+                        <div class="row gx-2">
+                            <div class="{{ quantityGridClasses }}">
+                                {% sw_include '@zenitPlatformGravity/storefront/component/buy-widget/zen-buy-widget-quantity.html.twig' with {
+                                    value: product.value,
+                                    id:  product.id,
+                                    minPurchase: product.minPurchase,
+                                    maxPurchase: product.calculatedMaxPurchase,
+                                    step: purchaseSteps,
+                                    name: "lineItems[#{ product.id }][quantity]",
+                                    quantityGroupClasses: 'product-listing-quantity-group'
+                                } %}
+                            </div>
+                            <div class="{{ btnGridClasses }}">
+                                {{ buyButton }}
+                            </div>
+                        </div>
+                    {% endblock %}
+                {% else %}
+                    {% if theme_config('zen-buy-quantity-style') is same as ('select') %}
+                        <div class="input-group">
+                            {% block zen_component_product_box_action_buy_widget_quantity_select %}
+                                <select
+                                    name="lineItems[{{ product.id }}][quantity]"
+                                    class="form-select product-listing-quantity-select"
+                                    {% if isDigital %}disabled="disabled"{% endif %}
+                                >
+                                    {% for quantity in range(product.minPurchase, product.calculatedMaxPurchase, purchaseSteps) %}
+                                        <option value="{{ quantity }}">
+                                            {{ quantity }}
+                                            {% if quantity == 1 %}
+                                                {% if product.translated.packUnit %} {{ product.translated.packUnit }}{% endif %}
+                                            {% else %}
+                                                {% if product.translated.packUnitPlural %}
+                                                    {{ product.translated.packUnitPlural }}
+                                                {% elseif product.translated.packUnit %}
+                                                    {{ product.translated.packUnit }}
+                                                {% endif %}
+                                            {% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            {% endblock %}
+
+                            {{ buyButton }}
+                        </div>
+                    {% else %}
+                        <div class="row gx-2">
+                            <div class="{{ quantityGridClasses }}">
+                                {% block zen_component_product_box_action_buy_widget_quantity_input_group %}
+                                    <div class="input-group quantity-selector-group" data-quantity-selector="true">
+                                        {% block zen_component_product_box_action_buy_widget_quantity_input %}
+                                            <button type="button" class="btn btn-outline-light btn-minus js-btn-minus">
+                                                {% sw_icon 'minus' style { size: 'xs' } %}
+                                            </button>
+                                            <input
+                                                type="number"
+                                                name="lineItems[{{ product.id }}][quantity]"
+                                                class="form-control js-quantity-selector quantity-selector-group-input"
+                                                min="{{ product.minPurchase }}"
+                                                max="{{ product.calculatedMaxPurchase }}"
+                                                step="{{ purchaseSteps }}"
+                                                value="{{ product.minPurchase }}"
+                                            />
+                                            <button type="button" class="btn btn-outline-light btn-plus js-btn-plus">
+                                                {% sw_icon 'plus' style { size: 'xs' }  %}
+                                            </button>
+                                            {% if product.translated.packUnit %}
+                                                <span class="input-group-text">
+                                                    {% if product.minPurchase > 1 and product.translated.packUnitPlural %}
+                                                        {{ product.translated.packUnitPlural }}
+                                                    {% elseif product.translated.packUnit %}
+                                                        {{ product.translated.packUnit }}
+                                                    {% endif %}
+                                                </span>
+                                            {% endif %}
+                                        {% endblock %}
+                                    </div>
+                                {% endblock %}
+                            </div>
+                            <div class="{{ btnGridClasses }}">
+                                {{ buyButton }}
+                            </div>
+                        </div>
+                    {% endif%}
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+{% endblock %}

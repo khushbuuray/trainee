@@ -1,0 +1,62 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-wishlist-listing.html.twig' %}
+
+{% block element_wishlist_listing_wrapper %}
+    {% set colsXS = theme_config("zen-product-listing-columns-xs") %}
+    {% set colsSM = theme_config("zen-product-listing-columns-sm") %}
+    {% set colsMD = theme_config("zen-product-listing-columns-md") %}
+    {% set colsLG = theme_config("zen-product-listing-columns-lg") %}
+    {% set colsXL = theme_config("zen-product-listing-columns-xl") %}
+
+    {% set configListingColumns = [
+        'col-' ~ 12 / colsXS|default("1"),
+        'col-sm-' ~ 12 / colsSM|default("2"),
+        'col-md-' ~ 12 / colsMD|default("2"),
+        'col-lg-' ~ 12 / colsLG|default("3"),
+        'col-xl-' ~ 12 / colsXL|default("4"),
+        'col-xxl-' ~ 12 / colsXL|default("4")
+    ] %}
+
+    {% if section and section.type == 'sidebar' %}
+        {% set colsXS = theme_config("zen-product-listing-columns-sidebar-xs") %}
+        {% set colsSM = theme_config("zen-product-listing-columns-sidebar-sm") %}
+        {% set colsMD = theme_config("zen-product-listing-columns-sidebar-md") %}
+        {% set colsLG = theme_config("zen-product-listing-columns-sidebar-lg") %}
+        {% set colsXL = theme_config("zen-product-listing-columns-sidebar-xl") %}
+
+        {% set configListingColumns = [
+            'col-' ~ 12 / colsXS|default("1"),
+            'col-sm-' ~ 12 / colsSM|default("2"),
+            'col-md-' ~ 12 / colsMD|default("2"),
+            'col-lg-' ~ 12 / colsLG|default("2"),
+            'col-xl-' ~ 12 / colsXL|default("3"),
+            'col-xxl-' ~ 12 / colsXL|default("3")
+        ] %}
+    {% endif %}
+
+    {# ... @zenit - replace dot by underscore because of grid of five #}
+    {% set configListingColumns = configListingColumns|join(',')|replace({'.': '_'})|split(',') %}
+    {% set listingColumns = configListingColumns|join(' ') %}
+
+    {# ... @zenit - add boxLayout #}
+    {% set boxLayout = theme_config("zen-wishlist-product-box-layout-type")|default('wishlist') %}
+
+    {# ... @zenit - add scroll listing animaton here instead in listing.html.twig
+    to prevent invisible products if any other extension uses listing.html.twig in another context #}
+    {% if theme_config('zen-layout-scroll-listing-animation') %}
+        {% set scrollAnimationClasses = 'zen-animate listing-fade-in-bottom' %}
+    {% endif %}
+
+    {# ... @zenit - add scrollAnimationClasses #}
+    {% sw_include '@Storefront/storefront/component/wishlist/listing.html.twig' with {
+        searchResult: searchResult,
+        dataUrl: dataUrl,
+        filterUrl: filterUrl,
+        disableEmptyFilter: false,
+        params: params,
+        sidebar: sidebar,
+        boxLayout: boxLayout,
+        displayMode: displayMode,
+        listingColumns: listingColumns,
+        scrollAnimationClasses: scrollAnimationClasses
+    } %}
+{% endblock %}

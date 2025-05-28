@@ -1,0 +1,57 @@
+.quickview-modal,
+.quickview-modal-loading {
+    .modal-dialog {
+        @extend .modal-dialog-centered;
+        @extend .modal-xl;
+    }
+}
+
+.quickview-minimal-product-manufacturer-logo {
+    @extend .product-detail-manufacturer-logo;
+    max-width: px($zen-manufacturer-logo-height-mobile);
+
+    @include media-breakpoint-up(lg) {
+        max-width: px($zen-manufacturer-logo-height);
+    }
+}
+
+.quickview-minimal-product {
+    overflow: hidden;
+}
+
+.quickview-minimal-product-name {
+    @include font-size(px($h1-font-size));
+    color: $zen-product-details-name-color;
+    @include font-size(px($zen-product-details-name-font-size));
+    font-weight: $zen-product-details-name-font-weight;
+    text-transform: $zen-product-details-name-text-transform;
+    line-height: 1.2;
+
+    @if $zen-product-details-name-font-family == "headline" {
+        font-family: $headings-font-family;
+    } @else {
+        font-family: $font-family-base;
+    }
+}
+
+.quickview-minimal-product-short-description {
+    border-bottom: 1px solid $border-color;
+    padding-bottom: $spacer-md;
+    margin-bottom: $spacer-md;
+}
+
+.quickview-minimal-footer {
+    .btn-detail {
+        position: absolute;
+        top: calc(100% + 16px);
+        left: 0;
+        right: 0;
+        margin: auto;
+        max-width: 320px;
+    }
+}
+
+.quickview-minimal-top,
+.quickview-minimal-image {
+    margin-bottom: 0;
+}

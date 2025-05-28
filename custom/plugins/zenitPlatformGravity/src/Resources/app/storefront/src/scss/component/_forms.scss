@@ -1,0 +1,191 @@
+/*
+Form
+==============================================
+Custom skin styling for bootstrap forms.
+
+https://getbootstrap.com/docs/4.3/components/forms/
+*/
+
+input {// increase priority level
+    &.form-control {
+        height: auto; // needed, because some extension define a fix height for forms.
+    }
+}
+
+.form-control {
+    font-size: $input-font-size; // prevent forms from using rfs()
+
+    @if $zen-layout-forms-style == "underlined" {
+        border-radius: 0;
+        border-top: none;
+        border-right: none;
+        border-left: none;
+        border-bottom-width: 1px;
+        background: transparent;
+    } @else {
+        @include border-radius($zen-layout-input-radius * 1px);
+    }
+
+    &:focus {
+        box-shadow: none;
+
+        @if $zen-layout-forms-style == "underlined" {
+            background: transparent;
+        }
+
+        &::placeholder {
+            color: $zen-input-focus-placeholder-color;
+        }
+
+        /* Workaround for missing placeholder color in chrome */
+        /* stylelint-disable-next-line selector-no-vendor-prefix */
+        &::-webkit-input-placeholder {
+            color: $zen-input-focus-placeholder-color;
+        }
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+}
+
+@if $zen-layout-forms-style != "underlined" and $zen-layout-input-radius == 100 {
+    textarea {
+        &.form-control {
+            @include border-radius(25px);
+        }
+    }
+}
+
+@if $zen-layout-forms-style == "underlined" {
+    .form-group {
+        &:has(input:disabled),
+        &:has(select:disabled) {
+            label {
+                opacity: 0.5;
+            }
+
+            input,
+            select {
+                opacity: 0.5;
+                background-color: transparent;
+            }
+        }
+    }
+}
+
+// floating labels
+@if $zen-layout-forms-floating-labels == 1 {
+    .has-lbl-floating { // needed because older child-themes use `"scss": false` on `$zen-layout-forms-floating-labels`
+        .content-main,
+        .offcanvas,
+        .js-pseudo-modal {
+            $allowed-types-selector: 'input[type="text"], input[type="number"], input[type="email"], input[type="password"], input[type="tel"], input[type="url"], select, textarea';
+
+            .form-group:not(.js-label-floating-prevent) {
+                &:has(#{$allowed-types-selector}) {
+                    label {
+                        position: absolute;
+                        margin-bottom: 0;
+                        pointer-events: none;
+                        cursor: text;
+                        transition: top .1s ease-in-out, left .1s ease-in-out, right .1s ease-in-out;
+                        line-height: $input-line-height;
+                        @include font-size(px($input-font-size));
+                        color: lighten($zen-input-color, 10%);
+                        font-weight: $zen-input-font-weight;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+
+                        @if $zen-layout-forms-style == "underlined" {
+                            top: $input-padding-y;
+                            left: $input-padding-x;
+                            right: $input-padding-x;
+                        } @else {
+                            top: $input-padding-y + rem(1);
+                            left: calc(#{$input-padding-x} + var(--#{$prefix}border-width));
+                            right: calc(#{$input-padding-x} + var(--#{$prefix}border-width));
+                        }
+                    }
+
+                    &[class*="col-"],
+                    &[class*="col "],
+                    &[class*=" col"] {
+                        label {
+                            margin-inline: calc((var(--#{$prefix}gutter-x) * .5)); // ... margin is required in this case because (var(--#{$prefix}gutter-x) * 0.5) can cause the left/right calc values to evaluate to 0 in some scenarios. e.g. by row with `g-0` class
+                        }
+                    }
+
+                    &:has(label) {
+                        position: relative;
+
+                        input,
+                        textarea {
+                            &::-webkit-input-placeholder {
+                                color: transparent;
+                            }
+
+                            &::-moz-placeholder {
+                                color: transparent;
+                            }
+
+                            &:-ms-input-placeholder {
+                                color: transparent;
+                            }
+
+                            &::-ms-input-placeholder {
+                                color: transparent;
+                            }
+
+                            &::placeholder {
+                                color: transparent;
+                            }
+                        }
+
+                        select.form-select {
+                            color: transparent;
+                        }
+
+                        &.js-floated,
+                        &.js-label-floating:has(:-webkit-autofill) {
+                            label {
+                                top: $input-padding-y - rem(4px);
+                                font-size: 10px;
+                                color: rgba($zen-input-color, 70%);
+                            }
+
+                            input,
+                            .form-control {
+                                padding-top: $input-padding-y + rem(6px);
+                                padding-bottom: $input-padding-y - rem(6px);
+                            }
+
+                            select.form-select {
+                                color: $form-select-color;
+                                padding-top: $form-select-padding-y + rem(6px);
+                                padding-bottom: $form-select-padding-y - rem(6px);
+                            }
+                        }
+
+                        &.js-focus {
+                            label {
+                                color: $zen-input-focus-color;
+                            }
+
+                            select.form-select {
+                                color: $form-select-color;
+                            }
+                        }
+
+                        &.js-hover {
+                            label {
+                                color: $zen-input-focus-color;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

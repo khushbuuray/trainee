@@ -1,0 +1,96 @@
+{% sw_extends '@Storefront/storefront/utilities/offcanvas.html.twig' %}
+
+{% block utilities_offcanvas_content %}
+    {% block zen_page_product_detail_video_container %}
+        <div class="product-detail-video tab-pane-container">
+            {% block zen_page_product_detail_video_content %}
+                {% set youtubeVideos = page.product.translated["customFields"]["zenit_gravity_youtube_ids"]|split(',')|join(';')|split(';') %}
+                {% set vimeoVideos = page.product.translated["customFields"]["zenit_gravity_vimeo_ids"]|split(',')|join(';')|split(';') %}
+                {% set youtubeVideos = youtubeVideos|filter(item => item is not empty) %}
+                {% set vimeoVideos = vimeoVideos|filter(item => item is not empty) %}
+
+                {% for video in youtubeVideos %}
+                    {% set videoId = video|trim %}
+                    {% set videoUrl = 'https://www.youtube-nocookie.com/embed/' %}
+                    {% set videoIcon = 'youtube' %}
+
+                    {% if config('zenitPlatformGravity.config.youtubeVideoThumbnail') %}
+                        {% set thumbnailUrl = 'https://img.youtube.com/vi/' ~ videoId ~ '/maxresdefault.jpg' %}
+                    {% endif %}
+
+                    {% if 'youtube' in videoId %}
+                        {% set videoId = videoId|split('v=')|last %}
+
+                        {% if config('zenitPlatformGravity.config.youtubeVideoThumbnail') %}
+                            {% set thumbnailUrl = 'https://img.youtube.com/vi/' ~ videoId ~ '/maxresdefault.jpg' %}
+                        {% endif %}
+                    {% endif %}
+
+                    {% set videoUrl = videoUrl ~ videoId ~ '?' ~ 'rel=0' ~ '&'  %}
+
+                    {% set pluginConfiguration = {
+                        cookieName: 'youtube-video',
+                        videoUrl: videoUrl,
+                        iframeClasses: [ iframeClass ],
+                        btnClasses: [ 'btn', 'btn-outline-secondary' ],
+                        backdropClasses: [ 'video-backdrop' ],
+                        confirmButtonText: 'component.cms.vimeo.acceptButtonLabel'|trans,
+                        overlayText: 'component.cms.vimeo.privacyNoticeText'|trans({
+                            '%url%': path('frontend.cms.page', { id: config('core.basicInformation.privacyPage') }),
+                            '%platform%': 'YouTube'
+                        })|raw
+                    } %}
+
+                    {% if config('zenitPlatformGravity.config.youtubeVideoConsent') %}
+                        {% set videoConsent = true %}
+                    {% endif %}
+
+                    {% sw_include '@zenitPlatformGravity/storefront/component/product/zen-video-embed.html.twig' with {
+                        videoId: videoId,
+                        videoUrl: videoUrl,
+                        videoIcon: videoIcon,
+                        videoConsent: videoConsent,
+                        thumbnailUrl: thumbnailUrl
+                    } %}
+                {% endfor %}
+
+                {% for video in vimeoVideos %}
+                    {% set videoId = video|trim %}
+                    {% set videoUrl = 'https://player.vimeo.com/video/' %}
+                    {% set videoIcon = 'vimeo' %}
+                    {% set thumbnailUrl = null %}
+
+                    {% if 'vimeo' in videoId %}
+                        {% set videoId = videoId|split('/')|last %}
+                    {% endif %}
+
+                    {% set videoUrl = videoUrl ~ videoId ~ '?' ~ 'rel=0' ~ '&'  %}
+
+                    {% set pluginConfiguration = {
+                        videoUrl: videoUrl,
+                        iframeClasses: [ iframeClass ],
+                        btnClasses: [ 'btn', 'btn-outline-secondary' ],
+                        backdropClasses: [ 'video-backdrop' ],
+                        confirmButtonText: 'component.cms.vimeo.acceptButtonLabel'|trans,
+                        overlayText: 'component.cms.vimeo.privacyNoticeText'|trans({
+                            '%url%': path('frontend.cms.page',{ id: config('core.basicInformation.privacyPage') }),
+                            '%platform%': 'Vimeo'
+                        })|raw
+                    } %}
+
+                    {% if config('zenitPlatformGravity.config.vimeoVideoConsent') %}
+                        {% set videoConsent = true %}
+                    {% endif %}
+
+                    {% sw_include '@zenitPlatformGravity/storefront/component/product/zen-video-embed.html.twig' with {
+                        videoId: videoId,
+                        videoUrl: videoUrl,
+                        videoIcon: videoIcon,
+                        videoConsent: videoConsent,
+                        thumbnailUrl: thumbnailUrl
+                    } %}
+                {% endfor %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+{% endblock %}

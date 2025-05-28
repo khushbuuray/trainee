@@ -1,0 +1,102 @@
+.header-minimal {
+    position: relative;
+    background-color: $zen-header-bg;
+    color: $zen-header-color;
+    margin-top: px($zen-header-padding-top-mobile);
+    margin-bottom: px($zen-header-padding-bottom-mobile);
+
+    @include media-breakpoint-up(lg) {
+        margin-top: px($zen-header-padding-top);
+        margin-bottom: px($zen-header-padding-bottom);
+    }
+
+    @if $zen-header-border-top-left-radius > 0 or $zen-header-border-top-right-radius > 0 or $zen-header-border-bottom-left-radius > 0 or $zen-header-border-bottom-right-radius > 0 {
+        --#{$zen-prefix}top-left: #{if($zen-header-border-top-left-radius > $zen-header-height-mobile / 2, px($zen-header-height-mobile / 2), px($zen-header-border-top-left-radius))};
+        --#{$zen-prefix}top-right: #{if($zen-header-border-top-right-radius > $zen-header-height-mobile / 2, px($zen-header-height-mobile / 2), px($zen-header-border-top-right-radius))};
+        --#{$zen-prefix}bottom-right: #{if($zen-header-border-bottom-right-radius > $zen-header-height-mobile / 2, px($zen-header-height-mobile / 2), px($zen-header-border-bottom-right-radius))};
+        --#{$zen-prefix}bottom-left: #{if($zen-header-border-bottom-left-radius > $zen-header-height-mobile / 2, px($zen-header-height-mobile / 2), px($zen-header-border-bottom-left-radius))};
+
+        border-radius: var(--#{$zen-prefix}top-left) var(--#{$zen-prefix}top-right) var(--#{$zen-prefix}bottom-right) var(--#{$zen-prefix}bottom-left);
+
+        @include media-breakpoint-up(lg) {
+            --#{$zen-prefix}top-left: #{if($zen-header-border-top-left-radius > $zen-header-height / 2, px($zen-header-height / 2), px($zen-header-border-top-left-radius))};
+            --#{$zen-prefix}top-right: #{if($zen-header-border-top-right-radius > $zen-header-height / 2, px($zen-header-height / 2), px($zen-header-border-top-right-radius))};
+            --#{$zen-prefix}bottom-right: #{if($zen-header-border-bottom-right-radius > $zen-header-height / 2, px($zen-header-height / 2), px($zen-header-border-bottom-right-radius))};
+            --#{$zen-prefix}bottom-left: #{if($zen-header-border-bottom-left-radius > $zen-header-height / 2, px($zen-header-height / 2), px($zen-header-border-bottom-left-radius))};
+        }
+    }
+
+    @if $zen-header-shadow == 1 {
+        box-shadow: 0 0 px($zen-header-shadow-width) $zen-header-shadow-color;
+    }
+
+    @if $zen-header-hover-shadow == 1 {
+        @include transition($transition-base);
+
+        &:hover {
+            box-shadow: 0 0 px($zen-header-hover-shadow-width) $zen-header-hover-shadow-color;
+        }
+    }
+}
+
+.header-minimal-logo {
+    height: px($zen-header-height-mobile);
+
+    @include media-breakpoint-up(lg) {
+        height: px($zen-header-height);
+    }
+
+    @if $zen-logo-size-mobile > 100 {
+        align-items: flex-start; // ensures that logos over 100% align on the top edge
+        align-self: flex-start;
+    } @else {
+        align-items: center; // ensures that logos under 100% align to the middle
+    }
+
+    @include media-breakpoint-up(lg) {
+        @if $zen-logo-position == "left" {
+            justify-content: flex-start;
+        } @else if $zen-logo-position == "center" {
+            justify-content: center;
+        } @else if $zen-logo-position == "right" {
+            justify-content: flex-end;
+        }
+    }
+
+    @include media-breakpoint-up(lg) {
+        @if $zen-logo-size > 100 {
+            align-items: flex-start; // ensures that logos over 100% align on the top edge
+            align-self: flex-start;
+        } @else {
+            align-items: center; // ensures that logos under 100% align to the middle
+        }
+    }
+}
+
+.header-minimal-contact {
+    a {
+        color: $zen-header-color;
+    }
+}
+
+.header-minimal-back-to-shop-button {
+    background: $zen-shop-navigation-bg;
+    color: $zen-shop-navigation-color;
+
+    span {
+        vertical-align: middle;
+    }
+
+    .icon {
+        color: $zen-shop-navigation-color;
+    }
+
+    &:hover {
+        background: $zen-shop-navigation-hover-bg;
+        color: $zen-shop-navigation-hover-color;
+
+        .icon {
+            color: $zen-shop-navigation-hover-color;
+        }
+    }
+}

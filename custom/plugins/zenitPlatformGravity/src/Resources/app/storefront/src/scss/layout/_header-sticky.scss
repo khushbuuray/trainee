@@ -1,0 +1,229 @@
+/*
+Sticky Header
+==================================================
+Contains the sticky header styles added by StickyHeader Plugin
+*/
+
+// on sticky state
+
+.header-main {
+    &.fixed-top:not(.js-header-sticky) {
+        z-index: initial;
+        transition: min-height 0.3s, margin-top 0.3s, margin-bottom 0.3s;
+    }
+
+    &.js-header-sticky {
+        @include layout-negative-horizontal-padding;
+
+        .header-inner {
+            position: fixed; // can't use sticky because of overflow-x: hidden on page-wrapper
+            top: 0;
+            right: 0;
+            left: 0;
+            margin-top: 0; // changed to margin because of shadow and border-radius
+
+            > .nav-header,
+            > .nav-main,
+            .top-bar {
+                @include layout-horizontal-padding;
+            }
+        }
+
+        @if $zen-sticky-header-size == 1 {
+            @include media-breakpoint-up(lg) {
+                .header-row {
+                    min-height: px($zen-sticky-header-height);
+
+                    // This is necessary if no element fills the minimum height of the header
+                    // in the display flex area. This is e.g. the case when pos-lg-center removes
+                    // the logo from the document flow.
+                    &::after {
+                        min-height: px($zen-sticky-header-height);
+                    }
+                }
+
+                .header-logo-col {
+                    height: px($zen-sticky-header-height);
+                }
+            }
+        }
+
+        body:not(.modal-open) & {
+            position: relative; // overwrite sticky
+            top: 0;
+        }
+    }
+}
+
+.header-single-line {
+    &.js-header-sticky {
+        .header-inner {
+            @if $zen-header-sticky-shadow == 1 {
+                box-shadow: 0 0 px($zen-header-sticky-shadow-width) $zen-header-sticky-shadow-color;
+            } @else if $zen-header-shadow == 1 {
+                box-shadow: none;
+            }
+
+            @if $zen-header-hover-shadow == 1 {
+                &:hover {
+                    @include transition($transition-base);
+                    box-shadow: 0 0 px($zen-header-hover-shadow-width) $zen-header-hover-shadow-color;
+                }
+            }
+        }
+
+        &:not(.js-header-sticky-hide) {
+            .header-inner {
+                @if $zen-sticky-header-offset != 0 {
+                    @extend .slide-in-top-by-margin; // do not use transform translateY, because of nested position fixed stacking context problem
+                }
+            }
+        }
+
+        &.js-header-sticky-hide {
+            // on scroll down state
+            &.js-header-sticky-down {
+                &:not(.js-header-sticky-initial-hidden) {
+                    .header-inner {
+                        @extend .slide-out-top-by-margin; // do not use transform translateY, because of nested position fixed stacking context problem
+                    }
+                }
+
+                &.js-header-sticky-initial-hidden {
+                    .header-inner {
+                        margin-top: -100%; // do not use transform translateY, because of nested position fixed stacking context problem
+                    }
+                }
+            }
+
+            // on scroll up state
+            &.js-header-sticky-up {
+                .header-inner {
+                    @extend .slide-in-top-by-margin; // do not use transform translateY, because of nested position fixed stacking context problem
+                }
+            }
+        }
+    }
+}
+
+.header-multi-line,
+.header-two-line {
+    &.js-header-sticky {
+
+        // slide in animation only if there is a category navigation line
+        $breakpoint: null;
+        @if $zen-main-navigation-style == "offcanvas-md" {
+            $breakpoint: lg;
+        } @else if $zen-main-navigation-style == "offcanvas-lg" {
+            $breakpoint: xl;
+        }
+
+        .header-inner {
+            @if $zen-main-navigation-style != "offcanvas-xl" {
+                @include media-breakpoint-up($breakpoint) {
+                    @if $zen-sticky-header-offset != 0 {
+                        animation: slide-in-top-by-margin 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; // do not use transform translateY, because of nested position fixed stacking context problem
+                    }
+                }
+            }
+
+            @if $zen-header-sticky-shadow == 1 {
+                box-shadow: 0 0 px($zen-header-sticky-shadow-width) $zen-header-sticky-shadow-color;
+            } @else if $zen-header-shadow == 1 {
+                box-shadow: none;
+            }
+
+            @if $zen-header-hover-shadow == 1 {
+                &:hover {
+                    @include transition($transition-base);
+                    box-shadow: 0 0 px($zen-header-hover-shadow-width) $zen-header-hover-shadow-color;
+                }
+            }
+        }
+
+        &.js-header-sticky-hide {
+            $breakpoint-down: null;
+            @if $zen-main-navigation-style == "offcanvas-md" {
+                $breakpoint-down: lg;
+            } @else if $zen-main-navigation-style == "offcanvas-lg" {
+                $breakpoint-down: xl;
+            } @else if $zen-main-navigation-style == "offcanvas-xl" {
+                $breakpoint-down: xxl;
+            }
+
+            @include media-breakpoint-down($breakpoint-down) {
+                // on scroll down state
+                &.js-header-sticky-down {
+                    &:not(.js-header-sticky-initial-hidden) {
+                        .header-inner {
+                            animation: slide-out-top-by-margin 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both; // do not use transform translateY, because of nested position fixed stacking context problem
+                        }
+                    }
+
+                    &.js-header-sticky-initial-hidden {
+                        .header-inner {
+                            margin-top: -100%; // do not use transform translateY, because of nested position fixed stacking context problem
+                        }
+                    }
+                }
+
+                // on scroll up state
+                &.js-header-sticky-up {
+                    .header-inner {
+                        animation: slide-in-top-by-margin 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; // do not use transform translateY, because of nested position fixed stacking context problem
+                    }
+                }
+            }
+
+            .nav-main {
+                position: relative;
+                transition: margin .4s ease-in;
+                margin-top: -300px; // do not use transform translateY, because of flyout-navigation on nav scroller
+                z-index: -1;
+            }
+
+            // on scroll up state
+            &.js-header-sticky-up {
+                .nav-main {
+                    transition: margin .4s ease-out;
+                    margin-top: 0; // do not use transform translateY, because of flyout-navigation on nav scroller
+                }
+            }
+
+            &.js-header-sticky-down {
+
+                // add box shadow to nav-header because header-inner height shrinks by using negative margins on .nav-main
+                .nav-header {
+                    @if $zen-header-sticky-shadow == 1 {
+                        box-shadow: 0 0 px($zen-header-sticky-shadow-width) $zen-header-sticky-shadow-color;
+                    }
+
+                    @if $zen-header-hover-shadow == 1 {
+                        &:hover {
+                            @include transition($transition-base);
+                            box-shadow: 0 0 px($zen-header-hover-shadow-width) $zen-header-hover-shadow-color;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.js-header-sticky {
+    [class*="bg-opacity-"] {
+        &.nav-header {
+            background-color: $zen-header-bg;
+        }
+
+        &.nav-main {
+            @if $zen-header-style == "single-line" {
+                .main-navigation {
+                    background-color: $zen-main-navigation-bg;
+                }
+            } @else {
+                background-color: $zen-main-navigation-bg;
+            }
+        }
+    }
+}

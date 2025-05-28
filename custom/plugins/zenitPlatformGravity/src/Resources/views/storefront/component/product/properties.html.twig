@@ -1,0 +1,11 @@
+{% sw_extends '@Storefront/storefront/component/product/properties.html.twig' %}
+
+{% block component_product_properties_container %}
+    {% set hasBuyboxTabsContent = (block.type is same as ('zen-gallery-heading-description-buybox')) ? true : false %}
+
+    <div class="row product-detail-properties-container">
+        <div class="{% if hasBuyboxTabsContent %}col-12{% else %}col-md-10 col-lg-6{% endif %}">
+            {{ block('component_product_properties_table') }}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,29 @@
+.is-act-finishpage {
+    .finish-header {
+        max-width: 480px;
+        margin: $spacer-lg auto;
+    }
+
+    .finish-checkmark {
+        width: 80px;
+        margin: 0 auto;
+    }
+
+    .svg-path {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 0;
+        @extend .dash;
+    }
+
+    .svg-fill {
+        transform-origin: center;
+        @extend .scale-in-center;
+    }
+
+    .svg-pulse {
+        opacity: 0;
+        transform-origin: center;
+        animation-delay: 1s;
+        @extend .pulse-fade;
+    }
+}

@@ -1,0 +1,43 @@
+{% sw_extends '@Storefront/storefront/layout/sidebar/category-navigation.html.twig' %}
+
+{% block layout_navigation_categories_list_entry %}
+    <li class="category-navigation-entry">
+        {% if (item.id in activeResult.id) or (item.id in activeResult.path) %}
+            {% if item.type == 'folder' %}
+                {% block layout_navigation_categories_folder_children %}
+                    <span class="category-navigation-link">{{ item.translated.name }}</span>
+                {% endblock %}
+            {% else %}
+                {% block layout_navigation_categories_link_children %}
+                    <a class="category-navigation-link{% if item.id is same as(activeResult.id) %} is-active{% endif %}{% if item.id in activeResult.path %} in-path{% endif %}"
+                       href="{{ category_url(item) }}"
+                       {% if category_linknewtab(item) %}target="_blank"{% endif %}>
+                        {% block layout_navigation_categories_link_children_name %}
+                            {{ item.translated.name }}
+                        {% endblock %}
+                    </a>
+                {% endblock %}
+            {% endif %}
+
+            {% block layout_navigation_categories_recoursion %}
+                {# ... @zenit - page.header.serviceMenu.elements does not display children #}
+            {% endblock %}
+        {% else %}
+            {% if item.type == 'folder' %}
+                {% block layout_navigation_categories_text %}
+                    <span class="category-navigation-link">{{ item.translated.name }}</span>
+                {% endblock %}
+            {% else %}
+                {% block layout_navigation_categories_link %}
+                    <a class="category-navigation-link{% if item.id is same as(activeResult.id) %} is-active{% endif %}"
+                       href="{{ category_url(item) }}"
+                       {% if category_linknewtab(item) %}target="_blank"{% endif %}>
+                        {% block layout_navigation_categories_link_name %}
+                            {{ item.translated.name }}
+                        {% endblock %}
+                    </a>
+                {% endblock %}
+            {% endif %}
+        {% endif %}
+    </li>
+{% endblock %}

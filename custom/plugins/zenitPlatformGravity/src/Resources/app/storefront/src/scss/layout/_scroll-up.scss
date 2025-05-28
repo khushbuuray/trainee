@@ -1,0 +1,45 @@
+.scroll-up-button {
+
+    transition: all .5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform: translateY(100px);
+    bottom: px($zen-scroll-up-button-spacing-vertical);
+
+    @if $zen-scroll-up-button-position != 'center' {
+        right: if($zen-scroll-up-button-position == 'right', px($zen-scroll-up-button-spacing-horizontal), auto);
+        left: if($zen-scroll-up-button-position == 'left', px($zen-scroll-up-button-spacing-horizontal), auto);
+    } @else {
+        right: 0;
+        left: 0;
+    }
+
+    &.is-visible {
+        transform: translateY(0);
+    }
+
+    .btn {
+        @include button-variant($zen-scroll-up-button-bg, $zen-scroll-up-button-bg, color-contrast($zen-scroll-up-button-bg, $sw-text-color, $zen-light-text-color));
+        display: flex;
+        justify-content: center;
+        width: px($zen-layout-scroll-up-btn-size);
+        height: px($zen-layout-scroll-up-btn-size);
+        padding: 0;
+        margin-inline: auto;
+        box-shadow: 0 0 0 0 var(--#{$prefix}btn-bg);
+
+        &:hover {
+            box-shadow: 0 0 0 .2rem var(--#{$prefix}btn-hover-bg);
+        }
+
+        &:focus-visible {
+            box-shadow: 0 0 0 .2rem var(--#{$prefix}btn-hover-bg);
+        }
+
+        .icon {
+            color: var(--#{$prefix}btn-color);
+
+            > svg {
+                top: 0;
+            }
+        }
+    }
+}

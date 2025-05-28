@@ -1,0 +1,43 @@
+// zenit features element
+.cms-element-zen-features {
+    .cms-element-zen-features-element {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 10px 0;
+
+        @include media-breakpoint-up(lg) {
+            justify-content: flex-start;
+        }
+    }
+
+    .icon-cms-element-zen-features-icon {
+        color: $sw-text-color;
+        flex-shrink: 0;
+
+        > svg {
+            top: 0;
+        }
+    }
+
+    &.icon-align-left {
+        .icon-cms-element-zen-features-icon {
+            margin-right: 11px; // half icon width; will be overwritten bei cms element settings
+        }
+    }
+
+    &.icon-align-top {
+        .icon-cms-element-zen-features-icon {
+            margin-bottom: 11px; // half icon width; will be overwritten bei cms element settings
+        }
+    }
+
+    .cms-element-zen-features-text {
+        font-size: $h4-font-size;
+        font-weight: $font-weight-bolder;
+
+        @include media-breakpoint-up(lg) {
+            //flex-grow: 1;
+        }
+    }
+}

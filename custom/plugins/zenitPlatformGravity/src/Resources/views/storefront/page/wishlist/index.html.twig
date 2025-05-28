@@ -1,0 +1,42 @@
+{% sw_extends '@Storefront/storefront/page/wishlist/index.html.twig' %}
+
+{% block page_wishlist %}
+    {# ... @zenit - generate cols for scrollAnimation #}
+    {% set breakpoints = {
+        XS: 'zen-product-listing-columns-xs',
+        SM: 'zen-product-listing-columns-sm',
+        MD: 'zen-product-listing-columns-md',
+        LG: 'zen-product-listing-columns-lg',
+        XL: 'zen-product-listing-columns-xl',
+        XXL: 'zen-product-listing-columns-xl'
+    } %}
+
+    {% set listingCols = {} %}
+
+    {% for breakpoint, configKey in breakpoints %}
+        {% set listingCols = listingCols|merge({(breakpoint): theme_config(configKey)}) %}
+    {% endfor %}
+
+    {# ... @zenit - content animation js options #}
+    {% set scrollAnimationOptions = {
+        cols: listingCols
+    } %}
+
+    <div class="cms-page wishlist-page"
+         data-zen-scroll-animation="true"
+         data-zen-scroll-animation-options="{{ scrollAnimationOptions|json_encode }}"
+    >
+        {% set searchResult = page.wishlist.productListing %}
+
+        {% if context.customer and not context.customer.guest %}
+            {% sw_include '@Storefront/storefront/page/wishlist/wishlist-pagelet.html.twig' with { searchResult: searchResult } %}
+        {% else %}
+            {% set guestWishlistPageOptions = {
+                pageletRouter: {
+                    path: path('frontend.wishlist.guestPage.pagelet'),
+                }
+            } %}
+            <div class="row mh-100" data-guest-wishlist-page="true" data-guest-wishlist-page-options="{{ guestWishlistPageOptions|json_encode }}"></div>
+        {% endif %}
+    </div>
+{% endblock %}

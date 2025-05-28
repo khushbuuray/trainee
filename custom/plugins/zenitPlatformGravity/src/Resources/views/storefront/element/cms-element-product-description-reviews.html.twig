@@ -1,0 +1,407 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-product-description-reviews.html.twig' %}
+
+{% block element_product_description_reviews %}
+    {% set config = element.fieldConfig.elements %}
+    {% set product = element.data.product %}
+    {% set descriptionTabId = "description-tab-" ~ product.id %}
+    {% set descriptionTabHref = "#description-tab-" ~ product.id ~ "-pane" %}
+    {% set descriptionTabContent = "description-tab-" ~ product.id ~ "-pane" %}
+    {% set reviewTabId = "review-tab-" ~ product.id %}
+    {% set reviewTabHref = "#review-tab-" ~ product.id ~ "-pane" %}
+    {% set reviewTabContent = "review-tab-" ~ product.id ~ "-pane" %}
+
+    {% set datasheets = [
+        zenCustomFields.product.zenit_gravity_datasheet_one,
+        zenCustomFields.product.zenit_gravity_datasheet_two,
+        zenCustomFields.product.zenit_gravity_datasheet_three
+    ] | filter(item => item is not null and item is not empty) %}
+
+    {% set mobileScroller = (theme_config('zen-product-detail-tabs-mode-mobile') is same as ('scroller')) ? true : false %}
+    {% set scroller = (theme_config('zen-product-detail-tabs-mode') is same as ('scroller')) ? true : false %}
+    {% set mobileLinear = (theme_config('zen-product-detail-tabs-mode-mobile') is same as ('linear')) ? true : false %}
+    {% set linear = (theme_config('zen-product-detail-tabs-mode') is same as ('linear')) ? true : false %}
+    {% set mobileAccordion = (theme_config('zen-product-detail-tabs-mode-mobile') is same as ('accordion')) ? true : false %}
+    {% set accordion = (theme_config('zen-product-detail-tabs-mode') is same as ('accordion')) ? true : false %}
+
+    {% if mobileScroller or scroller %}
+        {% set hasDescriptionTitle = (theme_config('zen-product-tabs-content-product-description-title') is not null) ? theme_config('zen-product-tabs-content-product-description-title') : true %}
+        {% set headlines = true %}
+        {% set viewports = [] %}
+        {% set cardTabsClasses = [] %}
+
+        {% if scroller %}
+            {% set viewports =  ['SM', 'MD', 'LG', 'XL', 'XXL']|merge(viewports) %}
+            {% set cardTabsClasses = ['has-content-scroller']|merge(cardTabsClasses) %}
+        {% endif %}
+
+        {% if mobileScroller %}
+            {% set viewports =  ['XS']|merge(viewports) %}
+            {% set cardTabsClasses = ['has-content-scroller-mobile']|merge(cardTabsClasses) %}
+        {% endif %}
+
+        {% set contentScrollerOptions = {
+            viewports: viewports,
+            headlines: headlines,
+            hasDescriptionTitle: hasDescriptionTitle
+        } %}
+    {% endif %}
+
+    {% if mobileLinear or linear %}
+        {% set hasDescriptionTitle = (theme_config('zen-product-tabs-content-product-description-title') is not null) ? theme_config('zen-product-tabs-content-product-description-title') : true %}
+        {% set headlines = true %}
+        {% set viewports = [] %}
+        {% set cardTabsClasses = [] %}
+
+        {% if linear %}
+            {% set viewports =  ['SM', 'MD', 'LG', 'XL', 'XXL']|merge(viewports) %}
+            {% set cardTabsClasses = ['has-content-linear']|merge(cardTabsClasses) %}
+        {% endif %}
+
+        {% if mobileLinear %}
+            {% set viewports =  ['XS']|merge(viewports) %}
+            {% set cardTabsClasses = ['has-content-linear-mobile']|merge(cardTabsClasses) %}
+        {% endif %}
+
+        {% set contentLinearOptions = {
+            viewports: viewports,
+            headlines: headlines,
+            hasDescriptionTitle: hasDescriptionTitle
+        } %}
+    {% endif %}
+
+    {% if mobileAccordion or accordion %}
+        {% set viewports = [] %}
+        {% set cardTabsClasses = [] %}
+
+        {% if accordion %}
+            {% set viewports =  ['SM', 'MD', 'LG', 'XL', 'XXL']|merge(viewports) %}
+            {% set cardTabsClasses = ['has-content-accordion']|merge(cardTabsClasses) %}
+        {% endif %}
+
+        {% if mobileAccordion %}
+            {% set viewports =  ['XS']|merge(viewports) %}
+            {% set cardTabsClasses = ['has-content-accordion-mobile']|merge(cardTabsClasses) %}
+        {% endif %}
+
+        {% set contentAccordionOptions = {
+            viewports: viewports
+        } %}
+    {% endif %}
+
+    {% if element.data.product %}
+        <div class="product-detail-tabs cms-element-{{ element.type }}{% if config.alignment.value %} has-vertical-alignment{% endif %}">
+            {% if config.alignment.value %}
+                <div class="cms-element-alignment{% if config.alignment.value == "center" %} align-self-center{% elseif config.alignment.value == "flex-end" %} align-self-end{% else %} align-self-start{% endif %}">
+            {% endif %}
+                <div class="card card-tabs {{ cardTabsClasses|join(' ') }}"
+                    {% if mobileScroller or scroller %}
+                        data-zen-content-scroller="true"
+                        data-zen-content-scroller-options="{{ contentScrollerOptions|json_encode }}"
+                    {% endif %}
+                    {% if mobileLinear or linear %}
+                        data-zen-content-linear="true"
+                        data-zen-content-linear-options="{{ contentLinearOptions|json_encode }}"
+                    {% endif %}
+                    {% if mobileAccordion or accordion %}
+                        data-zen-content-accordion="true"
+                        data-zen-content-accordion-options="{{ contentAccordionOptions|json_encode }}"
+                    {% endif %}
+                >
+                    {{ block('element_product_description_reviews_tabs_navigation') }}
+                    {{ block('element_product_description_reviews_tabs_content') }}
+                </div>
+            {% if config.verticalAlign.value %}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block element_product_description_reviews_tabs_navigation_review %}
+    {# ... @zenit - add properties as tab #}
+    {% block zen_element_product_description_reviews_tabs_navigation_properties %}
+        {% if theme_config('zen-product-tabs-properties') and page.product.sortedProperties|length > 0 %}
+            <li class="nav-item">
+                <a
+                    class="nav-link product-detail-tab-navigation-link"
+                    id="properties-tab"
+                    data-bs-toggle="tab"
+                    data-off-canvas-tabs="true"
+                    href="#properties-tab-pane"
+                    role="tab"
+                    aria-controls="properties-tab-pane"
+                    aria-selected="false"
+                >
+                    {{ 'zentheme.detail.tabsProperties'|trans }}
+                    <span class="product-detail-tab-navigation-icon">
+                        {% sw_icon 'arrow-medium-right' style { pack: 'solid' } %}
+                    </span>
+                </a>
+            </li>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_element_product_description_reviews_tabs_navigation_video %}
+        {% if zenCustomFields.product.zenit_gravity_youtube_ids or zenCustomFields.product.zenit_gravity_vimeo_ids %}
+            <li class="nav-item">
+                <a
+                    class="nav-link product-detail-tab-navigation-link"
+                    id="video-tab"
+                    data-bs-toggle="tab"
+                    data-off-canvas-tabs="true"
+                    href="#video-tab-pane"
+                    role="tab"
+                    aria-controls="video-tab-pane"
+                    aria-selected="false"
+                >
+                <span>{{ 'zentheme.detail.tabsVideo'|trans }}</span>
+                <span class="product-detail-tab-navigation-icon">
+                        {% sw_icon 'arrow-medium-right' style { pack: 'solid' } %}
+                    </span>
+                </a>
+            </li>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_element_product_description_reviews_tabs_navigation_datasheets %}
+        {% if datasheets %}
+            <li class="nav-item">
+                <a
+                    class="nav-link product-detail-tab-navigation-link"
+                    id="datasheets-tab"
+                    data-bs-toggle="tab"
+                    data-off-canvas-tabs="true"
+                    href="#datasheets-tab-pane"
+                    role="tab"
+                    aria-controls="datasheets-tab-pane"
+                    aria-selected="false"
+                >
+
+                <span>
+                    {{ 'zentheme.detail.tabsDatasheets'|trans }}
+                    <span class="badge text-bg-primary">{{ datasheets|length }}</span>
+                </span>
+                <span class="product-detail-tab-navigation-icon">
+                        {% sw_icon 'arrow-medium-right' style { pack: 'solid' } %}
+                    </span>
+                </a>
+            </li>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_element_product_description_reviews_tabs_navigation_manufacturer %}
+        {% if theme_config('zen-product-tabs-manufacturer') and page.product.manufacturer.translated.description %}
+            <li class="nav-item">
+                <a
+                    class="nav-link product-detail-tab-navigation-link"
+                    id="manufacturer-tab"
+                    data-bs-toggle="tab"
+                    data-off-canvas-tabs="true"
+                    href="#manufacturer-tab-pane"
+                    role="tab"
+                    aria-controls="manufacturer-tab-pane"
+                    aria-selected="false"
+                >
+                <span>{{ 'zentheme.detail.tabsManufacturer'|trans }}</span>
+                <span class="product-detail-tab-navigation-icon">
+                        {% sw_icon 'arrow-medium-right' style { pack: 'solid' } %}
+                    </span>
+                </a>
+            </li>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_element_product_description_reviews_tabs_navigation_custom_tab1 %}
+        {% if zenCustomFields.product.zenit_gravity_custom_tab1_title and zenCustomFields.product.zenit_gravity_custom_tab1_text %}
+            <li class="nav-item">
+                <a
+                    class="nav-link product-detail-tab-navigation-link"
+                    id="custom-field1-tab"
+                    data-bs-toggle="tab"
+                    data-off-canvas-tabs="true"
+                    href="#custom-field1-tab-pane"
+                    role="tab"
+                    aria-controls="custom-field1-tab-pane"
+                    aria-selected="false"
+                >
+                <span>{{ zenCustomFields.product.zenit_gravity_custom_tab1_title }}</span>
+                <span class="product-detail-tab-navigation-icon">
+                        {% sw_icon 'arrow-medium-right' style { pack: 'solid' } %}
+                    </span>
+                </a>
+            </li>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_element_product_description_reviews_tabs_navigation_custom_tab2 %}
+        {% if zenCustomFields.product.zenit_gravity_custom_tab2_title and zenCustomFields.product.zenit_gravity_custom_tab2_text %}
+            <li class="nav-item">
+                <a
+                    class="nav-link product-detail-tab-navigation-link"
+                    id="custom-field2-tab"
+                    data-bs-toggle="tab"
+                    data-off-canvas-tabs="true"
+                    href="#custom-field2-tab-pane"
+                    role="tab"
+                    aria-controls="custom-field2-tab-pane"
+                    aria-selected="false"
+                >
+                <span>{{ zenCustomFields.product.zenit_gravity_custom_tab2_title }}</span>
+                <span class="product-detail-tab-navigation-icon">
+                        {% sw_icon 'arrow-medium-right' style { pack: 'solid' } %}
+                    </span>
+                </a>
+            </li>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_element_product_description_reviews_tabs_navigation_custom_tab_global %}
+        {% if config('zenitPlatformGravity.config.customTabActive') and config('zenitPlatformGravity.config.customTabTitle') and config('zenitPlatformGravity.config.customTabText') %}
+            {% set customTab = {
+                translated: {
+                    title: 'zentheme.gravity.content.customTabTitle'|trans({'%placeholder%': config('zenitPlatformGravity.config.customTabTitle')}),
+                    text: 'zentheme.gravity.content.customTabText'|trans({'%placeholder%': config('zenitPlatformGravity.config.customTabText')})
+                }
+            } %}
+
+            <li class="nav-item">
+                <a
+                    class="nav-link product-detail-tab-navigation-link"
+                    id="custom-field-global-tab"
+                    data-bs-toggle="tab"
+                    data-off-canvas-tabs="true"
+                    href="#custom-field-global-tab-pane"
+                    role="tab"
+                    aria-controls="custom-field-global-tab-pane"
+                    aria-selected="false"
+                >
+                <span>{{ customTab.translated.title }}</span>
+                <span class="product-detail-tab-navigation-icon">
+                        {% sw_icon 'arrow-medium-right' style { pack: 'solid' } %}
+                    </span>
+                </a>
+            </li>
+        {% endif %}
+    {% endblock %}
+
+    {% if config('core.listing.showReview') %}
+        {# ... @zenit - get totalReviews from gallery-buybox element #}
+        {% set totalReviews = null %}
+
+        {% for section in cmsPage.sections %}
+            {% for element in section.blocks.elements %}
+                {% if element.type is same as ('gallery-buybox') or element.type is same as ('zen-gallery-heading-buybox') %}
+                    {% for slot in element.slots %}
+                        {% if slot.type is same as ('buy-box') %}
+                            {% set totalReviews = slot.data.totalReviews %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+
+        <li class="nav-item">
+            <a
+                class="nav-link {% if (ratingSuccess == 1) or (ratingSuccess == -1) %}active{% endif %} product-detail-tab-navigation-link review-tab"
+                id="{{ reviewTabId }}"
+                data-bs-toggle="tab"
+                data-off-canvas-tabs="true"
+                href="{{ reviewTabHref }}"
+                role="tab"
+                aria-controls="{{ reviewTabContent }}"
+                aria-selected="true"
+            >
+                <span>
+                    {{ 'detail.tabsReview'|trans|sw_sanitize }}
+                    {% if totalReviews > 0 %}<span class="badge text-bg-primary">{{ totalReviews }}</span>{% endif %}
+                </span>
+                <span class="product-detail-tab-navigation-icon">
+                    {% sw_icon 'arrow-medium-right' style { pack: 'solid' } %}
+                </span>
+            </a>
+        </li>
+    {% endif %}
+
+{% endblock %}
+
+{% block element_product_description_reviews_tabs_content_review %}
+    {# ... @zenit - add properties as tab #}
+    {% block zen_element_product_description_reviews_tabs_content_properties %}
+        {% if theme_config('zen-product-tabs-properties') and page.product.sortedProperties|length > 0 %}
+            <div class="tab-pane fade show"
+                 id="properties-tab-pane"
+                 role="tabpanel"
+                 aria-labelledby="properties-tab">
+                {% sw_include '@zenitPlatformGravity/storefront/component/product/zen-properties-tab.html.twig' %}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_element_product_description_reviews_tabs_content_video %}
+        {% if zenCustomFields.product.zenit_gravity_youtube_ids or zenCustomFields.product.zenit_gravity_vimeo_ids %}
+            <div class="tab-pane fade show"
+                 id="video-tab-pane"
+                 role="tabpanel"
+                 aria-labelledby="video-tab">
+                {% sw_include '@zenitPlatformGravity/storefront/component/product/zen-video.html.twig' %}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_element_product_description_reviews_tabs_content_datasheets %}
+        {% if datasheets %}
+            <div class="tab-pane fade show"
+                 id="datasheets-tab-pane"
+                 role="tabpanel"
+                 aria-labelledby="datasheets-tab">
+                {% sw_include '@zenitPlatformGravity/storefront/component/product/zen-datasheets.html.twig' with { datasheetsIds: datasheets } %}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_element_product_description_reviews_tabs_content_manufacturer %}
+        {% if theme_config('zen-product-tabs-manufacturer') and page.product.manufacturer.translated.description %}
+            <div class="tab-pane fade show"
+                 id="manufacturer-tab-pane"
+                 role="tabpanel"
+                 aria-labelledby="manufacturer-tab">
+                {% sw_include '@zenitPlatformGravity/storefront/component/product/zen-manufacturer.html.twig' %}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_element_product_description_reviews_tabs_content_custom_tab1 %}
+        {% if zenCustomFields.product.zenit_gravity_custom_tab1_title and zenCustomFields.product.zenit_gravity_custom_tab1_text %}
+            <div class="tab-pane fade show"
+                 id="custom-field1-tab-pane"
+                 role="tabpanel"
+                 aria-labelledby="custom-field1-tab">
+                {% sw_include '@zenitPlatformGravity/storefront/component/product/zen-custom-tab1.html.twig' %}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_element_product_description_reviews_tabs_content_custom_tab2 %}
+        {% if zenCustomFields.product.zenit_gravity_custom_tab2_title and zenCustomFields.product.zenit_gravity_custom_tab2_text %}
+            <div class="tab-pane fade show"
+                 id="custom-field2-tab-pane"
+                 role="tabpanel"
+                 aria-labelledby="custom-field2-tab">
+                {% sw_include '@zenitPlatformGravity/storefront/component/product/zen-custom-tab2.html.twig' %}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_element_product_description_reviews_tabs_content_custom_tab_global %}
+        {% if config('zenitPlatformGravity.config.customTabActive') and config('zenitPlatformGravity.config.customTabTitle') and config('zenitPlatformGravity.config.customTabText') %}
+            <div class="tab-pane fade show"
+                 id="custom-field-global-tab-pane"
+                 role="tabpanel"
+                 aria-labelledby="custom-field-global-tab">
+                {% sw_include '@zenitPlatformGravity/storefront/component/product/zen-custom-global-tab.html.twig' %}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {{ parent() }}
+{% endblock %}

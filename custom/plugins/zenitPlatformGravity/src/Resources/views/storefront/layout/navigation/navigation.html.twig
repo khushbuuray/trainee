@@ -1,0 +1,198 @@
+{# @deprecated tag:v6.7.0 - This template will be removed, use src/Storefront/Resources/views/storefront/layout/navbar/navbar.html.twig #}
+{% sw_extends '@Storefront/storefront/layout/navigation/navigation.html.twig' %}
+
+{% block layout_main_navigation %}
+    <div class="main-navigation"
+         id="mainNavigation"
+        {% if theme_config('zen-main-navigation-subnavigation-style') is same as ('dropdown')%}
+            data-dropdown-menu="{{ theme_config('zen-dropdown-navigation-trigger') }}"
+        {% else %}
+            data-flyout-menu="true"
+        {% endif %}
+        {% if theme_config('zen-main-navigation-scroll') %}
+            data-zen-nav-scroller="true"
+        {% endif %}
+    >
+        {% block layout_main_navigation_navbar %}
+            <div class="container">
+                {{ block('layout_main_navigation_menu') }}
+
+                {% block layout_main_navigation_controls %}
+                    {% if theme_config('zen-main-navigation-scroll') %}
+                        {% block layout_main_navigation_control_prev %}
+                            <div class="main-navigation-scroller-controls-prev">
+                                {% block layout_main_navigation_control_prev_icon %}
+                                    {% sw_icon 'arrow-head-left' style { size: 'xs' } %}
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
+                        {% block layout_main_navigation_control_next %}
+                            <div class="main-navigation-scroller-controls-next">
+                                {% block layout_main_navigation_control_nexticon %}
+                                    {% sw_icon 'arrow-head-right' style { size: 'xs' } %}
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
+                    {% endif %}
+                {% endblock %}
+            </div>
+        {% endblock %}
+
+        {{ block('layout_main_navigation_menu_flyout_wrapper') }}
+    </div>
+{% endblock %}
+
+{% block layout_main_navigation_menu_home %}
+    {% if theme_config('zen-main-navigation-home') is same as (true) %}
+        {% if context.salesChannel.translated.homeEnabled %}
+            {# ... @zenit - add home active status configuration; remove unnecessary title tag because its same as conent #}
+            <a class="nav-link main-navigation-link nav-item-{{ context.salesChannel.navigationCategoryId }} {% if controllerAction is same as('home') and theme_config('zen-main-navigation-home-status') is same as (true) %} active{% endif %} home-link"
+               href="{{ path('frontend.home.page') }}"
+               itemprop="url">
+
+                {# ... @zenit - add data-hover for hover animations #}
+                <div class="main-navigation-link-text{% if treeItem.children|length > 0 %} has-children{% endif %}" data-hover="{{ homeLabel|striptags }}">
+                    <span class="main-navigation-link-name" itemprop="name" data-hover="{{ homeLabel|striptags }}">{{ homeLabel|sw_sanitize }}</span>
+                </div>
+            </a>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block layout_main_navigation_menu_item %}
+    {% set itemArrow %}
+        {% block zen_layout_main_navigation_menu_item_arrow_definition %}
+            {% if theme_config('zen-main-navigation-arrow') and treeItem.children|length > 0 %}
+                {% sw_icon 'arrow-medium-down' style {
+                    pack: 'solid', size: 'xs', class: 'main-navigation-link-toggle'
+                } %}
+            {% endif %}
+        {% endblock %}
+    {% endset %}
+
+    {% set itemBadge %}
+        {% block zen_layout_main_navigation_menu_item_badge_definition %}
+            {% sw_include '@zenitPlatformGravity/storefront/layout/navigation/zen-navigation-badge.html.twig' with {
+                category: category,
+            } only %}
+        {% endblock %}
+    {% endset %}
+
+    {# ... @zenit - add navigation divider #}
+    {% block zen_layout_main_navigation_menu_item_divider %}
+        {% if (theme_config('zen-main-navigation-divider') != 0) %}
+            {% if ( theme_config('zen-main-navigation-home') is same as (true) and loop.index == 1 and context.salesChannel.translated.homeEnabled ) or loop.index > 1 %}
+                <div class="main-navigation-divider" aria-hidden="true"></div>
+            {% endif %}
+        {% endif %}
+    {% endblock %}
+
+    {# ... @zenit - wrap .nav-link with .main-navigation-dropdown-item #}
+    {% if theme_config('zen-main-navigation-subnavigation-style') is same as ('dropdown') %}
+        <div class="main-navigation-dropdown-item dropdown">
+    {% endif %}
+        {% if category.type == 'folder' %}
+            <div class="nav-link main-navigation-link nav-item-{{ category.id}}"
+             {% if treeItem.children|length > 0 %}
+                {# ... @zenit - add dropdown condition; remove unnecessary title tag because its same as conent #}
+                {% if theme_config('zen-main-navigation-subnavigation-style') is same as ('dropdown') %}
+                    id="category-{{ category.id }}"
+                    data-zen-dropdown-menu-trigger="{{ category.id }}"
+                {% else %}
+                    data-flyout-menu-trigger="{{ category.id }}"
+                {% endif %}
+             {% endif %}>
+
+                {# ... @zenit - add data-hover for hover animations #}
+                <div class="main-navigation-link-text{% if treeItem.children|length > 0 %} has-children{% endif %}" data-hover="{{ name }}">
+                    <span class="main-navigation-link-name" data-hover="{{ name }}" itemprop="name">{{ name }}</span>
+
+                    {# ... @zenit - add navigation arrow #}
+                    {% block zen_layout_main_navigation_menu_item_folder_arrow %}
+                        {{ itemArrow }}
+                    {% endblock %}
+
+                    {# ... @zenit - add badge #}
+                    {% block zen_layout_main_navigation_menu_item_folder_badge %}
+                        {{ itemBadge }}
+                    {% endblock %}
+                </div>
+            </div>
+        {% else %}
+            <a class="nav-link main-navigation-link nav-item-{{ category.id}} {% if category.id == page.header.navigation.active.id or category.id in activePath %} active{% endif %}"
+           href="{{ category_url(category) }}"
+           itemprop="url"
+            {% if treeItem.children|length > 0 %}
+                {# ... @zenit - add dropdown condition; remove unnecessary title tag because its same as conent #}
+                {% if theme_config('zen-main-navigation-subnavigation-style') is same as ('dropdown') %}
+                    id="category-{{ category.id }}"
+                    data-zen-dropdown-menu-trigger="{{ category.id }}"
+                {% else %}
+                    data-flyout-menu-trigger="{{ category.id }}"
+                {% endif %}
+            {% endif %}
+            {% if category_linknewtab(category) %}target="_blank"{% endif %}>
+
+                {# ... @zenit - add data-hover for hover animations #}
+                <div class="main-navigation-link-text{% if treeItem.children|length > 0 %} has-children{% endif %}" data-hover="{{ name }}">
+                    <span class="main-navigation-link-name" data-hover="{{ name }}" itemprop="name">{{ name }}</span>
+
+                    {# ... @zenit - add navigation arrow #}
+                    {% block zen_layout_main_navigation_menu_item_arrow %}
+                        {{ itemArrow }}
+                    {% endblock %}
+
+                    {# ... @zenit - add badge #}
+                    {% block zen_layout_main_navigation_menu_item_badge %}
+                        {{ itemBadge }}
+                    {% endblock %}
+                </div>
+            </a>
+        {% endif %}
+
+        {# ... @zenit - add dropdown menu #}
+        {% block zen_layout_main_navigation_menu_dropdown %}
+            {% if theme_config('zen-main-navigation-subnavigation-style') is same as ('dropdown') and treeItem.children|length > 0 %}
+                {% set navigationMaxDepth = (theme_config('zen-dropdown-navigation-max-depth') is not null) ? theme_config('zen-dropdown-navigation-max-depth') : context.salesChannel.navigationCategoryDepth %}
+
+                {% if navigationMaxDepth > 0 %}
+                    {% block zen_layout_main_navigation_menu_dropdown_include %}
+                        {% sw_include '@zenitPlatformGravity/storefront/layout/navigation/zen-dropdown.html.twig' with {
+                            navigationTree: treeItem,
+                            level: level+1,
+                            page: page,
+                            trigger: theme_config('zen-dropdown-navigation-trigger')
+                        } only %}
+                    {% endblock %}
+                {% endif %}
+            {% endif %}
+        {% endblock %}
+
+    {# ... @zenit - wrap .nav-link with .main-navigation-dropdown-item #}
+    {% if theme_config('zen-main-navigation-subnavigation-style') is same as ('dropdown') %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block layout_main_navigation_menu_flyout_wrapper %}
+    {% if theme_config('zen-main-navigation-subnavigation-style') is not same as ('dropdown') %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block layout_main_navigation_menu_flyout %}
+    {% set navigationMaxDepth = (theme_config('zen-flyout-navigation-max-depth') is not null) ? theme_config('zen-flyout-navigation-max-depth') : context.salesChannel.navigationCategoryDepth %}
+
+    {% if navigationMaxDepth > 0 %}
+        <div class="navigation-flyout"
+             data-flyout-menu-id="{{ treeItem.category.id }}">
+
+            {# ... @zenit - add .navigation-flyout-inner #}
+            <div class="navigation-flyout-inner">
+                <div class="container">
+                    {{ block('layout_main_navigation_menu_flyout_include') }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

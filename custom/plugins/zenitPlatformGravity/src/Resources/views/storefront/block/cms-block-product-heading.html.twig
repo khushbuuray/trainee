@@ -1,0 +1,88 @@
+{% sw_extends '@Storefront/storefront/block/cms-block-product-heading.html.twig' %}
+
+{% block block_product_heading %}
+    {% set productDetailManufacturerPosition = theme_config('zen-product-details-manufacturer-position')|default('default') %}
+    {% set productDetailRatingPosition = theme_config('zen-product-details-rating-position')|default('default') %}
+    {% set productDetailRatingMode = theme_config('zen-product-details-rating-mode')|default('default') %}
+    {% set mobileDefaultTabMode = (theme_config('zen-product-detail-tabs-mode-mobile') is same as ('standard')) ? true : false %}
+
+    {# ... @zenit - get totalReviews from gallery-buybox element #}
+    {% set totalReviews = null %}
+    {% for section in cmsPage.sections %}
+        {% for element in section.blocks.elements %}
+            {% if element.type is same as ('gallery-buybox') %}
+                {% for slot in element.slots %}
+                    {% if slot.type is same as ('buy-box') %}
+                        {% set totalReviews = slot.data.totalReviews %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+
+    {% if productDetailRatingPosition is same as ('headline') %}
+        {% set remoteClickOptions = {
+            selector: '#review-tab-' ~ page.product.id,
+            scrollToElement: true
+        } %}
+
+        {% set reviewTabHref = "#review-tab-pane-" ~ page.product.id %}
+
+        {% block block_zen_gallery_heading_buybox_product_name_inner_review %}
+            {% if (page.product.ratingAverage > 0 and config('core.listing.showReview'))
+                or (productDetailRatingMode is same as ('placeholder') and config('core.listing.showReview')) %}
+                <div class="col-12 product-detail-reviews-container">
+                    <div class="product-detail-reviews">
+                        {% sw_include '@Storefront/storefront/component/review/rating.html.twig' with {
+                            points: page.product.ratingAverage,
+                            style: 'text-primary'
+                        } %}
+                        <a
+                            data-bs-toggle="tab"
+                            class="product-detail-reviews-link"
+                            {% if mobileDefaultTabMode %}data-off-canvas-tabs="true"{% endif %}
+                            data-remote-click="true"
+                            data-remote-click-options='{{ remoteClickOptions|json_encode }}'
+                            href="{{ reviewTabHref }}"
+                            aria-controls="review-tab-pane"
+                        >
+
+                            {% if page.product.ratingAverage > 0 %}
+                                {# ... @zenit - if we can not find totalReviews #}
+                                {% if not totalReviews %}
+                                    {# ... @zenit - set totalReviews to a value higher than 1 #}
+                                    {% set totalReviews = 2 %}
+                                {% else %}
+                                    {{ totalReviews }}
+                                {% endif %}
+
+                                {{ 'detail.reviewLinkText'|trans({'%count%': totalReviews})|sw_sanitize }}
+                            {% else %}
+                                {{ 'zentheme.detail.reviewLinkText'|trans }}
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endblock %}
+    {% endif %}
+
+   {{ parent() }}
+
+    {# ... @zenit - add short description #}
+    {% block block_product_heading_product_short_description %}
+        {% if page.product.translated.metaDescription and theme_config('zen-product-details-short-description') %}
+            <div class="col-12 product-detail-short-description-container">
+                <div class="product-detail-short-description">
+                    {{ page.product.translated.metaDescription|raw }}
+                </div>
+            </div>
+        {% endif %}
+    {% endblock %}
+{% endblock %}
+
+{% block block_product_heading_product_manufacturer_logo_element %}
+    {% if productDetailManufacturerPosition is not same as ('none') %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,80 @@
+// affects only not cms breadcrumbs
+.breadcrumb-container {
+    @include layout-container-vertical-margin(px($zen-breadcrumbs-spacing-top), px($zen-breadcrumbs-spacing-bottom));
+
+    @if $zen-breadcrumbs-fullwidth == 1 {
+        background: $zen-breadcrumbs-bg;
+    }
+
+    @if $zen-layout-style == "full-width-header" or $zen-layout-style == "full-width-header-footer" {
+        > .container {
+            max-width: none;
+        }
+    }
+}
+
+.breadcrumb-wrap {
+    display: flex;
+
+    .breadcrumb {
+        margin-bottom: 0;
+        padding: 0;
+
+        @if $zen-breadcrumbs-fullwidth == 0 {
+            background: $zen-breadcrumbs-bg;
+        }
+
+        @if $zen-breadcrumbs-bg != transparent and $zen-breadcrumbs-fullwidth == 0 {
+            @include border-radius($zen-layout-button-radius * 1px);
+            padding-left: $spacer-md;
+            padding-right: $spacer-md;
+        }
+    }
+
+    .breadcrumb-item,
+    .breadcrumb-link,
+    .breadcrumb-pretext {
+        color: $zen-breadcrumbs-color;
+        font-weight: $zen-breadcrumbs-font-weight;
+        @include font-size(px($zen-breadcrumbs-font-size));
+        line-height: px($zen-breadcrumbs-height);
+        text-transform: $zen-breadcrumbs-text-transform;
+    }
+
+    .breadcrumb-pretext {
+        margin-right: $spacer-sm;
+    }
+
+    .breadcrumb-placeholder {
+        line-height: px($zen-breadcrumbs-height);
+
+        .icon {
+            color: $zen-breadcrumbs-color;
+        }
+    }
+
+    a {
+        color: $zen-breadcrumbs-color;
+
+        &:hover {
+            color: $zen-breadcrumbs-hover-color;
+            font-weight: $zen-breadcrumbs-font-weight;
+
+            @if $zen-breadcrumbs-bg == transparent {
+                border-bottom: 1px solid $zen-breadcrumbs-hover-color;
+            }
+        }
+
+        // ... reset to default styling
+        &.is-active {
+            color: $zen-breadcrumbs-color;
+            font-weight: $zen-breadcrumbs-font-weight;
+
+            &:hover {
+                @if $zen-breadcrumbs-bg == transparent {
+                    border-bottom: none;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,45 @@
+{% sw_extends '@Storefront/storefront/component/line-item/element/quantity.html.twig' %}
+
+{% block component_line_item_quantity_select %}
+    {% set purchaseSteps = quantityInformation.purchaseSteps|default(1) %}
+
+    {# @deprecated tag:v6.7.0 - @zenit keep this variable, because it is needed #}
+    {% set selectQuantityThresholdExceeded = (maxQuantity - quantityInformation.minPurchase) / purchaseSteps > selectQuantityThreshold %}
+    {% if displayMode === 'offcanvas' %}
+        {% set quantityClasses = 'js-offcanvas-cart-change-quantity-number' %}
+    {% endif %}
+
+    {% if theme_config('zen-buy-quantity-style') is same as ('input') or (theme_config('zen-buy-quantity-style') is same as ('select') and selectQuantityThresholdExceeded) %}
+        {% block zen_component_line_item_quantity_select_buy_quantity_zenit_input %}
+            {% sw_include '@zenitPlatformGravity/storefront/component/buy-widget/zen-buy-widget-quantity.html.twig' with {
+                id:  lineItem.id,
+                minPurchase: quantityInformation.minPurchase,
+                maxPurchase: maxQuantity,
+                step: purchaseSteps,
+                autoChange: autoChange,
+                value: lineItem.quantity,
+                name: 'quantity',
+                quantityClasses: quantityClasses,
+                isDigital: isDigital
+            } %}
+        {% endblock %}
+    {% elseif theme_config('zen-buy-quantity-style') is same as ('select') %}
+        {% block zen_component_line_item_quantity_select_buy_quantity_select %}
+            <select
+                name="quantity"
+                class="form-select quantity-select-{{ lineItem.id }} js-offcanvas-cart-change-quantity"
+                aria-label="{{ 'component.product.quantitySelect.label'|trans|striptags }}"
+                {% if isDigital %}disabled="disabled"{% endif %}
+            >
+                {% for quantityItem in range(quantityInformation.minPurchase, maxQuantity, purchaseSteps) %}
+                    <option value="{{ quantityItem }}"
+                        {% if quantityItem == lineItem.quantity %} selected="selected"{% endif %}>
+                        {{ quantityItem }}
+                    </option>
+                {% endfor %}
+            </select>
+        {% endblock %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,43 @@
+{% sw_extends '@Storefront/storefront/section/cms-section-sidebar.html.twig' %}
+
+{% block page_content_section_sidebar %}
+    {% set sectionMobileBehaviorClass = 'cms-section-sidebar-mobile-' ~ section.mobileBehavior %}
+    {# ludtwig-ignore twig-hash-key-no-quotes #}
+    {% set layout = section.sizingMode ? section.sizingMode|replace({'_': '-'}) : 'container' %}
+
+    <div class="cms-section-sidebar {{ sectionMobileBehaviorClass }} {{ layout }} row g-0"> {# ... @zenit - add no-gutters #}
+
+        {% set sidebarBlocks = section.blocks.filterBySectionPosition('sidebar') %}
+        {% set mainContentBlocks = section.blocks.filterBySectionPosition('main') %}
+
+        {% block section_sidebar_content %}
+            {% set stickySidebar = (theme_config('zen-sidebar-sticky') is not null) ? theme_config('zen-sidebar-sticky') : true %}
+            {% set stickySidebarForced = (theme_config('zen-sidebar-sticky-forced') is not null) ? theme_config('zen-sidebar-sticky-forced') : true %}
+
+            {# ... @zenit - sticky js options #}
+            {% set stickyOptions = {
+                forced: stickySidebarForced,
+                checkHeight: false
+            } %}
+
+            <div class="cms-section-sidebar-sidebar-content col-lg-4 col-xl-3">
+                {% if stickySidebar %}
+                    <div class="cms-section-sidebar-sidebar-content-inner"
+                         data-zen-sticky="true"
+                         data-zen-sticky-options="{{ stickyOptions|json_encode }}"
+                    >
+                {% endif %}
+
+                    {% for block in sidebarBlocks %}
+                        {{ block('section_sidebar_content_block') }}
+                    {% endfor %}
+
+                {% if stickySidebar %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endblock %}
+
+        {{ block('section_main_content') }}
+    </div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% sw_extends '@Storefront/storefront/layout/navigation/offcanvas/navigation.html.twig' %}
+
+{% block utilities_offcanvas_close_text %}
+    {{ 'general.menuLink'|trans|sw_sanitize }}
+{% endblock %}
+
+{% block utilities_offcanvas_content %}
+    {% sw_include '@Storefront/storefront/layout/navigation/offcanvas/categories.html.twig' with { navigation: navigation } %}
+
+    {% block zen_layout_navigation_offcanvas_navigation_service_navigation %}
+        <div class="navigation-offcanvas-actions-container navigation-offcanvas-service-menu">
+            <nav class="nav navigation-offcanvas-actions">
+                {# ... @zenit - add service menu widget #}
+                {% block zen_layout_navigation_offcanvas_navigation_action_service %}
+                    {# ... @zenit - fallbacks for older child-themes without these configs #}
+                    {% set topBarServiceNavigation = (theme_config('zen-top-bar-service-navigation') is not null) ? theme_config('zen-top-bar-service-navigation') : true %}
+
+                    {% if topBarServiceNavigation %}
+                        {% sw_include '@zenitPlatformGravity/storefront/layout/header/actions/zen-service-menu-widget.html.twig' with { position: 'offcanvas' } %}
+                    {% endif %}
+                {% endblock %}
+            </nav>
+        </div>
+    {% endblock %}
+
+    {% block zen_layout_navigation_offcanvas_navigation_language_currency %}
+        <div class="navigation-offcanvas-actions-container navigation-offcanvas-language-currency">
+            <nav class="navigation-offcanvas-actions">
+                {{ block('layout_navigation_offcanvas_navigation_action_language') }}
+
+                {{ block('layout_navigation_offcanvas_navigation_action_currency') }}
+            </nav>
+        </div>
+    {% endblock %}
+{% endblock %}

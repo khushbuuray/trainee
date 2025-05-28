@@ -1,0 +1,62 @@
+{% sw_extends '@Storefront/storefront/utilities/icon.html.twig' %}
+
+{% block utilities_icon %}
+    {# ... @zenit - change icons without extending every block #}
+    {% set icons = [
+        'heart',
+        'heart-fill',
+        'avatar',
+        'bag',
+        'help',
+        'stack',
+        'search',
+        'x',
+        'eye-open',
+        'envelope'
+    ] %}
+    {% set themepacks = [
+        'entypo',
+        'feather',
+        'featherold',
+        'fluent-outline',
+        'fluent-solid',
+        'heroicons-outline',
+        'heroicons-solid',
+        'iconic',
+        'iconly-broken',
+        'iconly-bulk',
+        'iconly-light-outline',
+        'ionicons-outline',
+        'ionicons-solid',
+        'material',
+        'simple',
+        'social',
+        'theme',
+        'tonicons'
+    ] %}
+    {% set styles = [ size, color, rotation, flip, class ] %}
+
+    {% if pack is not defined and theme_config('zen-icon-set') is not same as ('default') %}
+        {% if name in icons %}
+            {% set pack = theme_config('zen-icon-set') %}
+            {% set namespace = 'zenitPlatformGravity' %}
+        {% else %}
+            {% set pack = 'default' %}
+        {% endif %}
+    {% endif %}
+
+    {# .. if context is cloud app #}
+    {% if context.context.extensions['zenitPlatformGravity'].system is not defined and pack in themepacks %}
+        {% block zen_utilities_icon_cloud_packs %}
+            {% sw_include '@zenitPlatformGravity/storefront/utilities/zen-icons-cloud.html.twig' with {
+                namespace: namespace,
+                icons: icons,
+                styles: styles,
+                pack: pack
+            } %}
+        {% endblock %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,246 @@
+/*
+Gallery slider
+==============================================
+Styling for gallery slider component.
+Displays images in a slider gallery with thumbnail navigation.
+based on "base-slider" component and "tiny-slider" (https://github.com/ganlanyuan/tiny-slider)
+*/
+
+@if $zen-layout-element-radius > 0 {
+    .gallery-slider-controls-prev {
+        &.is-nav-prev-inside {
+            left: px($zen-slider-controls-spacer);
+        }
+    }
+
+    .gallery-slider-controls-next {
+        &.is-nav-next-inside {
+            right: px($zen-slider-controls-spacer);
+        }
+    }
+}
+
+@if $zen-layout-element-radius > 0 {
+    .gallery-slider-controls-prev {
+        &.is-nav-prev-outside {
+            left: px($zen-slider-controls-spacer);
+        }
+    }
+
+    .gallery-slider-controls-next {
+        &.is-nav-next-outside {
+            right: px($zen-slider-controls-spacer);
+        }
+    }
+}
+
+// alternative slider controls
+@if $zen-image-slider-controls-style == "alternate" {
+    .gallery-slider-controls {
+        // arrow navigation
+        .gallery-slider-controls-prev,
+        .gallery-slider-controls-next {
+            transform: none;
+            top: auto;
+
+            @if $zen-layout-button-radius != 0 {
+                bottom: 10px;
+            } @else {
+                bottom: 0;
+            }
+
+            // set bottom > 108 because of modal-footer
+            .modal.zoom-modal & {
+                bottom: 120px;
+            }
+        }
+
+        .gallery-slider-controls-prev {
+            &.is-nav-prev-inside,
+            .modal.zoom-modal & { // including zoom modal arrows
+                left: auto;
+                z-index: 1;
+
+                @if $zen-layout-button-radius != 0 {
+                    right: #{px($zen-slider-controls-size) + 4px + 10px};
+                } @else {
+                    right: px($zen-slider-controls-size);
+                }
+            }
+        }
+
+        .gallery-slider-controls-next {
+            &.is-nav-next-inside,
+            .modal.zoom-modal & { // including zoom modal arrows
+                z-index: 1;
+
+                @if $zen-layout-button-radius != 0 {
+                    right: 10px;
+                } @else {
+                    right: 0;
+                }
+            }
+        }
+    }
+}
+
+.gallery-slider-thumbnails-item-inner {
+    @include border-radius($zen-layout-element-radius * 1px);
+}
+
+.gallery-slider-thumbnails-container {
+    &.is-underneath {
+        .tns-outer {
+            margin: 0;
+        }
+    }
+}
+
+.gallery-slider-thumbnails-col {
+    .gallery-slider-thumbnails-controls-prev,
+    .gallery-slider-thumbnails-controls-next {
+        --#{$zen-prefix}slider-controls-shadow-color: #{$zen-base-slider-controls-inside-bg};
+        --#{$zen-prefix}slider-controls-shadow-hover-color: #{$zen-base-slider-controls-inside-hover-bg};
+
+        background: $zen-base-slider-controls-inside-bg;
+        width: px($zen-slider-controls-size);
+        height: px($zen-slider-controls-size);
+
+        @if $zen-layout-button-radius == 100 {
+            @include border-radius($zen-layout-button-radius * 1px);
+        } @else {
+            @include border-radius($zen-layout-button-radius * 1px);
+        }
+
+        .icon {
+            color: $zen-base-slider-controls-inside-color;
+        }
+
+        &:hover {
+            background: $zen-base-slider-controls-inside-hover-bg;
+
+            .icon {
+                color: $zen-base-slider-controls-inside-hover-color;
+            }
+        }
+    }
+
+    &.is-left {
+        .gallery-slider-thumbnails-controls-prev {
+            top: px($zen-slider-controls-size * -.5);
+        }
+
+        .gallery-slider-thumbnails-controls-next {
+            bottom: px($zen-slider-controls-size * -.5 + 10); // ... +10px because of padding bottom of the last item
+        }
+    }
+
+    &.is-underneath {
+        .gallery-slider-thumbnails-controls-prev {
+            left: px($zen-slider-controls-size * -.5);
+        }
+
+        .gallery-slider-thumbnails-controls-next {
+            right: px($zen-slider-controls-size * -.5);
+        }
+    }
+}
+
+/*
+    Is needed to avoid flashing through the background due to pixel
+    inaccuracies on elements with percentage widths.
+ */
+.gallery-slider {
+    .tns-item {
+        padding-right: 1px;
+    }
+}
+
+// ... prevents issue NEXT-9276 | shopping experiences slider imprecise
+.gallery-slider-item-container:not(.tns-slide-active) {
+    padding: 0 1px;
+}
+
+.gallery-slider-row {
+    &.is-loading {
+        @include media-breakpoint-up(xl) {
+            height: var(--#{$zen-prefix}loading-height);
+        }
+    }
+}
+
+.gallery-slider-item,
+.gallery-slider-single-image {
+    &.is-contain {
+        .gallery-slider-image:not(video) {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    &.is-cover,
+    &.is-contain {
+        @include media-breakpoint-up(xl) {
+            min-height: var(--#{$zen-prefix}min-height);
+        }
+    }
+}
+
+@if $zen-gallery-slider-controls-show-hover == 1 {
+    @include media-breakpoint-up(xl) {
+        .gallery-slider {
+            .gallery-slider-controls-prev {
+                opacity: 0;
+                visibility: hidden;
+
+                @if $zen-image-slider-controls-style == "alternate" {
+                    transform: translate3d(-100%,0,0);
+                } @else {
+                    transform: translate3d(-100%,-50%,0);
+                }
+            }
+
+            .gallery-slider-controls-next {
+                opacity: 0;
+                visibility: hidden;
+
+                @if $zen-image-slider-controls-style == "alternate" {
+                    transform: translate3d(100%,0,0);
+                } @else {
+                    transform: translate3d(100%,-50%,0);
+                }
+            }
+
+            &:hover {
+                .gallery-slider-controls-prev {
+                    opacity: 1;
+                    visibility: visible;
+
+                    @if $zen-image-slider-controls-style == "alternate" {
+                        transform: none;
+                    } @else {
+                        transform: translate3d(0,-50%,0);
+                    }
+                }
+
+                .gallery-slider-controls-next {
+                    opacity: 1;
+                    visibility: visible;
+
+                    @if $zen-image-slider-controls-style == "alternate" {
+                        transform: none;
+                    } @else {
+                        transform: translate3d(0,-50%,0);
+                    }
+                }
+            }
+        }
+    }
+}
+
+@if $zen-image-slider-controls-style == "alternate" {
+    .ar-button {
+        right: auto;
+        left: 9px;
+    }
+}

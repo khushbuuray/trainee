@@ -1,0 +1,44 @@
+{
+    "name": "zenit/gravity",
+    "description": "Theme Gravity by Zenit Design",
+    "version": "4.4.1",
+    "type": "shopware-platform-plugin",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Zenit Design",
+            "homepage": "https://zenit.design",
+            "role": "Manufacturer"
+        }
+    ],
+    "require": {
+        "shopware/core": "^6.6",
+        "shopware/storefront": "^6.6"
+    },
+    "extra": {
+        "shopware-plugin-class": "zenit\\PlatformGravity\\zenitPlatformGravity",
+        "plugin-icon": "src/Resources/config/plugin.png",
+        "copyright": "(c) by Zenit Design",
+        "label": {
+            "de-DE": "Theme GRAVITY | Pro",
+            "en-GB": "Theme GRAVITY | Pro"
+        },
+        "description": {
+            "de-DE": "Theme Gravity - Responsive Shopware 6 Theme. Ein Theme - grenzenlose Möglichkeiten! Theme Gravity ist Dein Shopware Theme, welches Du dank seiner vielseitige Individualisierungsmöglichkeiten komplett selbst gestalten kannst. Zur Individualisierung bietet es eine Umfassende Themekonfiguration mit über 470+ Konfigurationselementen. Das klare Design besticht durch seine saubere und elegante Designsprache und rückt so das Wichtige in den Vordergrund - Deine Produkte.",
+            "en-GB": "Theme Gravity - Responsive Shopware 6 Theme. One theme - limitless possibilities! Theme Gravity is your Shopware theme, which you can design completely yourself thanks to its versatile theme configuration. For individualization, it offers a comprehensive topic configuration with over 470+ configuration elements. The clear design impresses with its clean and elegant design language and thus puts the important thing in the foreground - your products."
+        },
+        "manufacturerLink": {
+            "de-DE": "https://store.shopware.com/zenit-design.html",
+            "en-GB": "https://store.shopware.com/en/zenit-design.html"
+        },
+        "supportLink": {
+            "de-DE": "https://help.zenit.design",
+            "en-GB": "https://help.zenit.design"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "zenit\\PlatformGravity\\": "src/"
+        }
+    }
+}

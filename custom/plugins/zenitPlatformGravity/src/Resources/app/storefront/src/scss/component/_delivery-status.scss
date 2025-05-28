@@ -1,0 +1,83 @@
+/*
+Delivery status
+==============================================
+Shows the delivery status for products e.g. on detail page.
+*/
+
+@if $zen-delivery-status-indicator-style == badge {
+    .delivery-information {
+        --#{$prefix}badge-padding-x: 12px;
+        --#{$prefix}badge-padding-y: 8px;
+        @include rfs($badge-font-size, --#{$prefix}badge-font-size);
+        --#{$prefix}badge-font-weight: #{$badge-font-weight};
+        --#{$prefix}badge-color: #333333;
+        --#{$prefix}badge-border-radius: #{px($zen-layout-button-radius)};
+
+        position: relative;
+        display: inline-block;
+        padding: var(--#{$prefix}badge-padding-y) var(--#{$prefix}badge-padding-x) var(--#{$prefix}badge-padding-y) calc(var(--#{$prefix}badge-padding-x) + 5px + var(--#{$prefix}badge-padding-x) * .5);
+        @include font-size(var(--#{$prefix}badge-font-size));
+        font-weight: var(--#{$prefix}badge-font-weight);
+        line-height: 1;
+        color: var(--#{$prefix}badge-color);
+        vertical-align: baseline;
+        @include border-radius(var(--#{$prefix}badge-border-radius));
+        background: #ffffff;
+        overflow: hidden;
+
+        .delivery-status-indicator {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            --#{$prefix}bg-opacity: .2;
+
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: auto;
+                left: var(--#{$prefix}badge-padding-x);
+                bottom: 0;
+                margin: auto;
+                display: inline-block;
+                height: 5px;
+                width: 5px;
+                background-clip: padding-box;
+                border-radius: 100%;
+            }
+        }
+
+        .bg-info {
+            &::before {
+                --#{$prefix}bg-opacity: 1;
+                background-color: rgba(var(--#{$prefix}info-rgb), var(--#{$prefix}bg-opacity));
+            }
+        }
+
+        .bg-danger {
+            &::before {
+                --#{$prefix}bg-opacity: 1;
+                background-color: rgba(var(--#{$prefix}danger-rgb), var(--#{$prefix}bg-opacity));
+            }
+        }
+
+        .bg-warning {
+            &::before {
+                --#{$prefix}bg-opacity: 1;
+                background-color: rgba(var(--#{$prefix}warning-rgb), var(--#{$prefix}bg-opacity));
+            }
+        }
+
+        .bg-success {
+            &::before {
+                --#{$prefix}bg-opacity: 1;
+                background-color: rgba(var(--#{$prefix}success-rgb), var(--#{$prefix}bg-opacity));
+            }
+        }
+    }
+}

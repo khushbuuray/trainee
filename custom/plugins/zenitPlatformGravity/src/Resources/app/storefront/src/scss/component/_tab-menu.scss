@@ -1,0 +1,113 @@
+/*
+Tab Menu
+==============================================
+Custom skin styling for bootstrap card with included tab navigation.
+
+https://getbootstrap.com/docs/4.3/components/card/#navigation
+*/
+
+.card-tabs {
+    .nav-item {
+        &:last-child {
+            @include media-breakpoint-up(sm) {
+                margin-right: 0;
+            }
+        }
+    }
+
+    .nav-link {
+        @include font-size(px($zen-product-tabs-font-size));
+        font-weight: $zen-product-tabs-font-weight;
+        text-transform: $zen-product-tabs-text-transform;
+        @include text-color-contrast;
+
+        .product-detail-tab-preview {
+            font-size: $font-size-base;
+            font-weight: $font-weight-base;
+        }
+
+        &.active,
+        &:hover {
+            background: transparent;
+            @include text-color-contrast;
+        }
+    }
+
+    .card-header {
+        border-bottom: none;
+    }
+}
+
+@include media-breakpoint-up(sm) {
+    .card-tabs {
+        .nav-tabs {
+            justify-content: $zen-product-tabs-align;
+
+            @if $zen-product-tabs-style == "tabs" {
+                background: $zen-product-tabs-bg;
+                border-bottom: 1px solid $zen-product-tabs-hover-bg;
+            }
+        }
+
+        .nav-item {
+            margin-right: px($zen-product-tabs-margin);
+
+            @if $zen-product-tabs-align == "space-between" {
+                flex-grow: 1;
+            }
+
+            @if $zen-product-tabs-style == "tabs" {
+                margin: 5px 0 0 0;
+            }
+        }
+
+        .nav-link {
+            color: $zen-product-tabs-color;
+            border-color: $zen-product-tabs-bg;
+            text-align: $zen-product-tabs-font-align;
+            @include font-size(px($zen-product-tabs-font-size));
+            font-weight: $zen-product-tabs-font-weight;
+            text-transform: $zen-product-tabs-text-transform;
+
+            @if $zen-product-tabs-style == "pills" {
+                padding: px($zen-product-tabs-font-size * .5) px($zen-product-tabs-font-size);
+                @include border-radius($zen-layout-button-radius * 1px);
+                border: none;
+                background: $zen-product-tabs-bg;
+            }
+
+            @if $zen-product-tabs-style == "tabs" {
+                @include border-radius($zen-layout-element-radius * 1px);
+                padding: 10px 20px;
+                border: none;
+                background: $zen-product-tabs-bg;
+
+                @include media-breakpoint-up(md) {
+                    @include border-top-radius($zen-layout-element-radius * 1px);
+                    @include border-bottom-radius(0);
+                }
+            }
+
+            &:hover,
+            &.active {
+                color: $zen-product-tabs-hover-color;
+                border-color: $zen-product-tabs-hover-bg;
+                background: transparent;
+
+                @if $zen-product-tabs-style == "pills" {
+                    border: none;
+                    background: $zen-product-tabs-hover-bg;
+                }
+
+                @if $zen-product-tabs-style == "tabs" {
+                    border: none;
+                    background: $zen-product-tabs-hover-bg;
+                }
+            }
+        }
+
+        .badge {
+            vertical-align: middle;
+        }
+    }
+}

@@ -1,0 +1,144 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-product-listing.html.twig' %}
+
+{% block element_product_listing_wrapper %}
+    {% if zenCustomFields.category.zenit_gravity_product_listing_columns_xs is empty or zenCustomFields.category.zenit_gravity_product_listing_columns_xs is same as ('inherit') %}
+        {% set colsXS = theme_config("zen-product-listing-columns-xs") %}
+    {% else %}
+        {% set colsXS = zenCustomFields.category.zenit_gravity_product_listing_columns_xs %}
+    {% endif %}
+
+    {% if zenCustomFields.category.zenit_gravity_product_listing_columns_sm is empty or zenCustomFields.category.zenit_gravity_product_listing_columns_sm is same as ('inherit') %}
+        {% set colsSM = theme_config("zen-product-listing-columns-sm") %}
+    {% else %}
+        {% set colsSM = zenCustomFields.category.zenit_gravity_product_listing_columns_sm %}
+    {% endif %}
+
+    {% if zenCustomFields.category.zenit_gravity_product_listing_columns_md is empty or zenCustomFields.category.zenit_gravity_product_listing_columns_md is same as ('inherit') %}
+        {% set colsMD = theme_config("zen-product-listing-columns-md") %}
+    {% else %}
+        {% set colsMD = zenCustomFields.category.zenit_gravity_product_listing_columns_md %}
+    {% endif %}
+
+    {% if zenCustomFields.category.zenit_gravity_product_listing_columns_lg is empty or zenCustomFields.category.zenit_gravity_product_listing_columns_lg is same as ('inherit') %}
+        {% set colsLG = theme_config("zen-product-listing-columns-lg") %}
+    {% else %}
+        {% set colsLG = zenCustomFields.category.zenit_gravity_product_listing_columns_lg %}
+    {% endif %}
+
+    {% if zenCustomFields.category.zenit_gravity_product_listing_columns_xl is empty or zenCustomFields.category.zenit_gravity_product_listing_columns_xl is same as ('inherit') %}
+        {% set colsXL = theme_config("zen-product-listing-columns-xl") %}
+    {% else %}
+        {% set colsXL = zenCustomFields.category.zenit_gravity_product_listing_columns_xl %}
+    {% endif %}
+
+    {% set configListingColumns = [
+        'col-' ~ 12 / colsXS|default(1),
+        'col-sm-' ~ 12 / colsSM|default(2),
+        'col-md-' ~ 12 / colsMD|default(2),
+        'col-lg-' ~ 12 / colsLG|default(3),
+        'col-xl-' ~ 12 / colsXL|default(4),
+        'col-xxl-' ~ 12 / colsXL|default(4)
+    ] %}
+
+    {# ... @zenit - needed in ZenListingColumns to replace
+     theme column classes with custom field column
+     classes on listing events
+    #}
+    {% set themeConfigListingColumns = [
+        'col-' ~ 12 / theme_config("zen-product-listing-columns-xs")|default(1),
+        'col-sm-' ~ 12 / theme_config("zen-product-listing-columns-sm")|default(2),
+        'col-md-' ~ 12 / theme_config("zen-product-listing-columns-md")|default(2),
+        'col-lg-' ~ 12 / theme_config("zen-product-listing-columns-lg")|default(3),
+        'col-xl-' ~ 12 / theme_config("zen-product-listing-columns-xl")|default(4),
+        'col-xxl-' ~ 12 / theme_config("zen-product-listing-columns-xl")|default(4)
+    ] %}
+
+    {% if section and section.type == 'sidebar' %}
+        {% if zenCustomFields.category.zenit_gravity_product_listing_columns_xs is empty or zenCustomFields.category.zenit_gravity_product_listing_columns_xs is same as ('inherit') %}
+            {% set colsXS = theme_config("zen-product-listing-columns-sidebar-xs") %}
+        {% else %}
+            {% set colsXS = zenCustomFields.category.zenit_gravity_product_listing_columns_xs %}
+        {% endif %}
+
+        {% if zenCustomFields.category.zenit_gravity_product_listing_columns_sm is empty or zenCustomFields.category.zenit_gravity_product_listing_columns_sm is same as ('inherit') %}
+            {% set colsSM = theme_config("zen-product-listing-columns-sidebar-sm") %}
+        {% else %}
+            {% set colsSM = zenCustomFields.category.zenit_gravity_product_listing_columns_sm %}
+        {% endif %}
+
+        {% if zenCustomFields.category.zenit_gravity_product_listing_columns_md is empty or zenCustomFields.category.zenit_gravity_product_listing_columns_md is same as ('inherit') %}
+            {% set colsMD = theme_config("zen-product-listing-columns-sidebar-md") %}
+        {% else %}
+            {% set colsMD = zenCustomFields.category.zenit_gravity_product_listing_columns_md %}
+        {% endif %}
+
+        {% if zenCustomFields.category.zenit_gravity_product_listing_columns_lg is empty or zenCustomFields.category.zenit_gravity_product_listing_columns_lg is same as ('inherit') %}
+            {% set colsLG = theme_config("zen-product-listing-columns-sidebar-lg") %}
+        {% else %}
+            {% set colsLG = zenCustomFields.category.zenit_gravity_product_listing_columns_lg %}
+        {% endif %}
+
+        {% if zenCustomFields.category.zenit_gravity_product_listing_columns_xl is empty or zenCustomFields.category.zenit_gravity_product_listing_columns_xl is same as ('inherit') %}
+            {% set colsXL = theme_config("zen-product-listing-columns-sidebar-xl") %}
+        {% else %}
+            {% set colsXL = zenCustomFields.category.zenit_gravity_product_listing_columns_xl %}
+        {% endif %}
+
+        {% set configListingColumns = [
+            'col-' ~ 12 / colsXS|default(1),
+            'col-sm-' ~ 12 / colsSM|default(2),
+            'col-md-' ~ 12 / colsMD|default(2),
+            'col-lg-' ~ 12 / colsLG|default(2),
+            'col-xl-' ~ 12 / colsXL|default(3),
+            'col-xxl-' ~ 12 / colsXL|default(3)
+        ] %}
+
+        {# ... @zenit - needed in ZenListingColumns to replace
+         theme column classes with custom field column
+         classes on listing events
+        #}
+        {% set themeConfigListingColumns = [
+            'col-' ~ 12 / theme_config("zen-product-listing-columns-sidebar-xs")|default(1),
+            'col-sm-' ~ 12 / theme_config("zen-product-listing-columns-sidebar-sm")|default(2),
+            'col-md-' ~ 12 / theme_config("zen-product-listing-columns-sidebar-md")|default(2),
+            'col-lg-' ~ 12 / theme_config("zen-product-listing-columns-sidebar-lg")|default(2),
+            'col-xl-' ~ 12 / theme_config("zen-product-listing-columns-sidebar-xl")|default(3),
+            'col-xxl-' ~ 12 / theme_config("zen-product-listing-columns-sidebar-xl")|default(3)
+        ] %}
+    {% endif %}
+
+    {# ... @zenit - replace dot by underscore because of grid of five #}
+    {% set configListingColumns = configListingColumns|join(',')|replace({'.': '_'})|split(',') %}
+    {% set themeConfigListingColumns = themeConfigListingColumns|join(',')|replace({'.': '_'})|split(',') %}
+
+    {% set listingColumns = configListingColumns|join(' ') %}
+
+    {% if configListingColumns != themeConfigListingColumns %}
+
+        {% set listingColumnsOptions = {
+            customFieldsCols: configListingColumns,
+            themeConfigCols: themeConfigListingColumns
+        } %}
+
+        <template data-zen-listing-columns="true" data-zen-listing-columns-options="{{ listingColumnsOptions|json_encode }}"></template>
+    {% endif %}
+
+    {# ... @zenit - add scroll listing animaton here instead in listing.html.twig
+    to prevent invisible products if any other extension uses listing.html.twig in another context #}
+    {% if theme_config('zen-layout-scroll-listing-animation') %}
+        {% set scrollAnimationClasses = 'zen-animate listing-fade-in-bottom' %}
+    {% endif %}
+
+    {# ... @zenit - add scrollAnimationClasses #}
+    {% sw_include '@Storefront/storefront/component/product/listing.html.twig' with {
+        searchResult: searchResult,
+        dataUrl: dataUrl,
+        filterUrl: filterUrl,
+        params: params,
+        sidebar: sidebar,
+        boxLayout: element.translated.config.boxLayout.value,
+        displayMode: element.translated.config.displayMode.value,
+        listingColumns: listingColumns,
+        scrollAnimationClasses: scrollAnimationClasses
+    } %}
+{% endblock %}

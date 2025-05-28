@@ -1,0 +1,35 @@
+// custom fonts will be loaded via google webfonts loader
+
+@if global-variable-exists(zen-font-name-base) and $zen-font-name-base != null {
+    @each $style in $zen-font-style-base {
+        $style: to-string($style); // prevent "is not a string" with webpack hot reload
+
+        @if str-index($style, "italic") {
+            $style: str-replace($style, "italic", "");
+            @include font-face($zen-font-name-base, $zen-font-family-base, $zen-font-path-base, $style, italic);
+        } @else {
+            @include font-face($zen-font-name-base, $zen-font-family-base, $zen-font-path-base, $style, normal);
+        }
+    }
+}
+
+// custom fonts will be loaded via google webfonts loader
+@if global-variable-exists(zen-font-name-headline) and $zen-font-name-headline != null {
+    // There ist no need to load font twice
+    @if not global-variable-exists(zen-font-name-base) {
+        $zen-font-name-base: null;
+    }
+
+    @if $zen-font-name-base != $zen-font-name-headline {
+        @each $style in $zen-font-style-headline {
+            $style: to-string($style); // prevent "is not a string" with webpack hot reload
+
+            @if str-index($style, "italic") {
+                $style: str-replace($style, "italic", "");
+                @include font-face($zen-font-name-headline, $zen-font-family-headline, $zen-font-path-headline, $style, italic);
+            } @else {
+                @include font-face($zen-font-name-headline, $zen-font-family-headline, $zen-font-path-headline, $style, normal);
+            }
+        }
+    }
+}

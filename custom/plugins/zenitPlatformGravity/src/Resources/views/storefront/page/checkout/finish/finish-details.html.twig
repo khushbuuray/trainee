@@ -1,0 +1,15 @@
+{% sw_extends '@Storefront/storefront/page/checkout/finish/finish-details.html.twig' %}
+
+{% block page_checkout_finish_header %}
+    {% block zen_page_checkout_finish_checkmark %}
+        <div class="finish-checkmark">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 161.2 161.2"  xml:space="preserve">
+                <circle class="svg-pulse" fill="#333333" stroke="#333333" stroke-width="4" stroke-miterlimit="10" cx="80.6" cy="80.6" r="62.1"></circle>
+                <circle class="svg-fill" fill="#333333" stroke="#333333" stroke-width="4" stroke-miterlimit="10" cx="80.6" cy="80.6" r="62.1"></circle>
+                <polyline class="svg-path" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="48.2,86.4  74.1,108.4 113,52.8"></polyline>
+            </svg>
+        </div>
+    {% endblock %}
+
+    {{ parent() }}
+{% endblock %}

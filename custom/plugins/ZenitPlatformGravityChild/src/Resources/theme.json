@@ -1,0 +1,53 @@
+{
+  "name": "ZenitPlatformGravityChild",
+  "author": "Shopware AG",
+  "views": [
+    "@Storefront",
+    "@zenitPlatformGravity",
+    "@ZenitPlatformGravityChild",
+    "@Plugins"
+  ],
+  "style": [
+    "app/storefront/src/scss/overrides.scss",
+    "@zenitPlatformGravity",
+    "app/storefront/src/scss/base.scss"
+  ],
+  "script": [
+    "@Storefront",
+    "@zenitPlatformGravity",
+    "app/storefront/dist/storefront/js/zenit-platform-gravity-child/zenit-platform-gravity-child.js"
+  ],
+  "asset": [
+    "@Storefront",
+    "@zenitPlatformGravity",
+    "app/storefront/src/assets"
+  ],
+  "configInheritance": ["@Storefront", "@zenitPlatformGravity"],
+
+  "config": {
+    "fields": {
+      "child-zen-custom-footer-hotline-order": {
+        "label": {
+          "en-GB": "[!] Hotline",
+          "de-DE": "[!] Hotline"
+        },
+        "helpText": {
+          "en-GB": "[!] If display as column: Sort order of the columns (numbers from 1-12) The higher the number, the further back the column is shown. <br><br><br>Variable:<br> <strong>zen-footer-hotline-order</strong>",
+          "de-DE": "[!] Wenn Darstellung als eigene Spalte: Sortierreihenfolge der Spalten (Zahlen von 1-12) Je höher die Zahl, desto weiter hinten wird die Spalte angezeigt. <br><br><br>Variable:<br> <strong>zen-footer-hotline-order</strong>"
+        },
+        "type": "number",
+        "custom": {
+          "numberType": "int",
+          "min": 1,
+          "max": 12
+        },
+        "value": 5,
+        "editable": true,
+        "tab": "footer",
+        "block": "footerColumns",
+        "section": "footerColumnsOrder",
+        "order": 125
+      }
+    }
+  }
+}

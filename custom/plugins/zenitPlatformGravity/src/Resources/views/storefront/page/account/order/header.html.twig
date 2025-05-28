@@ -1,0 +1,32 @@
+{% sw_extends '@Storefront/storefront/page/account/order/header.html.twig' %}
+
+
+{% block layout_header_minimal_button %}
+    {#  ... @zenit - added minimalButtonClasses #}
+    <div class="col-md-4 header-minimal-back-to-shop {{ minimalButtonClasses }}">
+        {% if context.customer and context.customer.guest %}
+            {#  ... @zenit -  removed .btn-outline-primary, add icon, add span, add minimalButtonTextClasses #}
+            <a href="{{ path('frontend.account.order.single.page', {deepLinkCode: page.order.deepLinkCode}) }}"
+               class="btn header-minimal-back-to-shop-button"
+               title="{{ 'account.editOrderBackToAccountButton'|trans|striptags }}">
+                {% sw_icon 'arrow-medium-left' style {
+                    size: 'sm',
+                    pack: 'solid'
+                } %}
+                <span class="{{ minimalButtonTextClasses }}">{{ 'account.editOrderBackToOrderButton'|trans|striptags }}</span>
+
+            </a>
+        {% else %}
+            {#  ... @zenit -  removed .btn-outline-primary, add icon, add span, add minimalButtonTextClasses #}
+            <a href="{{ path('frontend.account.home.page') }}"
+               class="btn header-minimal-back-to-shop-button"
+               title="{{ 'account.editOrderBackToAccountButton'|trans|striptags }}">
+                {% sw_icon 'arrow-medium-left' style {
+                    size: 'sm',
+                    pack: 'solid'
+                } %}
+                <span class="{{ minimalButtonTextClasses }}">{{ 'account.editOrderBackToAccountButton'|trans|striptags }}</span>
+            </a>
+        {% endif %}
+    </div>
+{% endblock %}

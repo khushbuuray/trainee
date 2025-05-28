@@ -1,0 +1,168 @@
+/*
+Theme variables
+==================================================
+Contains overrides of bootstrap and shopware default variables with theme config variables.
+
+https://getbootstrap.com/docs/4.3/getting-started/theming/#variable-defaults
+*/
+
+// avoid transparent body bg due to contrast functions
+@if $sw-background-color == transparent {
+    $sw-background-color:                 #ffffff;
+}
+
+$zen-link-color:                          $sw-color-brand-primary !default;
+$link-color:                              $zen-link-color !default;
+
+// fonts
+// override variable, if there are theme default fonts in use
+// has to check if variable exists because of child theme with
+// missing configuration
+//
+// Example Input: 'Rubik', sans-serif[300,400,500]
+$sw-font-family-base: 'Inter', sans-serif !default; // global scope
+@if global-variable-exists(zen-font-family-base-default) and $zen-font-family-base-default != "custom" {
+    $zen-font-families-base:                get-fontfamilies($zen-font-family-base-default, '[') !default; // 'Rubik', sans-serif
+    $sw-font-family-base:                   $zen-font-families-base;
+}
+
+// Note: Use `inspect` for lists so that quoted items keep the quotes.
+// See https://github.com/sass/sass/issues/2383#issuecomment-336349172
+$font-family-base: #{inspect($sw-font-family-base)};
+
+// override variable, if there are theme default fonts in use
+// has to check if variable exists because of child theme with
+// missing configuration
+//
+// Example Input: 'Rubik', sans-serif[300,400,500]
+$sw-font-family-headline: 'Inter', sans-serif !default; // global scope
+@if global-variable-exists(zen-font-family-headline-default) and $zen-font-family-headline-default != "custom" {
+    $zen-font-families-headline:            get-fontfamilies($zen-font-family-headline-default, '[') !default; // 'Rubik', sans-serif
+    $sw-font-family-headline:               $zen-font-families-headline;
+}
+
+// config components forms
+$zen-input-bg:                              #ffffff !default;
+$input-bg:                                  $zen-input-bg !default;
+
+$zen-input-focus-bg:                        #ffffff !default;
+$input-focus-bg:                            $zen-input-focus-bg !default;
+
+$zen-input-color:                           $sw-text-color !default;
+$input-color:                               $zen-input-color !default;
+
+$input-placeholder-color:                   rgba($zen-input-color, .5) !default;
+
+$zen-input-focus-color:                     $sw-color-brand-primary !default;
+$input-focus-color:                         $zen-input-focus-color !default;
+
+$zen-input-disabled-color:                  $zen-input-color !default;
+$input-disabled-color:                      $zen-input-disabled-color !default;
+
+$zen-input-disabled-bg:                     $input-bg !default;
+$input-disabled-bg:                         darken($zen-input-disabled-bg, 3%) !default;
+
+$zen-input-font-size:                       14 !default;
+$input-font-size:                           $zen-input-font-size * 1px !default;
+
+$zen-input-font-weight:                     400 !default;
+$input-font-weight:                         $zen-input-font-weight;
+
+$zen-input-border-color:                    $sw-border-color !default;
+$input-border-color:                        $zen-input-border-color !default;
+
+$zen-input-focus-border-color:              $sw-color-brand-primary !default;
+$input-focus-border-color:                  $zen-input-focus-border-color !default;
+
+$zen-layout-element-radius:                 3 !default;
+$tooltip-border-radius:                     $zen-layout-element-radius * 1px !default;
+$dropdown-border-radius:                    $zen-layout-element-radius * 1px !default;
+
+// config product listing
+$zen-product-listing-card-padding:          30 !default;
+$cms-element-product-listing-gutter-width:  $zen-product-listing-card-padding * 1px !default;
+
+// ... gray based on custom border-colors hue and saturation
+$gray-hue:                                  hue($sw-border-color) !default;
+$gray-saturation:                           saturation($sw-border-color) !default;
+$gray-100:                                  hsl($gray-hue, $gray-saturation, 98%) !default;
+$gray-200:                                  hsl($gray-hue, $gray-saturation, 93%) !default;
+$gray-300:                                  hsl($gray-hue, $gray-saturation, 89%) !default;
+$gray-400:                                  hsl($gray-hue, $gray-saturation, 83%) !default;
+$gray-500:                                  hsl($gray-hue, $gray-saturation, 71%) !default;
+$gray-600:                                  hsl($gray-hue, $gray-saturation, 46%) !default;
+$gray-700:                                  hsl($gray-hue, $gray-saturation, 31%) !default;
+$gray-800:                                  hsl($gray-hue, $gray-saturation, 23%) !default;
+$gray-900:                                  hsl($gray-hue, $gray-saturation, 15%) !default;
+
+// Typography
+$zen-font-size-base:                        14 !default;
+$font-size-base:                            rem($zen-font-size-base) !default;
+$zen-h1-font-size:                          36 !default;
+$h1-font-size:                              px($zen-h1-font-size) !default;
+$zen-h2-font-size:                          28 !default;
+$h2-font-size:                              px($zen-h2-font-size) !default;
+$zen-h3-font-size:                          24 !default;
+$h3-font-size:                              px($zen-h3-font-size) !default;
+$zen-h4-font-size:                          20 !default;
+$h4-font-size:                              px($zen-h4-font-size) !default;
+$zen-h5-font-size:                          16 !default;
+$h5-font-size:                              px($zen-h5-font-size) !default;
+$zen-h6-font-size:                          14 !default;
+$h6-font-size:                              px($zen-h6-font-size) !default;
+
+$zen-font-weight-base:                      400 !default;
+$font-weight-base:                          $zen-font-weight-base !default;
+
+$zen-headings-font-weight:                  500 !default;
+$headings-font-weight:                      $zen-headings-font-weight !default;
+
+// Buttons
+$zen-layout-button-radius:                  3 !default;
+$btn-border-radius:                         px($zen-layout-button-radius) !default;
+$btn-border-radius-sm:                      px($zen-layout-button-radius) !default;
+$btn-border-radius-lg:                      px($zen-layout-button-radius) !default;
+
+// Pagination
+$zen-pagination-color:                      $sw-color-brand-primary !default;
+$pagination-color:                          $zen-pagination-color !default;
+$zen-pagination-bg:                         #ffffff !default;
+$pagination-bg:                             $zen-pagination-bg !default;
+$zen-pagination-border-color:               $gray-300 !default;
+$pagination-border-color:                   $zen-pagination-border-color !default;
+
+$zen-pagination-hover-color:                darken($sw-color-brand-primary, 15%) !default;
+$pagination-hover-color:                    $zen-pagination-hover-color !default;
+$zen-pagination-hover-bg:                   $gray-200 !default;
+$pagination-hover-bg:                       $zen-pagination-hover-bg !default;
+$zen-pagination-hover-border-color:         $gray-300 !default;
+$pagination-hover-border-color:             $zen-pagination-hover-border-color !default;
+
+$zen-pagination-active-color:               #ffffff !default;
+$pagination-active-color:                   $zen-pagination-active-color !default;
+$zen-pagination-active-bg:                  $sw-color-brand-primary !default;
+$pagination-active-bg:                      $zen-pagination-active-bg !default;
+$zen-pagination-active-border-color:        $sw-color-brand-primary !default;
+$pagination-active-border-color:            $zen-pagination-active-border-color !default;
+
+$zen-pagination-disabled-color:             $gray-600 !default;
+$pagination-disabled-color:                 $zen-pagination-disabled-color !default;
+$zen-pagination-disabled-bg:                $gray-200 !default;
+$pagination-disabled-bg:                    $zen-pagination-disabled-bg !default;
+$zen-pagination-disabled-border-color:      $gray-300 !default;
+$pagination-disabled-border-color:          $zen-pagination-disabled-border-color !default;
+
+$zen-layout-pagination-border:              0 !default;
+$pagination-border-width:                   0 !default; // global scope (watcher)
+@if $zen-layout-pagination-border == 1 {
+    $pagination-border-width:               1px;
+}
+
+// Offcanvas
+$zen-offcanvas-width:                       600 !default;
+$offcanvas-horizontal-width:                $zen-offcanvas-width  * 1px !default;
+
+// The contrast ratio to reach against white, to determine if color changes from "light" to "dark". Acceptable values for WCAG 2.0 are 3, 4.5 and 7.
+// See https://www.w3.org/TR/WCAG20/#visual-audio-contrast-contrast
+$zen-min-contrast-ratio:                4.5 !default;
+$min-contrast-ratio:                    $zen-min-contrast-ratio !default;

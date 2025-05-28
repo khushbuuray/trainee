@@ -1,0 +1,15 @@
+{% sw_extends '@Storefront/storefront/layout/footer/footer-minimal.html.twig' %}
+
+{% block zen_layout_footer_bottom_vat %}
+    {% if page.header.serviceMenu.elements is not empty %}
+        {{ block('layout_footer_vat') }}
+    {% endif %}
+{% endblock %}
+
+{% block layout_footer_service_menu %}
+    {% if page.header.serviceMenu.elements is not empty %}
+        {{ block('layout_footer_service_menu_content') }}
+    {% else %}
+        {{ block('layout_footer_vat') }}
+    {% endif %}
+{% endblock %}

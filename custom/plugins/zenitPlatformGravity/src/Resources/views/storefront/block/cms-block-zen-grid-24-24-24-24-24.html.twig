@@ -1,0 +1,16 @@
+{% block block_zen_grid_24_24_24_24_24 %}
+    {% block block_zen_grid_24_24_24_24_24_inner %}
+
+        {# ... @zenit - requires the xl and xxl declaration explicitly because of the missing inheritance of grid of five #}
+        {% sw_include '@zenitPlatformGravity/storefront/block/cms-block-zen-grid.html.twig' with {
+            elements: block.slots,
+            cols: {
+                md: [6,6,6,6,6],
+                lg: ['2_4','2_4','2_4','2_4','2_4'],
+                xl: ['2_4','2_4','2_4','2_4','2_4'],
+                xxl: ['2_4','2_4','2_4','2_4','2_4'],
+            },
+            columns: 5
+        } %}
+    {% endblock %}
+{% endblock %}

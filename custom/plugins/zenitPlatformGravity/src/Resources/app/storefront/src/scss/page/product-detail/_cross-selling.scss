@@ -1,0 +1,16 @@
+.product-detail-cross-selling {
+    .card {
+        margin-top: 0;
+    }
+}
+
+// prevents horizontal scrolling on cross-selling
+// on cms pages the .cms-block element has already overflow hidden
+// so we have should only affect non cms pages
+.product-detail { // make sure it's not a cms page
+    .product-detail-cross-selling {
+        @if $zen-product-slider-style != "expanded" {
+            overflow: hidden;
+        }
+    }
+}

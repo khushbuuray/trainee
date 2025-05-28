@@ -1,0 +1,177 @@
+.cms-element-product-slider {
+    padding: 0 px($zen-product-listing-card-padding);
+    margin: 0 px($zen-product-listing-card-padding * -1);
+}
+
+.product-slider {
+    &.has-border {
+        @include border-radius($zen-layout-element-radius * 1px);
+    }
+
+    &:not(.has-border) {
+        margin: px($zen-product-listing-card-padding * -.5) px($zen-product-listing-card-padding * -1);
+    }
+
+    &,
+    &.has-nav,
+    &.has-border.has-nav {
+        // prevents the shadow of the product box from being cut off
+        padding: px($zen-product-listing-card-padding * .5) px($zen-product-listing-card-padding);
+    }
+
+    .product-slider-container {
+        display: flex; // needed display flex for equal height
+    }
+
+    // ... improves initial loading
+    &:not(.js-slider-initialized) {
+        .product-slider-container {
+            white-space: nowrap;
+        }
+
+        .product-slider-item {
+            display: inline-block;
+            vertical-align: top;
+            white-space: normal;
+            padding-right: 30px;
+            width: 100%;
+
+            @include media-breakpoint-up(md) {
+                width: 50%;
+            }
+
+            @include media-breakpoint-up(xl) {
+                width: 25%;
+            }
+        }
+    }
+}
+
+// arrow navigation inside
+.product-slider-controls-prev {
+    &,
+    &.has-border {
+        left: $cms-element-product-listing-gutter-width + px($zen-slider-controls-spacer);
+
+        @include media-breakpoint-up(md) {
+            // ... prevent controls from being cut off by negative .row margins
+            left: if($cms-element-product-listing-gutter-width < $zen-grid-gutter-single-width, 5px, $cms-element-product-listing-gutter-width - $zen-grid-gutter-single-width);
+        }
+    }
+}
+
+.product-slider-controls-next {
+    &,
+    &.has-border {
+        right: $cms-element-product-listing-gutter-width + px($zen-slider-controls-spacer);
+
+        @include media-breakpoint-up(md) {
+            // ... prevent controls from being cut off by negative .row margins
+            right: if($cms-element-product-listing-gutter-width < $zen-grid-gutter-single-width, 5px, $cms-element-product-listing-gutter-width - $zen-grid-gutter-single-width);
+        }
+    }
+}
+
+.product-slider-controls-container {
+    .product-slider-controls-prev,
+    .product-slider-controls-next {
+        --#{$zen-prefix}slider-controls-shadow-color: #{$zen-product-slider-controls-bg};
+        --#{$zen-prefix}slider-controls-shadow-hover-color: #{$zen-product-slider-controls-hover-bg};
+
+        background: $zen-product-slider-controls-bg;
+
+        @if $zen-product-slider-controls-bg == transparent {
+            &::after {
+                display: none;
+            }
+        }
+
+        .icon {
+            color: $zen-product-slider-controls-color;
+        }
+
+        &:hover {
+            background: $zen-product-slider-controls-hover-bg;
+
+            .icon {
+                color: $zen-product-slider-controls-hover-color;
+            }
+        }
+    }
+}
+
+@if $zen-product-slider-controls-show-hover == 1 {
+    @include media-breakpoint-up(xl) {
+        .product-slider {
+            .product-slider-controls-prev {
+                opacity: 0;
+                visibility: hidden;
+                transform: translate3d(-100%,-50%,0);
+            }
+
+            .product-slider-controls-next {
+                opacity: 0;
+                visibility: hidden;
+                transform: translate3d(100%,-50%,0);
+            }
+
+            &:hover {
+                .product-slider-controls-prev {
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translate3d(0,-50%,0);
+                }
+
+                .product-slider-controls-next {
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translate3d(0,-50%,0);
+                }
+            }
+        }
+    }
+}
+
+// prevents box shadow and borders from being visible on inactive slides.
+@if $zen-product-slider-style != "expanded" {
+    .product-slider-item {
+        transition: all .3s ease;
+        opacity: 1;
+
+        &:not(.tns-slide-active) {
+            .product-box {
+                visibility: hidden;
+            }
+        }
+    }
+}
+
+// product slider expanded style
+.expanded-product-slider {
+    overflow: hidden;
+
+    .cms-block-product-slider,
+    .cms-block-cross-selling {
+        overflow: visible;
+    }
+
+    .cms-element-product-slider {
+        .product-slider {
+            overflow: visible;
+
+            .tns-ovh {
+                overflow: visible;
+            }
+
+            .tns-item {
+                opacity: .25;
+                pointer-events: none;
+
+                &.tns-slide-active {
+                    opacity: 1;
+                    pointer-events: all;
+                }
+            }
+        }
+    }
+}

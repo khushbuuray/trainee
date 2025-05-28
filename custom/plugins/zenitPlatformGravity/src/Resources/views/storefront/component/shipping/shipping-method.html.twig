@@ -1,0 +1,19 @@
+{% sw_extends '@Storefront/storefront/component/shipping/shipping-method.html.twig' %}
+
+{% block component_shipping_method_description %}
+    {# ... @zenit - set config variable shippingDescriptionLength #}
+    {% set shippingDescriptionLength = theme_config('zen-checkout-confirm-payment-shipping-description-length')|default(75) %}
+
+    <div class="shipping-method-description">
+        <strong>{{ shipping.translated.name }}</strong>
+        {% if shipping.translated.description %}
+            {% set shippingDescription = shipping.translated.description|raw %}
+
+            {% if not shipping.id is same as(context.shippingMethod.id) %}
+                {% set shippingDescription = (shippingDescription|length > shippingDescriptionLength ? shippingDescription[:shippingDescriptionLength] ~ ' ...' : shippingDescription) %}
+            {% endif %}
+
+            <p title="{{ shipping.translated.description|raw }}">{{ shippingDescription }}</p>
+        {% endif %}
+    </div>
+{% endblock %}

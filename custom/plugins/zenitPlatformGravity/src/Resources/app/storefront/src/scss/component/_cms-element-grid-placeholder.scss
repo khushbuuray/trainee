@@ -1,0 +1,24 @@
+// zenit grid placeholder element
+.cms-element-zen-grid-placeholder {
+    height: 100%;
+
+    .card {
+        min-height: 120px;
+        height: 100%;
+        border-radius: 8px;
+        border: 2px dashed $gray-300;
+    }
+
+    .card-body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cms-block-zen-layout-simple &,
+    .cms-block-zen-layout-simple-reversed & {
+        &.card {
+            min-height: 300px;
+        }
+    }
+}

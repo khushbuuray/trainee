@@ -1,0 +1,186 @@
+/*
+Custom variables
+==================================================
+Contains custom non bootstrap and non shopware and non theme config variables.
+*/
+
+// Generals
+$zen-plugin-name:                           zenitplatformgravity !default;
+
+// Prefix for :root CSS variables
+$zen-prefix:                                zen- !default;
+
+// changes the value of the variable $zen-css-relative-bundles-path if we are using hot reload / watchers
+// to check if we are using storefront-watcher, we check the $app-css-relative-asset-path which
+// will be changed by webpack.config.js
+$zen-css-relative-bundles-path: null; // global scope
+@if $app-css-relative-asset-path == '/bundles/storefront/assets' {
+    $zen-css-relative-bundles-path:             $sw-asset-theme-url !default;
+} @else {
+    $zen-css-relative-bundles-path:             '../../..' !default;
+}
+
+$zen-top-bar-height:                        42 !default;
+$zen-breadcrumbs-height:                    45 !default;
+
+$zen-layout-scroll-up-btn-size:             42 !default;
+
+$zen-slider-controls-size:                  42 !default;
+$zen-slider-controls-tap-target-size:       48 !default;
+$zen-slider-controls-spacer:                5 !default;
+
+// Typography
+//
+// Font, line-height, and color for body text, headings, and more.
+
+// font base
+$zen-font-style-base:                       null !default; // global scope
+$zen-font-name-base:                        null !default; // global scope
+$zen-font-family-base:                      null !default; // global scope
+$zen-font-path-base:                        null !default; // global scope
+
+// Example Input: 'Rubik', sans-serif[300,400,500]
+@if global-variable-exists(zen-font-family-base-default) and $zen-font-family-base-default != "custom" and index($zen-font-family-base-default, "Inter") == null {
+    $zen-font-style-base:                   get-fontstyle($zen-font-family-base-default, '[') !default; // 300,400,500
+    $zen-font-name-base:                    get-fontname($zen-font-family-base-default, ',',) !default; // Rubik
+    $zen-font-family-base:                  to-lower-case(str-replace($zen-font-name-base, " ", "-")) !default; // rubik
+
+    // build path
+    @if str-index($zen-plugin-name, 'app') {
+        $zen-font-path-base:                "#{$app-css-relative-asset-path}/font/#{$zen-font-family-base}";
+    } @else {
+        // @important: fonts must be delivered in the bundles folder so that child themes can access them.
+        $zen-font-path-base:                "#{$zen-css-relative-bundles-path}/bundles/#{$zen-plugin-name}/storefront/assets/font/#{$zen-font-family-base}";
+    }
+}
+
+// font headline
+$zen-font-style-headline:                   null !default; // global scope
+$zen-font-name-headline:                    null !default; // global scope
+$zen-font-family-headline:                  null !default; // global scope
+$zen-font-path-headline:                    null !default; // global scope
+
+// Example Input: 'Rubik', sans-serif[300,400,500]
+@if global-variable-exists(zen-font-family-headline-default) and $zen-font-family-headline-default != "custom" and index($zen-font-family-headline-default, "Inter") == null {
+    $zen-font-style-headline:               get-fontstyle($zen-font-family-headline-default, '[') !default; // 300,400,500
+    $zen-font-name-headline:                get-fontname($zen-font-family-headline-default, ',',) !default; // Rubik
+    $zen-font-family-headline:              to-lower-case(str-replace($zen-font-name-headline, " ", "-")) !default; // rubik
+
+    // build path
+    @if str-index($zen-plugin-name, 'app') {
+        $zen-font-path-headline:            "#{$app-css-relative-asset-path}/font/#{$zen-font-family-headline}" !default;
+    } @else {
+        // @important: fonts must be delivered in the bundles folder so that child themes can access them.
+        $zen-font-path-headline:            "#{$zen-css-relative-bundles-path}/bundles/#{$zen-plugin-name}/storefront/assets/font/#{$zen-font-family-headline}" !default;
+    }
+}
+
+$zen-font-weight-medium:                    500 !default;
+$zen-font-weight-semi-bold:                 600 !default;
+
+$zen-font-size-xs:                          .5rem !default;
+$zen-light-text-muted:                      $gray-300 !default;
+
+// product detail
+$zen-product-price-font-size:               25 !default; // deprecated
+
+// badges
+$zen-product-badge-font-size:               12 !default;
+$zen-product-badge-padding-horizontal:      10 !default;
+$zen-product-badge-margin-left:             0 !default;
+
+// buttons
+$zen-disabled-btn-color:                    $gray-400 !default;
+$zen-btn-max-width:                         360px !default;
+
+$zen-form-select-light-indicator-color:     $gray-100 !default;
+$zen-form-select-light-indicator:           url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='none' stroke='#{$zen-form-select-light-indicator-color}' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/></svg>") !default;
+
+$zen-product-detail-buy-zindex:             10;
+
+$zen-cms-gutters:                           () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$zen-cms-gutters: map-merge(
+    (
+        0: 0,
+        1: ($spacer * .25),
+        2: ($spacer * .5),
+        3: $spacer,
+        4: ($spacer * 1.5),
+        5: ($spacer * 3)
+    ),
+    $zen-cms-gutters
+);
+
+$zen-cms-offsets:                           () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$zen-cms-offsets: map-merge(
+    (
+        0: 0,
+        1: 100px,
+        2: 200px,
+        3: 300px,
+        4: 400px,
+        5: 500px
+    ),
+    $zen-cms-offsets
+);
+
+// make footer grid based on layout-container spacings.
+$zen-footer-grid-gutter-width:              px($zen-layout-container-spacing-right + $zen-layout-container-spacing-left) !default;
+$zen-footer-newsletter-input-max-width:     380px;
+
+$zen-transition-opacity:                    opacity .8s ease !default;
+$zen-transition-transform:                  transform 1.1s cubic-bezier(.15,.75,.5,1) !default;
+
+$z-index-dropdown:                          1010 !default;
+
+$zen-manufacturer-logo-height-mobile:       140 !default;
+$zen-manufacturer-logo-height:              200 !default;
+
+// cms-utility-classes variables
+$zen-box-shadow-color:                      rgba(98,98,98,1);
+$zen-box-shadow-smooth-color:               rgba(98,98,98,.25);
+$zen-box-shadow-hover-color:                rgba(98,98,98,.5);
+
+$zen-box-shadow-sm:                         0 25px 15px -25px $zen-box-shadow-color;
+$zen-box-shadow-md:                         0 25px 25px -25px $zen-box-shadow-color;
+$zen-box-shadow-lg:                         0 25px 35px -25px $zen-box-shadow-color;
+
+$zen-box-shadow-smooth-sm:                  0 5px 4px -5px $zen-box-shadow-smooth-color,
+                                            0 15px 8px -15px $zen-box-shadow-smooth-color,
+                                            0 25px 12px -25px $zen-box-shadow-smooth-color;
+
+$zen-box-shadow-smooth-md:                  0 5px 6px -5px $zen-box-shadow-smooth-color,
+                                            0 15px 12px -15px $zen-box-shadow-smooth-color,
+                                            0 25px 18px -25px $zen-box-shadow-smooth-color;
+
+$zen-box-shadow-smooth-lg:                  0 5px 8px -5px $zen-box-shadow-smooth-color,
+                                            0 15px 16px -15px $zen-box-shadow-smooth-color,
+                                            0 25px 32px -25px $zen-box-shadow-smooth-color;
+
+$zen-box-shadow-long:                       0 10px 0 -10px $zen-box-shadow-smooth-color,
+                                            0 20px 10px -20px $zen-box-shadow-smooth-color,
+                                            0 30px 20px -25px $zen-box-shadow-smooth-color,
+                                            0 40px 30px -30px $zen-box-shadow-smooth-color,
+                                            0 50px 50px -35px $zen-box-shadow-smooth-color;
+
+$zen-box-shadow-hover-sm:                   0 10px 10px -10px $zen-box-shadow-hover-color;
+$zen-box-shadow-hover-md:                   0 10px 20px -10px $zen-box-shadow-hover-color;
+$zen-box-shadow-hover-lg:                   0 10px 30px -10px $zen-box-shadow-hover-color;
+
+// filter
+$zen-filter-panel-line-height:              1.5 !default;
+
+// sidebar
+$zen-category-navigation-line-height:       1.5 !default;
+
+// UI helpers
+$zen-grid-gutter-single-width:              $grid-gutter-width / 2;
+$zen-element-backdrop-bg-dark: rgba(#000, 0.5) !default;
+
+$zen-light-close-color:                     $zen-light-text-color;
+$zen-light-close-bg:                        url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$zen-light-text-color}'><path d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/></svg>") !default;
+
+$zen-accordion-light-color:                 $zen-light-text-color;
+$zen-accordion-light-button-icon:           url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$zen-accordion-light-color}'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>") !default;

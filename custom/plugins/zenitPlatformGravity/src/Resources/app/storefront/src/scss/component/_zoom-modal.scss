@@ -1,0 +1,33 @@
+.modal.zoom-modal {
+    .modal-content,
+    .modal-footer {
+        @if $zen-container-bg != transparent {
+            background-color: $zen-container-bg;
+        } @else {
+            background-color: $sw-background-color;
+        }
+    }
+
+    .gallery-slider {
+        @if $zen-product-gallery-slider-gallery-image-ratio == 1 {
+            @include media-breakpoint-up(lg) {
+                @if $zen-product-listing-card-img-width == 0 or $zen-product-listing-card-img-height == 0 {
+                    bottom: ($zen-product-listing-card-img-padding / 100) * 75px + 8px;
+                } @else {
+                    bottom: (strip-unit($zen-product-listing-card-img-height) / strip-unit($zen-product-listing-card-img-width)) * 75px + 8px;
+                }
+            }
+        }
+    }
+
+    .gallery-slider-thumbnails-item {
+        width: 75px;
+        box-sizing: content-box; // ... because of padding-right from tiny-slider auto generated classes
+    }
+
+    .modal-footer {
+        padding: 0 0 8px 0;
+        border: none;
+        margin: 0;
+    }
+}

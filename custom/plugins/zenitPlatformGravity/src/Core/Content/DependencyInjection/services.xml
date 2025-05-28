@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="zenit\PlatformGravity\Core\Content\Product\Cms\ProductSliderCmsElementResolverDecorator" decorates="Shopware\Core\Content\Product\Cms\ProductSliderCmsElementResolver">
+            <argument type="service" id="zenit\PlatformGravity\Core\Content\Product\Cms\ProductSliderCmsElementResolverDecorator.inner"/>
+            <tag name="shopware.cms.data_resolver"/>
+        </service>
+
+        <service id="zenit\PlatformGravity\Core\Content\Product\Cms\ProductBoxCmsElementResolverDecorator" decorates="Shopware\Core\Content\Product\Cms\ProductBoxCmsElementResolver">
+            <argument type="service" id="zenit\PlatformGravity\Core\Content\Product\Cms\ProductBoxCmsElementResolverDecorator.inner"/>
+            <tag name="shopware.cms.data_resolver"/>
+        </service>
+
+        <service id="zenit\PlatformGravity\Core\Content\Media\Cms\Type\TeaserTypeDataResolver">
+            <tag name="shopware.cms.data_resolver"/>
+            <argument type="service" id="Shopware\Core\Content\Media\Cms\DefaultMediaResolver"/>
+        </service>
+
+        <service id="zenit\PlatformGravity\Core\Content\Media\Cms\Type\SearchBannerTypeDataResolver">
+            <tag name="shopware.cms.data_resolver"/>
+            <argument type="service" id="Shopware\Core\Content\Media\Cms\DefaultMediaResolver"/>
+        </service>
+
+        <service id="zenit\PlatformGravity\Core\Content\Media\Cms\Type\TextBannerTypeDataResolver">
+            <tag name="shopware.cms.data_resolver"/>
+            <argument type="service" id="Shopware\Core\Content\Media\Cms\DefaultMediaResolver"/>
+        </service>
+
+        <service id="zenit\PlatformGravity\Core\Content\Media\Cms\Type\ImageSliderTypeDataResolver">
+            <tag name="shopware.cms.data_resolver"/>
+            <argument type="service" id="Shopware\Core\Content\Media\Cms\DefaultMediaResolver"/>
+        </service>
+    </services>
+</container>

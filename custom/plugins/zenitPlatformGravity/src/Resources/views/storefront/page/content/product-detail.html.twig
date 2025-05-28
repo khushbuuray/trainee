@@ -1,0 +1,31 @@
+{% sw_extends '@Storefront/storefront/page/content/product-detail.html.twig' %}
+
+{% block page_content %}
+    {# ... @zenit - checks if custom zen-breadcrumb is in use #}
+    {% set defaultBreadcrumbs = true %}
+    {% for section in page.cmsPage.sections %}
+        {% for block in section.blocks %}
+            {% if block.type is same as ('zen-breadcrumb') %}
+                {% set defaultBreadcrumbs = false %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+
+    {% block cms_breadcrumb %}
+        {% if defaultBreadcrumbs %}
+            <div class="breadcrumb-container">
+                <div class="container">
+                    <div class="breadcrumb-wrap cms-breadcrumb justify-content-{{ theme_config('zen-breadcrumbs-align')|replace({'flex-': ''}) }}">
+                        {% sw_include '@Storefront/storefront/layout/breadcrumb.html.twig' with {
+                            context: context,
+                            themeIconConfig: themeIconConfig,
+                            category: page.product.seoCategory
+                        } only %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {{ block('cms_content') }}
+{% endblock %}

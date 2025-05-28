@@ -1,0 +1,257 @@
+// zenit text-banner element
+.cms-element-zen-text-banner {
+    position: relative;
+    height: 100%;
+    word-break: break-word;
+
+    &.has-vertical-alignment {
+        display: flex;
+        height: 100%;
+    }
+
+    .cms-element-alignment {
+        &.is-stretch {
+            width: 100%; // is needed so that the image could be stretched to full width
+        }
+    }
+
+    .cms-text-banner-inner {
+        overflow: hidden; // ... because of zoom animation & border-radius
+        position: relative;
+        display: block;
+
+        &.is-cover {
+            height: 100%;
+        }
+    }
+
+    // image
+    .cms-text-banner-image-container {
+        display: block;
+        max-width: 100%;
+
+        &.is-standard,
+        &.is-stretch {
+            position: relative;
+        }
+
+        &.is-cover {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+
+            .cms-text-banner-image {
+                object-fit: cover;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+        }
+
+        &.is-cover,
+        &.is-stretch {
+            .cms-text-banner-image {
+                width: 100%;
+            }
+        }
+    }
+
+    .cms-text-banner-image {
+        transition: all .3s ease;
+        display: block;
+        max-width: 100%;
+    }
+
+    .cms-text-banner-image-inner {
+        display: block;
+        height: 100%;
+    }
+
+    .cms-text-banner-image-link {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        &:hover {
+            text-decoration: none;
+        }
+
+        ~ .cms-text-banner-content-container {
+            pointer-events: none;
+
+            a {
+                pointer-events: all;
+            }
+        }
+    }
+
+    // content
+    .cms-text-banner-content-container {
+        height: 100%;
+
+        &.is-standard,
+        &.is-stretch {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        &.is-cover {
+            position: relative;
+        }
+    }
+
+    .cms-text-banner-content-container,
+    .cms-text-banner-inner-container {
+        display: flex;
+    }
+
+    .cms-text-banner-overlay {
+        display: flex;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    .cms-text-banner-content {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        column-gap: $spacer-lg;
+        row-gap: $spacer-lg;
+        color: $sw-text-color;
+        font-size: $font-size-base;
+        font-weight: $font-weight-base;
+        padding: 8px 16px;
+        margin: 20px;
+        border-radius: 2px;
+
+        h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, p {
+            color: inherit;
+        }
+    }
+
+    .cms-text-banner-text {
+        transition: all .3s ease;
+
+        &.has-headline-lg {
+            h1, .h1 {
+                @include font-size($h1-font-size * 2.5);
+            }
+            h2, .h2 {
+                @include font-size($h2-font-size * 2.5);
+            }
+            h3, .h3 {
+                @include font-size($h3-font-size * 2.5);
+            }
+            h4, .h4 {
+                @include font-size($h4-font-size * 2.5);
+            }
+            h5, .h5 {
+                @include font-size($h5-font-size * 2.5);
+            }
+            h6, .h6 {
+                @include font-size($h6-font-size * 2.5);
+            }
+        }
+
+        &.has-text-lg {
+            @include font-size($font-size-base * 1.5);
+
+            p, div, a:not(.btn) {
+                @include font-size($font-size-base * 1.5);
+            }
+        }
+    }
+
+    // initial states for animation-in entrance animations
+    .animation-in-fade-in,
+    .animation-in-fade-in-top,
+    .animation-in-slide-in-top,
+    .animation-in-slide-in-bottom,
+    .animation-in-slide-in-left,
+    .animation-in-slide-in-right ,
+    .animation-in-slide-in-bck-center,
+    .animation-in-slide-in-blurred-top,
+    .animation-in-slide-in-blurred-bottom,
+    .animation-in-puff-in-center,
+    .animation-in-flip-in-hor-top,
+    .animation-in-flip-in-hor-bottom {
+        opacity: 0;
+    }
+
+    // triggers the opposite animation
+    .js-animation-in {
+        .animation-in-fade-out { @extend .fade-out }
+        .animation-in-fade-out-top { @extend .fade-out-top }
+        .animation-in-slide-out-top { @extend .slide-out-top }
+        .animation-in-slide-out-bottom { @extend .slide-out-bottom }
+        .animation-in-slide-out-left { @extend .slide-out-left }
+        .animation-in-slide-out-right { @extend .slide-out-right }
+        .animation-in-slide-out-bck-center { @extend .slide-out-bck-center }
+        .animation-in-slide-out-blurred-top { @extend .slide-out-blurred-top }
+        .animation-in-slide-out-blurred-bottom { @extend .slide-out-blurred-bottom }
+        .animation-in-puff-out-center { @extend .puff-out-center }
+        .animation-in-flip-out-hor-top { @extend .flip-out-hor-top }
+        .animation-in-flip-out-hor-bottom { @extend .flip-out-hor-bottom }
+        .animation-in-fade-in { @extend .fade-in }
+        .animation-in-fade-in-top { @extend .fade-in-top }
+        .animation-in-slide-in-top { @extend .slide-in-top }
+        .animation-in-slide-in-bottom { @extend .slide-in-bottom }
+        .animation-in-slide-in-left { @extend .slide-in-left }
+        .animation-in-slide-in-right { @extend .slide-in-right }
+        .animation-in-slide-in-bck-center { @extend .slide-in-bck-center }
+        .animation-in-slide-in-blurred-top { @extend .slide-in-blurred-top }
+        .animation-in-slide-in-blurred-bottom { @extend .slide-in-blurred-bottom }
+        .animation-in-puff-in-center { @extend .puff-in-center }
+        .animation-in-flip-in-hor-top { @extend .flip-in-hor-top }
+        .animation-in-flip-in-hor-bottom { @extend .flip-in-hor-bottom }
+    }
+
+    .js-animation-out {
+        .animation-out-fade-out { @extend .fade-out }
+        .animation-out-fade-out-top { @extend .fade-out-top }
+        .animation-out-slide-out-top { @extend .slide-out-top }
+        .animation-out-slide-out-bottom { @extend .slide-out-bottom }
+        .animation-out-slide-out-left { @extend .slide-out-left }
+        .animation-out-slide-out-right { @extend .slide-out-right }
+        .animation-out-slide-out-bck-center { @extend .slide-out-bck-center }
+        .animation-out-slide-out-blurred-top { @extend .slide-out-blurred-top }
+        .animation-out-slide-out-blurred-bottom { @extend .slide-out-blurred-bottom }
+        .animation-out-puff-out-center { @extend .puff-out-center }
+        .animation-out-flip-out-hor-top { @extend .flip-out-hor-top }
+        .animation-out-flip-out-hor-bottom { @extend .flip-out-hor-bottom }
+        .animation-out-fade-in { @extend .fade-in }
+        .animation-out-fade-in-top { @extend .fade-in-top }
+        .animation-out-slide-in-top { @extend .slide-in-top }
+        .animation-out-slide-in-bottom { @extend .slide-in-bottom }
+        .animation-out-slide-in-left { @extend .slide-in-left }
+        .animation-out-slide-in-right { @extend .slide-in-right }
+        .animation-out-slide-in-bck-center { @extend .slide-in-bck-center }
+        .animation-out-slide-in-blurred-top { @extend .slide-in-blurred-top }
+        .animation-out-slide-in-blurred-bottom { @extend .slide-in-blurred-bottom }
+        .animation-out-puff-in-center { @extend .puff-in-center }
+        .animation-out-flip-in-hor-top { @extend .flip-in-hor-top }
+        .animation-out-flip-in-hor-bottom { @extend .flip-in-hor-bottom }
+    }
+
+    &.hover-image-zoom {
+        &:hover {
+            .cms-text-banner-image {
+                transition-duration: 1s;
+                transform: scale(1.1);
+            }
+        }
+    }
+}

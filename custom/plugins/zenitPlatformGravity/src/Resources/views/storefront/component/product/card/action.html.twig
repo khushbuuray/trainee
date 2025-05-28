@@ -1,0 +1,112 @@
+{% sw_extends '@Storefront/storefront/component/product/card/action.html.twig' %}
+
+{% block component_product_box_action_inner %}
+    {% set id = product.id %}
+
+    <div class="product-action">
+        {% set isAvailable = not product.isCloseout or (product.availableStock >= product.minPurchase) %}
+        {% set displayFrom = product.calculatedPrices.count > 1 %}
+        {% set displayBuyButton = false %}
+        {% set DOWNLOAD_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_DOWNLOAD') %}
+        {% set showQuantitySelect = not product.states is defined or DOWNLOAD_STATE not in product.states or (DOWNLOAD_STATE in product.states and product.maxPurchase !== 1) %}
+
+        {# ... @zenit - define helper variables #}
+        {% set quickviewEnabled = theme_config('zen-product-listing-card-actions-quickview') %}
+        {% set isPlatformContext = context.context.extensions['zenitPlatformGravity'].system is defined %}
+        {% set isMainProduct = product.childCount <= 0 and product.parentId is null %}
+        {% set isMainVariant = product.childCount > 0 and product.parentId is null %}
+        {% set isSingleVariant = product.childCount is null and product.parentId is not null %}
+        {% set isMainVariantSelectOptionsButton = quickviewEnabled and isPlatformContext and theme_config('zen-product-listing-card-action-btn-main-product-variant') === 'selectOptions' %} {# isPlatformContext only #}
+        {% set isSingleVariantSelectOptionsButton = quickviewEnabled and isPlatformContext and theme_config('zen-product-listing-card-action-btn-single-product-variant') === 'selectOptions' %} {# isPlatformContext only #}
+        {% set isDisplayFromSelectOptionsButton = quickviewEnabled and theme_config('zen-product-listing-card-action-btn-advanced-prices-product') === 'selectOptions' %}
+        {% set isSingleVariantBuyButton = theme_config('zen-product-listing-card-action-btn-single-product-variant') === 'buy' %}
+
+        {# ... @zenit - modify displayBuyButton to include main products #}
+        {% if isMainProduct %}
+            {% set displayBuyButton = isAvailable and not displayFrom %}
+        {% endif %}
+
+        {# ... @zenit - modify displayBuyButton to include single variant products #}
+        {% if isSingleVariant and isSingleVariantBuyButton %}
+            {% set displayBuyButton = isAvailable and not displayFrom %}
+        {% endif %}
+
+        {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
+            {% block component_product_box_action_buy %}
+                {# @var product \Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity #}
+                <form action="{{ path('frontend.checkout.line-item.add') }}"
+                    method="post"
+                    class="buy-widget"
+                    {% if theme_config('zen-cart-offcanvas-prevent') %}
+                        data-zen-add-to-cart="true"
+                    {% else %}
+                        data-add-to-cart="true"
+                    {% endif %}>
+
+                    {% block component_product_box_action_form %}
+                        {{ block('component_product_box_action_buy_redirect_input') }}
+
+                        {# @deprecated tag:v6.7.0 - Block will be removed, use component_product_box_action_buy_info instead #}
+                        {{ block('page_product_detail_buy_product_buy_info') }}
+
+                        {# @deprecated tag:v6.7.0 - Block will be removed, use component_product_box_action_buy_meta instead #}
+                        {{ block('page_product_detail_product_buy_meta') }}
+
+                        {# @deprecated tag:v6.7.0 - Block will be removed, use component_product_box_action_buy_button instead #}
+                        {% block page_product_detail_product_buy_button %}
+                            {% if theme_config('zen-product-listing-card-actions-quantity-select') and showQuantitySelect %}
+                                {% sw_include '@zenitPlatformGravity/storefront/component/product/card/zen-action-buy-widget-container.html.twig' with {
+                                    quantityGridClasses:  'col',
+                                    btnGridClasses: 'col-auto',
+                                }  %}
+                            {% else %}
+                                <div class="d-grid">
+                                    <button class="btn btn-buy"
+                                            title="{{ 'listing.boxAddProduct'|trans|striptags }}">
+                                        {% block page_product_detail_product_buy_button_label %}
+                                            {{ 'listing.boxAddProduct'|trans|sw_sanitize }}
+                                        {% endblock %}
+                                    </button>
+                                </div>
+                            {% endif %}
+                        {% endblock %}
+                    {% endblock %}
+                </form>
+            {% endblock %}
+        {% elseif theme_config('zen-product-listing-card-action-btn') %}
+            {% block zen_component_product_box_action %}
+                <div class="d-grid">
+                    {% if (isSingleVariant and isSingleVariantSelectOptionsButton) or (isMainVariant and isMainVariantSelectOptionsButton) or (displayFrom and isDisplayFromSelectOptionsButton) %}
+                        {% block zen_component_product_box_action_select_options %}
+                            <button
+                                data-ajax-modal="true"
+                                data-modal-class="quickview-modal"
+                                data-url="{{ path('widgets.quickview.minimal', { 'productId': product.id }) }}"
+                                class="btn btn-primary btn-quickview"
+                                title="{{ 'listing.boxProductDetails'|trans|striptags }}">
+                                {% block zen_component_product_box_action_select_options_label %}
+                                    {{ 'zentheme.listing.selectOptions'|trans }}
+                                {% endblock %}
+                            </button>
+                        {% endblock %}
+                    {% else %}
+                        {% block component_product_box_action_detail %}
+                            <a href="{{ seoUrl('frontend.detail.page', { productId: id }) }}"
+                               class="btn btn-light btn-detail"
+                               title="{{ 'listing.boxProductDetails'|trans|striptags }}">
+                                {% block component_product_box_action_detail_label %}
+                                    {{ 'listing.boxProductDetails'|trans|sw_sanitize }}
+                                {% endblock %}
+                            </a>
+                        {% endblock %}
+                    {% endif %}
+                </div>
+            {% endblock %}
+        {% endif %}
+    </div>
+
+    {# @deprecated tag:v6.7.0 - Block, including the content will be removed. "product-name" and "product-id" will be hold inside "data-product-information" in box-standard.html.twig instead. #}
+    {% if not feature('v6.7.0.0') %}
+        {{ block('component_product_box_action_meta') }}
+    {% endif %}
+{% endblock %}

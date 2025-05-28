@@ -1,0 +1,30 @@
+.cms-block-zen-gallery-description-heading-buybox,
+.cms-block-zen-gallery-description-heading-buybox-component {
+    @include media-breakpoint-up(lg) {
+        .cms-block-container-row {
+            display: grid;
+
+            @if $zen-product-gallery-slider-width < 12 {
+                grid-template-columns: ($zen-product-gallery-slider-width * 1fr) ((12 - $zen-product-gallery-slider-width) * 1fr);
+            } @else {
+                grid-template-columns: 1fr;
+            }
+
+            grid-template-areas:
+                "product-detail-media product-detail-buy"
+                "product-detail-description-reviews product-detail-buy";
+        }
+
+        .product-detail-media {
+            grid-area: product-detail-media;
+        }
+
+        .product-detail-buy {
+            grid-area: product-detail-buy;
+        }
+
+        .product-detail-description-reviews {
+            grid-area: product-detail-description-reviews;
+        }
+    }
+}

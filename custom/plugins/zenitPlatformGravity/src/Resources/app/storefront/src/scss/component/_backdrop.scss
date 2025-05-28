@@ -1,0 +1,38 @@
+/*
+Backdrop
+==============================================
+Custom styling for backdrop used by bootstrap modal und custom offcanvas component.
+
+https://getbootstrap.com/docs/4.0/components/modal/#options
+*/
+
+.modal-backdrop,
+.offcanvas-backdrop {
+    -webkit-backdrop-filter: blur(px($zen-backdrop-blur));
+    backdrop-filter: blur(px($zen-backdrop-blur));
+    background-color: $zen-backdrop-bg;
+
+    @if $zen-backdrop-bg-accent != transparent {
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 50%, $zen-backdrop-bg-accent 100%);
+            opacity: 0.75;
+            background-size: 200%;
+            animation: backdrop 1s cubic-bezier(0.860, 0.000, 0.070, 1.000) forwards;
+        }
+
+        @keyframes backdrop {
+            0% {
+                background-position: 0 100%;
+            }
+            100% {
+                background-position: 100% 0;
+            }
+        }
+    }
+}

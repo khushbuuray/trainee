@@ -1,0 +1,26 @@
+{% block zen_element_code %}
+    {% set content = element.translated.config.contentHTML.value %}
+
+    {% block zen_element_code_contentCSS %}
+        {% if element.config.contentCSS.value %}
+            <style>
+                {{ element.config.contentCSS.value|raw }}
+            </style>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_element_code_contentHTML %}
+        {% sw_include '@zenitPlatformGravity/storefront/utilities/zen-template-from-string.html.twig' with {
+            content: content
+        } %}
+    {% endblock %}
+
+    {% block zen_element_code_contentJS %}
+        {% if element.config.contentJS.value %}
+            <script>
+                {{ element.config.contentJS.value|raw }}
+            </script>
+        {% endif %}
+    {% endblock %}
+
+{% endblock %}

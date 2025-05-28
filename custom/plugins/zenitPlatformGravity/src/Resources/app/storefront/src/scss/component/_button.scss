@@ -1,0 +1,166 @@
+/*
+Button
+==============================================
+Custom skin styling for bootstrap button component.
+
+https://getbootstrap.com/docs/4.3/components/buttons/
+*/
+
+@each $color, $value in $theme-colors {
+    .btn-#{$color} {
+        $background: $value;
+        $disabled-background: $background;
+        $disabled-color: color-contrast($disabled-background);
+        --#{$prefix}btn-disabled-color: #{$disabled-color}; // reset bootstrap default - overwrite shopware skin
+    }
+}
+
+.btn {
+    @include border-radius($zen-layout-button-radius * 1px);
+
+    .icon > svg {
+        @include transition($btn-transition);
+    }
+}
+
+//
+// Alternate buttons
+//
+@each $color, $value in $theme-colors {
+    .btn-#{$color} {
+        box-shadow: 0 0 0 0 $value;
+
+        &:hover {
+            box-shadow: 0 0 0 .2rem var(--#{$prefix}btn-hover-bg);
+        }
+
+        &:focus-visible {
+            box-shadow: 0 0 0 .2rem var(--#{$prefix}btn-hover-bg);
+        }
+    }
+}
+
+@each $color, $value in $theme-colors {
+    .btn-outline-#{$color} {
+        box-shadow: 0 0 0 0 $value;
+
+        &:hover {
+            box-shadow: 0 0 0 .2rem var(--#{$prefix}btn-hover-bg);
+        }
+
+        &:focus-visible {
+            box-shadow: 0 0 0 .2rem var(--#{$prefix}btn-hover-bg);
+        }
+    }
+}
+
+.btn-buy {
+    box-shadow: 0 0 0 0 $buy-btn-bg;
+
+    &.disabled,
+    &:disabled {
+        color: $zen-disabled-btn-color;
+    }
+
+    &:hover {
+        box-shadow: 0 0 0 .2rem var(--#{$prefix}btn-hover-bg);
+    }
+
+    &:focus-visible {
+        box-shadow: 0 0 0 .2rem var(--#{$prefix}btn-hover-bg);
+    }
+}
+
+.btn-link {
+    border-radius: 0;
+
+    .icon {
+        color: var(--#{$prefix}btn-color);
+    }
+}
+
+.btn-light {
+    box-shadow: 0 0 0 0 $zen-color-light-button;
+    @include button-variant($zen-color-light-button, $zen-color-light-button, $zen-color-light-button-text);
+
+    &:hover {
+        box-shadow: 0 0 0 .2rem var(--#{$prefix}btn-hover-bg);
+    }
+
+    &:focus-visible {
+        box-shadow: 0 0 0 .2rem var(--#{$prefix}btn-hover-bg);
+    }
+
+    .icon {
+        color: $zen-color-light-button-text;
+    }
+}
+
+.btn-dark {
+    box-shadow: 0 0 0 0 $zen-color-dark-button;
+    @include button-variant($zen-color-dark-button, $zen-color-dark-button, $zen-color-dark-button-text);
+
+    &:hover {
+        box-shadow: 0 0 0 .2rem var(--#{$prefix}btn-hover-bg);
+    }
+
+    &:focus-visible {
+        box-shadow: 0 0 0 .2rem var(--#{$prefix}btn-hover-bg);
+    }
+
+    .icon {
+        color: $zen-color-dark-button-text;
+    }
+}
+
+.input-group {
+    .btn {
+        &:hover {
+            box-shadow: none;
+        }
+    }
+}
+
+.offcanvas-close {
+    &.btn {
+        &:hover {
+            box-shadow: none;
+        }
+    }
+}
+
+.line-item-remove-button {
+    height: $input-height;
+    width: $input-height;
+    padding: 0;
+}
+
+.btn-icon-only {
+    display: flex;
+    justify-content: center;
+    font-size: $input-font-size;
+    line-height: $input-height;
+    height: $input-height;
+    width: $input-height;
+    padding: 0;
+
+    &.btn-lg {
+        font-size: $input-font-size-lg;
+        line-height: $input-height-lg;
+        height: $input-height-lg;
+        width: $input-height-lg;
+    }
+
+    &.btn-sm {
+        font-size: $input-font-size-sm;
+        line-height: $input-height-sm;
+        height: $input-height-sm;
+        width: $input-height-sm;
+    }
+
+    .icon {
+        > svg {
+            top: 0;
+        }
+    }
+}

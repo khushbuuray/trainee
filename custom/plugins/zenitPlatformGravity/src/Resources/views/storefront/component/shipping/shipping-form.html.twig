@@ -1,0 +1,10 @@
+{% sw_extends '@Storefront/storefront/component/shipping/shipping-form.html.twig' %}
+
+{% block page_checkout_change_shipping_form_fields %}
+    {# ... @zenit - set config variable visibleShippingMethodsLimit #}
+    {% set visibleShippingMethodsLimit = theme_config('zen-checkout-confirm-visible-shipping-methods-limit')|default(5) %}
+
+    {% sw_include '@Storefront/storefront/component/shipping/shipping-fields.html.twig' with {
+        visibleShippingMethodsLimit: visibleShippingMethodsLimit
+    } %}
+{% endblock %}

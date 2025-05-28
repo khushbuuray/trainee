@@ -1,0 +1,59 @@
+{% block zen_checkout_breadcrumb %}
+
+    {# ... @zenit - add compatiblity with one page checkout Premsoft #}
+    {% if not premsOnePageCheckout.useOnePageCheckout %}
+
+        {% if breadcrumbCategories is null %}
+            {% set breadcrumbCategories = [
+                {
+                    label: 'zentheme.checkout.breadcrumbs.cart'|trans,
+                    controllerAction: 'cartPage',
+                    link: path('frontend.checkout.cart.page')
+                },
+                {
+                    label: 'zentheme.checkout.breadcrumbs.register'|trans,
+                    controllerAction: 'checkoutRegisterPage',
+                },
+                {
+                    label: 'zentheme.checkout.breadcrumbs.confirm'|trans,
+                    controllerAction: 'confirmPage'
+                }
+            ] %}
+        {% endif %}
+
+        <div class="breadcrumb-wrap checkout-breadcrumb">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-steps">
+                    {% for item in breadcrumbCategories %}
+                        {% block zen_checkout_breadcrumb_item %}
+                            <li class="breadcrumb-item breadcrumb-steps-item{% if controllerAction == item.controllerAction %} active{% endif %}{% if item.controllerAction in completed %} completed{% endif %}">
+                                {% if item.link is not empty %}
+                                    {% block zen_checkout_breadcrumb_breadcrumb_link %}
+                                        <a href="{{ item.link }}"
+                                           class="breadcrumb-title breadcrumb-steps-title{% if controllerAction == item.controllerAction %} active{% endif %}{% if item.controllerAction in completed %} completed{% endif %}"
+                                           title="{{ item.label }}"
+                                           itemprop="name">
+                                            <span class="breadcrumb-steps-indicator badge badge-pill"></span>
+                                            <span class="breadcrumb-steps-text">{{ item.label }}</span>
+                                        </a>
+                                    {% endblock %}
+                                {% else %}
+                                    {% block zen_checkout_breadcrumb_breadcrumb_text %}
+                                        <span class="breadcrumb-title breadcrumb-steps-title{% if controllerAction == item.controllerAction %} active{% endif %}{% if item.controllerAction in completed %} completed{% endif %}" itemprop="name">
+                                            <span class="breadcrumb-steps-indicator badge badge-pill"></span>
+                                            <span class="breadcrumb-steps-text">{{ item.label }}</span>
+                                        </span>
+                                    {% endblock %}
+                                {% endif %}
+
+                                {% block zen_checkout_breadcrumb_breadcrumb_meta %}
+                                    <meta itemprop="position" content="{{ loop.index }}">
+                                {% endblock %}
+                            </li>
+                        {% endblock %}
+                    {% endfor %}
+                </ol>
+            </nav>
+        </div>
+    {% endif %}
+{% endblock %}

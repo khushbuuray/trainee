@@ -1,0 +1,76 @@
+{% sw_extends '@Storefront/storefront/page/checkout/cart/index.html.twig' %}
+
+{% block page_checkout_container %}
+    {{ parent() }}
+
+    {% if theme_config('zen-cart-product-number-input') is same as ('always') %}
+        {{ block('zen_checkout_cart_add_product') }}
+    {% endif %}
+{% endblock %}
+
+{% block page_checkout_cart_add_product %}
+    {% if theme_config('zen-cart-product-number-input') is not same as ('hidden') %}
+        {{ block('zen_checkout_cart_add_product') }}
+    {% endif %}
+{% endblock %}
+
+{% block zen_checkout_cart_add_product %}
+    {# ... @zenit - changed col #}
+    <div class="col-md-6 cart-add-product-container">
+        <form action="{{ path('frontend.checkout.product.add-by-number') }}"
+              class="cart-add-product"
+              method="post">
+            {{ block('page_checkout_cart_add_product_redirect') }}
+
+            {{ block('page_checkout_cart_add_product_input_group') }}
+        </form>
+    </div>
+{% endblock %}
+
+{% block page_checkout_cart_shipping_costs %}
+    {% set shippingCostsCollapseState = (theme_config('zen-cart-shipping-costs-collapse-state') is not null) ? theme_config('zen-cart-shipping-costs-collapse-state') : false %}
+
+    <div class="col-md-6 cart-shipping-costs-container">
+        <form name="precalc"
+              method="post"
+              action="{{ path('frontend.checkout.configure') }}"
+              data-form-auto-submit="true">
+
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    {% block page_checkout_cart_shipping_costs_trigger %}
+                        {% set PHYSICAL_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_PHYSICAL') %}
+                        {% if page.cart.lineItems.hasLineItemWithState(PHYSICAL_STATE) %}
+                            <div class="accordion-header">
+                                <button class="cart-shipping-costs-btn accordion-button{% if not shippingCostsCollapseState %} collapsed{% endif %}"
+                                   data-bs-toggle="collapse"
+                                   href="#collapseShippingCost"
+                                   type="button"
+                                   aria-expanded="false"
+                                   aria-controls="collapseExample">
+                                    {{ 'checkout.shippingCosts'|trans|sw_sanitize }}
+
+                                    {% block page_checkout_cart_shipping_costs_trigger_icon %}{% endblock %}
+                                </button>
+                            </div>
+                        {% endif %}
+                    {% endblock %}
+
+                    {% block page_checkout_cart_shipping_costs_form_group %}
+                        <div class="accordion-collapse collapse{% if shippingCostsCollapseState %} show{% endif %}" id="collapseShippingCost">
+                            <div class="accordion-body">
+                                {{ block('page_checkout_cart_shipping_costs_form_group_country') }}
+
+                                {{ block('page_checkout_cart_shipping_costs_form_group_payment_method') }}
+
+                                {{ block('page_checkout_cart_shipping_costs_form_group_shipping_method') }}
+                            </div>
+
+                            <input type="hidden" name="redirectTo" value="frontend.checkout.cart.page">
+                        </div>
+                    {% endblock %}
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

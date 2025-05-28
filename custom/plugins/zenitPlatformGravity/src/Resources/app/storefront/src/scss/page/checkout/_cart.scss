@@ -1,0 +1,46 @@
+.cart-add-product-container {
+    .input-group {
+        > .form-control {
+            // bugfix because of wrong placed label
+            &:not(:first-child) {
+                @if $zen-layout-forms-style != "underlined" {
+                    @include border-start-radius($zen-layout-input-radius * 1px);
+                }
+            }
+        }
+    }
+}
+
+.cart-add-product {
+    max-width: none;
+}
+
+.cart-shipping-costs-container {
+    $contrastBackground: if($zen-container-bg != transparent, $zen-container-bg, $body-bg);
+
+    .accordion-item {
+        --#{$prefix}accordion-color: #{color-contrast($contrastBackground, $sw-text-color, $zen-light-text-color)};
+        --#{$prefix}accordion-bg: transparent;
+        --#{$prefix}accordion-border-radius: #{px($zen-layout-element-radius)};
+        --#{$prefix}accordion-inner-border-radius: #{px($zen-layout-element-radius)};
+        @if (contrast-ratio($contrastBackground, $black) < $min-contrast-ratio) {
+            --#{$prefix}accordion-btn-icon: #{escape-svg($zen-accordion-light-button-icon)};
+        }
+    }
+
+    .accordion-button {
+        --#{$prefix}accordion-btn-color: #{color-contrast($contrastBackground, $sw-text-color, $zen-light-text-color)};
+        @include font-size($btn-font-size);
+        padding: $btn-padding-y $btn-padding-x;
+
+        &:not(.collapsed) {
+            --#{$prefix}accordion-active-color: #{color-contrast($contrastBackground, $sw-text-color, $zen-light-text-color)};
+            --#{$prefix}accordion-active-bg: transparent;
+            box-shadow: none;
+        }
+    }
+}
+
+.cart-shipping-costs-btn {
+    padding-left: var(--#{$prefix}accordion-btn-padding-y)
+}

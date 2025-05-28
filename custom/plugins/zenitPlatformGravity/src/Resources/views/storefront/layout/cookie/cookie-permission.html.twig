@@ -1,0 +1,29 @@
+{% sw_extends '@Storefront/storefront/layout/cookie/cookie-permission.html.twig' %}
+
+{% block layout_cookie_permission_inner %}
+    {% set acceptAllCookies = config('core.basicInformation.acceptAllCookies') %}
+    {# ... @zenit - added class has-accept-all #}
+    <div
+        class="cookie-permission-container{% if acceptAllCookies %} has-accept-all{% endif %}"
+        data-cookie-permission="true">
+        <div class="container">
+            <div class="row align-items-center">
+                {{ block('layout_cookie_permission_inner_content') }}
+
+                {{ block('layout_cookie_permission_inner_button') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block layout_cookie_permission_inner_button %}
+    <div class="col-12{% if not acceptAllCookies %} col-md-auto{% endif%} col-lg-auto d-flex justify-content-center flex-wrap cookie-permission-actions pe-2">
+        {{ block('layout_cookie_permission_inner_button_deny') }}
+
+        {{ block('layout_cookie_permission_inner_button_configuration') }}
+
+        {% if acceptAllCookies %}
+            {{ block('layout_cookie_permission_inner_button_accept_all') }}
+        {% endif %}
+    </div>
+{% endblock %}

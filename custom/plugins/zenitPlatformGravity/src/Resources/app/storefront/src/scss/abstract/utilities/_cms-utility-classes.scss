@@ -1,0 +1,209 @@
+// cms sections
+.cms-section {
+    &.cms-section-bg-fixed {
+        @include media-breakpoint-up(lg) {
+            background-attachment: fixed; // ... not working on iOS properly
+        }
+    }
+
+    &[class*="offset-"] {
+        overflow: visible;
+    }
+
+    @each $key, $value in $zen-cms-offsets {
+        &.cms-section-offset-pt-#{$key} {
+            [class*="cms-section-"] {
+                @include zen-cms-section-offsets(
+                    $value
+                )
+            }
+        }
+    }
+
+    @each $key, $value in $zen-cms-offsets {
+        &.cms-section-offset-nt-#{$key} {
+            [class*="cms-section-"] {
+                @include zen-cms-section-negative-offsets(
+                    $value
+                )
+            }
+        }
+    }
+}
+
+// cms blocks
+
+// cms elements
+[class*="cms-element-"]:not(.cms-element-zen-image-slider) {
+    &[class*="cms-element-shadow"] {
+        .cms-element-inner {
+            transition: all .2s ease-in;
+        }
+    }
+
+    &.cms-element-shadow {
+        &-sm {
+            .cms-element-inner {
+                box-shadow: $zen-box-shadow-sm;
+            }
+
+            &:hover {
+                .cms-element-inner {
+                    box-shadow: $zen-box-shadow-hover-sm;
+                }
+            }
+        }
+
+        &-md {
+            .cms-element-inner {
+                box-shadow: $zen-box-shadow-md;
+            }
+
+            &:hover {
+                .cms-element-inner {
+                    box-shadow: $zen-box-shadow-hover-md;
+                }
+            }
+        }
+
+        &-lg {
+            .cms-element-inner {
+                box-shadow: $zen-box-shadow-lg;
+            }
+
+            &:hover {
+                .cms-element-inner {
+                    box-shadow: $zen-box-shadow-hover-lg;
+                }
+            }
+        }
+
+        &-smooth-sm {
+            .cms-element-inner {
+                box-shadow: $zen-box-shadow-smooth-sm;
+            }
+
+            &:hover {
+                .cms-element-inner {
+                    box-shadow: $zen-box-shadow-hover-sm;
+                }
+            }
+        }
+
+        &-smooth-md {
+            .cms-element-inner {
+                box-shadow: $zen-box-shadow-smooth-md;
+            }
+
+            &:hover {
+                .cms-element-inner {
+                    box-shadow: $zen-box-shadow-hover-md;
+                }
+            }
+        }
+
+        &-smooth-lg {
+            .cms-element-inner {
+                box-shadow: $zen-box-shadow-smooth-lg;
+            }
+
+            &:hover {
+                .cms-element-inner {
+                    box-shadow: $zen-box-shadow-hover-lg;
+                }
+            }
+        }
+
+        &-long {
+            .cms-element-inner {
+                box-shadow: $zen-box-shadow-long;
+            }
+
+            &:hover {
+                .cms-element-inner {
+                    box-shadow: $zen-box-shadow-hover-lg;
+                }
+            }
+        }
+    }
+
+    &.cms-element-shrink {
+        transition: all .3s ease-in;
+
+        &:hover {
+            transform: scale(0.98);
+        }
+    }
+}
+
+.cms-element-zen-image-slider {
+    &[class*="cms-element-shadow"] {
+        transition: all .2s ease-in;
+    }
+
+    &.cms-element-shadow {
+        &-sm {
+            box-shadow: $zen-box-shadow-sm;
+
+            &:hover {
+                box-shadow: $zen-box-shadow-hover-sm;
+            }
+        }
+
+        &-md {
+            box-shadow: $zen-box-shadow-md;
+
+            &:hover {
+                box-shadow: $zen-box-shadow-hover-md;
+            }
+        }
+
+        &-lg {
+            box-shadow: $zen-box-shadow-lg;
+
+            &:hover {
+                box-shadow: $zen-box-shadow-hover-lg;
+            }
+        }
+
+        &-smooth-sm {
+            box-shadow: $zen-box-shadow-smooth-sm;
+
+            &:hover {
+                box-shadow: $zen-box-shadow-hover-sm;
+            }
+        }
+
+        &-smooth-md {
+            box-shadow: $zen-box-shadow-smooth-md;
+
+            &:hover {
+                box-shadow: $zen-box-shadow-hover-md;
+            }
+        }
+
+        &-smooth-lg {
+            box-shadow: $zen-box-shadow-smooth-lg;
+
+            &:hover {
+                box-shadow: $zen-box-shadow-hover-lg;
+            }
+        }
+
+        &-long {
+            box-shadow: $zen-box-shadow-long;
+
+            &:hover {
+                box-shadow: $zen-box-shadow-hover-lg;
+            }
+        }
+    }
+
+    &.cms-element-shrink {
+        transition: all .3s ease-in;
+
+        &:hover {
+            transform: scale(0.98);
+        }
+    }
+}

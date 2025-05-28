@@ -1,0 +1,55 @@
+{% sw_extends '@Storefront/storefront/layout/header/logo.html.twig' %}
+
+{% block layout_header_logo_image %}
+    {% block zen_layout_header_logo_image_inverted %}
+        {% if (controllerName|lower is same as ('navigation') or controllerName|lower is same as ('landingpage')) %}
+
+            {% if zenCustomFields.category.zenit_gravity_category_header_position is same as ('absolute')
+                or theme_config("zen-category-header-position") is same as ('absolute') and (zenCustomFields.category.zenit_gravity_category_header_position is empty or zenCustomFields.category.zenit_gravity_category_header_position is same as ('inherit')) %}
+                {% set isAbsolutePositioned = true %}
+            {% endif %}
+
+            {% if zenCustomFields.category.zenit_gravity_category_header_contrast is same as ('light-header')
+                or theme_config("zen-category-header-contrast") is same as ('light-header') and (zenCustomFields.category.zenit_gravity_category_header_contrast is empty or zenCustomFields.category.zenit_gravity_category_header_contrast is same as ('inherit')) %}
+                {% set isLightHeader = true %}
+            {% endif %}
+
+            {% if zenCustomFields.category.zenit_gravity_category_header_contrast is same as ('dark-header')
+                or theme_config("zen-category-header-contrast") is same as ('dark-header') and (zenCustomFields.category.zenit_gravity_category_header_contrast is empty or zenCustomFields.category.zenit_gravity_category_header_contrast is same as ('inherit')) %}
+                {% set isDarkHeader = true %}
+            {% endif %}
+
+            {% if zenCustomFields.category.zenit_gravity_category_header_contrast is same as ('inverted-header')
+                or theme_config("zen-category-header-contrast") is same as ('inverted-header') and (zenCustomFields.category.zenit_gravity_category_header_contrast is empty or zenCustomFields.category.zenit_gravity_category_header_contrast is same as ('inherit')) %}
+                {% set isInverted = true %}
+            {% endif %}
+
+            {% if isLightHeader and theme_config('zen-logo-light-header-desktop') %}
+                <picture class="header-logo-picture header-logo-picture-light-header">
+                    <img src="{{ theme_config('zen-logo-light-header-desktop')|sw_encode_url }}"
+                         alt="{{ 'header.logoLink'|trans|striptags }}"
+                         class="img-fluid header-logo-main-img">
+                </picture>
+            {% endif %}
+
+            {% if isDarkHeader and theme_config('zen-logo-dark-header-desktop') %}
+                <picture class="header-logo-picture header-logo-picture-dark-header">
+                    <img src="{{ theme_config('zen-logo-dark-header-desktop')|sw_encode_url }}"
+                         alt="{{ 'header.logoLink'|trans|striptags }}"
+                         class="img-fluid header-logo-main-img">
+                </picture>
+            {% endif %}
+
+            {% if isInverted and theme_config('zen-logo-inverted-desktop') %}
+                <picture class="header-logo-picture header-logo-picture-inverted">
+                    <img src="{{ theme_config('zen-logo-inverted-desktop')|sw_encode_url }}"
+                         alt="{{ 'header.logoLink'|trans|striptags }}"
+                         class="img-fluid header-logo-main-img">
+                </picture>
+            {% endif %}
+
+        {% endif %}
+    {% endblock %}
+
+    {{ parent() }}
+{% endblock %}

@@ -1,0 +1,9 @@
+{% sw_extends '@Storefront/storefront/component/captcha/basicCaptcha.html.twig' %}
+
+{% block component_basic_captcha_refresh_icon %}
+    {# ... @zenit - add class .btn-icon-only and .btn-light; remove class .btn-outline-primary #}
+    {# ... @zenit - changed a-Element to button-Element because of SEO. a-Element without href is not crawlable and creates an error #}
+    <button class="btn btn-light btn-icon-only basic-captcha-content-refresh-icon" id="{{ formId }}-basic-captcha-content-refresh-icon">
+        {% sw_icon 'arrow-switch' %}
+    </button>
+{% endblock %}

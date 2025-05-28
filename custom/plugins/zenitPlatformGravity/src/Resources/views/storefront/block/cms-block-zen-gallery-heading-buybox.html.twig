@@ -1,0 +1,159 @@
+{% block block_zen_gallery_heading_buybox %}
+    {% set galleryWidthConfig = theme_config('zen-product-gallery-slider-width')|default(7) %}
+    {% set buyboxWidthConfig = theme_config('zen-product-gallery-slider-width') ? 12 - theme_config('zen-product-gallery-slider-width') : 5 %}
+    {% set productDetailManufacturerPosition = theme_config('zen-product-details-manufacturer-position')|default('default') %}
+    {% set productDetailRatingPosition = theme_config('zen-product-details-rating-position')|default('default') %}
+    {% set productDetailRatingMode = theme_config('zen-product-details-rating-mode')|default('default') %}
+
+    {% set stickyGallery = (theme_config('zen-product-gallery-sticky') is not null) ? theme_config('zen-product-gallery-sticky') : true %}
+    {% set stickyGalleryForced = (theme_config('zen-product-gallery-sticky-forced') is not null) ? theme_config('zen-product-gallery-sticky-forced') : true %}
+    {% set stickyBuybox = (theme_config('zen-product-details-buybox-sticky') is not null) ? theme_config('zen-product-details-buybox-sticky') : true %}
+    {% set stickyBuyboxForced = (theme_config('zen-product-details-buybox-sticky-forced') is not null) ? theme_config('zen-product-details-buybox-sticky-forced') : true %}
+
+    {% if galleryWidthConfig > 6 %}
+        {% set columns = 1 %}
+    {% else %}
+        {% set columns = 2 %}
+    {% endif %}
+
+    {% block block_zen_gallery_heading_buybox_column_left %}
+        {% set element = block.slots.getSlot('left') %}
+        {% set config = element.fieldConfig.elements %}
+
+
+        {# ... @zenit - sticky js options #}
+        {% set stickyOptions = {
+            forced: stickyGalleryForced,
+            checkHeight: (stickyGallery and stickyBuybox) ? false : true
+        } %}
+
+        <div class="col-lg-7 col-xl-{{ galleryWidthConfig }} product-detail-media"
+            {% if stickyGallery %}
+                data-zen-sticky="true"
+                data-zen-sticky-options="{{ stickyOptions|json_encode }}"
+            {% endif %}
+             data-cms-element-id="{{ element.id }}">
+            {% block block_zen_gallery_heading_buybox_column_left_inner %}
+                {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing
+                    with {
+                    isProduct: config.sliderItems.value == 'product.media' and config.sliderItems.source == 'mapped',
+                    startIndexThumbnails: 1,
+                    startIndexSlider: 1,
+                    fallbackImageTitle: page.product.translated.name
+                } %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+    {% block block_zen_gallery_heading_buybox_column_right %}
+        {% set buyboxElement = block.slots.getSlot('right-bottom') %}
+        {% set productNameElement = block.slots.getSlot('right-top-left') %}
+        {% set manufacturerLogoElement = block.slots.getSlot('right-top-right') %}
+        {% set totalReviews = buyboxElement.data.totalReviews %}
+        {% set mobileDefaultTabMode = (theme_config('zen-product-detail-tabs-mode-mobile') is same as ('standard')) ? true : false %}
+
+        {# ... @zenit - sticky js options #}
+        {% set stickyOptions = {
+            forced: stickyBuyboxForced,
+            checkHeight: (stickyGallery and stickyBuybox) ? false : true
+        } %}
+
+        <div class="col-lg-5 col-xl-{{ buyboxWidthConfig }} product-detail-buy"
+             data-cms-element-id="{{ buyboxElement.id }}"
+            {% if stickyBuybox %}
+                data-zen-sticky="true"
+                data-zen-sticky-options="{{ stickyOptions|json_encode }}"
+             {% endif %}
+        >
+            {% block block_zen_gallery_heading_buybox_column_right_top %}
+                {% block block_zen_gallery_heading_buybox_product_heading %}
+                    <div class="row product-detail-headline">
+
+                        {% if productDetailRatingPosition is same as ('headline') %}
+                            {% set remoteClickOptions = {
+                                selector: '#review-tab-' ~ page.product.id,
+                                scrollToElement: true
+                            } %}
+
+                            {% set reviewTabHref = "#review-tab-pane-" ~ page.product.id %}
+
+                            {% block block_zen_gallery_heading_buybox_product_name_inner_review %}
+                                {% if page.product.ratingAverage > 0 and config('core.listing.showReview')
+                                    or (productDetailRatingMode is same as ('placeholder') and config('core.listing.showReview')) %}
+                                    <div class="{% if productDetailManufacturerPosition is same as ('top') %}col-auto {% else%}col-12 {% endif %}product-detail-reviews-container">
+                                        <div class="product-detail-reviews">
+                                            {% sw_include '@Storefront/storefront/component/review/rating.html.twig' with {
+                                                points: page.product.ratingAverage,
+                                                style: 'text-primary'
+                                            } %}
+                                            <a
+                                                data-bs-toggle="tab"
+                                                class="product-detail-reviews-link"
+                                                {% if mobileDefaultTabMode %}data-off-canvas-tabs="true"{% endif %}
+                                                data-remote-click="true"
+                                                data-remote-click-options='{{ remoteClickOptions|json_encode }}'
+                                                href="{{ reviewTabHref }}"
+                                                aria-controls="review-tab-pane"
+                                            >
+
+                                                {% if page.product.ratingAverage > 0 %}
+                                                    {{ totalReviews }}
+                                                    {{ 'detail.reviewLinkText'|trans({'%count%': totalReviews})|sw_sanitize }}
+                                                {% else %}
+                                                    {{ 'zentheme.detail.reviewLinkText'|trans }}
+                                                {% endif %}
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endblock %}
+                        {% endif %}
+
+                        {% if productDetailManufacturerPosition is same as ('top') %}
+                            {% block block_zen_gallery_heading_buybox_product_manufacturer_logo_element %}
+                                <div class="col-auto product-heading-manufacturer-logo-container" data-cms-element-id="{{ manufacturerLogoElement.id }}">
+                                    {% block block_zen_gallery_heading_buybox_product_manufacturer_logo_inner %}
+                                        {% sw_include '@Storefront/storefront/element/cms-element-' ~ manufacturerLogoElement.type ~ '.html.twig' ignore missing with {
+                                            element: manufacturerLogoElement
+                                        } %}
+                                    {% endblock %}
+                                </div>
+                            {% endblock %}
+                        {% endif %}
+
+                        {% block block_zen_gallery_heading_buybox_product_name_element %}
+                            <div class="{% if productDetailManufacturerPosition is same as ('default') %}col {% else%}col-12 {% endif %}product-heading-name-container" data-cms-element-id="{{ productNameElement.id }}">
+                                {% block block_zen_gallery_heading_buybox_product_name_inner %}
+                                    {# ... @zenit - get totalReviews from buyboxElement #}
+                                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ productNameElement.type ~ '.html.twig' ignore missing with {
+                                        element: productNameElement
+                                    } %}
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
+
+                        {% if productDetailManufacturerPosition is same as ('default') %}
+                            {{ block('block_zen_gallery_heading_buybox_product_manufacturer_logo_element') }}
+                        {% endif %}
+                    </div>
+
+                    {% block block_zen_gallery_heading_buybox_product_short_description %}
+                        {% if page.product.translated.metaDescription and theme_config('zen-product-details-short-description') %}
+                            <div class="product-detail-short-description">
+                                {{ page.product.translated.metaDescription|raw }}
+                            </div>
+                        {% endif %}
+                    {% endblock %}
+                {% endblock %}
+            {% endblock %}
+    
+            {% block block_zen_gallery_heading_buybox_buybox_element %}
+                {% block block_zen_gallery_heading_buybox_buybox_inner %}
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ buyboxElement.type ~ '.html.twig' ignore missing with {
+                        element: buyboxElement
+                    }%}
+                {% endblock %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+{% endblock %}

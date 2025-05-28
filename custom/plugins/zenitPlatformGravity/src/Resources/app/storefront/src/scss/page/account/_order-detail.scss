@@ -1,0 +1,19 @@
+.order-item-detail-footer,
+.order-item-detail-footnote {
+    background-color: rgba(0,0,0,.1);
+}
+
+.order-item-detail-list-item {
+    &.is-child {
+        background-color: rgba(0,0,0,.1);
+    }
+}
+
+.order-item-product-name,
+.order-item-name {
+    @include text-color-contrast;
+}
+
+.order-detail-table-footer {
+    background-color: rgba(0,0,0,.1);
+}

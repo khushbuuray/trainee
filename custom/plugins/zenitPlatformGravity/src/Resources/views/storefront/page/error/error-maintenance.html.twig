@@ -1,0 +1,34 @@
+{% sw_extends '@Storefront/storefront/page/error/error-maintenance.html.twig' %}
+
+{% block error_maintenance_header %}
+    {# ... @zenit - remove .mt-3 #}
+    <header class="header-main">
+        {{ block ('error_maintenance_header_inner') }}
+    </header>
+{% endblock %}
+
+{% block error_maintenance_footer %}
+    {# ... @zenit - remove .w-75 .mx-auto #}
+    <footer class="footer-main mt-5">
+        {% block error_maintenance_footer_content %}
+            {# ... @zenit - add .mb-3 #}
+            <div class="container mt-3 mb-3 text-center">
+                {% if config('core.basicInformation.imprintPage') is not null %}
+                    <a href="{{ seoUrl('frontend.maintenance.singlepage', { id: config('core.basicInformation.imprintPage') }) }}"
+                       title="{{ 'general.imprintLink'|trans|sw_sanitize }}"
+                       class="ps-2 pe-2">
+                        {{ 'general.imprintLink'|trans|sw_sanitize }}
+                    </a>
+                {% endif %}
+
+                {% if config('core.basicInformation.privacyPage') is not null %}
+                    <a href="{{ seoUrl('frontend.maintenance.singlepage', { id: config('core.basicInformation.privacyPage') }) }}"
+                       title="{{ 'general.privacyLink'|trans|sw_sanitize }}"
+                       class="ps-2 pe-2">
+                        {{ 'general.privacyLink'|trans|sw_sanitize }}
+                    </a>
+                {% endif %}
+            </div>
+        {% endblock %}
+    </footer>
+{% endblock %}

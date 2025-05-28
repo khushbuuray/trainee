@@ -1,0 +1,46 @@
+{% sw_extends '@Storefront/storefront/section/cms-section-default.html.twig' %}
+
+{% block page_content_section_default %}
+    {# ... @zenit - add expanded product-slider #}
+    {% if theme_config('zen-product-slider-style') == 'expanded' %}
+        {# ludtwig-ignore twig-hash-key-no-quotes #}
+        {% set layout = section.sizingMode ? section.sizingMode|replace({'_': '-'}) : 'container' %}
+        
+        {% set isFirstElementProductSlider = false %}
+        {% for block in section.blocks %}
+            {% if loop.first and block.type in ['product-slider', 'cross-selling'] %}
+                {% set isFirstElementProductSlider = true %}
+            {% endif %}
+        {% endfor %}
+    
+        <div class="cms-section-default{% if not isFirstElementProductSlider %} {{ layout }}{% else %} expanded-product-slider{% endif %}">
+            {% for block in section.blocks %}
+                {% set isProductSlider = block.type in ['product-slider', 'cross-selling'] %}
+        
+                {% if isProductSlider and not loop.first %}
+                    </div>
+                    <div class="cms-section-default expanded-product-slider">
+                {% endif %}
+
+                {% if isProductSlider %}
+                    <div class="{{ layout }}">
+                {% endif %}
+
+                {% block section_default_content_block %}
+                    {% sw_include '@Storefront/storefront/section/cms-section-block-container.html.twig' %}
+                {% endblock %}
+
+                {% if isProductSlider %}
+                    </div>
+                {% endif %}
+        
+                {% if isProductSlider and not loop.last %}
+                    </div>
+                    <div class="cms-section-default {{ layout }}">
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

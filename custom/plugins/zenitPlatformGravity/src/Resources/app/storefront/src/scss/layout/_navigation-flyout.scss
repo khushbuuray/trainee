@@ -1,0 +1,198 @@
+/*
+Navigation flyout
+==============================================
+Custom styling for navigation flyout which opens on hover over the main navigation.
+*/
+
+.is-flyout-fullscreen {
+    .nav-main,
+    .main-navigation {
+        position: static;
+    }
+
+    .navigation-flyout {
+        padding: 0;
+
+        // ... if not a single-line header, the navigation flyout extends to the browser edge at fullscreen
+        @if $zen-header-style != "single-line" {
+            max-width: none;
+        }
+    }
+}
+
+.navigation-flyouts {
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.navigation-flyout {
+    background: transparent;
+    box-shadow: none;
+    margin: auto;
+    left: 0;
+    right: 0;
+    width: auto;
+
+    @if $zen-layout-style == "full-width-boxed" {
+        max-width: px($zen-layout-container-width - $zen-layout-container-spacing-right - $zen-layout-container-spacing-left);
+    }
+
+    // navigation badge
+    .navigation-flyout-link {
+        > .navigation-badge {
+            background: $zen-flyout-navigation-color;
+            color: $zen-flyout-navigation-bg;
+            @include border-radius($zen-layout-button-radius * 1px);
+        }
+    }
+
+    .header-single-line & {
+        top: px($zen-main-navigation-height);
+    }
+
+    /* ... improves compatibility. Should the new div with the class
+     .navigation-flyout-inner removed by a plugin is .container
+     as a direct child element and receives the styles. */
+    > .container,
+    .navigation-flyout-inner {
+        background: $zen-flyout-navigation-bg;
+        box-shadow: 0 43px 43px -6px rgba($black, 0.2);
+    }
+
+    &.is-open {
+        .header-single-line & {
+            padding-top: px(($zen-header-height-mobile - $zen-main-navigation-height) / 2);
+
+            @include media-breakpoint-up(lg) {
+                padding-top: px(($zen-header-height - $zen-main-navigation-height) / 2);
+            }
+        }
+
+        @if $zen-flyout-navigation-animation == "swing" {
+            @extend .swing-in-bottom-fwd;
+        } @else if $zen-flyout-navigation-animation == "slide" {
+            @extend .flyout-slide-in-bottom;
+        } @else if $zen-flyout-navigation-animation == "slide-blurred" {
+            @extend .slide-in-blurred-bottom;
+        } @else if $zen-flyout-navigation-animation == "fade" {
+            @extend .fade-in-fwd;
+        } @else if $zen-flyout-navigation-animation == "bounce" {
+            @extend .bounce-in-bottom;
+        }
+    }
+
+    @if $zen-flyout-navigation-scrollable == 1 {
+        .navigation-flyout-content {
+            overflow: auto;
+            max-height: vh($zen-flyout-navigation-max-height);
+        }
+    }
+
+    .container > .navigation-flyout-content:first-child {
+        padding-top: $spacer;
+
+        @if $zen-flyout-navigation-teaser == 1 {
+            padding-bottom: $spacer;
+        }
+    }
+}
+
+.navigation-flyout-close {
+    .icon {
+        color: $zen-flyout-navigation-color;
+    }
+}
+
+.navigation-flyout-category-link .nav-link {
+    color: $zen-flyout-navigation-color;
+    font-weight: $zen-flyout-navigation-font-weight;
+
+    &:hover {
+        color: $zen-flyout-navigation-hover-color;
+    }
+}
+
+.navigation-flyout-categories {
+    &.is-level-0 {
+        @if $zen-flyout-navigation-dynamic-cols == 1 {
+            display: block;
+            column-count: $zen-flyout-navigation-cols;
+            column-gap: $spacer;
+
+            &.has-media {
+                column-count: $zen-flyout-navigation-cols - 1;
+            }
+
+            .navigation-flyout-col {
+                width: auto;
+                break-inside: avoid;
+            }
+
+            > .navigation-flyout-col {
+                // ... use padding instead of margin fixes safari bug with column-count, where .navigation-flyout-col does not vertical align correctly
+                margin-bottom: 0;
+                padding-bottom: 30px;
+
+                &::before {
+                    height: auto;
+                    bottom: 30px; // ... because of padding instead of margin
+                }
+            }
+        }
+
+        @if $zen-flyout-navigation-grouping == 0 {
+            > .navigation-flyout-col {
+                &::before {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+.navigation-flyout-link {
+    color: $zen-flyout-navigation-color;
+    @include font-size(px($zen-flyout-navigation-font-size));
+
+    // sets cursor to default for structuring elements
+    &:not(a) {
+        cursor: default;
+    }
+
+    @if $zen-flyout-navigation-extern-link-icon  == 1 {
+        &[target=_blank] {
+            span:not(.badge)::after {
+                content: "";
+                display: inline-block;
+                width: .715em;
+                height: .715em;
+                position: relative;
+                margin-left: .285em;
+                -webkit-mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23758CA3' fill-rule='evenodd' d='M12.586 2H10a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 01-2 0V3.414l-6.793 6.793a1 1 0 11-1.414-1.414L12.586 2zM6 1a1 1 0 110 2H3a1 1 0 00-1 1v9a1 1 0 001 1h8.967a1 1 0 001-.99L13 9.99a1 1 0 112 .02l-.033 3.023a3 3 0 01-3 2.967H3a3 3 0 01-3-3V4a3 3 0 013-3h3z'/%3E%3C/svg%3E");
+                -webkit-mask-repeat: no-repeat;
+                -webkit-mask-size: .715em .715em;
+                mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23758CA3' fill-rule='evenodd' d='M12.586 2H10a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 01-2 0V3.414l-6.793 6.793a1 1 0 11-1.414-1.414L12.586 2zM6 1a1 1 0 110 2H3a1 1 0 00-1 1v9a1 1 0 001 1h8.967a1 1 0 001-.99L13 9.99a1 1 0 112 .02l-.033 3.023a3 3 0 01-3 2.967H3a3 3 0 01-3-3V4a3 3 0 013-3h3z'/%3E%3C/svg%3E");
+                mask-repeat: no-repeat;
+                mask-size: .715em .715em;
+                background-color: $zen-flyout-navigation-color;
+            }
+        }
+    }
+
+    &.is-level-0 {
+        font-weight: $zen-flyout-navigation-font-weight;
+    }
+
+    &.is-level-2 {
+        @include font-size(px($zen-flyout-navigation-font-size - 2));
+    }
+
+    &.active {
+        color: $zen-flyout-navigation-hover-color;
+    }
+
+    &:hover {
+        color: $zen-flyout-navigation-hover-color;
+    }
+}

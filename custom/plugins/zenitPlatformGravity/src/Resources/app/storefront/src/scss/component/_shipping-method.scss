@@ -1,0 +1,15 @@
+/*
+Shipping method
+==============================================
+Custom styling for shipping form used e.g. on account and checkout pages.
+*/
+
+.shipping-method-description > p {
+    @include text-color-contrast;
+}
+
+.shipping-method-image {
+    &[src$=".svg"] {
+        height: 100%; // Safari fix
+    }
+}

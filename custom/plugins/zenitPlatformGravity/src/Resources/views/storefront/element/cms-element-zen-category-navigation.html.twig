@@ -1,0 +1,108 @@
+{% block element_zen_category_navigation %}
+    {% set customEntryPoint = element.config.category.value %}
+    {% set activeResult = page.header.navigation.active %}
+    {% set navigationTree = page.header.navigation.tree %}
+    {% set serviceMenu = page.header.serviceMenu %}
+    {% set footerNavigationTree = page.footer.navigation.tree %}
+
+    {% macro recursiveCategory(navigationTree, customEntryPoint) %}
+        {% for treeItem in navigationTree %}
+            {% if customEntryPoint == treeItem.category.id %}
+                {% set customNavigationTree = treeItem.children %}
+
+                {% return customNavigationTree %}
+            {% endif %}
+
+            {% set childTree = _self.recursiveCategory(treeItem.children, customEntryPoint) %}
+            {% if childTree is not same as([]) %}
+                {% return childTree %}
+            {% endif %}
+        {% endfor %}
+
+        {% return [] %}
+    {% endmacro %}
+
+    {% from _self import recursiveCategory %}
+
+    {% if element.config.mode.value === 'customEntryPoint' %}
+        {# ... @zenit - first check if customEntryPoint is any menu entry point #}
+        {% if customEntryPoint == context.salesChannel.navigationCategoryId %}
+            {% set customNavigationTree = navigationTree %}
+        {% elseif customEntryPoint == context.salesChannel.footerCategoryId %}
+            {% set customNavigationTree = footerNavigationTree %}
+        {% elseif customEntryPoint == context.salesChannel.serviceCategoryId %}
+            {% set customNavigationTree = serviceMenu %}
+            {% set isServiceMenu = customNavigationTree ? true : false %}
+        {% endif %}
+
+        {# ... @zenit - customEntryPoint is not any menu entry point, let's search in the navigation tree #}
+        {% set customNavigationTree = customNavigationTree ?: recursiveCategory(navigationTree, customEntryPoint) %}
+
+        {# ... @zenit - customEntryPoint is not in the navigationTree, let's search the footer navigation tree #}
+        {% set customNavigationTree = customNavigationTree ?: recursiveCategory(footerNavigationTree, customEntryPoint) %}
+
+        {# ... @zenit - customEntryPoint is not in the footer navigation, let's search the service menu #}
+        {% if customNavigationTree is empty %}
+            {% set customNavigationTree = customNavigationTree ?: recursiveCategory(serviceMenu, customEntryPoint) %}
+            {% set isServiceMenu = customNavigationTree ? true : false %}
+        {% endif %}
+
+        {# ... @zenit - fallback to default navigationTree #}
+        {% set customNavigationTree = customNavigationTree ?: navigationTree %}
+
+    {% elseif element.config.mode.value === 'subcategoriesOnly' %}
+        {% if controllerAction is not same as ('home') %}
+            {# ... @zenit - search in the navigation tree #}
+            {% set customNavigationTree = recursiveCategory(navigationTree, activeResult.id) %}
+
+            {# ... @zenit - search in the footer navigation tree #}
+            {% set customNavigationTree = customNavigationTree ?: recursiveCategory(footerNavigationTree, activeResult.id) %}
+
+            {# ... @zenit - avoid searching in the service menu, because it has no submenu #}
+
+        {% else %}
+            {% set customNavigationTree = navigationTree %}
+        {% endif %}
+    {% elseif element.config.mode.value === 'inPathOnly' %}
+        {% if controllerAction is not same as ('home') %}
+            {# ... @zenit - search in the navigation tree #}
+            {% set activeCategoryNavigationTree = navigationTree|filter(item => item.category.id == activeResult.id) %}
+            {% set inPathCategoryNavigationTree = navigationTree|filter(item => item.category.id in activeResult.path) %}
+            {% set customNavigationTree = activeCategoryNavigationTree ?: inPathCategoryNavigationTree %}
+
+            {# ... @zenit - search in the footer navigation tree #}
+            {% if customNavigationTree is empty %}
+                {% set activeCategoryNavigationTree = footerNavigationTree|filter(item => item.category.id == activeResult.id) %}
+                {% set inPathCategoryNavigationTree = footerNavigationTree|filter(item => item.category.id in activeResult.path) %}
+                {% set customNavigationTree = activeCategoryNavigationTree ?: inPathCategoryNavigationTree %}
+            {% endif %}
+
+            {# ... @zenit - avoid searching in the service menu, because it has no submenu #}
+
+        {% else %}
+            {% set customNavigationTree = navigationTree %}
+        {% endif %}
+    {% else %}
+        {% set customNavigationTree = navigationTree %}
+    {% endif %}
+
+    <div class="cms-element-{{ element.type }}">
+        {% block element_zen_category_navigation_element %}
+            <div class="category-navigation-box">
+                {% block element_zen_category_navigation_box %}
+                    {% if isServiceMenu %}
+                        {% sw_include '@zenitPlatformGravity/storefront/layout/sidebar/zen-service-menu-navigation.html.twig' with {
+                            navigationTree: customNavigationTree,
+                            activeResult: page.header.navigation.active
+                        } only %}
+                    {% else %}
+                        {% sw_include '@Storefront/storefront/layout/sidebar/category-navigation.html.twig' with {
+                            navigationTree: customNavigationTree,
+                            activeResult: page.header.navigation.active
+                        } only %}
+                    {% endif %}
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

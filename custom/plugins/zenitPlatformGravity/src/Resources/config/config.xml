@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+        <title>Basic settings</title>
+        <title lang="de-DE">Grundeinstellungen</title>
+
+        <input-field type="single-select">
+            <name>pdfrenderer</name>
+            <label>PDF renderer</label>
+            <label lang="de-DE">PDF Renderer</label>
+            <defaultValue>pdfjs</defaultValue>
+            <helpText>Specifies which renderer should display and render the optional data sheets in the product. Google Docs renderer renders a bit finer, but is an external service. The Mozilla PDF.js renderer is delivered locally with the theme.</helpText>
+            <helpText lang="de-DE">Gibt an, welcher Renderer die optionalen Datenblätter im Produkt darstellen und rendern soll. Google Docs renderer rendert etwas feiner, ist aber ein externer Dienst. Der Mozilla PDF.js Renderer wird lokal mit dem Theme ausgeliefert.</helpText>
+            <options>
+                <option>
+                    <id>googledocs</id>
+                    <name>Google Docs renderer</name>
+                    <name lang="de-DE">Google Docs Renderer</name>
+                </option>
+                <option>
+                    <id>pdfjs</id>
+                    <name>Mozilla PDF.js renderer</name>
+                    <name lang="de-DE">Mozilla PDF.js Renderer</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>lazyloading</name>
+            <label>Images Lazy-loading</label>
+            <label lang="de-DE">Nicht sichtbare Bilder aufschieben</label>
+            <helpText>Browser-level image lazy-loading for the web optimizes shop loading times by delaying invisible images. They are only loaded if they are about to enter the viewport, e.g. when scrolling. In Google PageSpeed it fixes the message "Postpone invisible images"</helpText>
+            <helpText lang="de-DE">Browser-level image lazy-loading for the web optimiert die Ladezeiten des Shops, indem nicht sichtbare Bilder aufgeschoben werden. Sie werden erst geladen, wenn diese z.B. beim Scrollen kurz davor sind in den Viewport einzutreten. Im Google PageSpeed behebt es die Meldung "Nicht sichtbare Bilder aufschieben".</helpText>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>googleFontsCookie</name>
+            <label>Google fonts cookie consent</label>
+            <label lang="de-DE">Google Fonts Cookie Consent</label>
+            <helpText><![CDATA[If active, a new cookie entry in the "Comfort features" area with the name "Google Fonts" is created in the Cookie Consent Manager.<br><br>Fonts that are obtained via the theme setting "Load fonts from Google", only loaded if the user has given his consent. The appearance of the shop can change as a result, since the user's system fonts are used as a fallback.<br><br><br>In our documentation, find out how to <a href="https://fonts.zenit.design" target="_blank" rel="noopener">host fonts locally</a>.]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Wenn aktiv, wird im Cookie Consent Manager ein neuer Cookie Eintrag im Bereich "Komfortfunktionen" mit dem Namen "Google Fonts" erzeugt.<br><br>Schriftarten, welche über die Theme-Einstellung "Lade Schriften von Google" bezogen werden, werden erst geladen, wenn der Nutzer seine Einwilligung erteilt hat. Die Darstellung des Shops kann sich dadurch optisch verändern, da als Fallback auf die Systemschriften des Nutzers zurückgegriffen werden.<br><br><br>Erfahre in unserer Doku, wie Du <a href="https://fonts.zenit.design" target="_blank" rel="noopener">Schriften lokal hosten</a> kannst.]]></helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>youtubeVideoConsent</name>
+            <label>YouTube video consent</label>
+            <label lang="de-DE">YouTube Video Consent</label>
+            <helpText><![CDATA[If active, YouTube videos will be blocked on the product detail page in the video tab. The user can give consent.]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Wenn aktiv, werden YouTube Videos auf der Produkt-Detailseite im Tab Video blockiert. Der Nutzer kann seine Einwilligung erteilen.]]></helpText>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>youtubeVideoThumbnail</name>
+            <label>YouTube video thumbnail</label>
+            <label lang="de-DE">YouTube Video Vorschaubild</label>
+            <helpText><![CDATA[If active, the YouTube video thumbnail will be displayed as a placeholder for the blocked videos until the user has consented to the video.]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Wenn aktiv, wird das YouTube Video Vorschaubild als Platzhalter der blockierten Videos dargestellt, bis der Nutzer seine Einwilligung zum Video gegeben hat.]]></helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>vimeoVideoConsent</name>
+            <label>Vimeo video consent</label>
+            <label lang="de-DE">Vimeo Video Consent</label>
+            <helpText><![CDATA[If active, Vimeo videos will be blocked on the product detail page in the video tab. The user can give consent.]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Wenn aktiv, werden Vimeo Videos auf der Produkt-Detailseite im Tab Video blockiert. Der Nutzer kann seine Einwilligung erteilen.]]></helpText>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>twigStringLoaderExtension</name>
+            <label>Allow Twig syntax</label>
+            <label lang="de-DE">Twig Syntax erlauben</label>
+            <helpText><![CDATA[If active, it allows the use of Twig syntax (variables, snippets) in the theme's additional fields.<br><br><strong>Available fields:</strong><br> Product > Custom content > Product features;<br> Product > Custom content > Tab 1 Text / Tab 2 Text; <br> Configuration > Custom Tab > Tab Text;<br><br> Marketing text slider > Marketing text;<br><br>Shopping Experiences > Teaser Element > Teaser text;<br> Shopping Experiences > Image text slider element;<br> Shopping Experiences > Feature Element > Feature text; ]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Wenn aktiv, erlaubt es die Verwendung der Twig Syntax (Variablen, Textbausteine) in den Zusatzfeldern des Themes. <br><br><strong>Verfügbare Felder:</strong><br> Produkt > Zusatzinhalte > Produkt Features;<br> Produkt > Zusatzinhalte > Tab 1 Text / Tab 2 Text; <br> Konfiguration > Custom Tab > Tab Text;<br><br> Marketing Text Slider > Marketing Text;<br><br>Erlebniswelten > Teaser Element > Teaser Text;<br> Erlebniswelten > Bild-Text Slider Element;<br> Erlebniswelten > Feature Element > Feature Text;]]></helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Info</title>
+        <title lang="de-DE">Info</title>
+
+        <component name="zen-theme-alert-translation">
+            <name>translationInfo</name>
+            <placeholder><![CDATA[<strong>Translations:</strong><br>Translate the text fields using snippets. Search for <strong>zentheme</strong> in the snippets module and replace the <strong>%placeholder%</strong> text with your translation. Click on the "Go to snippet" Links in Help-Tooltips to jump directly into the snippet.Get more: <a href="https://docs-multilingual.zenit.design" target="_blank" rel="noopener">https://docs-multilingual.zenit.design</a>]]></placeholder>
+            <placeholder lang="de-DE"><![CDATA[<strong>Übersetzungen:</strong><br>Übersetzen der Textfelder mit Snippets. Suche nach <strong>zentheme</strong> im Snippets-Modul und ersetze den <strong>%placeholder%</strong> Text mit Deiner Übersetzung. Klicke in den Hilfe-Tooltips auf die Links „Zum Textbaustein“, um direkt zum Snippet zu gelangen. Mehr erfahren unter: <a href="https://docs-multilingual.zenit.design" target="_blank" rel="noopener">https://docs-multilingual.zenit.design</a>]]></placeholder>
+        </component>
+    </card>
+
+    <card>
+        <title>Social media icons</title>
+        <title lang="de-DE">Social Media Icons</title>
+
+        <input-field type="single-select">
+            <name>socialIconStyle</name>
+            <label>Icon style</label>
+            <label lang="de-DE">Icon Style</label>
+            <defaultValue>default</defaultValue>
+            <options>
+                <option>
+                    <id>default</id>
+                    <name>Default - no background</name>
+                    <name lang="de-DE">Standard - ohne Hintergrund</name>
+                </option>
+                <option>
+                    <id>square</id>
+                    <name>Squared</name>
+                    <name lang="de-DE">Eckig</name>
+                </option>
+                <option>
+                    <id>round-3</id>
+                    <name>Slightly rounded</name>
+                    <name lang="de-DE">Leicht abgerundet</name>
+                </option>
+                <option>
+                    <id>round-5</id>
+                    <name>Rounded</name>
+                    <name lang="de-DE">Abgerundet</name>
+                </option>
+                <option>
+                    <id>round-9</id>
+                    <name>Heavily rounded</name>
+                    <name lang="de-DE">Stark abgerundet</name>
+                </option>
+                <option>
+                    <id>round</id>
+                    <name>Round</name>
+                    <name lang="de-DE">Rund</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field>
+            <name>socialFacebookUrl</name>
+            <label>Facebook - Url</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.socialFacebookUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialFacebookUrl" target="_blank" rel="noopener">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.socialFacebookUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialFacebookUrl" target="_blank" rel="noopener">Zum Textbaustein</a>]]></helpText>
+        </input-field>
+
+        <input-field>
+            <name>socialTwitterUrl</name>
+            <label>X - Url</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.socialTwitterUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialTwitterUrl" target="_blank" rel="noopener">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.socialTwitterUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialTwitterUrl" target="_blank" rel="noopener">Zum Textbaustein</a>]]></helpText>
+        </input-field>
+
+        <input-field>
+            <name>socialYoutubeUrl</name>
+            <label>Youtube - Url</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.socialYoutubeUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialYoutubeUrl" target="_blank" rel="noopener">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.socialYoutubeUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialYoutubeUrl" target="_blank" rel="noopener">Zum Textbaustein</a>]]></helpText>
+        </input-field>
+
+        <input-field>
+            <name>socialVimeoUrl</name>
+            <label>Vimeo - Url</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.socialVimeoUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialVimeoUrl" target="_blank" rel="noopener">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.socialVimeoUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialVimeoUrl" target="_blank" rel="noopener">Zum Textbaustein</a>]]></helpText>
+        </input-field>
+
+        <input-field>
+            <name>socialPinterestUrl</name>
+            <label>Pinterest - Url</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.socialPinterestUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialPinterestUrl" target="_blank" rel="noopener">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.socialPinterestUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialPinterestUrl" target="_blank" rel="noopener">Zum Textbaustein</a>]]></helpText>
+        </input-field>
+
+        <input-field>
+            <name>socialInstagramUrl</name>
+            <label>Instagram - Url</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.socialInstagramUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialInstagramUrl" target="_blank" rel="noopener">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.socialInstagramUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialInstagramUrl" target="_blank" rel="noopener">Zum Textbaustein</a>]]></helpText>
+        </input-field>
+
+        <input-field>
+            <name>socialFlickrUrl</name>
+            <label>Flickr - Url</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.socialFlickrUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialFlickrUrl" target="_blank" rel="noopener">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.socialFlickrUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialFlickrUrl" target="_blank" rel="noopener">Zum Textbaustein</a>]]></helpText>
+        </input-field>
+
+        <input-field>
+            <name>socialLinkedInUrl</name>
+            <label>LinkedIn - Url</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.socialLinkedInUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialLinkedInUrl" target="_blank" rel="noopener">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.socialLinkedInUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialLinkedInUrl" target="_blank" rel="noopener">Zum Textbaustein</a>]]></helpText>
+        </input-field>
+
+        <input-field>
+            <name>socialXingUrl</name>
+            <label>Xing - Url</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.socialXingUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialXingUrl" target="_blank" rel="noopener">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.socialXingUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialXingUrl" target="_blank" rel="noopener">Zum Textbaustein</a>]]></helpText>
+        </input-field>
+
+        <input-field>
+            <name>socialWhatsappUrl</name>
+            <label>Whatsapp - Url</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.socialWhatsappUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialWhatsappUrl" target="_blank" rel="noopener">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.socialWhatsappUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialWhatsappUrl" target="_blank" rel="noopener">Zum Textbaustein</a>]]></helpText>
+        </input-field>
+
+        <input-field>
+            <name>socialTelegramUrl</name>
+            <label>Telegram - Url</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.socialTelegramUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialTelegramUrl" target="_blank" rel="noopener">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.socialTelegramUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialTelegramUrl" target="_blank" rel="noopener">Zum Textbaustein</a>]]></helpText>
+        </input-field>
+
+        <input-field>
+            <name>socialAmazonUrl</name>
+            <label>Amazon - Url</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.socialAmazonUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialAmazonUrl" target="_blank" rel="noopener">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.socialAmazonUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialAmazonUrl" target="_blank" rel="noopener">Zum Textbaustein</a>]]></helpText>
+        </input-field>
+
+        <input-field>
+            <name>socialTikTokUrl</name>
+            <label>TikTok - Url</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.socialTikTokUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialTikTokUrl" target="_blank" rel="noopener">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.socialTikTokUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialTikTokUrl" target="_blank" rel="noopener">Zum Textbaustein</a>]]></helpText>
+        </input-field>
+
+        <input-field>
+            <name>socialRSSUrl</name>
+            <label>RSS - Url</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.socialRSSUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialRSSUrl" target="_blank" rel="noopener">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.socialRSSUrl</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.socialRSSUrl" target="_blank" rel="noopener">Zum Textbaustein</a>]]></helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Marketing text slider</title>
+        <title lang="de-DE">Marketing Text Slider</title>
+
+        <input-field type="bool">
+            <name>marketingActive</name>
+            <label>Active</label>
+            <label lang="de-DE">Aktiv</label>
+            <helpText>Activates the marketing text slider in top bar or offcanvas top bar</helpText>
+            <helpText lang="de-DE">Aktiviert den Marketing Text Slider in der Top-Bar bzw. der Offcanvas Top-Bar</helpText>
+        </input-field>
+
+        <input-field type="textarea">
+            <name>marketingText</name>
+            <label>Marketing text </label>
+            <label lang="de-DE">Marketing Text</label>
+            <helpText><![CDATA[Text for Notification. This text will be animated with every row in a vertical slider.<br><br>Translate with Snippets - Phrase: <strong>zentheme.gravity.content.marketingText</strong><br><br>Caution: Individual text slides must be separated with semicolon "<strong>;</strong>" in the snippet to separate individual lines.<br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.marketingText" target="_blank">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Text für die Nachricht. Dieser Text wird mit jeder Zeile in einem vertikalen Karussell animiert.<br><br>Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.marketingText</strong><br><br>Achtung: Einzelne Text-Slides müssen im Textbaustein mit Semikolon "<strong>;</strong>" getrennt werden, um einzelne Zeilen zu trennen.<br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.marketingText" target="_blank">Go to snippet</a>]]></helpText>
+        </input-field>
+
+        <input-field type="text">
+            <name>marketingButtonText</name>
+            <label>Button text</label>
+            <label lang="de-DE">Button Text</label>
+            <placeholder>Visit now</placeholder>
+            <placeholder lang="de-DE">Jetzt ansehen</placeholder>
+            <helpText><![CDATA[Gives the Marketing-Button a text, if empty the button will not displayed <br><br>Translate with Snippets - Phrase: <strong>zentheme.gravity.content.marketingButtonText</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.marketingButtonText" target="_blank">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Gibt dem Marketing-Button einen Text, wenn leer wird der Button nicht angezeigt <br><br>Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.marketingButtonText</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.marketingButtonText" target="_blank">Go to snippet</a>]]></helpText>
+        </input-field>
+
+        <input-field type="text">
+            <name>marketingButtonLink</name>
+            <label>Button link</label>
+            <label lang="de-DE">Button Link</label>
+            <placeholder>https://example.com</placeholder>
+            <placeholder lang="de-DE">https://example.de</placeholder>
+            <helpText><![CDATA[Gives the Marketing-Button a url, if empty the button will not displayed <br><br>Translate with Snippets - Phrase: <strong>zentheme.gravity.content.marketingButtonLink</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.marketingButtonLink" target="_blank">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Gibt dem Marketing-Button einen Link, wenn leer wird der Button nicht angezeigt <br><br>Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.marketingButtonLink</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.marketingButtonLink" target="_blank">Go to snippet</a>]]></helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>marketingButtonTarget</name>
+            <label>Button target</label>
+            <label lang="de-DE">Button Ziel</label>
+            <defaultValue>_self</defaultValue>
+            <helpText>Gives the Marketing-Button a target.</helpText>
+            <helpText lang="de-DE">Gibt dem Marketing-Button die Möglichkeit, den Link im selben oder einem neuen Fenster zu öffnen.</helpText>
+            <options>
+                <option>
+                    <id>_self</id>
+                    <name>self window</name>
+                    <name lang="de-DE">selbes Fenster</name>
+                </option>
+                <option>
+                    <id>_blank</id>
+                    <name>new window</name>
+                    <name lang="de-DE">neues Fenster</name>
+                </option>
+            </options>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Product page - Custom tab</title>
+        <title lang="de-DE">Produktseite - Individueller Tab</title>
+
+        <input-field type="bool">
+            <name>customTabActive</name>
+            <label>Active</label>
+            <label lang="de-DE">Aktiv</label>
+            <helpText>Activates the custom tab on Product details page.</helpText>
+            <helpText lang="de-DE">Aktiviert den individuellen Tab auf der Produktdetailseite</helpText>
+        </input-field>
+
+        <input-field type="text">
+            <name>customTabTitle</name>
+            <label>Title</label>
+            <label lang="de-DE">Titel</label>
+            <placeholder>Custom tab</placeholder>
+            <placeholder lang="de-DE">Custom Tab</placeholder>
+            <helpText><![CDATA[Gives the custom tab a tab-title. <br><br>Translate with Snippets - Phrase: <strong>zentheme.gravity.content.customTabTitle</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.customTabTitle" target="_blank">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Gibt dem individuellen Tab einen Tab-Titel. <br><br>Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.customTabTitle</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.customTabTitle" target="_blank">Go to snippet</a>]]></helpText>
+        </input-field>
+
+        <component name="sw-text-editor">
+            <name>customTabText</name>
+            <label>Tab text</label>
+            <label lang="de-DE">Tab Text</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.customTabText</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.customTabText" target="_blank">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.customTabText</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.customTabText" target="_blank">Go to snippet</a>]]></helpText>
+        </component>
+
+    </card>
+
+    <card>
+        <title>Footer - Custom columns</title>
+        <title lang="de-DE">Footer - Individuelle Spalten</title>
+
+        <input-field type="bool">
+            <name>customColumnActive</name>
+            <label>Column 1 - Active</label>
+            <label lang="de-DE">Spalte 1 - Aktiv</label>
+            <helpText>Activates the custom column on footer.</helpText>
+            <helpText lang="de-DE">Aktiviert die optionale Spalte im Footer.</helpText>
+        </input-field>
+
+        <input-field type="text">
+            <name>customColumnTitle</name>
+            <label>Column 1 - Title</label>
+            <label lang="de-DE">Spalte 1- Titel</label>
+            <placeholder>Custom Column</placeholder>
+            <placeholder lang="de-DE">Custom Spalte</placeholder>
+            <helpText><![CDATA[Gives the custom column a headline. <br><br>Translate with Snippets - Phrase: <strong>zentheme.gravity.content.customColumnTitle</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.customColumnTitle" target="_blank">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Gibt der optionalen Spalte eine Überschrift. <br><br>Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.customColumnTitle</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.customColumnTitle" target="_blank">Go to snippet</a>]]></helpText>
+        </input-field>
+
+        <component name="sw-text-editor">
+            <name>customColumnText</name>
+            <label>Column 1 - Text</label>
+            <label lang="de-DE">Spalte 1 - Text</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.customColumnText</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.customColumnText" target="_blank">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.customColumnText</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.customColumnText" target="_blank">Go to snippet</a>]]></helpText>
+        </component>
+
+        <input-field type="bool">
+            <name>custom2ColumnActive</name>
+            <label>Column 2 - Active</label>
+            <label lang="de-DE">Spalte 2 - Aktiv</label>
+            <helpText>Activates the custom column on footer.</helpText>
+            <helpText lang="de-DE">Aktiviert die optionale Spalte im Footer.</helpText>
+        </input-field>
+
+        <input-field type="text">
+            <name>custom2ColumnTitle</name>
+            <label>Column 2 - Title</label>
+            <label lang="de-DE">Spalte 2 - Titel</label>
+            <placeholder>Custom Column</placeholder>
+            <placeholder lang="de-DE">Custom Spalte</placeholder>
+            <helpText><![CDATA[Gives the custom column a headline. <br><br>Translate with Snippets - Phrase: <strong>zentheme.gravity.content.custom2ColumnTitle</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.custom2ColumnTitle" target="_blank">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Gibt der optionalen Spalte eine Überschrift. <br><br>Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.custom2ColumnTitle</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.custom2ColumnTitle" target="_blank">Go to snippet</a>]]></helpText>
+        </input-field>
+
+        <component name="sw-text-editor">
+            <name>custom2ColumnText</name>
+            <label>Column 2 - Text</label>
+            <label lang="de-DE">Spalte 2 - Text</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.custom2ColumnText</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.custom2ColumnText" target="_blank">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.custom2ColumnText</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.custom2ColumnText" target="_blank">Go to snippet</a>]]></helpText>
+        </component>
+
+        <input-field type="bool">
+            <name>custom3ColumnActive</name>
+            <label>Column 3 - Active</label>
+            <label lang="de-DE">Spalte 3 - Aktiv</label>
+            <helpText>Activates the custom column on footer.</helpText>
+            <helpText lang="de-DE">Aktiviert die optionale Spalte im Footer.</helpText>
+        </input-field>
+
+        <input-field type="text">
+            <name>custom3ColumnTitle</name>
+            <label>Column 3 - Title</label>
+            <label lang="de-DE">Spalte 3 - Titel</label>
+            <placeholder>Custom Column</placeholder>
+            <placeholder lang="de-DE">Custom Spalte</placeholder>
+            <helpText><![CDATA[Gives the custom column a headline. <br><br>Translate with Snippets - Phrase: <strong>zentheme.gravity.content.custom3ColumnTitle</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.custom3ColumnTitle" target="_blank">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Gibt der optionalen Spalte eine Überschrift. <br><br>Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.custom3ColumnTitle</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.custom3ColumnTitle" target="_blank">Go to snippet</a>]]></helpText>
+        </input-field>
+
+        <component name="sw-text-editor">
+            <name>custom3ColumnText</name>
+            <label>Column 3 - Text</label>
+            <label lang="de-DE">Spalte 3 - Text</label>
+            <helpText><![CDATA[Translate with Snippets - Phrase: <strong>zentheme.gravity.content.custom3ColumnText</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.custom3ColumnText" target="_blank">Go to snippet</a>]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Übersetzung über Textbausteine - Phrase: <strong>zentheme.gravity.content.custom3ColumnText</strong><br><br><a href="#/sw/settings/snippet/detail/zentheme.gravity.content.custom3ColumnText" target="_blank">Go to snippet</a>]]></helpText>
+        </component>
+    </card>
+
+    <card>
+        <title>Custom code</title>
+        <title lang="de-DE">Eigener Code</title>
+
+        <component name="sw-switch-field">
+            <name>customCssFilesActive</name>
+            <label>Enable custom CSS files</label>
+            <label lang="de-DE">Eigene CSS Dateien aktiv</label>
+        </component>
+
+        <component name="sw-code-editor">
+            <name>customCssFiles</name>
+            <label>CSS files</label>
+            <label lang="de-DE">CSS Dateien</label>
+            <helpText><![CDATA[Enter custom CSS files. Your custom CSS files:<br><br>&lt;link rel=&quot;stylesheet&quot; href=&quot;mystylesheet.css&quot;&gt;]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Füge benutzerdefinierte CSS Files ein. Deine individuellen CSS-Dateien: <br><br> &lt;link rel=&quot;stylesheet&quot; href=&quot;mystylesheet.css&quot;&gt;]]></helpText>
+        </component>
+
+        <component name="sw-switch-field">
+            <name>customCssActive</name>
+            <label>Enable custom CSS code</label>
+            <label lang="de-DE">Eigener CSS Code aktiv</label>
+        </component>
+
+        <component name="sw-code-editor">
+            <name>customCss</name>
+            <label>CSS code</label>
+            <label lang="de-DE">CSS Code</label>
+            <helpText><![CDATA[Enter CSS Code without &lt;style&gt;-Tags. Your custom CSS code e.g.:<br><br>body { background: #fff; }]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Gib hier CSS Code ohne &lt;style&gt;-Tags ein. Dein individueller CSS Code, z.B.:<br><br>body { background: #fff; }]]></helpText>
+        </component>
+
+        <component name="sw-switch-field">
+            <name>customHeadJsFilesActive</name>
+            <label>Enable custom Head Javascript files</label>
+            <label lang="de-DE">Head Javascript Dateien aktiv</label>
+        </component>
+
+        <component name="sw-code-editor">
+            <name>customHeadJsFiles</name>
+            <label>Head Javascript files</label>
+            <label lang="de-DE">Head Javascript Dateien</label>
+            <helpText><![CDATA[Will be loaded in header. Be aware that you shouldn't load any javascripts here that will block the rendering of the page. Your custom Javascript files:<br><br> &lt;script src=&quot;myscript.js&quot;&gt;&lt;/script&gt;]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Wird im Header geladen. Beachte, dass Du hier keine Javascripte laden solltest, die das Rendern der Seite blockieren. Deine individuellen Javascript Dateien:<br><br> &lt;script src=&quot;myscript.js&quot;&gt;&lt;/script&gt;]]></helpText>
+        </component>
+
+        <component name="sw-switch-field">
+            <name>customHeadJsActive</name>
+            <label>Enable custom Head Javascript code</label>
+            <label lang="de-DE">Head Javascript Code aktiv</label>
+        </component>
+
+        <component name="sw-code-editor">
+            <name>customHeadJs</name>
+            <label>Head Javascript code</label>
+            <label lang="de-DE">Head Javascript Code</label>
+            <helpText><![CDATA[Enter Javascript Code without &lt;script&gt;-Tags. Will be loaded in header. Be aware that you shouldn't load any javascripts here that will block the rendering of the page. Your custom Javascript Code:<br><br> alert(&quot;Hello World&quot;);]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Gib hier Javascript Code ohne &lt;script&gt;-Tags ein. Wird im Header geladen. Beachte, dass Du hier keine Javascripte laden solltest, die das Rendern der Seite blockieren. Dein individueller Javascript Code:<br><br> alert(&quot;Hello World&quot;);]]></helpText>
+        </component>
+
+        <component name="sw-switch-field">
+            <name>customJsFilesActive</name>
+            <label>Enable custom Footer Javascript files</label>
+            <label lang="de-DE">Footer Javascript Dateien aktiv</label>
+        </component>
+
+        <component name="sw-code-editor">
+            <name>customJsFiles</name>
+            <label>Footer Javascript files</label>
+            <label lang="de-DE">Footer Javascript Dateien</label>
+            <helpText><![CDATA[Will be loaded in footer to not block any DOM content to be loaded.Your custom Javascript files:<br><br> &lt;script src=&quot;myscript.js&quot;&gt;&lt;/script&gt;]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Wird im Footer geladen, um zu ladenden DOM-Inhalt nicht zu blockieren. Deine individuellen Javascript Dateien:<br><br> &lt;script src=&quot;myscript.js&quot;&gt;&lt;/script&gt;]]></helpText>
+        </component>
+
+        <component name="sw-switch-field">
+            <name>customJsActive</name>
+            <label>Enable custom Footer Javascript code</label>
+            <label lang="de-DE">Footer Javascript Code aktiv</label>
+        </component>
+
+        <component name="sw-code-editor">
+            <name>customJs</name>
+            <label>Footer Javascript code</label>
+            <label lang="de-DE">Footer Javascript Code</label>
+            <helpText><![CDATA[Enter Javascript Code without &lt;script&gt;-Tags. Will be loaded in footer to not block any DOM content to be loaded. Your custom Javascript Code:<br><br> alert(&quot;Hello World&quot;);]]></helpText>
+            <helpText lang="de-DE"><![CDATA[Gib hier Javascript Code mit &lt;script&gt;-Tags ein. Wird im Footer geladen, um zu ladenden DOM-Inhalt nicht zu blockieren. Dein individueller Javascript Code:<br><br> alert(&quot;Hello World&quot;);]]></helpText>
+        </component>
+    </card>
+</config>

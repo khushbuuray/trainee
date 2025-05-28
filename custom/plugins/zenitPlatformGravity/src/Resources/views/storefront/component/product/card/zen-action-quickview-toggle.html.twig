@@ -1,0 +1,20 @@
+{% block zen_component_product_box_action_quickview_toggle_inner %}
+    {# ... needed here after sorting #}
+    {% set dataBsPlacementAttr = 'data-bs-placement' %}
+
+    <span class="quickview-toggle"
+          data-ajax-modal="true"
+          data-modal-class="quickview-modal"
+          data-url="{{ path('widgets.quickview.minimal', { 'productId': product.id }) }}">
+        <button
+           class="btn btn-block btn-quickview btn-icon-only"
+           {% if tooltip %}
+               data-zen-toggle="tooltip"
+               data-bs-placement="{{ tooltipPlacement|default('left') }}"
+           {% endif %}
+           title="{{ 'zentheme.listing.quickview'|trans }}"
+           aria-label="{{ 'zentheme.listing.quickview'|trans }} {{ product.translated.name }}">
+            {% sw_icon 'eye-open' %}
+        </button>
+    </span>
+{% endblock %}

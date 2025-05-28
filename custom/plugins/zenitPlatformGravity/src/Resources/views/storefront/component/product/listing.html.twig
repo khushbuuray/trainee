@@ -1,0 +1,34 @@
+{% sw_extends '@Storefront/storefront/component/product/listing.html.twig' %}
+
+{% block product_listing %}
+    {# ... @zenit - calculate the height of the header  #}
+    {% set scrollOffset = (theme_config('zen-header-height') > 56 ? theme_config('zen-header-height') : 56) + theme_config('zen-main-navigation-height') + 16 %}
+
+    {% if theme_config('zen-top-bar-style') in ['default', 'collapsible', 'expandable'] %}
+        {% set scrollOffset = scrollOffset + 42 %}
+    {% endif %}
+
+    {% set listingPagination = listingPagination|replace_recursive({
+        scrollOffset: scrollOffset
+    }) %}
+
+    {# ... @zenit - add .no-filter and .no-sorting classes to control .cms-element-product-listing-actions styling #}
+    <div class="cms-element-product-listing-wrapper{% if filterUrl is empty %} no-filter{% endif %}{% if searchResult.availableSortings is empty and searchResult.sorting is empty %} no-sorting{% endif %}"
+         data-listing-pagination="true"
+         {# ludtwig-ignore html-string-quotation #}
+         data-listing-pagination-options='{{ paginationConfig }}'
+         data-listing="true"
+         {# ludtwig-ignore html-string-quotation #}
+         data-listing-options='{{ listingPagination|json_encode }}'>
+
+        {{ block('element_product_listing_wrapper_content') }}
+    </div>
+{% endblock %}
+
+{% block element_product_listing_col %}
+    {% for product in searchResult %}
+        <div class="cms-listing-col {{ listingColumns }} {{ scrollAnimationClasses }}">
+            {{ block('element_product_listing_box') }}
+        </div>
+    {% endfor %}
+{% endblock %}

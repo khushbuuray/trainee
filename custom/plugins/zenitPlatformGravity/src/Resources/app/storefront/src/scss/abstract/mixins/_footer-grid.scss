@@ -1,0 +1,19 @@
+@mixin make-footer-row($gutter: $zen-footer-grid-gutter-width) {
+    // ... make sure grid .row negative margin is not larger than gutter
+    $gutter-sm: if($gutter / 2 < $grid-gutter-width, $grid-gutter-width, $gutter / 2);
+
+    --#{$zen-prefix}gutter-x: #{$gutter-sm};
+    --#{$zen-prefix}gutter-y: 0;
+
+    @include media-breakpoint-up(lg) {
+        --#{$zen-prefix}gutter-x: #{$gutter};
+    }
+
+    margin-right: calc(-.5 * var(--#{$zen-prefix}gutter-x)); // stylelint-disable-line function-disallowed-list
+    margin-left: calc(-.5 * var(--#{$zen-prefix}gutter-x)); // stylelint-disable-line function-disallowed-list
+}
+
+@mixin make-footer-col-ready() {
+    padding-right: calc(var(--#{$zen-prefix}gutter-x) * .5); // stylelint-disable-line function-disallowed-list
+    padding-left: calc(var(--#{$zen-prefix}gutter-x) * .5); // stylelint-disable-line function-disallowed-list
+}

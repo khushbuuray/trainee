@@ -1,0 +1,112 @@
+/*
+Custom Variables
+==================================================
+Contains overrides of bootstrap and shopware default variables with non theme config variables.
+
+https://getbootstrap.com/docs/4.3/getting-started/theming/#variable-defaults
+*/
+
+$modal-backdrop-opacity:                        1 !default; // 1 because backdrop has transparency already and backdrop-filter looks terrible with any opacity < 1
+
+// Typography
+$zen-font-size-sm-multiplier:                   .875 !default;
+$zen-font-size-lg-multiplier:                   1.142857 !default;
+$text-muted:                                    $gray-500 !default; // Overwrites the CSS variables value. This is needed because CSS variables may cause color-contrast() compiler errors.
+
+$line-height-base:                              1.5 !default; // bootstrap default
+
+$prefix:                                        bs- !default;
+$form-text-color:                               var(--#{$prefix}body-color) !default;
+
+// Tables
+$table-striped-bg-factor:                       .05 !default; // bootstrap default
+$table-striped-bg:                              rgba(var(--#{$prefix}emphasis-color-rgb), $table-striped-bg-factor) !default; // reset bootstrap default - overwrite shopware skin
+$magnifier-overlay-zindex:                      1000 !default; // changed 1100 to 1000 to prevent overlaying sticky header
+$menu-flyout-zindex:                            1010 !default; // changed 750 to 1010 because of filter dropdowns
+$tooltip-opacity:                               1 !default;
+
+// Input-buttons
+$input-btn-line-height:                         $line-height-base !default; // bootstrap default
+
+$input-btn-font-size:                           $input-font-size; // set in _theme.scss
+$input-btn-padding-y:                           .625rem !default;
+$input-btn-padding-x:                           1.5rem !default; // .75rem !default;
+
+$input-btn-font-size-sm:                        $input-font-size * $zen-font-size-sm-multiplier !default; // $input-font-size set in _theme.scss
+$input-btn-padding-y-sm:                        .375rem !default; // .25rem !default;
+$input-btn-padding-x-sm:                        .75rem !default; // .5rem !default;
+
+$input-btn-font-size-lg:                        $input-font-size * $zen-font-size-lg-multiplier !default; // $input-font-size set in _theme.scss
+$input-btn-padding-y-lg:                        .6875rem !default; // bootstrap default
+$input-btn-padding-x-lg:                        2.25rem !default; // 1rem !default;
+
+// Buttons
+$btn-transition:                                all .3s ease !default;
+$btn-focus-box-shadow:                          none !default;
+$btn-disabled-opacity:                          .65 !default; // reset bootstrap default - overwrite shopware skin
+$btn-line-height:                               $input-btn-line-height !default; // reset bootstrap default - overwrite shopware skin
+
+$btn-hover-border-shade-amount:                 15% !default;
+$btn-hover-border-tint-amount:                  15% !default;
+
+$btn-padding-y:                                 $input-btn-padding-y !default; // reset bootstrap default - overwrite shopware skin
+$btn-padding-x:                                 $input-btn-padding-x !default; // reset bootstrap default - overwrite shopware skin
+$btn-font-size:                                 $input-btn-font-size !default;
+
+$btn-padding-y-sm:                              $input-btn-padding-y-sm !default;
+$btn-padding-x-sm:                              $input-btn-padding-x-sm !default;
+$btn-font-size-sm:                              $input-btn-font-size-sm !default;
+
+$zen-btn-top-bar-padding-y-sm:                  .25rem !default;
+
+$btn-padding-y-lg:                              $input-btn-padding-y-lg !default;
+$btn-padding-x-lg:                              $input-btn-padding-x-lg !default;
+$btn-font-size-lg:                              $input-btn-font-size-lg !default;
+
+// inputs
+$zen-layout-input-radius:                       100 !default; // needed for multiple inheritance
+
+$input-padding-y:                               $input-btn-padding-y !default; // bootstrap default
+$input-padding-x:                               if($zen-layout-input-radius == 100, 1.25rem, .75rem) !default;
+
+$input-padding-y-sm:                            $input-btn-padding-y-sm !default; // bootstrap default
+$input-padding-x-sm:                            if($zen-layout-input-radius == 100, .75rem, .5rem) !default;
+
+$input-padding-y-lg:                            $input-btn-padding-y-lg !default;  // bootstrap default
+$input-padding-x-lg:                            if($zen-layout-input-radius == 100, 2rem, 1rem) !default;
+
+$modal-transition:                              transform .3s ease-out !default; // reset bootstrap default
+
+$utilities: (
+        "flex-grow": (
+                responsive: true,
+                property: flex-grow,
+                class: flex,
+                values: (
+                        grow-0: 0,
+                        grow-1: 1,
+                        grow-2: 2,
+                )
+        ),
+        "order": (
+                responsive: true,
+                property: order,
+                values: (
+                        first: -1,
+                        0: 0,
+                        1: 1,
+                        2: 2,
+                        3: 3,
+                        4: 4,
+                        5: 5,
+                        6: 6,
+                        7: 7,
+                        8: 8,
+                        9: 9,
+                        10: 10,
+                        11: 11,
+                        12: 12,
+                        last: 13,
+                ),
+        ),
+);

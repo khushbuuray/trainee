@@ -1,0 +1,30 @@
+{% sw_extends '@Storefront/storefront/layout/header/actions/account-widget.html.twig' %}
+
+{% block layout_header_actions_account_widget_dropdown_button %}
+    <button class="btn account-menu-btn header-actions-btn"
+            type="button"
+            id="accountWidget"
+            data-account-menu="true"
+            data-bs-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="{{ 'account.myAccount'|trans|striptags }}"
+            title="{{ 'account.myAccount'|trans|striptags }}">
+        {% sw_icon 'avatar' %}
+
+        {# ... @zenit - added badge #}
+        {% if context.customer %}
+            <span class="badge header-account-badge">
+                {% sw_icon 'checkmark-small' style { pack: 'solid' } %}
+            </span>
+        {% endif %}
+    </button>
+{% endblock %}
+
+{% block layout_header_actions_account_widget_dropdown_menu %}
+    {# ... @zenit - added shadow #}
+    <div class="dropdown-menu dropdown-menu-end account-menu-dropdown shadow js-account-menu-dropdown"
+         aria-labelledby="accountWidget">
+        {% sw_include '@Storefront/storefront/layout/header/account-menu.html.twig' %}
+    </div>
+{% endblock %}

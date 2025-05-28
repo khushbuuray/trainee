@@ -1,0 +1,114 @@
+{
+    "zentheme": {
+        "gravity": {
+            "content": {
+                "marketingText": "%placeholder%",
+                "marketingButtonText": "%placeholder%",
+                "marketingButtonLink": "%placeholder%",
+                "customTabTitle": "%placeholder%",
+                "customTabText": "%placeholder%",
+                "customColumnTitle": "%placeholder%",
+                "customColumnText": "%placeholder%",
+                "custom2ColumnTitle": "%placeholder%",
+                "custom2ColumnText": "%placeholder%",
+                "custom3ColumnTitle": "%placeholder%",
+                "custom3ColumnText": "%placeholder%",
+                "socialFacebookUrl": "%placeholder%",
+                "socialTwitterUrl": "%placeholder%",
+                "socialYoutubeUrl": "%placeholder%",
+                "socialVimeoUrl": "%placeholder%",
+                "socialPinterestUrl": "%placeholder%",
+                "socialInstagramUrl": "%placeholder%",
+                "socialFlickrUrl": "%placeholder%",
+                "socialLinkedInUrl": "%placeholder%",
+                "socialXingUrl": "%placeholder%",
+                "socialWhatsappUrl": "%placeholder%",
+                "socialTelegramUrl": "%placeholder%",
+                "socialAmazonUrl": "%placeholder%",
+                "socialTikTokUrl": "%placeholder%",
+                "socialRSSUrl": "%placeholder%"
+            }
+        },
+        "cookie": {
+            "googleFonts": {
+                "name": "Google Fonts",
+                "description": "Lädt die benötigten Webfonts von Google Servern."
+            },
+            "googleDocs": {
+                "name": "Google Docs",
+                "description": "Zur Anzeige von im Fenster eingebetteten PDF Dateien."
+            }
+        },
+        "gdpr": {
+            "datasheets": {
+                "privacyNoticeText": "Mit dem Aufruf der Datei erklären Sie sich einverstanden, dass Ihre Daten an %platform% übermittelt werden und dass Sie die <a data-ajax-modal=\"true\" data-url=\"%url%\" href=\"%url%\" title=\"Datenschutzbestimmungen\">Datenschutzbestimmungen</a> gelesen haben.",
+                "acceptButtonLabel": "Akzeptieren"
+            }
+        },
+        "layout": {
+            "breadcrumbs": {
+                "pretext": "Du bist hier:"
+            },
+            "preloader": {
+                "loading": "Lade"
+            }
+        },
+        "checkout": {
+            "breadcrumbs": {
+                "cart": "Warenkorb",
+                "register": "Anmelden",
+                "confirm": "Bestellung abschließen"
+            },
+            "account": {
+                "loginRegisterSeparator": "oder"
+            }
+        },
+        "general": {
+            "copyright": "© %year% %shopname% - with %love% by <a href=\"%href%\" title=\"%title%\" rel=\"dofollow noopener\" target=\"_blank\">%name%</a>",
+            "moreLink": "Mehr",
+            "lessLink": "Weniger",
+            "closeTopBar": "Top bar schließen",
+            "plusLabel": "plus",
+            "minusLabel": "minus"
+        },
+        "footer": {
+            "socialMediaHeadline": "Folge uns",
+            "newsletterHeadline": "Newsletter",
+            "newsletterContent": "Abonnieren Sie den kostenlosen Newsletter und verpassen Sie keine Neuigkeit oder Aktion.",
+            "paymentLogosHeadline": "Zahlungsarten",
+            "shippingLogosHeadline": "Versandarten"
+        },
+        "detail": {
+            "reviewLinkText": "Bewerten",
+            "stockLabel": "Lagerbestand:",
+            "isCloseoutLabel": "Abverkauf",
+            "eanLabel": "EAN:",
+            "manufacturerNameLabel": "Hersteller:",
+            "manufacturerNumberLabel": "Hersteller-Nr.:",
+            "lengthLabel": "Länge:",
+            "widthLabel": "Weite:",
+            "heightLabel": "Höhe:",
+            "weightLabel": "Gewicht:",
+            "tabsDatasheets": "Datenblätter",
+            "tabsManufacturer": "Hersteller",
+            "tabsProperties": "Eigenschaften",
+            "tabsVideo": "Video",
+            "manufacturerWebsite": "Hersteller Webseite",
+            "features": "Vorteile"
+        },
+        "listing": {
+            "selectOptions": "Optionen wählen",
+            "quickview": "Vorschau",
+            "boxAddProductWithIcon": "In den",
+            "productNumberLabel": "Prod.-Nr.:"
+        },
+        "component": {
+            "product": {
+                "quantitySelect": {
+                    "increase": "Anzahl erhöhen",
+                    "decrease": "Anzahl verringern"
+                }
+            }
+        }
+    }
+}

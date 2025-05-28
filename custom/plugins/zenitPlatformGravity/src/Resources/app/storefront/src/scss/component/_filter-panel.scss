@@ -1,0 +1,412 @@
+.filter-panel {
+    margin-bottom: 0;
+}
+
+.filter-boolean {
+    background-color: $zen-category-filter-bg;
+    color: $zen-category-filter-color;
+    box-shadow: none;
+    @include transition($transition-base);
+    @include border-radius($zen-layout-button-radius * 1px);
+    @include font-size(px($zen-category-filter-font-size));
+    line-height: $zen-filter-panel-line-height;
+    text-transform: $zen-category-filter-text-transform;
+    font-weight: $zen-category-filter-font-weight;
+    padding-top: $btn-padding-y;
+    padding-bottom: $btn-padding-y;
+    height: auto;
+
+    @if $zen-category-filter-border == 1 {
+        border: 1px solid $zen-category-filter-border-color;
+    } @else {
+        border: none;
+    }
+
+    &:hover {
+        color: $zen-category-filter-hover-color;
+        background-color: $zen-category-filter-hover-bg;
+
+        @if $zen-category-filter-border == 1 {
+            border: 1px solid $zen-category-filter-border-hover-color;
+        } @else {
+            border: none;
+        }
+    }
+
+    .form-check {
+        margin-bottom: 0;
+    }
+
+    .form-check-input {
+        margin-top: (rem($zen-filter-panel-line-height * $zen-category-filter-font-size) - $form-check-input-width) * .5; // line-height minus check height
+    }
+}
+
+.filter-boolean-label {
+    line-height: $zen-filter-panel-line-height;
+    height: auto;
+}
+
+.filter-panel-item {
+    .filter-panel-item-toggle {
+        display: flex;
+        background-color: $zen-category-filter-bg;
+        color: $zen-category-filter-color;
+        box-shadow: none;
+        @include font-size(px($zen-category-filter-font-size));
+        line-height: $zen-filter-panel-line-height;
+        text-transform: $zen-category-filter-text-transform;
+        font-weight: $zen-category-filter-font-weight;
+
+        @if $zen-category-filter-border == 1 {
+            border: 1px solid $zen-category-filter-border-color;
+        } @else {
+            border: none;
+        }
+
+        .icon-filter-panel-item-toggle {
+            color: $zen-category-filter-color;
+
+            svg {
+                @include transition($transition-base);
+            }
+
+            @if $zen-category-filter-icon == "plusminus" {
+                &.icon-minus { // needed because of another extension which creates own toggler
+                    display: none;
+                }
+
+                &.icon-plus { // needed because of another extension which creates own toggler
+                    display: inline-flex;
+                }
+            }
+        }
+
+        &:hover {
+            color: $zen-category-filter-hover-color;
+            background-color: $zen-category-filter-hover-bg;
+
+            @if $zen-category-filter-border == 1 {
+                border: 1px solid $zen-category-filter-border-hover-color;
+            } @else {
+                border: none;
+            }
+
+            .icon-filter-panel-item-toggle {
+                color: $zen-category-filter-hover-color;
+            }
+        }
+
+        // active
+        &.show {
+            color: $zen-category-filter-active-color;
+            background-color: $zen-category-filter-active-bg;
+            font-weight: $zen-category-filter-font-weight-active;
+
+            @if $zen-category-filter-border == 1 {
+                border: 1px solid $zen-category-filter-border-active-color;
+            } @else {
+                border: none;
+            }
+
+            .icon-filter-panel-item-toggle {
+                svg {
+                    color: $zen-category-filter-active-color;
+                }
+
+                @if $zen-category-filter-icon == "plus" {
+                    &.icon-plus { // needed because of another extension which creates own toggler
+                        svg {
+                            transform: rotate(45deg);
+                        }
+                    }
+                }
+
+                @if $zen-category-filter-icon == "plusminus" {
+                    &.icon-minus { // needed because of another extension which creates own toggler
+                        display: inline-flex;
+                    }
+
+                    &.icon-plus { // needed because of another extension which creates own toggler
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        &.disabled {
+            background-color: fade-out(desaturate($zen-category-filter-bg, .2), .4);
+            color: fade-out(desaturate($zen-category-filter-color, .2), .4);
+
+            @if $zen-category-filter-border == 1 {
+                border: 1px solid fade-out(desaturate($zen-category-filter-border-color, .2), .4);
+            } @else {
+                border: none;
+            }
+
+            .icon-filter-panel-item-toggle {
+                color: fade-out(desaturate($zen-category-filter-color, .2), .4);
+            }
+        }
+    }
+}
+
+.icon {
+    &.icon-filter-panel-item-toggle {
+        > svg {
+            top: 0; // because of display flex
+        }
+    }
+}
+
+// sidebar filter
+.is--sidebar {
+    .filter-panel-item {
+        margin-bottom: px($zen-category-filter-mb);
+    }
+
+    .filter-panel-item-dropdown {
+        @if $zen-layout-button-radius == 100 {
+            @include border-bottom-radius(25px);
+        } @else {
+            @include border-bottom-radius($zen-layout-button-radius * 1px);
+        }
+
+        @if $zen-category-filter-border == 1 {
+            border: 1px solid $zen-category-filter-border-active-color;
+            border-top: none;
+        } @else {
+            border: none;
+        }
+    }
+
+    .filter-panel-item-toggle {
+        padding: px($zen-category-filter-pv) 20px;
+
+        &:not([aria-expanded='true']) {
+            @include transition(border-radius .3s .3s ease); // improves animation of border-radius with delay
+
+            @if $zen-category-filter-icon == "plusminus" {
+                &.icon-minus { // needed because of another extension which creates own toggler
+                    display: none;
+                }
+
+                &.icon-plus { // needed because of another extension which creates own toggler
+                    display: inline-flex;
+                }
+            }
+        }
+
+        &[aria-expanded='true'] {
+            @include transition(border-radius 0s ease); // improves animation of border-radius with no transition-time
+            color: $zen-category-filter-active-color;
+            background-color: $zen-category-filter-active-bg;
+            font-weight: $zen-category-filter-font-weight-active;
+            border-bottom: 0 none;
+
+            @if $zen-layout-button-radius == 100 {
+                @include border-top-radius(25px);
+            } @else {
+                @include border-top-radius($zen-layout-button-radius * 1px);
+            }
+
+            @if $zen-category-filter-border == 1 {
+                border: 1px solid $zen-category-filter-border-active-color;
+            } @else {
+                border: none;
+            }
+
+            .icon-filter-panel-item-toggle {
+                svg {
+                    color: $zen-category-filter-active-color;
+                }
+
+                @if $zen-category-filter-icon == "plus" {
+                    &.icon-plus { // needed because of another extension which creates own toggler
+                        svg {
+                            transform: rotate(45deg);
+                        }
+                    }
+                }
+
+                @if $zen-category-filter-icon == "plusminus" {
+                    &.icon-minus { // needed because of another extension which creates own toggler
+                        display: inline-flex;
+                    }
+
+                    &.icon-plus { // needed because of another extension which creates own toggler
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+
+    .filter-boolean {
+        padding-top: px($zen-category-filter-pv);
+        padding-bottom: px($zen-category-filter-pv);
+    }
+
+    @if $zen-layout-button-radius == 100 {
+        .filter-multi-select-list {
+            padding-bottom: $spacer-sm;
+        }
+    }
+}
+
+// filter dropdown
+.filter-panel-item-dropdown {
+    background-color: $zen-category-filter-active-bg;
+    color: $zen-category-filter-active-color;
+    @include border-radius($zen-layout-element-radius * 1px);
+    max-height: none;
+    overflow: hidden;
+}
+
+.filter-multi-select-list {
+    min-width: 240px;
+    max-height: 200px;
+    overflow: auto;
+    scrollbar-color: rgba(0,0,0,.1) transparent;
+    scrollbar-width: thin;
+
+    &::-webkit-scrollbar {
+        width: 6px
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(0,0,0,.1);
+        border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &:hover {
+        scrollbar-color: $sw-border-color transparent;
+    }
+
+    &:hover::-webkit-scrollbar-thumb {
+        background-color: $sw-border-color;
+    }
+}
+
+.filter-multi-select-list-item {
+    background-color: $zen-category-filter-active-bg;
+    color: $zen-category-filter-active-color;
+    @include transition($transition-base);
+
+    @if $zen-category-filter-separator == 1 {
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+
+        &:last-child {
+            border-bottom: 0 none;
+        }
+    }
+
+    &:hover {
+        background-color: $zen-category-filter-hover-bg;
+        color: $zen-category-filter-hover-color;
+    }
+}
+
+// filter active items
+.filter-active {
+    border: 0;
+    background-color: $zen-category-filter-active-bg;
+    color: $zen-category-filter-active-color;
+    @include transition($transition-base);
+    line-height: 28px; // ... corrects shopware miscalculation of 26px, because 32px (height) - 2px (padding-top) - 2px (padding-bottom) = 28px
+
+    &:hover {
+        background-color: $zen-category-filter-hover-bg;
+        color: $zen-category-filter-hover-color;
+
+        .filter-active-remove {
+            color: $zen-category-filter-hover-color;
+        }
+    }
+
+    .filter-active-remove {
+        @include transition($transition-base);
+        color: $zen-category-filter-active-color;
+    }
+}
+
+// filter reset button
+.btn.filter-reset-all {
+    @include border-radius($zen-layout-button-radius * 1px);
+    font-weight: var(--#{$prefix}btn-font-weight);
+    line-height: var(--#{$prefix}btn-line-height);
+    height: auto;
+    vertical-align: middle;
+}
+
+.filter-range {
+    .form-control {
+        background: transparent;
+        color: $zen-category-filter-active-color;
+        border-color: $zen-category-filter-active-color;
+
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        &[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        &:focus {
+            background-color: $zen-category-filter-active-bg;
+            color: $zen-category-filter-active-color;
+            border-color: $zen-category-filter-active-color;
+        }
+    }
+
+    .filter-range-unit {
+        background: transparent;
+    }
+}
+
+.filter-range-currency-symbol {
+    background: transparent;
+    color: $zen-category-filter-active-color;
+    border-color: $zen-category-filter-active-color;
+
+    @if $zen-layout-forms-style == "underlined" {
+        border-radius: 0;
+    } @else {
+        @include border-radius($zen-layout-input-radius * 1px);
+    }
+}
+
+.filter-panel-offcanvas-title,
+.filter-panel-offcanvas-close {
+    &,
+    .icon {
+        @if $zen-container-bg == transparent {
+            color: color-contrast($body-bg, $sw-text-color, $zen-light-text-color);
+        } @else {
+            color: color-contrast($zen-container-bg, $sw-text-color, $zen-light-text-color);
+        }
+    }
+}
+
+.btn.filter-panel-wrapper-toggle {
+    .icon {
+        color: $primary;
+    }
+
+    &:hover {
+        background-color: var(--#{$prefix}btn-hover-bg);
+        color: var(--#{$prefix}btn-hover-color);
+
+        .icon {
+            color: var(--#{$prefix}btn-hover-color);
+        }
+    }
+}

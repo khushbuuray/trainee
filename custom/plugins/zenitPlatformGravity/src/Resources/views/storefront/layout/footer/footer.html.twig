@@ -1,0 +1,749 @@
+{% sw_extends '@Storefront/storefront/layout/footer/footer.html.twig' %}
+
+{% block layout_footer_navigation_information_icons %}
+    <div class="footer-column-toggle">
+        <span class="footer-plus-icon">
+            {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'plus' %}{% else %}{% sw_icon 'arrow-head-down' style { size: 'sm' } %}{% endif %}
+        </span>
+        <span class="footer-minus-icon">
+            {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'minus' %}{% else %}{% sw_icon 'arrow-head-up' style { size: 'sm' } %}{% endif %}
+        </span>
+    </div>
+{% endblock %}
+
+{% block layout_footer_inner_container %}
+    {% if theme_config('zen-footer-logo-position') is same as ('newsletter') %}
+        {% set newsletterTitleHiddenClass = 'd-none' %}
+        {% set newsletterFooterLogoClass = 'has-footer-logo' %}
+    {% endif %}
+
+    {% block zen_layout_footer_newsletter %}
+        {% if theme_config('zen-footer-newsletter-position') is same as ('prepend') %}
+            <div class="footer-newsletter footer-newsletter-top">
+                <div class="container">
+                    <div class="row">
+                        {% block zen_layout_footer_newsletter_logo %}
+                            {# footer logo #}
+                            {% if theme_config('zen-footer-logo-position') is same as ('newsletter') %}
+                                <div class="footer-logo col-12 col-md-auto">
+                                    {% sw_include '@zenitPlatformGravity/storefront/component/footer/zen-footer-logo.html.twig' %}
+                                </div>
+                            {% endif %}
+                        {% endblock %}
+
+                        <div class="footer-newsletter-col col">
+                            {% sw_include '@zenitPlatformGravity/storefront/component/footer/zen-footer-newsletter.html.twig' with {
+                                action: 'frontend.form.newsletter.register.handle',
+                                submitText: 'newsletter.formSubmit'
+                            } %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block layout_footer_navigation %}
+        <div class="container">
+            <div
+                id="footerColumns"
+                class="row footer-columns{% if theme_config('zen-footer-col-headline-font-align') is same as ('center') and theme_config('zen-footer-col-font-align') is same as ('center') %} justify-content-center{% endif %}"
+                data-collapse-footer-columns="true"
+                role="list"
+            >
+                {% block zen_layout_footer_navigation_logo %}
+                    {% if theme_config('zen-footer-logo-position') is same as ('column') %}
+                        <div class="{{ theme_config('zen-footer-logo-col') }} {{ theme_config('zen-footer-logo-col-xl') }} order-{{ theme_config('zen-footer-logo-order') }} footer-column footer-logo-column">
+                            <div class="footer-logo-column-inner">
+                                {% sw_include '@zenitPlatformGravity/storefront/component/footer/zen-footer-logo.html.twig' %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+                {% block zen_layout_footer_navigation_newsletter %}
+                    {% if theme_config('zen-footer-newsletter-position') is same as ('column') %}
+                        <div class="{{ theme_config('zen-footer-newsletter-col') }} {{ theme_config('zen-footer-newsletter-col-xl') }} order-{{ theme_config('zen-footer-newsletter-order') }} footer-column js-footer-column footer-newsletter-column footer-newsletter">
+                            <div class="footer-newsletter-column-inner">
+                                {% if theme_config('zen-footer-logo-position') is same as ('newsletter') %}<div class="row">{% endif %}
+                                    {% block zen_layout_footer_navigation_newsletter_headline_logo %}
+                                        {# footer logo #}
+                                        {% if theme_config('zen-footer-logo-position') is same as ('newsletter') %}
+                                            <div class="footer-column-headline footer-headline footer-logo col-auto"
+                                                 role="listitem">
+                                                {% sw_include '@zenitPlatformGravity/storefront/component/footer/zen-footer-logo.html.twig' %}
+                                            </div>
+                                        {% endif %}
+                                    {% endblock %}
+
+                                    {# showClass #}
+                                    {% if theme_config('zen-footer-newsletter-collapse-state') %}
+                                        {% set newsletterShowClass = 'show' %}
+                                    {% endif %}
+
+                                    {% block zen_layout_footer_navigation_newsletter_headline %}
+                                        <div class="{{ newsletterTitleHiddenClass }} footer-column-headline footer-headline js-footer-column-headline js-collapse-footer-column-trigger {{ newsletterShowClass }}"
+                                             id="collapseFooterNewsletterTitle"
+                                             data-bs-target="#collapseFooterNewsletter"
+                                             aria-expanded="true"
+                                             aria-controls="collapseFooterNewsletter"
+                                             role="listitem">
+                                            {{ 'zentheme.footer.newsletterHeadline'|trans|sw_sanitize }}
+                                            {% block zen_layout_footer_navigation_newsletter_icons %}
+                                                <div class="footer-column-toggle">
+                                                    <span class="footer-plus-icon">
+                                                        {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'plus' %}{% else %}{% sw_icon 'arrow-head-down' style { size: 'sm' } %}{% endif %}
+                                                    </span>
+                                                    <span class="footer-minus-icon">
+                                                        {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'minus' %}{% else %}{% sw_icon 'arrow-head-up' style { size: 'sm' } %}{% endif %}
+                                                    </span>
+                                                </div>
+                                            {% endblock %}
+                                        </div>
+                                    {% endblock %}
+
+                                    {% block zen_layout_footer_navigation_newsletter_content %}
+                                        <div id="collapseFooterNewsletter"
+                                             class="footer-column-content collapse js-footer-column-content col {{ newsletterShowClass }}"
+                                             aria-labelledby="collapseFooterNewsletterTitle"
+                                             role="listitem">
+                                            <div class="footer-column-content-inner">
+                                                {% sw_include '@zenitPlatformGravity/storefront/component/footer/zen-footer-newsletter.html.twig' with {
+                                                    action: 'frontend.form.newsletter.register.handle',
+                                                    submitText: 'newsletter.formSubmit'
+                                                }%}
+                                            </div>
+                                        </div>
+                                    {% endblock %}
+                                    {% if theme_config('zen-footer-logo-position') is same as ('newsletter') %}</div>{% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+                {% block zen_layout_footer_navigation_social %}
+                    {% if theme_config('zen-footer-social-position') is same as ('column') %}
+                        <div class="{{ theme_config('zen-footer-social-col') }} {{ theme_config('zen-footer-social-col-xl') }} order-{{ theme_config('zen-footer-social-order') }} footer-column js-footer-column footer-social-column">
+                            {# footer logo #}
+                            {% if theme_config('zen-footer-logo-position') is same as ('social') %}
+                                {% set socialHiddenClass = 'd-md-none' %}
+                            {% endif %}
+
+                            {% block zen_layout_footer_navigation_social_headline_logo %}
+                                {# footer logo #}
+                                {% if theme_config('zen-footer-logo-position') is same as ('social') %}
+                                    <div class="footer-column-headline footer-headline footer-logo"
+                                         role="listitem">
+                                        {% sw_include '@zenitPlatformGravity/storefront/component/footer/zen-footer-logo.html.twig' %}
+                                    </div>
+                                {% endif %}
+                            {% endblock %}
+
+                            {# showClass #}
+                            {% if theme_config('zen-footer-social-collapse-state') %}
+                                {% set socialShowClass = 'show' %}
+                            {% endif %}
+
+                            {% block zen_layout_footer_navigation_social_headline %}
+                                <div class="{{ socialHiddenClass }} footer-column-headline footer-headline js-footer-column-headline js-collapse-footer-column-trigger {{ socialShowClass }}"
+                                     id="collapseFooterSocialTitle"
+                                     data-bs-target="#collapseFooterSocial"
+                                     aria-expanded="true"
+                                     aria-controls="collapseFooterSocial"
+                                     role="listitem">
+                                    {{ 'zentheme.footer.socialMediaHeadline'|trans|sw_sanitize }}
+                                    {% block zen_layout_footer_navigation_social_icons %}
+                                        <div class="footer-column-toggle">
+                                            <span class="footer-plus-icon">
+                                                {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'plus' %}{% else %}{% sw_icon 'arrow-head-down' style { size: 'sm' } %}{% endif %}
+                                            </span>
+                                            <span class="footer-minus-icon">
+                                                {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'minus' %}{% else %}{% sw_icon 'arrow-head-up' style { size: 'sm' } %}{% endif %}
+                                            </span>
+                                        </div>
+                                    {% endblock %}
+                                </div>
+                            {% endblock %}
+
+                            {% block zen_layout_footer_navigation_social_content %}
+                                <div id="collapseFooterSocial"
+                                     class="footer-column-content collapse js-footer-column-content {{ socialShowClass }}"
+                                     aria-labelledby="collapseFooterSocialTitle"
+                                     role="listitem">
+                                    <div class="footer-column-content-inner">
+                                        {% sw_include '@zenitPlatformGravity/storefront/component/footer/zen-footer-social.html.twig' %}
+                                    </div>
+                                </div>
+                            {% endblock %}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+                {% block zen_layout_footer_navigation_custom %}
+                    {% if config('zenitPlatformGravity.config.customColumnActive') and config('zenitPlatformGravity.config.customColumnTitle') and config('zenitPlatformGravity.config.customColumnText') %}
+
+                        {% set customColumn = {
+                            translated: {
+                                title: 'zentheme.gravity.content.customColumnTitle'|trans({'%placeholder%': config('zenitPlatformGravity.config.customColumnTitle')}),
+                                text: 'zentheme.gravity.content.customColumnText'|trans({'%placeholder%': config('zenitPlatformGravity.config.customColumnText')})
+                            }
+                        } %}
+
+                        <div class="{{ theme_config('zen-footer-custom-col') }} {{ theme_config('zen-footer-custom-col-xl') }} order-{{ theme_config('zen-footer-custom-order') }} footer-column js-footer-column footer-custom-column">
+
+                            {# showClass #}
+                            {% if theme_config('zen-footer-custom-collapse-state') %}
+                                {% set customShowClass = 'show' %}
+                            {% endif %}
+
+                            {% block zen_layout_footer_navigation_custom_headline %}
+                                <div class="footer-column-headline footer-headline js-footer-column-headline js-collapse-footer-column-trigger {{ customShowClass }}"
+                                     id="collapseFooterCustomTitle"
+                                     data-bs-target="#collapseFooterCustom"
+                                     aria-expanded="true"
+                                     aria-controls="collapseFooterCustom"
+                                     role="listitem">
+                                    {{ customColumn.translated.title }}
+
+                                    {% block zen_layout_footer_navigation_custom_icons %}
+                                        <div class="footer-column-toggle">
+                                            <span class="footer-plus-icon">
+                                                {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'plus' %}{% else %}{% sw_icon 'arrow-head-down' style { size: 'sm' } %}{% endif %}
+                                            </span>
+                                            <span class="footer-minus-icon">
+                                                {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'minus' %}{% else %}{% sw_icon 'arrow-head-up' style { size: 'sm' } %}{% endif %}
+                                            </span>
+                                        </div>
+                                    {% endblock %}
+                                </div>
+                            {% endblock %}
+
+                            {% block zen_layout_footer_navigation_custom_content %}
+                                <div id="collapseFooterCustom"
+                                     class="footer-column-content collapse js-footer-column-content {{ customShowClass }}"
+                                     aria-labelledby="collapseFooterCustomTitle"
+                                     role="listitem">
+                                    <div class="footer-column-content-inner">
+                                        {% set content = customColumn.translated.text|raw %}
+
+                                        {% if config('zenitPlatformGravity.config.twigStringLoaderExtension') %}
+                                            {% sw_include '@zenitPlatformGravity/storefront/utilities/zen-template-from-string.html.twig' with {
+                                                content: content
+                                            } %}
+                                        {% else %}
+                                            {{ content|raw }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endblock %}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+                {% block zen_layout_footer_navigation_custom_2 %}
+                    {% if config('zenitPlatformGravity.config.custom2ColumnActive') and config('zenitPlatformGravity.config.custom2ColumnTitle') and config('zenitPlatformGravity.config.custom2ColumnText') %}
+
+                        {% set customColumn = {
+                            translated: {
+                                title: 'zentheme.gravity.content.custom2ColumnTitle'|trans({'%placeholder%': config('zenitPlatformGravity.config.custom2ColumnTitle')}),
+                                text: 'zentheme.gravity.content.custom2ColumnText'|trans({'%placeholder%': config('zenitPlatformGravity.config.custom2ColumnText')})
+                            }
+                        } %}
+
+                        <div class="{{ theme_config('zen-footer-custom-2-col') }} {{ theme_config('zen-footer-custom-2-col-xl') }} order-{{ theme_config('zen-footer-custom-2-order') }} footer-column js-footer-column footer-custom-2-column">
+
+                            {# showClass #}
+                            {% if theme_config('zen-footer-custom-2-collapse-state') %}
+                                {% set customShowClass = 'show' %}
+                            {% endif %}
+
+                            {% block zen_layout_footer_navigation_custom_2_headline %}
+                                <div class="footer-column-headline footer-headline js-footer-column-headline js-collapse-footer-column-trigger {{ customShowClass }}"
+                                     id="collapseFooterCustom2Title"
+                                     data-bs-target="#collapseFooterCustom2"
+                                     aria-expanded="true"
+                                     aria-controls="collapseFooterCustom2"
+                                     role="listitem">
+                                    {{ customColumn.translated.title }}
+
+                                    {% block zen_layout_footer_navigation_custom_2_icons %}
+                                        <div class="footer-column-toggle">
+                                            <span class="footer-plus-icon">
+                                                {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'plus' %}{% else %}{% sw_icon 'arrow-head-down' style { size: 'sm' } %}{% endif %}
+                                            </span>
+                                            <span class="footer-minus-icon">
+                                                {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'minus' %}{% else %}{% sw_icon 'arrow-head-up' style { size: 'sm' } %}{% endif %}
+                                            </span>
+                                        </div>
+                                    {% endblock %}
+                                </div>
+                            {% endblock %}
+
+                            {% block zen_layout_footer_navigation_custom_2_content %}
+                                <div id="collapseFooterCustom2"
+                                     class="footer-column-content collapse js-footer-column-content {{ customShowClass }}"
+                                     aria-labelledby="collapseFooterCustom2Title"
+                                     role="listitem">
+                                    <div class="footer-column-content-inner">
+                                        {% set content = customColumn.translated.text|raw %}
+
+                                        {% if config('zenitPlatformGravity.config.twigStringLoaderExtension') %}
+                                            {% sw_include '@zenitPlatformGravity/storefront/utilities/zen-template-from-string.html.twig' with {
+                                                content: content
+                                            } %}
+                                        {% else %}
+                                            {{ content|raw }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endblock %}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+                {% block zen_layout_footer_navigation_custom_3 %}
+                    {% if config('zenitPlatformGravity.config.custom3ColumnActive') and config('zenitPlatformGravity.config.custom3ColumnTitle') and config('zenitPlatformGravity.config.custom3ColumnText') %}
+
+                        {% set customColumn = {
+                            translated: {
+                                title: 'zentheme.gravity.content.custom3ColumnTitle'|trans({'%placeholder%': config('zenitPlatformGravity.config.custom3ColumnTitle')}),
+                                text: 'zentheme.gravity.content.custom3ColumnText'|trans({'%placeholder%': config('zenitPlatformGravity.config.custom3ColumnText')})
+                            }
+                        } %}
+
+                        <div class="{{ theme_config('zen-footer-custom-3-col') }} {{ theme_config('zen-footer-custom-3-col-xl') }} order-{{ theme_config('zen-footer-custom-3-order') }} footer-column js-footer-column footer-custom-3-column">
+
+                            {# showClass #}
+                            {% if theme_config('zen-footer-custom-3-collapse-state') %}
+                                {% set customShowClass = 'show' %}
+                            {% endif %}
+
+                            {% block zen_layout_footer_navigation_custom_3_headline %}
+                                <div class="footer-column-headline footer-headline js-footer-column-headline js-collapse-footer-column-trigger {{ customShowClass }}"
+                                     id="collapseFooterCustom3Title"
+                                     data-bs-target="#collapseFooterCustom3"
+                                     aria-expanded="true"
+                                     aria-controls="collapseFooterCustom3"
+                                     role="listitem">
+                                    {{ customColumn.translated.title }}
+
+                                    {% block zen_layout_footer_navigation_custom_3_icons %}
+                                        <div class="footer-column-toggle">
+                                            <span class="footer-plus-icon">
+                                                {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'plus' %}{% else %}{% sw_icon 'arrow-head-down' style { size: 'sm' } %}{% endif %}
+                                            </span>
+                                            <span class="footer-minus-icon">
+                                                {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'minus' %}{% else %}{% sw_icon 'arrow-head-up' style { size: 'sm' } %}{% endif %}
+                                            </span>
+                                        </div>
+                                    {% endblock %}
+                                </div>
+                            {% endblock %}
+
+                            {% block zen_layout_footer_navigation_custom_3_content %}
+                                <div id="collapseFooterCustom3"
+                                     class="footer-column-content collapse js-footer-column-content {{ customShowClass }}"
+                                     aria-labelledby="collapseFooterCustom3Title"
+                                     role="listitem">
+                                    <div class="footer-column-content-inner">
+                                        {% set content = customColumn.translated.text|raw %}
+
+                                        {% if config('zenitPlatformGravity.config.twigStringLoaderExtension') %}
+                                            {% sw_include '@zenitPlatformGravity/storefront/utilities/zen-template-from-string.html.twig' with {
+                                                content: content
+                                            } %}
+                                        {% else %}
+                                            {{ content|raw }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endblock %}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+                {% block zen_layout_footer_navigation_hotline %}
+                    {% if theme_config('zen-footer-hotline-position') is same as ('column') %}
+                        <div class="{{ theme_config('zen-footer-hotline-col') }} {{ theme_config('zen-footer-hotline-col-xl') }} order-{{ theme_config('zen-footer-hotline-order') }} footer-column js-footer-column footer-hotline-column">
+                            {# footer logo #}
+                            {% if theme_config('zen-footer-logo-position') is same as ('hotline') %}
+                                {% set hotlineHiddenClass = 'd-md-none' %}
+                            {% endif %}
+
+                            {% block zen_layout_footer_navigation_hotline_headline_logo %}
+                                {# footer logo #}
+                                {% if theme_config('zen-footer-logo-position') is same as ('hotline') %}
+                                    <div class="footer-column-headline footer-headline footer-logo"
+                                         role="listitem">
+                                        {% sw_include '@zenitPlatformGravity/storefront/component/footer/zen-footer-logo.html.twig' %}
+                                    </div>
+                                {% endif %}
+                            {% endblock %}
+
+                            {# showClass #}
+                            {% if theme_config('zen-footer-hotline-collapse-state') %}
+                                {% set hotlineShowClass = 'show' %}
+                            {% endif %}
+
+                            {% block zen_layout_footer_navigation_hotline_headline %}
+                                <div class="{{ hotlineHiddenClass }} footer-column-headline footer-headline js-footer-column-headline js-collapse-footer-column-trigger {{ hotlineShowClass }}"
+                                     id="collapseFooterHotlineTitle"
+                                     data-bs-target="#collapseFooterHotline"
+                                     aria-expanded="true"
+                                     aria-controls="collapseFooterHotline"
+                                     role="listitem">
+                                    {{ 'footer.serviceHotlineHeadline'|trans|sw_sanitize }}
+
+                                    {% block zen_layout_footer_navigation_hotline_icons %}
+                                        <div class="footer-column-toggle">
+                                            <span class="footer-plus-icon">
+                                                {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'plus' %}{% else %}{% sw_icon 'arrow-head-down' style { size: 'sm' } %}{% endif %}
+                                            </span>
+                                            <span class="footer-minus-icon">
+                                                {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'minus' %}{% else %}{% sw_icon 'arrow-head-up' style { size: 'sm' } %}{% endif %}
+                                            </span>
+                                        </div>
+                                    {% endblock %}
+                                </div>
+                            {% endblock %}
+
+                            {% block zen_layout_footer_navigation_hotline_content %}
+                                <div id="collapseFooterHotline"
+                                     class="footer-column-content collapse js-footer-column-content {{ hotlineShowClass }}"
+                                     aria-labelledby="collapseFooterHotlineTitle"
+                                     role="listitem">
+                                    <div class="footer-column-content-inner">
+                                        <p class="footer-contact-hotline">
+                                            {{ 'footer.serviceHotline'|trans|sw_sanitize }}
+                                        </p>
+                                        <div class="footer-contact-form">
+                                            {{ 'footer.serviceContactText'|trans({
+                                                '%url%': path('frontend.cms.page', { id: config('core.basicInformation.contactPage') })
+                                            })|raw }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endblock %}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+                {% block layout_footer_navigation_columns %}
+                    {% for root in page.footer.navigation.tree %}
+                        {% block layout_footer_navigation_column %}
+                            <div class="{{ theme_config('zen-footer-navigation-col') }} {{ theme_config('zen-footer-navigation-col-xl') }} order-{{ theme_config('zen-footer-navigation-order') }} footer-column js-footer-column">
+
+                                {# showClass #}
+                                {% if theme_config('zen-footer-navigation-collapse-state') %}
+                                    {% set navigationShowClass = 'show' %}
+                                {% endif %}
+
+                                {% block layout_footer_navigation_information_headline %}
+                                    <div id="#collapseFooterTitle{{ loop.index }}"
+                                         class="footer-column-headline footer-headline js-collapse-footer-column-trigger {{ navigationShowClass }}"
+                                         data-bs-target="#collapseFooter{{ loop.index }}"
+                                         aria-expanded="true"
+                                         aria-controls="collapseFooter{{ loop.index }}"
+                                         role="listitem">
+
+                                        {% if root.category.type == 'folder' %}
+                                            {{ root.category.translated.name }}
+                                        {% else %}
+                                            <a href="{{ category_url(root.category) }}"
+                                               {% if category_linknewtab(root.category) %}target="_blank"{% endif %}
+                                               title="{{ root.category.translated.name }}">
+                                                {{ root.category.translated.name }}
+                                            </a>
+                                        {% endif %}
+
+                                        {{ block('layout_footer_navigation_information_icons') }}
+                                    </div>
+                                {% endblock %}
+
+                                {% block layout_footer_navigation_information_content %}
+                                    <div id="collapseFooter{{ loop.index }}"
+                                         class="footer-column-content collapse js-footer-column-content {{ navigationShowClass }}"
+                                         aria-labelledby="collapseFooterTitle{{ loop.index }}"
+                                         role="listitem">
+                                        <div class="footer-column-content-inner">
+                                            {% block layout_footer_navigation_information_links %}
+                                                <ul class="list-unstyled">
+                                                    {% for treeItem in root.children %}
+                                                        {% set category = treeItem.category %}
+                                                        {% set name = category.translated.name %}
+
+                                                        {{ block('layout_footer_navigation_information_link_item') }}
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endblock %}
+                                        </div>
+                                    </div>
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
+                    {% endfor %}
+{#                        {% set ecocodeTrustpilotConfig = getEcocodeTrustpilotPluginConfig(context) %}#}
+{#                        {% if ecocodeTrustpilotConfig.useBascicFooterWidget %}#}
+{#                            <div class="col-md-4 footer-column">#}
+{#                                <div class="footer-column-headline footer-headline justify-content-center">#}
+{#                                    {% include '@EcocodeTrustpilot/storefront/component/widget/micro-review-count.html.twig' %}#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        {% endif %}#}
+                {% endblock %}
+
+                {% block zen_layout_footer_navigation_payment_logos %}
+                    {% set footerPaymentLogos = false %}
+
+                    {% for paymentMethod in page.salesChannelPaymentMethods %}
+                        {% if paymentMethod.media %}
+                            {% set footerPaymentLogos = true %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if theme_config('zen-footer-payment-logos-position') is same as ('column') and footerPaymentLogos %}
+                        <div class="{{ theme_config('zen-footer-payment-logos-col') }} {{ theme_config('zen-footer-payment-logos-col-xl') }} order-{{ theme_config('zen-footer-payment-logos-order') }} footer-column js-footer-column footer-payment-logos-column">
+
+                            {# showClass #}
+                            {% if theme_config('zen-footer-payment-logos-collapse-state') %}
+                                {% set customShowClass = 'show' %}
+                            {% endif %}
+
+                            {% block zen_layout_footer_navigation_payment_logos_headline %}
+                                <div class="footer-column-headline footer-headline js-footer-column-headline js-collapse-footer-column-trigger {{ customShowClass }}"
+                                     id="collapseFooterPaymentLogosTitle"
+                                     data-bs-target="#collapseFooterPaymentLogos"
+                                     aria-expanded="true"
+                                     aria-controls="collapseFooterPaymentLogos"
+                                     role="listitem">
+                                    {{ 'zentheme.footer.paymentLogosHeadline'|trans|sw_sanitize }}
+
+                                    {% block zen_layout_footer_navigation_payment_logos_icons %}
+                                        <div class="footer-column-toggle">
+                                            <span class="footer-plus-icon">
+                                                {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'plus' %}{% else %}{% sw_icon 'arrow-head-down' style { size: 'sm' } %}{% endif %}
+                                            </span>
+                                            <span class="footer-minus-icon">
+                                                {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'minus' %}{% else %}{% sw_icon 'arrow-head-up' style { size: 'sm' } %}{% endif %}
+                                            </span>
+                                        </div>
+                                    {% endblock %}
+                                </div>
+                            {% endblock %}
+
+                            {% block zen_layout_footer_navigation_payment_logos_content %}
+                                <div id="collapseFooterPaymentLogos"
+                                     class="footer-column-content collapse js-footer-column-content {{ customShowClass }}"
+                                     aria-labelledby="collapseFooterPaymentLogosTitle"
+                                     role="listitem">
+                                    <div class="footer-column-content-inner">
+                                        <div class="footer-logos">
+                                            {{ block('layout_footer_payment_logos') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endblock %}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+                {% block zen_layout_footer_navigation_shipping_logos %}
+                    {% set footerShippingLogos = false %}
+
+                    {% for shippingMethod in page.salesChannelShippingMethods %}
+                        {% if shippingMethod.media %}
+                            {% set footerShippingLogos = true %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if theme_config('zen-footer-shipping-logos-position') is same as ('column') and footerShippingLogos %}
+                        <div class="{{ theme_config('zen-footer-shipping-logos-col') }} {{ theme_config('zen-footer-shipping-logos-col-xl') }} order-{{ theme_config('zen-footer-shipping-logos-order') }} footer-column js-footer-column footer-shipping-logos-column">
+
+                            {# showClass #}
+                            {% if theme_config('zen-footer-shipping-logos-collapse-state') %}
+                                {% set customShowClass = 'show' %}
+                            {% endif %}
+
+                            {% block zen_layout_footer_navigation_shipping_logos_headline %}
+                                <div class="footer-column-headline footer-headline js-footer-column-headline js-collapse-footer-column-trigger {{ customShowClass }}"
+                                     id="collapseFooterShippingLogosTitle"
+                                     data-bs-target="#collapseFooterPaymentLogos"
+                                     aria-expanded="true"
+                                     aria-controls="collapseFooterPaymentLogos"
+                                     role="listitem">
+                                    {{ 'zentheme.footer.shippingLogosHeadline'|trans|sw_sanitize }}
+
+                                    {% block zen_layout_footer_navigation_shipping_logos_icons %}
+                                        <div class="footer-column-toggle">
+                                            <span class="footer-plus-icon">
+                                                {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'plus' %}{% else %}{% sw_icon 'arrow-head-down' style { size: 'sm' } %}{% endif %}
+                                            </span>
+                                            <span class="footer-minus-icon">
+                                                {% if theme_config('zen-footer-col-headline-icon') is same as ('plusminus') %}{% sw_icon 'minus' %}{% else %}{% sw_icon 'arrow-head-up' style { size: 'sm' } %}{% endif %}
+                                            </span>
+                                        </div>
+                                    {% endblock %}
+                                </div>
+                            {% endblock %}
+
+                            {% block zen_layout_footer_navigation_shipping_logos_content %}
+                                <div id="collapseFooterPaymentLogos"
+                                     class="footer-column-content collapse js-footer-column-content {{ customShowClass }}"
+                                     aria-labelledby="collapseFooterShippingLogosTitle"
+                                     role="listitem">
+                                    <div class="footer-column-content-inner">
+                                        <div class="footer-logos">
+                                            {{ block('layout_footer_shipping_logos') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endblock %}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block layout_footer_bottom %}
+        <div class="footer-bottom">
+            <div class="container">
+                {% block layout_footer_payment_shipping_logos %}
+                    {% set footerLogos = false %}
+
+                    {% for paymentMethod in page.salesChannelPaymentMethods %}
+                        {% if paymentMethod.media %}
+                            {% set footerLogos = true %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for shippingMethod in page.salesChannelShippingMethods %}
+                        {% if shippingMethod.media %}
+                            {% set footerLogos = true %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if footerLogos and (theme_config('zen-footer-payment-logos-position') is same as ('bottom') or theme_config('zen-footer-shipping-logos-position') is same as ('bottom')) %}
+                        <div class="footer-logos">
+                            {% if theme_config('zen-footer-payment-logos-position') is same as ('bottom') %}
+                                {% block layout_footer_payment_logos %}
+                                    {% for paymentMethod in page.salesChannelPaymentMethods %}
+                                        {% block layout_footer_payment_logo %}
+                                            {% if paymentMethod.media %}
+                                                <div class="footer-logo is-payment">
+                                                    {% set attributes = {
+                                                        class: 'img-fluid footer-logo-image',
+                                                        alt: (paymentMethod.media.translated.alt|default(paymentMethod.translated.name)),
+                                                        title: (paymentMethod.media.translated.title|default(paymentMethod.translated.name))
+                                                    } %}
+
+                                                    {# ... @zenit - enables lazy loading for images #}
+                                                    {% if config('zenitPlatformGravity.config.lazyloading') %}
+                                                        {% set attributes = attributes|merge({ loading: 'lazy' }) %}
+                                                    {% endif %}
+
+                                                    {% sw_thumbnails 'footer-payment-image-thumbnails' with {
+                                                        media: paymentMethod.media,
+                                                        sizes: {
+                                                            default: '100px'
+                                                        },
+                                                        attributes: {
+                                                            class: 'img-fluid footer-logo-image',
+                                                            alt: (paymentMethod.media.translated.alt ?: paymentMethod.translated.name),
+                                                            title: (paymentMethod.media.translated.title ?: paymentMethod.translated.name)
+                                                        }
+                                                    } %}
+                                                </div>
+                                            {% endif %}
+                                        {% endblock %}
+                                    {% endfor %}
+                                {% endblock %}
+                            {% endif %}
+
+                            {% if theme_config('zen-footer-shipping-logos-position') is same as ('bottom') %}
+                                {% block layout_footer_shipping_logos %}
+                                    {% for shippingMethod in page.salesChannelShippingMethods %}
+                                        {% block layout_footer_shipping_logo %}
+                                            {% if shippingMethod.media %}
+                                                <div class="footer-logo is-shipping">
+                                                    {% set attributes = {
+                                                        class: 'img-fluid footer-logo-image',
+                                                        alt: (shippingMethod.media.translated.alt|default(shippingMethod.translated.name)),
+                                                        title: (shippingMethod.media.translated.title|default(shippingMethod.translated.name))
+                                                    } %}
+
+                                                    {# ... @zenit - enables lazy loading for images #}
+                                                    {% if config('zenitPlatformGravity.config.lazyloading') %}
+                                                        {% set attributes = attributes|merge({ loading: 'lazy' }) %}
+                                                    {% endif %}
+
+                                                    {% sw_thumbnails 'footer-shipping-image-thumbnails' with {
+                                                        media: shippingMethod.media,
+                                                        sizes: {
+                                                            default: '100px'
+                                                        },
+                                                        attributes: {
+                                                            class: 'img-fluid footer-logo-image',
+                                                            alt: (shippingMethod.media.translated.alt ?: shippingMethod.translated.name),
+                                                            title: (shippingMethod.media.translated.title ?: shippingMethod.translated.name)
+                                                        }
+                                                    } %}
+                                                </div>
+                                            {% endif %}
+                                        {% endblock %}
+                                    {% endfor %}
+                                {% endblock %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+                {# Social Media Icons #}
+                {% block zen_layout_footer_social_media_logos %}
+                    {% if theme_config('zen-footer-social-position') is same as ('bottom') %}
+                        {% sw_include '@zenitPlatformGravity/storefront/component/footer/zen-footer-social.html.twig' %}
+                    {% endif %}
+                {% endblock %}
+
+                {% block zen_layout_footer_bottom_vat %}
+                    {% if theme_config('zen-footer-bottom-service-navigation') is not same as (false) and page.header.serviceMenu.elements is not empty %}
+                        {{ block('layout_footer_vat') }}
+                    {% endif %}
+                {% endblock %}
+
+                {% block zen_layout_footer_bottom_row %}
+                    <div class="footer-bottom-row row align-items-center justify-content-between">
+                        {% block zen_layout_footer_bottom_left %}
+                            <div class="footer-bottom-left order-2 order-md-1 col-md-auto">
+                                {% block layout_footer_copyright %}
+                                    <div class="footer-copyright">
+                                        {{ 'zentheme.general.copyright'|trans({
+                                            '%year%': 'now'|date('Y'),
+                                            '%shopname%': config('core.basicInformation.shopName'),
+                                            '%love%': '<span class="icon icon-heart icon-xs"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path d="M16 29.104l-1.938-1.75c-6.875-6.25-11.375-10.313-11.375-15.375 0-4.125 3.188-7.313 7.313-7.313 2.313 0 4.563 1.125 6 2.813 1.438-1.688 3.688-2.813 6-2.813 4.125 0 7.313 3.188 7.313 7.313 0 5.063-4.5 9.188-11.375 15.438z"></path></svg></span>',
+                                            '%href%': 'https://zenit.design',
+                                            '%title%': 'Made with love by Zenit Design',
+                                            '%name%': 'Zenit Design'
+                                        })|raw }}
+                                    </div>
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
+
+                        {% block zen_layout_footer_bottom_right %}
+                            <div class="footer-bottom-right order-1 order-md-2 col-md">
+                                {% block layout_footer_service_menu %}
+                                    {% if theme_config('zen-footer-bottom-service-navigation') is not same as (false) and page.header.serviceMenu.elements is not empty %}
+                                        {{ block('layout_footer_service_menu_content') }}
+                                    {% else %}
+                                        {{ block('layout_footer_vat') }}
+                                    {% endif %}
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </div>
+        </div>
+    {% endblock %}
+{% endblock %}

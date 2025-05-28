@@ -1,0 +1,5 @@
+@function px($size) {
+    $pxSize: strip-unit($size);
+    @return $pxSize * 1px;
+    //@return #{$pxSize}px; can not calc with strings
+}

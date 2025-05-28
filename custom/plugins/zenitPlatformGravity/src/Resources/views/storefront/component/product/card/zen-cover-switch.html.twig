@@ -1,0 +1,55 @@
+{% block zen_component_product_box_image_switch_inner %}
+
+    {# if there are more than one image #}
+    {% if product.media.elements is defined and product.media.elements|length > 1 and theme_config('zen-product-listing-card-img-switch') is not same as ('none') %}
+
+        {% set productMediaLength = product.media.elements|length %}
+        {% set productMediaPosition = productMediaLength %}
+        {% set coverSwitch = [] %}
+
+        {# increase productMediaPosition if image.position is > product.media.elements #}
+        {% for image in product.media.elements %}
+            {% if product.cover.media.id != image.media.id and image.position > productMediaLength %}
+                {% set productMediaLength = image.position %}
+                {% set productMediaPosition = image.position + 1 %}
+            {% endif %}
+        {% endfor %}
+
+        {# get image with lowest position #}
+        {% for image in product.media.elements %}
+            {% if product.cover.media.id != image.media.id and image.position < productMediaPosition and image.media.isSpatialObject() == false %}
+                {% set coverSwitch = image.media %}
+                {% set productMediaPosition = image.position %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if coverSwitch.url %}
+
+        {% set animationOptions = {
+            parentTrigger: '.product-image-wrapper',
+        } %}
+
+        {% set attributes = {
+            class: 'cover-switch product-image is-'~displayMode,
+            'data-zen-cover-switch': 'true',
+            'data-zen-animation-options': animationOptions|json_encode,
+            alt: (coverSwitch.translated.alt|default(name)),
+            title: (coverSwitch.translated.title|default(name))
+        } %}
+
+        {# ... @zenit - enables lazy loading for images #}
+        {% if config('zenitPlatformGravity.config.lazyloading') %}
+            {% set attributes = attributes|merge({ loading: 'lazy' }) %}
+        {% endif %}
+
+        {% if displayMode == 'cover' or displayMode == 'contain' %}
+            {% set attributes = attributes|merge({ 'data-object-fit': displayMode }) %}
+        {% endif %}
+
+        {% sw_thumbnails 'product-image-thumbnails' with {
+            media: coverSwitch,
+            sizes: sizes
+        } %}
+    {% endif %}
+{% endblock %}

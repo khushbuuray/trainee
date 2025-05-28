@@ -1,0 +1,52 @@
+{% sw_extends '@Storefront/storefront/utilities/offcanvas.html.twig' %}
+
+{% block utilities_offcanvas_content %}
+    {% block zen_page_product_detail_manufacturer_container %}
+        <div class="product-detail-manufacturer tab-pane-container">
+
+            <div class="media">
+                {% block zen_page_product_detail_manufacturer_conent_logo %}
+                    {% if page.product.manufacturer.media|sw_encode_media_url %}
+                        <img src="{{ page.product.manufacturer.media|sw_encode_media_url }}"
+                             class="product-detail-manufacturer-logo align-self-start me-3 mb-2"
+                             alt="{{ page.product.manufacturer.translated.name }}"/>
+                    {% endif %}
+                {% endblock %}
+
+                <div class="media-body">
+                    {% block zen_page_product_detail_manufacturer_title %}
+                        <h2 class="product-detail-manufacturer-title">
+                            {{ page.product.manufacturer.translated.name }}
+                        </h2>
+                    {% endblock %}
+
+                    {% block zen_page_product_detail_manufacturer_content %}
+                        {% block zen_page_product_detail_manufacturer_content_text %}
+                            <div class="product-detail-manufacturer-text mb-3">
+                                {{ page.product.manufacturer.translated.description|raw }}
+                            </div>
+                        {% endblock %}
+
+                        {% block zen_page_product_detail_manufacturer_content_links %}
+                            {% if page.product.manufacturer.link %}
+                                <a class="btn btn-primary" href="{{ page.product.manufacturer.link }}"
+                                   role="button"
+                                   {% if '://' in page.product.manufacturer.link %}target="_blank" rel="noreferrer noopener"{% endif %}
+                                   title="{{ page.product.manufacturer.translated.name }} - {{ 'zentheme.detail.manufacturerWebsite'|trans }}">
+                                    {{ 'zentheme.detail.manufacturerWebsite'|trans }}
+                                </a>
+                            {% endif %}
+                        {% endblock %}
+
+                    {% endblock %}
+                </div>
+            </div>
+
+        </div>
+
+    {% endblock %}
+{% endblock %}
+
+{% block utilities_offcanvas_close_text %}
+    {{ 'zentheme.detail.tabsManufacturer'|trans|sw_sanitize }}
+{% endblock %}

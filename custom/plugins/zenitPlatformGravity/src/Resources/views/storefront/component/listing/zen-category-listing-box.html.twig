@@ -1,0 +1,99 @@
+{% block zen_component_category_listing_box %}
+    {% set category = isServiceMenu ? treeItem : treeItem.category %}
+    {% set categoryName = category.translated.name %}
+    {% set categoryUrl = category_url(category) %}
+
+    <div class="card category-listing-box {{ elemClasses|sort|join(' ') }}">
+        <div class="card-body">
+            {% block zen_component_category_listing_image_container %}
+                {% if element.translated.config.layout.value !== 'text' %}
+                    <div class="category-listing-image-container is-{{ element.translated.config.displayMode.value }}">
+                        {% block zen_component_category_listing_media %}
+                            {% if category.media.url %}
+                                {% set attributes = {
+                                    class: 'category-listing-image is-' ~ element.translated.config.displayMode.value,
+                                    title: (categoryName ?: ''),
+                                    alt: (categoryName ?: '')
+                                } %}
+
+                                {% if element.translated.config.displayMode.value == 'cover' or element.translated.config.displayMode.value == 'contain' %}
+                                    {% set attributes = attributes|merge({ 'data-object-fit': element.translated.config.displayMode.value }) %}
+                                {% endif %}
+
+                                {# ... @zenit - enables lazy loading for images #}
+                                {% if config('zenitPlatformGravity.config.lazyloading') %}
+                                    {% set attributes = attributes|merge({ loading: 'lazy' }) %}
+                                {% endif %}
+
+                                {% if category.media.getMediaType().getName() === 'VIDEO' %}
+                                    {% set attributes = attributes|merge({
+                                        autoplay: true,
+                                        loop: true,
+                                        muted: true
+                                    }) %}
+
+                                    {% block zen_component_category_listing_video %}
+                                        {% sw_include '@Storefront/storefront/utilities/video.html.twig' with {
+                                            media: category.media,
+                                            attributes: attributes
+                                        } %}
+                                    {% endblock %}
+                                {% else %}
+                                    {% block zen_component_category_listing_media_thumbnail %}
+                                        {% sw_thumbnails 'cateory-listing-image-thumbnails' with {
+                                            media: category.media
+                                        } %}
+                                    {% endblock %}
+                                {% endif %}
+                            {% else %}
+                                {% block zen_component_category_listing_media_image_placeholder %}
+                                    <div class="category-listing-image-placeholder">
+                                        {% sw_icon 'placeholder' style {
+                                            size: 'fluid'
+                                        } %}
+                                    </div>
+                                {% endblock %}
+                            {% endif %}
+                        {% endblock %}
+
+                        {% block zen_component_category_listing_overlay %}
+                            {% if config.overlay.value %}
+                                <div class="category-listing-overlay"></div>
+                            {% endif %}
+                        {% endblock %}
+                    </div>
+                {% endif %}
+            {% endblock %}
+
+            {% if categoryUrl %}
+                <a href="{{ categoryUrl }}"
+                   class="category-listing-link"
+                   itemprop="url"
+                   {% if category_linknewtab(category) %}target="_blank"
+                        {% if category.linkType == 'external' %}rel="noopener noreferrer"{% endif %}
+                   {% endif %}
+                   title="{{ categoryName|striptags }}"
+                >
+                </a>
+            {% endif %}
+
+            {% block zen_component_category_listing_content_container %}
+                <div class="category-listing-label-container {{ animationClasses|sort|join(' ') }} is-{{ element.translated.config.displayMode.value }}"
+                    {% if config.animationIn.value != 'none' or config.animationOut.value != 'none' %}data-zen-animation="true"{% endif %}
+                >
+                    {% if categoryName %}
+                        <div class="category-listing-label">
+                            <span class="category-listing-name {{ nameClasses|sort|join(' ') }}">
+                                {{ categoryName|raw }}
+                            </span>
+                            {% if config.textHover.value == 'show-arrow' or config.textHover.value == 'distance-arrow' %}
+                                {% sw_icon 'arrow-medium-right' style { pack: 'solid', class: 'category-listing' } %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}
+

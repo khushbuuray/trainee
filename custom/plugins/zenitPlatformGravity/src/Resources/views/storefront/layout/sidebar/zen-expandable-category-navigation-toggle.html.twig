@@ -1,0 +1,30 @@
+{% if navigationMode is same as ('expandable') %}
+    {% if item.children|length > 0 %}
+        <a class="category-navigation-toggle{% if item.category.id not in activeResult.path and item.category.id is not same as(activeResult.id) %} collapsed{% endif %}"
+           href="#collapse-{{ item.category.id }}"
+           data-bs-toggle="collapse"
+           data-bs-target="#collapse-{{ item.category.id }}"
+           aria-expanded="{% if item.category.id in activeResult.path or item.category.id is same as(activeResult.id) %}true{% else %}false{% endif %}"
+           aria-controls="collapse-{{ item.category.id }}"
+           aria-labelledby="item-{{ item.category.id }}"
+           role="button">
+
+            {% if theme_config('zen-sidebar-category-navigation-toggle-icon') is same as ('plus') %}
+                {% sw_icon 'plus' style {
+                    pack: 'solid', size: 'xs', class: 'category-navigation-link'
+                } %}
+            {% elseif theme_config('zen-sidebar-category-navigation-toggle-icon') is same as ('plusminus') %}
+                {% sw_icon 'plus' style {
+                    pack: 'solid', size: 'xs', class: 'category-navigation-link'
+                } %}
+                {% sw_icon 'minus' style {
+                    pack: 'solid', size: 'xs', class: 'category-navigation-link'
+                } %}
+            {% elseif theme_config('zen-sidebar-category-navigation-toggle-icon') is same as ('arrow') %}
+                {% sw_icon 'arrow-medium-down' style {
+                    pack: 'solid', size: 'xs', class: 'category-navigation-link'
+                } %}
+            {% endif %}
+        </a>
+    {% endif %}
+{% endif %}

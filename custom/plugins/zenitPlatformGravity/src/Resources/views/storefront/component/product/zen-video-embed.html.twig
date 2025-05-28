@@ -1,0 +1,25 @@
+{% block zen_page_product_detail_video_embed %}
+    <div class="product-video product-detail-video ratio ratio-16x9" itemprop="video">
+        {% set iframeClass = 'embed-responsive-item' %}
+
+        {% if videoConsent %}
+            {% block zen_page_product_detail_video_placeholder %}
+                <div class="product-detail-video-placeholder"
+                     data-cms-gdpr-video-element="true"
+                     data-cms-gdpr-video-element-options="{{ pluginConfiguration|json_encode }}">
+                    <div class="product-detail-video-placeholder-element">
+                        {% if thumbnailUrl %}
+                            <img class="product-detail-video-placeholder-img" src="{{ thumbnailUrl }}" alt="video placeholder">
+                        {% else %}
+                            {% sw_include '@Storefront/storefront/utilities/icon.html.twig' with { name: videoIcon, pack: 'social',  namespace: 'zenitPlatformGravity', size: 'fluid'} %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endblock %}
+        {% else %}
+            <iframe class="{{ iframeClass }}" title="video player"
+                    src="{{ videoUrl }}">
+            </iframe>
+        {% endif %}
+    </div>
+{% endblock %}

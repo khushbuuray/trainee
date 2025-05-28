@@ -1,0 +1,21 @@
+// Extracts the font names from the font declaration of
+// the theme configuration. Strips the font styles
+
+// Example Input: 'Rubik', sans-serif[300,400,500]
+// Example Output: 'Rubik', sans-serif
+
+@function get-fontfamilies($value, $search) {
+	// Note: Use `inspect` for lists so that quoted items keep the quotes.
+	// See https://github.com/sass/sass/issues/2383#issuecomment-336349172
+    $value: to-string(#{inspect($value)}); // prevent "is not a string" with webpack hot reload
+
+	$slice-index: str-index($value, $search);
+
+	@if $slice-index {
+		$substring: str-slice($value, 1, $slice-index - 1);
+
+		@return $substring;
+	}
+
+	@return $value;
+}

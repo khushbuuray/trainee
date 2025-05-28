@@ -1,0 +1,267 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-image-gallery.html.twig' %}
+
+{% block element_image_gallery %}
+    {# TODO: @zenit - Check again as soon as Shopware solves the bug in the original code itself. #}
+    {% if element.fieldConfig is defined and element.data is defined %}
+        {% if not config %}
+            {% set config = element.fieldConfig.elements %}
+        {% endif %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}
+
+{% block element_image_gallery_alignment %}
+    {% set magnifierOptions = magnifierOptions|merge({
+        zoomFactor: theme_config('zen-product-gallery-slider-zoom-factor')|default(3)
+    }) %}
+
+    {{ parent() }}
+{% endblock %}
+
+{% block element_image_gallery_inner %}
+    {% if not galleryMode %}
+        {% set galleryMode = 'slider' %}
+    {% endif %}
+
+    {# ... @zenit - add nav to false, otherwise the tns-nav would appear when there are no thumbnails #}
+    {% if hideThumbnails is same as (true) %}
+        {% set gallerySliderOptions = gallerySliderOptions|replace_recursive({
+            slider: {
+                nav: false
+            }
+        }) %}
+    {% endif %}
+
+    {# too many underneath thumbs or slider dots make them hard to see #}
+    {% set maxItemsToShowMobileNav = theme_config('zen-max-items-to-show-mobile-nav')|default(5) %}
+    {% set maxItemsToShowNav = theme_config('zen-max-items-to-show-nav')|default(8) %}
+
+    <div class="row gallery-slider-row{% if imageCount == 1 %} is-single-image{% else %} is-loading{% endif %} js-gallery-zoom-modal-container is-{{ displayMode }} is-gallery-{{ galleryMode }} has-thumbnails-{{ galleryPosition }}"
+        {# ... @zenit - set loadingHeight as css-variabel to make it overwriteable without important tag #}
+        {% if minHeight %} style="--zen-loading-height: {{ minHeight }}"{% endif %}
+        {% if zoom %}
+            data-magnifier="true"
+        {% endif %}
+        {% if magnifierOptions|length > 0 %}
+            data-magnifier-options='{{ magnifierOptions|json_encode|raw }}'
+        {% endif %}
+        {% if imageCount > 1 %}
+            data-gallery-slider="true"
+            data-gallery-slider-options='{{ gallerySliderOptions|json_encode }}'
+        {% endif %}
+        {# ... @zenit - add galleryMode #}
+        {% if isProduct and imageCount > 1 and galleryMode is same as ('scroller') %}
+            data-zen-gallery-scroller="true"
+        {% endif %}
+        {% if isProduct and imageCount > 1 and galleryMode is same as ('grid') %}
+            data-zen-gallery-grid="true"
+        {% endif %}>
+
+        {{ block('element_image_gallery_inner_col') }}
+
+        {{ block('element_image_gallery_inner_thumbnails_col') }}
+
+        {{ block('element_image_gallery_inner_zoom_modal_wrapper') }}
+
+    </div>
+{% endblock %}
+
+{% block element_image_gallery_inner_wrapper %}
+    {% if config('core.cart.wishlistEnabled') and page.product.id is not empty %}
+        {# ... @zenit - fallback for older child-themes without this config #}
+        {% set productDetailWishlistPosition = theme_config('zen-product-details-wishlist-position')|default('default') %}
+        {% if productDetailWishlistPosition is same as ('gallery') %}
+            {% sw_include '@Storefront/storefront/component/product/card/wishlist.html.twig' with {
+                showText: false,
+                size: 'xl',
+                productId: page.product.id,
+                tooltip: true,
+                tooltipPlacement: 'left'
+            } %}
+        {% endif %}
+    {% endif %}
+
+    {# ... @zenit - add gallery modes #}
+    {% if isProduct and imageCount > 1 and (galleryMode is same as ('scroller') or galleryMode is same as ('grid')) %}
+
+        {# ... @zenit - fallbacks for older child-themes without these configs #}
+        {% set gridCoverFullWidth = (theme_config('zen-product-gallery-grid-cover-full-width') is not null) ? theme_config('zen-product-gallery-grid-cover-full-width') : false %}
+        {% set gridDynamic = (theme_config('zen-product-gallery-grid-dynamic') is not null) ? theme_config('zen-product-gallery-grid-dynamic') : true %}
+
+        {% if galleryMode is same as ('grid') %}
+            {% set gallerContainerClasses = 'row' %}
+        {% endif %}
+
+        {% block zen_element_image_gallery_inner_multiple_slides %}
+            <div class="gallery-{{ galleryMode }} d-none d-lg-block">
+                {% block zen_element_image_gallery_inner_container %}
+                    <div class="gallery-{{ galleryMode }}-container {{ gallerContainerClasses }}">
+                        {% block zen_element_image_gallery_inner_items %}
+                            {% for image in mediaItems %}
+                                {% if galleryMode is same as ('grid') %}
+                                    {% set itemClasses = 'col-6' %}
+
+                                    {% if gridCoverFullWidth and loop.first %}
+                                        {% set itemClasses = 'col-12' %}
+                                    {% endif %}
+
+                                    {% if gridDynamic and gridCoverFullWidth == false %}
+                                        {% if loop.length is odd and loop.length >= 5 and loop.index > loop.length - 3 %}
+                                            {% set itemClasses = 'col-4' %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% if loop.length is even and loop.length >= 4 and loop.index > loop.length - 3 %}
+                                            {% set itemClasses = 'col-4' %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+
+                                {% block zen_element_image_gallery_inner_item %}
+                                    <div class="gallery-{{ galleryMode }}-item-container {{ itemClasses }}">
+                                        {# ... @zenit - class .gallery-slider-single-image is needed for SpatialProductSliderRenderUtil singleImageGallerySelector #}
+                                        <div class="gallery-slider-item gallery-slider-single-image is-{{ displayMode }} js-magnifier-container"
+                                            {# ... @zenit - set minHeight as css-variabel to make it overwriteable without important tag #}
+                                            {% if minHeight and (displayMode == "cover" or displayMode == "contain" ) %} style="--zen-min-height: {{ minHeight }}"{% endif %}
+                                            {% if (displayMode == "standard" and image.isSpatialObject()) %} style="min-height: 240px"{% endif %}>
+                                            {% set attributes = {
+                                                class: 'img-fluid gallery-slider-image',
+                                                alt: (image.translated.alt ?: fallbackImageTitle),
+                                                title: (image.translated.title ?: fallbackImageTitle)
+                                            } %}
+
+                                            {# ... @zenit - enables lazy loading for images,
+                                            but only on cover mode, because of JS height calculation #}
+                                            {% if displayMode == 'cover' %}
+                                                {% if config('zenitPlatformGravity.config.lazyloading') %}
+                                                    {% set attributes = attributes|merge({ loading: 'lazy' }) %}
+                                                {% endif %}
+                                            {% endif %}
+
+                                            {# @experimental stableVersion:v6.7.0 feature:SPATIAL_BASES #}
+                                            {{ block('element_image_gallery_inner_item_spatial') }}
+                                        </div>
+                                    </div>
+                                {% endblock %}
+                            {% endfor %}
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </div>
+        {% endblock %}
+        <div class="gallery-slider-mobile d-block d-lg-none">
+            {{ parent() }}
+        </div>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block element_image_gallery_slider_dots %}
+    {# ... @zenit - add aria-label #}
+    {% if imageCount > 1 and navigationDots %}
+        <div class="base-slider-dots {% if imageCount > maxItemsToShowNav %} hide-dots{% elseif imageCount > maxItemsToShowMobileNav %} hide-dots-mobile{% endif %}">
+            {% block element_image_gallery_slider_dots_buttons %}
+                {% for image in mediaItems %}
+                    {% block element_image_gallery_slider_dots_button %}
+                        <button
+                            class="base-slider-dot"
+                            data-nav-dot="{{ loop.index }}"
+                            aria-label="{{ 'component.cms.imageGallery.sliderDotLabel'|trans({ '%index%': loop.index, '%total%': mediaItems|length })|striptags }}"
+                            tabindex="-1">
+                        </button>
+                    {% endblock %}
+                {% endfor %}
+            {% endblock %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block element_image_gallery_inner_item %}
+    {# ... @zenit - add container .gallery-slider-item-wrap #}
+    <div class="gallery-slider-item-container">
+        <div class="gallery-slider-item-wrap">
+
+            {# ... @zenit - add fallback image title #}
+            {% if theme_config('zen-product-gallery-fallback-image-title') is not same as ('default') %}
+                {% set fallbackImageTitle = image.fileName %}
+            {% endif %}
+
+            <div class="gallery-slider-item is-{{ displayMode }} js-magnifier-container"
+                {# ... @zenit - set minHeight as css-variabel to make it overwriteable without important tag #}
+                {% if minHeight and (displayMode == "cover" or displayMode == "contain" ) %} style="--zen-min-height: {{ minHeight }}"{% endif %}
+                {% if (displayMode == "standard" and image.isSpatialObject()) %} style="min-height: 240px"{% endif %}>
+                {% set attributes = {
+                    class: 'img-fluid gallery-slider-image',
+                    alt: (image.translated.alt ?: fallbackImageTitle),
+                    title: (image.translated.title ?: fallbackImageTitle)
+                } %}
+
+                {# ... @zenit - enables lazy loading for images,
+                but only on cover mode, because of JS height calculation #}
+                {% if displayMode == 'cover' %}
+                    {% if config('zenitPlatformGravity.config.lazyloading') %}
+                        {% set attributes = attributes|merge({ loading: 'lazy' }) %}
+                    {% endif %}
+                {% endif %}
+
+                {# @experimental stableVersion:v6.7.0 feature:SPATIAL_BASES #}
+                {{ block('element_image_gallery_inner_item_spatial') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block element_image_gallery_inner_single %}
+    <div class="gallery-slider-single-image is-{{ displayMode }}{% if imageCount <= 0 %} is-placeholder{% endif %} js-magnifier-container"
+        {# ... @zenit - set minHeight as css-variabel to make it overwriteable without important tag #}
+        {% if minHeight %} style="--zen-min-height: {{ imageCount > 0 ? minHeight : '430px' }}"{% endif %}>
+        {% if theme_config('zen-product-gallery-fallback-image-title') is not same as ('default') %}
+            {% set fallbackImageTitle = mediaItems|first.fileName %}
+        {% endif %}
+
+        {% if imageCount > 0 %}
+            {% set attributes = {
+                class: 'img-fluid gallery-slider-image',
+                alt: (mediaItems|first.translated.alt ?: fallbackImageTitle),
+                title: (mediaItems|first.translated.title ?: fallbackImageTitle)
+            } %}
+
+            {# ... @zenit - enables lazy loading for images #}
+            {% if config('zenitPlatformGravity.config.lazyloading') %}
+                {% set attributes = attributes|merge({ loading: 'lazy' }) %}
+            {% endif %}
+
+            {# @experimental stableVersion:v6.7.0 feature:SPATIAL_BASES #}
+            {{ block('element_image_gallery_inner_single_spatial') }}
+        {% else %}
+            {% sw_icon 'placeholder' style {
+                size: 'fluid'
+            } %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block element_image_gallery_inner_thumbnails_col %}
+    {% if hideThumbnails is not same as (true) %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block element_image_gallery_inner_thumbnails_item_inner %}
+    {# ... @zenit - add fallback image title #}
+    {% if theme_config('zen-product-gallery-fallback-image-title') is not same as ('default') %}
+        {% set fallbackImageTitle = image.fileName %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}
+
+{% block element_image_gallery_inner_zoom_modal_slider_item_image %}
+    {# ... @zenit - add fallback image title #}
+    {% if theme_config('zen-product-gallery-fallback-image-title') is not same as ('default') %}
+        {% set fallbackImageTitle = image.fileName %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}

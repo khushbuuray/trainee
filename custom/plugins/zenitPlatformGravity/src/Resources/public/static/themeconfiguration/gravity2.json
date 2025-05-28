@@ -1,0 +1,1979 @@
+{
+  "zen-layout-style": {
+    "value": "full-width-boxed"
+  },
+  "zen-layout-container-width": {
+    "value": 1620
+  },
+  "zen-header-style-mobile": {
+    "value": "multi-line"
+  },
+  "zen-header-style": {
+    "value": "multi-line"
+  },
+  "zen-search-style": {
+    "value": "default"
+  },
+  "zen-top-bar-style": {
+    "value": "collapsible"
+  },
+  "zen-icon-set": {
+    "value": "fluent-solid"
+  },
+  "zen-main-navigation-style": {
+    "value": "offcanvas-lg"
+  },
+  "zen-buy-quantity-style": {
+    "value": "default"
+  },
+  "zen-layout-padding-top-mobile": {
+    "value": 0
+  },
+  "zen-layout-padding-right-mobile": {
+    "value": 0
+  },
+  "zen-layout-padding-bottom-mobile": {
+    "value": 0
+  },
+  "zen-layout-padding-left-mobile": {
+    "value": 0
+  },
+  "zen-layout-padding-top": {
+    "value": 0
+  },
+  "zen-layout-padding-right": {
+    "value": 0
+  },
+  "zen-layout-padding-bottom": {
+    "value": 0
+  },
+  "zen-layout-padding-left": {
+    "value": 0
+  },
+  "zen-layout-container-spacing-top": {
+    "value": 36
+  },
+  "zen-layout-container-spacing-right": {
+    "value": 36
+  },
+  "zen-layout-container-spacing-bottom": {
+    "value": 36
+  },
+  "zen-layout-container-spacing-left": {
+    "value": 36
+  },
+  "zen-layout-button-radius": {
+    "value": "9"
+  },
+  "zen-layout-input-radius": {
+    "value": "9"
+  },
+  "zen-layout-element-radius": {
+    "value": "3"
+  },
+  "zen-product-listing-card-img-padding": {
+    "value": "100"
+  },
+  "zen-product-listing-card-img-width": {
+    "value": ""
+  },
+  "zen-product-listing-card-img-height": {
+    "value": ""
+  },
+  "zen-product-listing-card-img-bg": {
+    "value": "#ffffff"
+  },
+  "zen-product-listing-card-img-color-overlay": {
+    "value": false
+  },
+  "zen-search-product-box-layout-type": {
+    "value": "minimal"
+  },
+  "zen-wishlist-product-box-layout-type": {
+    "value": "wishlist"
+  },
+  "zen-crossselling-product-box-layout-type": {
+    "value": "minimal"
+  },
+  "zen-layout-bg-img": {
+    "type": "media",
+    "value": ""
+  },
+  "zen-layout-bg-img-repeat": {
+    "value": "repeat"
+  },
+  "zen-layout-bg-img-attachment": {
+    "value": "scroll"
+  },
+  "zen-layout-bg-img-position": {
+    "value": "center top"
+  },
+  "zen-layout-bg-img-size": {
+    "value": "auto"
+  },
+  "zen-layout-preloader-display": {
+    "value": "home"
+  },
+  "zen-layout-preloader-style": {
+    "value": "preloader-5"
+  },
+  "zen-layout-preloader-exit": {
+    "value": "fade-out"
+  },
+  "zen-layout-preloader-timeout": {
+    "value": 300
+  },
+  "zen-layout-preloader-bg": {
+    "value": "$sw-border-color"
+  },
+  "zen-layout-preloader-color": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-layout-border-top-width": {
+    "value": 0
+  },
+  "zen-layout-border-top-color": {
+    "value": "#0f1f33"
+  },
+  "zen-layout-scroll-animation-duration": {
+    "value": 1
+  },
+  "zen-layout-scroll-animation-delay": {
+    "value": 0.25
+  },
+  "zen-layout-scroll-listing-animation": {
+    "value": false
+  },
+  "sw-logo-desktop": {
+    "type": "media",
+    "value": "app/storefront/dist/assets/logo/demo-gravity-set-2-logo.svg"
+  },
+  "sw-logo-tablet": {
+    "type": "media",
+    "value": "app/storefront/dist/assets/logo/demo-gravity-set-2-logo.svg"
+  },
+  "sw-logo-mobile": {
+    "type": "media",
+    "value": "app/storefront/dist/assets/logo/demo-gravity-set-2-logo.svg"
+  },
+  "zen-logo-light-header-desktop": {
+    "type": "media",
+    "value": ""
+  },
+  "zen-logo-dark-header-desktop": {
+    "type": "media",
+    "value": ""
+  },
+  "zen-logo-inverted-desktop": {
+    "type": "media",
+    "value": ""
+  },
+  "zen-logo-footer-desktop": {
+    "type": "media",
+    "value": "app/storefront/dist/assets/logo/demo-gravity-set-2-logo-dark.svg"
+  },
+  "zen-logo-footer-tablet": {
+    "type": "media",
+    "value": "app/storefront/dist/assets/logo/demo-gravity-set-2-logo-dark.svg"
+  },
+  "zen-logo-footer-mobile": {
+    "type": "media",
+    "value": "app/storefront/dist/assets/logo/demo-gravity-set-2-logo-dark.svg"
+  },
+  "zen-logo-offcanvas-desktop": {
+    "type": "media",
+    "value": "app/storefront/dist/assets/logo/demo-gravity-set-2-logo-dark.svg"
+  },
+  "zen-logo-offcanvas-tablet": {
+    "type": "media",
+    "value": "app/storefront/dist/assets/logo/demo-gravity-set-2-logo-dark.svg"
+  },
+  "zen-logo-offcanvas-mobile": {
+    "type": "media",
+    "value": "app/storefront/dist/assets/logo/demo-gravity-set-2-logo-dark.svg"
+  },
+  "sw-logo-share": {
+    "type": "media",
+    "value": ""
+  },
+  "sw-logo-favicon": {
+    "type": "media",
+    "value": "app/storefront/dist/assets/logo/demo-gravity-set-2-favicon.png"
+  },
+  "zen-min-contrast-ratio": {
+    "value": 4.5
+  },
+  "sw-color-brand-primary": {
+    "value": "#1d1d1c"
+  },
+  "sw-color-brand-secondary": {
+    "value": "#ffd400"
+  },
+  "sw-border-color": {
+    "value": "#e2e4e9"
+  },
+  "sw-background-color": {
+    "value": "#f6f7f9"
+  },
+  "zen-container-bg": {
+    "value": "transparent"
+  },
+  "zen-meta-theme-color": {
+    "value": "#ffffff"
+  },
+  "zen-link-color": {
+    "value": "$sw-color-brand-primary"
+  },
+  "sw-color-success": {
+    "value": "#3cc261"
+  },
+  "sw-color-info": {
+    "value": "#26b6cf"
+  },
+  "sw-color-warning": {
+    "value": "#F2CB05"
+  },
+  "sw-color-danger": {
+    "value": "#EA003A"
+  },
+  "zen-font-family-base-default": {
+    "value": "'Inter', sans-serif"
+  },
+  "zen-font-family-headline-default": {
+    "value": "'Inter', sans-serif"
+  },
+  "sw-font-family-base": {
+    "value": ""
+  },
+  "zen-font-family-base-weight": {
+    "value": ""
+  },
+  "sw-font-family-headline": {
+    "value": ""
+  },
+  "zen-font-family-headline-weight": {
+    "value": ""
+  },
+  "zen-font-family-import": {
+    "value": false
+  },
+  "sw-text-color": {
+    "value": "#1d1d1c"
+  },
+  "zen-light-text-color": {
+    "value": "#fafafa"
+  },
+  "sw-headline-color": {
+    "value": "#1d1d1c"
+  },
+  "zen-light-headline-color": {
+    "value": "#fafafa"
+  },
+  "zen-font-size-base": {
+    "value": 14
+  },
+  "zen-h1-font-size": {
+    "value": 36
+  },
+  "zen-h2-font-size": {
+    "value": 28
+  },
+  "zen-h3-font-size": {
+    "value": 24
+  },
+  "zen-h4-font-size": {
+    "value": 20
+  },
+  "zen-h5-font-size": {
+    "value": 16
+  },
+  "zen-h6-font-size": {
+    "value": 14
+  },
+  "zen-font-weight-base": {
+    "value": "400"
+  },
+  "zen-headings-font-weight": {
+    "value": "600"
+  },
+  "zen-color-light-button": {
+    "value": "hsl(hue($sw-border-color), saturation($sw-border-color), 93%)"
+  },
+  "zen-color-light-button-text": {
+    "value": "hsl(hue($sw-border-color), saturation($sw-border-color), 23%)"
+  },
+  "zen-color-dark-button": {
+    "value": "hsl(hue($sw-border-color), saturation($sw-border-color), 23%)"
+  },
+  "zen-color-dark-button-text": {
+    "value": "hsl(hue($sw-border-color), saturation($sw-border-color), 98%)"
+  },
+  "sw-color-price": {
+    "value": "$sw-text-color"
+  },
+  "sw-color-buy-button": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "sw-color-buy-button-text": {
+    "value": "$sw-text-color"
+  },
+  "zen-header-bg": {
+    "value": "#ffffff"
+  },
+  "zen-header-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-logo-position": {
+    "value": "left"
+  },
+  "zen-logo-size-mobile": {
+    "value": 50
+  },
+  "zen-logo-size": {
+    "value": 50
+  },
+  "zen-header-height-mobile": {
+    "value": 80
+  },
+  "zen-header-height": {
+    "value": 96
+  },
+  "zen-header-padding-top-mobile": {
+    "value": 0
+  },
+  "zen-header-padding-top": {
+    "value": 0
+  },
+  "zen-header-padding-bottom-mobile": {
+    "value": 0
+  },
+  "zen-header-padding-bottom": {
+    "value": 0
+  },
+  "zen-header-border-top-left-radius": {
+    "value": 0
+  },
+  "zen-header-border-top-right-radius": {
+    "value": 0
+  },
+  "zen-header-border-bottom-left-radius": {
+    "value": 0
+  },
+  "zen-header-border-bottom-right-radius": {
+    "value": 0
+  },
+  "zen-header-border-bottom": {
+    "value": false
+  },
+  "zen-header-border-bottom-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-header-border-bottom-width": {
+    "value": 1
+  },
+  "zen-header-shadow": {
+    "value": true
+  },
+  "zen-header-shadow-color": {
+    "value": "rgba(22, 24, 29, 0.07)"
+  },
+  "zen-header-shadow-width": {
+    "value": 10
+  },
+  "zen-header-hover-shadow": {
+    "value": false
+  },
+  "zen-header-hover-shadow-color": {
+    "value": "rgba(0,0,0,0.1)"
+  },
+  "zen-header-hover-shadow-width": {
+    "value": 10
+  },
+  "zen-header-sticky-shadow": {
+    "value": true
+  },
+  "zen-header-sticky-shadow-color": {
+    "value": "rgba(0,0,0,0.1)"
+  },
+  "zen-header-sticky-shadow-width": {
+    "value": 10
+  },
+  "zen-sticky-header": {
+    "value": [
+      "XS",
+      "SM",
+      "MD",
+      "LG",
+      "XL"
+    ]
+  },
+  "zen-sticky-header-offset": {
+    "value": ""
+  },
+  "zen-sticky-header-hide": {
+    "value": true
+  },
+  "zen-sticky-header-size": {
+    "value": false
+  },
+  "zen-sticky-header-height": {
+    "value": 100
+  },
+  "zen-search-bg": {
+    "value": "#f6f7f9"
+  },
+  "zen-search-focus-bg": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-search-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-search-focus-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-search-border": {
+    "value": "#f6f7f9"
+  },
+  "zen-search-focus-border": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-top-bar-bg": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-top-bar-hover-bg": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-top-bar-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-top-bar-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-top-bar-font-size": {
+    "value": 14
+  },
+  "zen-top-bar-font-weight": {
+    "value": "400"
+  },
+  "zen-top-bar-language-widget-text": {
+    "value": "standard"
+  },
+  "zen-top-bar-language-widget-flag": {
+    "value": "true"
+  },
+  "zen-top-bar-offcanvas-logo-size": {
+    "value": 50
+  },
+  "zen-top-bar-service-navigation": {
+    "value": true
+  },
+  "zen-top-bar-border-bottom": {
+    "value": false
+  },
+  "zen-top-bar-border-bottom-full-width": {
+    "value": true
+  },
+  "zen-top-bar-border-bottom-color": {
+    "value": "#f6f7f9"
+  },
+  "zen-top-bar-border-bottom-width": {
+    "value": 1
+  },
+  "zen-shop-navigation-bg": {
+    "value": "transparent"
+  },
+  "zen-shop-navigation-hover-bg": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-shop-navigation-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-shop-navigation-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-shop-navigation-badge-color": {
+    "value": "$sw-color-brand-primary"
+  },
+  "zen-shop-navigation-border": {
+    "value": false
+  },
+  "zen-shop-navigation-border-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-shop-navigation-border-hover-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-shop-navigation-font-size": {
+    "value": 14
+  },
+  "zen-shop-navigation-font-weight": {
+    "value": "400"
+  },
+  "zen-shop-navigation-tooltips": {
+    "value": true
+  },
+  "zen-shop-navigation-tooltips-placement": {
+    "value": "top"
+  },
+  "zen-shop-navigation-badges-minimized": {
+    "value": true
+  },
+  "zen-shop-navigation-cart-bg": {
+    "value": "$sw-background-color"
+  },
+  "zen-shop-navigation-cart-hover-bg": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-shop-navigation-cart-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-shop-navigation-cart-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-shop-navigation-cart-font-size": {
+    "value": 14
+  },
+  "zen-shop-navigation-cart-font-weight": {
+    "value": "600"
+  },
+  "zen-shop-navigation-cart-badge-color": {
+    "value": "$sw-color-brand-primary"
+  },
+  "zen-shop-navigation-cart-border": {
+    "value": false
+  },
+  "zen-shop-navigation-cart-border-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-shop-navigation-cart-border-hover-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-main-navigation-bg": {
+    "value": "#ffffff"
+  },
+  "zen-main-navigation-hover-bg": {
+    "value": "#ffffff"
+  },
+  "zen-main-navigation-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-main-navigation-hover-color": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-main-navigation-home": {
+    "value": true
+  },
+  "zen-main-navigation-home-status": {
+    "value": true
+  },
+  "zen-main-navigation-align": {
+    "value": "flex-start"
+  },
+  "zen-main-navigation-divider": {
+    "value": "0"
+  },
+  "zen-main-navigation-hover-animation": {
+    "value": "hover-13"
+  },
+  "zen-main-navigation-scroll": {
+    "value": true
+  },
+  "zen-main-navigation-subnavigation-style": {
+    "value": "flyout"
+  },
+  "zen-main-navigation-border-top": {
+    "value": true
+  },
+  "zen-main-navigation-border-top-full-width": {
+    "value": true
+  },
+  "zen-main-navigation-border-top-color": {
+    "value": "#f6f7f9"
+  },
+  "zen-main-navigation-border-top-width": {
+    "value": 1
+  },
+  "zen-main-navigation-arrow": {
+    "value": false
+  },
+  "zen-main-navigation-extern-link-icon": {
+    "value": false
+  },
+  "zen-main-navigation-padding": {
+    "value": 20
+  },
+  "zen-main-navigation-height": {
+    "value": 48
+  },
+  "zen-main-navigation-font-family": {
+    "value": "base"
+  },
+  "zen-main-navigation-font-size": {
+    "value": 14
+  },
+  "zen-main-navigation-font-weight": {
+    "value": "600"
+  },
+  "zen-main-navigation-active-font-weight": {
+    "value": "600"
+  },
+  "zen-main-navigation-text-transform": {
+    "value": "uppercase"
+  },
+  "zen-flyout-navigation-bg": {
+    "value": "#ffffff"
+  },
+  "zen-flyout-navigation-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-flyout-navigation-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-flyout-navigation-full-width": {
+    "value": false
+  },
+  "zen-flyout-navigation-header": {
+    "value": true
+  },
+  "zen-flyout-navigation-teaser": {
+    "value": true
+  },
+  "zen-flyout-navigation-extern-link-icon": {
+    "value": false
+  },
+  "zen-flyout-navigation-animation": {
+    "value": "slide"
+  },
+  "zen-flyout-navigation-grouping": {
+    "value": true
+  },
+  "zen-flyout-navigation-max-depth": {
+    "value": 3
+  },
+  "zen-flyout-navigation-cols": {
+    "value": 4
+  },
+  "zen-flyout-navigation-dynamic-cols": {
+    "value": true
+  },
+  "zen-flyout-navigation-scrollable": {
+    "value": true
+  },
+  "zen-flyout-navigation-max-height": {
+    "value": 75
+  },
+  "zen-flyout-navigation-font-size": {
+    "value": 14
+  },
+  "zen-flyout-navigation-font-weight": {
+    "value": "400"
+  },
+  "zen-dropdown-navigation-bg": {
+    "value": "#ffffff"
+  },
+  "zen-dropdown-navigation-hover-bg": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-dropdown-navigation-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-dropdown-navigation-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-dropdown-navigation-list-border": {
+    "value": false
+  },
+  "zen-dropdown-navigation-list-border-color": {
+    "value": "transparent"
+  },
+  "zen-dropdown-navigation-trigger": {
+    "value": "hover"
+  },
+  "zen-dropdown-navigation-max-depth": {
+    "value": 5
+  },
+  "zen-dropdown-navigation-font-size": {
+    "value": 14
+  },
+  "zen-dropdown-navigation-font-weight": {
+    "value": "400"
+  },
+  "zen-footer-bg": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-footer-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-footer-hover-color": {
+    "value": "darken($sw-color-brand-secondary, 20%)"
+  },
+  "zen-footer-border-top": {
+    "value": false
+  },
+  "zen-footer-border-top-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-footer-padding-top": {
+    "value": 48
+  },
+  "zen-footer-padding-bottom": {
+    "value": 48
+  },
+  "zen-footer-logo-position": {
+    "value": "newsletter"
+  },
+  "zen-footer-hotline-position": {
+    "value": "column"
+  },
+  "zen-footer-social-position": {
+    "value": "column"
+  },
+  "zen-footer-newsletter-position": {
+    "value": "prepend"
+  },
+  "zen-footer-payment-logos-position": {
+    "value": "bottom"
+  },
+  "zen-footer-shipping-logos-position": {
+    "value": "bottom"
+  },
+  "zen-footer-col-headline-font-size": {
+    "value": 18
+  },
+  "zen-footer-col-headline-font-family": {
+    "value": "base"
+  },
+  "zen-footer-col-headline-font-weight": {
+    "value": "600"
+  },
+  "zen-footer-col-headline-font-align": {
+    "value": "left"
+  },
+  "zen-footer-col-headline-text-transform": {
+    "value": "none"
+  },
+  "zen-footer-col-headline-icon": {
+    "value": "plusminus"
+  },
+  "zen-footer-col-headline-style": {
+    "value": "underlined"
+  },
+  "zen-footer-col-font-size": {
+    "value": 14
+  },
+  "zen-footer-col-font-family": {
+    "value": "base"
+  },
+  "zen-footer-col-font-weight": {
+    "value": "400"
+  },
+  "zen-footer-col-font-align": {
+    "value": "left"
+  },
+  "zen-footer-logo-col": {
+    "value": "col-md-3"
+  },
+  "zen-footer-hotline-col": {
+    "value": "col-md-3"
+  },
+  "zen-footer-social-col": {
+    "value": "col-md-2"
+  },
+  "zen-footer-newsletter-col": {
+    "value": "col-md-12"
+  },
+  "zen-footer-custom-col": {
+    "value": "col-md-3"
+  },
+  "zen-footer-custom-2-col": {
+    "value": "col-md-6"
+  },
+  "zen-footer-custom-3-col": {
+    "value": "col-md-6"
+  },
+  "zen-footer-navigation-col": {
+    "value": "col-md-2"
+  },
+  "zen-footer-payment-logos-col": {
+    "value": "col-md-2"
+  },
+  "zen-footer-shipping-logos-col": {
+    "value": "col-md-2"
+  },
+  "zen-footer-logo-col-xl": {
+    "value": "col-xl-inherit"
+  },
+  "zen-footer-hotline-col-xl": {
+    "value": "col-xl-inherit"
+  },
+  "zen-footer-social-col-xl": {
+    "value": "col-xl-inherit"
+  },
+  "zen-footer-newsletter-col-xl": {
+    "value": "col-xl-inherit"
+  },
+  "zen-footer-custom-col-xl": {
+    "value": "col-xl-inherit"
+  },
+  "zen-footer-custom-2-col-xl": {
+    "value": "col-xl-inherit"
+  },
+  "zen-footer-custom-3-col-xl": {
+    "value": "col-xl-inherit"
+  },
+  "zen-footer-navigation-col-xl": {
+    "value": "col-xl-inherit"
+  },
+  "zen-footer-payment-logos-col-xl": {
+    "value": "col-xl-inherit"
+  },
+  "zen-footer-shipping-logos-col-xl": {
+    "value": "col-xl-inherit"
+  },
+  "zen-footer-logo-order": {
+    "value": 5
+  },
+  "zen-footer-hotline-order": {
+    "value": 2
+  },
+  "zen-footer-social-order": {
+    "value": 8
+  },
+  "zen-footer-newsletter-order": {
+    "value": 2
+  },
+  "zen-footer-custom-order": {
+    "value": 3
+  },
+  "zen-footer-custom-2-order": {
+    "value": 11
+  },
+  "zen-footer-custom-3-order": {
+    "value": 12
+  },
+  "zen-footer-navigation-order": {
+    "value": 3
+  },
+  "zen-footer-payment-logos-order": {
+    "value": 9
+  },
+  "zen-footer-shipping-logos-order": {
+    "value": 9
+  },
+  "zen-footer-hotline-collapse-state": {
+    "value": false
+  },
+  "zen-footer-social-collapse-state": {
+    "value": false
+  },
+  "zen-footer-newsletter-collapse-state": {
+    "value": false
+  },
+  "zen-footer-custom-collapse-state": {
+    "value": false
+  },
+  "zen-footer-custom-2-collapse-state": {
+    "value": false
+  },
+  "zen-footer-custom-3-collapse-state": {
+    "value": false
+  },
+  "zen-footer-navigation-collapse-state": {
+    "value": false
+  },
+  "zen-footer-payment-logos-collapse-state": {
+    "value": false
+  },
+  "zen-footer-shipping-logos-collapse-state": {
+    "value": false
+  },
+  "zen-footer-logo-column-bg": {
+    "value": "transparent"
+  },
+  "zen-footer-logo-column-valign": {
+    "value": "center"
+  },
+  "zen-footer-hotline-font-size": {
+    "value": 22
+  },
+  "zen-footer-hotline-font-weight": {
+    "value": "700"
+  },
+  "zen-footer-hotline-column-bg": {
+    "value": "transparent"
+  },
+  "zen-footer-hotline-column-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-footer-hotline-column-hover-color": {
+    "value": "darken($sw-color-brand-secondary, 20%)"
+  },
+  "zen-footer-social-column-bg": {
+    "value": "transparent"
+  },
+  "zen-footer-social-column-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-footer-social-column-hover-color": {
+    "value": "darken($sw-color-brand-secondary, 20%)"
+  },
+  "zen-footer-newsletter-column-bg": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-footer-newsletter-column-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-footer-newsletter-hover-color": {
+    "value": "$zen-light-text-color"
+  },
+  "zen-footer-newsletter-field-bg": {
+    "value": "$sw-color-brand-primary"
+  },
+  "zen-footer-newsletter-field-focus-bg": {
+    "value": "darken($sw-color-brand-primary, 10%)"
+  },
+  "zen-footer-newsletter-field-color": {
+    "value": "$zen-light-text-color"
+  },
+  "zen-footer-newsletter-field-focus-color": {
+    "value": "$zen-light-text-color"
+  },
+  "zen-footer-newsletter-field-border": {
+    "value": "$sw-color-brand-primary"
+  },
+  "zen-footer-newsletter-field-focus-border": {
+    "value": "darken($sw-color-brand-primary, 10%)"
+  },
+  "zen-footer-custom-column-bg": {
+    "value": "transparent"
+  },
+  "zen-footer-custom-column-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-footer-custom-column-hover-color": {
+    "value": "darken($sw-color-brand-secondary, 20%)"
+  },
+  "zen-footer-custom-2-column-bg": {
+    "value": "transparent"
+  },
+  "zen-footer-custom-2-column-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-footer-custom-2-column-hover-color": {
+    "value": "$sw-color-brand-primary"
+  },
+  "zen-footer-custom-3-column-bg": {
+    "value": "transparent"
+  },
+  "zen-footer-custom-3-column-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-footer-custom-3-column-hover-color": {
+    "value": "$sw-color-brand-primary"
+  },
+  "zen-footer-payment-logos-column-bg": {
+    "value": "transparent"
+  },
+  "zen-footer-payment-logos-column-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-footer-payment-logos-column-hover-color": {
+    "value": "$sw-color-brand-primary"
+  },
+  "zen-footer-shipping-logos-column-bg": {
+    "value": "transparent"
+  },
+  "zen-footer-shipping-logos-column-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-footer-shipping-logos-column-hover-color": {
+    "value": "$sw-color-brand-primary"
+  },
+  "zen-footer-bottom-bg": {
+    "value": "#ffffff"
+  },
+  "zen-footer-bottom-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-footer-bottom-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-footer-bottom-service-navigation": {
+    "value": true
+  },
+  "zen-footer-bottom-font-size": {
+    "value": 14
+  },
+  "zen-footer-bottom-font-weight": {
+    "value": "400"
+  },
+  "zen-sidebar-sticky": {
+    "value": true
+  },
+  "zen-sidebar-sticky-forced": {
+    "value": true
+  },
+  "zen-sidebar-navigation-bg": {
+    "value": "#ffffff"
+  },
+  "zen-sidebar-navigation-hover-bg": {
+    "value": "#ffffff"
+  },
+  "zen-sidebar-navigation-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-sidebar-navigation-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-sidebar-navigation-active-bg": {
+    "value": "#ffffff"
+  },
+  "zen-sidebar-navigation-active-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-sidebar-navigation-border": {
+    "value": true
+  },
+  "zen-sidebar-navigation-border-color": {
+    "value": "#f6f7f9"
+  },
+  "zen-sidebar-navigation-border-hover-color": {
+    "value": "#f6f7f9"
+  },
+  "zen-sidebar-navigation-font-size": {
+    "value": 14
+  },
+  "zen-sidebar-navigation-text-transform": {
+    "value": "uppercase"
+  },
+  "zen-sidebar-navigation-font-weight": {
+    "value": "600"
+  },
+  "zen-sidebar-navigation-font-weight-hover": {
+    "value": "600"
+  },
+  "zen-sidebar-navigation-pv": {
+    "value": 6
+  },
+  "zen-sidebar-navigation-mb": {
+    "value": 0
+  },
+  "zen-sidebar-navigation-mode": {
+    "value": "expandable"
+  },
+  "zen-sidebar-category-navigation-toggle-icon": {
+    "value": "arrow"
+  },
+  "zen-sidebar-navigation-hover-animation": {
+    "value": "underlined"
+  },
+  "zen-input-bg": {
+    "value": "#ffffff"
+  },
+  "zen-input-focus-bg": {
+    "value": "#ffffff"
+  },
+  "zen-input-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-input-focus-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-input-border-color": {
+    "value": "#f6f7f9"
+  },
+  "zen-input-focus-border-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-input-font-size": {
+    "value": 14
+  },
+  "zen-input-font-weight": {
+    "value": "400"
+  },
+  "zen-layout-forms-style": {
+    "value": "default"
+  },
+  "zen-layout-forms-floating-labels": {
+    "value": true
+  },
+  "zen-base-slider-controls-outside-bg": {
+    "value": "transparent"
+  },
+  "zen-base-slider-controls-outside-hover-bg": {
+    "value": "rgba(0,0,0,.05)"
+  },
+  "zen-base-slider-controls-outside-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-base-slider-controls-outside-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-base-slider-controls-dots-outside-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-base-slider-controls-dots-outside-hover-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-base-slider-controls-inside-bg": {
+    "value": "transparent"
+  },
+  "zen-base-slider-controls-inside-hover-bg": {
+    "value": "rgba(0,0,0,.05)"
+  },
+  "zen-base-slider-controls-inside-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-base-slider-controls-inside-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-base-slider-controls-dots-inside-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-base-slider-controls-dots-inside-hover-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-image-slider-controls-outside-bg": {
+    "value": "transparent"
+  },
+  "zen-image-slider-controls-outside-hover-bg": {
+    "value": "rgba(0,0,0,.05)"
+  },
+  "zen-image-slider-controls-outside-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-image-slider-controls-outside-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-image-slider-controls-dots-outside-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-image-slider-controls-dots-outside-hover-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-image-slider-controls-inside-bg": {
+    "value": "transparent"
+  },
+  "zen-image-slider-controls-inside-hover-bg": {
+    "value": "rgba(0,0,0,.05)"
+  },
+  "zen-image-slider-controls-inside-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-image-slider-controls-inside-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-image-slider-controls-dots-inside-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-image-slider-controls-dots-inside-hover-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-image-slider-controls-style": {
+    "value": "default"
+  },
+  "zen-image-slider-controls-dots-style": {
+    "value": "expanding"
+  },
+  "zen-image-slider-controls-show-hover": {
+    "value": true
+  },
+  "zen-gallery-slider-controls-show-hover": {
+    "value": true
+  },
+  "zen-product-slider-controls-bg": {
+    "value": "$sw-background-color"
+  },
+  "zen-product-slider-controls-hover-bg": {
+    "value": "rgba(0,0,0,.05)"
+  },
+  "zen-product-slider-controls-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-product-slider-controls-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-product-slider-style": {
+    "value": "default"
+  },
+  "zen-product-slider-controls-show-hover": {
+    "value": false
+  },
+  "zen-pagination-bg": {
+    "value": "$sw-background-color"
+  },
+  "zen-pagination-hover-bg": {
+    "value": "$sw-border-color"
+  },
+  "zen-pagination-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-pagination-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-pagination-border-color": {
+    "value": "$sw-background-color"
+  },
+  "zen-pagination-hover-border-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-pagination-active-bg": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-pagination-disabled-bg": {
+    "value": "lighten($sw-border-color, 5%)"
+  },
+  "zen-pagination-active-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-pagination-disabled-color": {
+    "value": "darken($sw-border-color, 20%)"
+  },
+  "zen-pagination-active-border-color": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-pagination-disabled-border-color": {
+    "value": "lighten($sw-border-color, 5%)"
+  },
+  "zen-layout-pagination-style": {
+    "value": "pills"
+  },
+  "zen-layout-pagination-border": {
+    "value": false
+  },
+  "zen-layout-pagination-hide-disabled": {
+    "value": true
+  },
+  "zen-breadcrumbs-bg": {
+    "value": "transparent"
+  },
+  "zen-breadcrumbs-color": {
+    "value": "lighten($sw-text-color, 30%)"
+  },
+  "zen-breadcrumbs-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-breadcrumbs-font-size": {
+    "value": 13
+  },
+  "zen-breadcrumbs-text-transform": {
+    "value": "none"
+  },
+  "zen-breadcrumbs-font-weight": {
+    "value": "400"
+  },
+  "zen-breadcrumbs-align": {
+    "value": "flex-start"
+  },
+  "zen-breadcrumbs-fullwidth": {
+    "value": true
+  },
+  "zen-breadcrumbs-home": {
+    "value": true
+  },
+  "zen-breadcrumbs-pretext": {
+    "value": true
+  },
+  "zen-breadcrumbs-spacing-top": {
+    "value": 0
+  },
+  "zen-breadcrumbs-spacing-bottom": {
+    "value": 36
+  },
+  "zen-cookie-banner-style": {
+    "value": "widget"
+  },
+  "zen-offcanvas-margin": {
+    "value": 0
+  },
+  "zen-offcanvas-width": {
+    "value": 400
+  },
+  "zen-backdrop-bg": {
+    "value": "rgba(0, 0, 0, .5)"
+  },
+  "zen-backdrop-bg-accent": {
+    "value": "transparent"
+  },
+  "zen-backdrop-blur": {
+    "value": 4
+  },
+  "zen-scroll-up-button-bg": {
+    "value": "$sw-color-brand-primary"
+  },
+  "zen-scroll-up-button-position": {
+    "value": "right"
+  },
+  "zen-scroll-up-button-spacing-vertical": {
+    "value": 24
+  },
+  "zen-scroll-up-button-spacing-horizontal": {
+    "value": 24
+  },
+  "zen-category-header-position": {
+    "value": "relative"
+  },
+  "zen-category-header-bg-opacity": {
+    "value": "100"
+  },
+  "zen-category-nav-main-opacity": {
+    "value": "100"
+  },
+  "zen-category-header-contrast": {
+    "value": "default-header"
+  },
+  "zen-category-image": {
+    "value": false
+  },
+  "zen-category-image-contrast": {
+    "value": "light-text"
+  },
+  "zen-category-image-opacity": {
+    "value": "100"
+  },
+  "zen-category-image-attachment": {
+    "value": "scroll"
+  },
+  "zen-category-image-position": {
+    "value": "center center"
+  },
+  "zen-category-image-content-max-width": {
+    "value": 1024
+  },
+  "zen-category-image-content-align": {
+    "value": "center"
+  },
+  "zen-category-filter-bg": {
+    "value": "#ffffff"
+  },
+  "zen-category-filter-hover-bg": {
+    "value": "$sw-border-color"
+  },
+  "zen-category-filter-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-category-filter-hover-color": {
+    "value": "darken($sw-text-color, 20%)"
+  },
+  "zen-category-filter-active-bg": {
+    "value": "#ffffff"
+  },
+  "zen-category-filter-active-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-category-filter-border": {
+    "value": false
+  },
+  "zen-category-filter-border-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-category-filter-border-hover-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-category-filter-border-active-color": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-category-filter-font-size": {
+    "value": 14
+  },
+  "zen-category-filter-text-transform": {
+    "value": "none"
+  },
+  "zen-category-filter-font-weight": {
+    "value": "400"
+  },
+  "zen-category-filter-font-weight-active": {
+    "value": "400"
+  },
+  "zen-category-filter-icon": {
+    "value": "plus"
+  },
+  "zen-category-filter-separator": {
+    "value": true
+  },
+  "zen-category-filter-hide-empty-filter-options": {
+    "value": false
+  },
+  "zen-category-filter-open": {
+    "value": true
+  },
+  "zen-category-filter-open-elements": {
+    "value": ""
+  },
+  "zen-category-filter-pv": {
+    "value": 5
+  },
+  "zen-category-filter-mb": {
+    "value": 20
+  },
+  "zen-product-listing-actions-border-top": {
+    "value": true
+  },
+  "zen-product-listing-actions-border-top-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-product-listing-actions-border-bottom": {
+    "value": true
+  },
+  "zen-product-listing-actions-border-bottom-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-product-listing-card-bg": {
+    "value": "#ffffff"
+  },
+  "zen-product-listing-columns-xs": {
+    "value": "1"
+  },
+  "zen-product-listing-columns-sm": {
+    "value": "2"
+  },
+  "zen-product-listing-columns-md": {
+    "value": "2"
+  },
+  "zen-product-listing-columns-lg": {
+    "value": "5"
+  },
+  "zen-product-listing-columns-xl": {
+    "value": "6"
+  },
+  "zen-product-listing-columns-sidebar-xs": {
+    "value": "1"
+  },
+  "zen-product-listing-columns-sidebar-sm": {
+    "value": "2"
+  },
+  "zen-product-listing-columns-sidebar-md": {
+    "value": "2"
+  },
+  "zen-product-listing-columns-sidebar-lg": {
+    "value": "4"
+  },
+  "zen-product-listing-columns-sidebar-xl": {
+    "value": "5"
+  },
+  "zen-product-listing-card-border": {
+    "value": true
+  },
+  "zen-product-listing-card-border-color": {
+    "value": "$sw-background-color"
+  },
+  "zen-product-listing-card-shadow": {
+    "value": false
+  },
+  "zen-product-listing-card-shadow-color": {
+    "value": "rgba(22, 24, 29, 0.07)"
+  },
+  "zen-product-listing-card-hover-shadow": {
+    "value": true
+  },
+  "zen-product-listing-card-hover-shadow-color": {
+    "value": "rgba(22, 24, 29, 0.07)"
+  },
+  "zen-product-listing-card-padding": {
+    "value": 16
+  },
+  "zen-product-listing-card-meta-description": {
+    "value": false
+  },
+  "zen-product-listing-card-list-price-percentage": {
+    "value": "badge"
+  },
+  "zen-product-listing-card-attention-animation": {
+    "value": true
+  },
+  "zen-product-listing-card-img-switch": {
+    "value": "switch"
+  },
+  "zen-product-listing-card-img-display-bg": {
+    "value": true
+  },
+  "zen-product-listing-card-img-border": {
+    "value": false
+  },
+  "zen-product-listing-card-img-border-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-product-listing-card-big-img-height": {
+    "value": "242"
+  },
+  "zen-product-listing-card-img-sizes-custom": {
+    "value": false
+  },
+  "zen-product-listing-card-img-size-xs": {
+    "value": "500"
+  },
+  "zen-product-listing-card-img-size-sm": {
+    "value": "315"
+  },
+  "zen-product-listing-card-img-size-md": {
+    "value": "390"
+  },
+  "zen-product-listing-card-img-size-lg": {
+    "value": "350"
+  },
+  "zen-product-listing-card-img-size-xl": {
+    "value": "280"
+  },
+  "zen-product-listing-card-rating-position": {
+    "value": "default"
+  },
+  "zen-product-listing-card-rating-mode": {
+    "value": "placeholder"
+  },
+  "zen-product-listing-card-name-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-product-listing-card-name-hover-color": {
+    "value": "$sw-color-brand-secondary"
+  },
+  "zen-product-listing-card-name-font-size": {
+    "value": 14
+  },
+  "zen-product-listing-card-name-font-family": {
+    "value": "base"
+  },
+  "zen-product-listing-card-name-font-weight": {
+    "value": "600"
+  },
+  "zen-product-listing-card-name-font-align": {
+    "value": "center"
+  },
+  "zen-product-listing-card-name-text-transform": {
+    "value": "none"
+  },
+  "zen-product-listing-card-name-lines": {
+    "value": 2
+  },
+  "zen-product-listing-card-description-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-product-listing-card-description-font-size": {
+    "value": 12
+  },
+  "zen-product-listing-card-description-font-weight": {
+    "value": "400"
+  },
+  "zen-product-listing-card-description-font-align": {
+    "value": "center"
+  },
+  "zen-product-listing-card-ordernumber": {
+    "value": "prepend"
+  },
+  "zen-product-listing-card-ordernumber-color": {
+    "value": "#999999"
+  },
+  "zen-product-listing-card-ordernumber-font-size": {
+    "value": 10
+  },
+  "zen-product-listing-card-ordernumber-font-weight": {
+    "value": "600"
+  },
+  "zen-product-listing-card-ordernumber-font-align": {
+    "value": "center"
+  },
+  "zen-product-listing-card-ordernumber-label": {
+    "value": false
+  },
+  "zen-product-listing-card-variant-characteristics": {
+    "value": false
+  },
+  "zen-product-listing-card-variant-characteristics-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-product-listing-card-variant-characteristics-font-size": {
+    "value": 12
+  },
+  "zen-product-listing-card-variant-characteristics-font-weight": {
+    "value": "400"
+  },
+  "zen-product-listing-card-variant-characteristics-font-align": {
+    "value": "center"
+  },
+  "zen-product-listing-card-cheapest-price": {
+    "value": true
+  },
+  "zen-product-listing-card-cheapest-price-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-product-listing-card-cheapest-price-font-size": {
+    "value": 12
+  },
+  "zen-product-listing-card-cheapest-price-font-weight": {
+    "value": "400"
+  },
+  "zen-product-listing-card-cheapest-price-font-align": {
+    "value": "center"
+  },
+  "zen-product-listing-card-product-price-unit": {
+    "value": true
+  },
+  "zen-product-listing-card-product-price-unit-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-product-listing-card-product-price-unit-font-size": {
+    "value": 12
+  },
+  "zen-product-listing-card-product-price-unit-font-weight": {
+    "value": "400"
+  },
+  "zen-product-listing-card-product-price-unit-font-align": {
+    "value": "center"
+  },
+  "zen-product-listing-card-price-color": {
+    "value": "$sw-color-price"
+  },
+  "zen-product-listing-card-price-font-size": {
+    "value": 16
+  },
+  "zen-product-listing-card-price-font-weight": {
+    "value": "600"
+  },
+  "zen-product-listing-card-price-font-align": {
+    "value": "center"
+  },
+  "zen-product-listing-card-actions": {
+    "value": "overlayinfo"
+  },
+  "zen-product-listing-card-actions-mobile": {
+    "value": "hidden"
+  },
+  "zen-product-listing-card-actions-quickview": {
+    "value": true
+  },
+  "zen-product-listing-card-actions-quantity-select": {
+    "value": true
+  },
+  "zen-product-listing-card-actions-details-btn": {
+    "value": true
+  },
+  "zen-product-listing-card-actions-details-btn-variants": {
+    "value": false
+  },
+  "zen-quickview-product-name-position": {
+    "value": "buybox"
+  },
+  "zen-product-details-bg": {
+    "value": "transparent"
+  },
+  "zen-product-details-name-position": {
+    "value": "buybox"
+  },
+  "zen-product-details-short-description": {
+    "value": true
+  },
+  "zen-product-details-variant-characteristics": {
+    "value": true
+  },
+  "zen-product-details-rating-position": {
+    "value": "headline"
+  },
+  "zen-product-details-rating-mode": {
+    "value": "placeholder"
+  },
+  "zen-product-details-wishlist-position": {
+    "value": "gallery"
+  },
+  "zen-product-details-manufacturer-position": {
+    "value": "top"
+  },
+  "zen-product-details-buy-quantity": {
+    "value": true
+  },
+  "zen-delivery-status-indicator-style": {
+    "value": "badge"
+  },
+  "zen-product-details-spacing-top": {
+    "value": 20
+  },
+  "zen-product-details-spacing-right": {
+    "value": "auto"
+  },
+  "zen-product-details-spacing-bottom": {
+    "value": 20
+  },
+  "zen-product-details-spacing-left": {
+    "value": "auto"
+  },
+  "zen-product-details-buybox-sticky": {
+    "value": true
+  },
+  "zen-product-details-buybox-sticky-forced": {
+    "value": true
+  },
+  "zen-product-details-name-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-product-details-name-font-size": {
+    "value": 36
+  },
+  "zen-product-details-name-font-family": {
+    "value": "headline"
+  },
+  "zen-product-details-name-font-weight": {
+    "value": "600"
+  },
+  "zen-product-details-name-text-transform": {
+    "value": "none"
+  },
+  "zen-product-details-price-color": {
+    "value": "$sw-color-price"
+  },
+  "zen-product-details-price-font-size": {
+    "value": 28
+  },
+  "zen-product-details-price-font-family": {
+    "value": "base"
+  },
+  "zen-product-details-price-font-weight": {
+    "value": "800"
+  },
+  "zen-product-configurator-bg": {
+    "value": "#ffffff"
+  },
+  "zen-product-configurator-hover-bg": {
+    "value": "$sw-color-brand-primary"
+  },
+  "zen-product-configurator-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-product-configurator-hover-color": {
+    "value": "#ffffff"
+  },
+  "zen-product-configurator-border-color": {
+    "value": "$sw-border-color"
+  },
+  "zen-product-configurator-border-hover-color": {
+    "value": "$sw-color-brand-primary"
+  },
+  "zen-product-configurator-not-combinable-cross-out": {
+    "value": false
+  },
+  "zen-product-configurator-not-combinable-dashed-border": {
+    "value": false
+  },
+  "zen-product-configurator-not-combinable-opacity": {
+    "value": "50"
+  },
+  "zen-product-details-configurator-tooltips": {
+    "value": true
+  },
+  "zen-product-details-stock": {
+    "value": false
+  },
+  "zen-product-details-closeout": {
+    "value": false
+  },
+  "zen-product-details-ordernumber": {
+    "value": false
+  },
+  "zen-product-details-ean": {
+    "value": false
+  },
+  "zen-product-details-manufacturer-name": {
+    "value": false
+  },
+  "zen-product-details-manufacturer-link": {
+    "value": false
+  },
+  "zen-product-details-manufacturer-number": {
+    "value": false
+  },
+  "zen-product-details-length": {
+    "value": false
+  },
+  "zen-product-details-width": {
+    "value": false
+  },
+  "zen-product-details-height": {
+    "value": false
+  },
+  "zen-product-details-weight": {
+    "value": false
+  },
+  "zen-product-details-features": {
+    "value": true
+  },
+  "zen-product-details-features-style": {
+    "value": "standard"
+  },
+  "zen-product-details-features-position": {
+    "value": "bottom"
+  },
+  "zen-product-details-features-icon": {
+    "value": "checkmark"
+  },
+  "zen-product-details-features-headline": {
+    "value": true
+  },
+  "zen-product-gallery-slider-display-mode": {
+    "value": "contain"
+  },
+  "zen-product-gallery-mode": {
+    "value": "slider"
+  },
+  "zen-product-gallery-grid-cover-full-width": {
+    "value": false
+  },
+  "zen-product-gallery-grid-dynamic": {
+    "value": true
+  },
+  "zen-product-gallery-img-bg": {
+    "value": "#ffffff"
+  },
+  "zen-product-gallery-img-color-overlay": {
+    "value": false
+  },
+  "zen-product-gallery-fallback-image-title": {
+    "value": "default"
+  },
+  "zen-product-gallery-sticky": {
+    "value": true
+  },
+  "zen-product-gallery-sticky-forced": {
+    "value": true
+  },
+  "zen-product-gallery-slider-width": {
+    "value": "7"
+  },
+  "zen-product-gallery-slider-image-ratio": {
+    "value": true
+  },
+  "zen-product-gallery-slider-min-height-mobile": {
+    "value": 300
+  },
+  "zen-product-gallery-slider-min-height-tablet": {
+    "value": 300
+  },
+  "zen-product-gallery-slider-min-height-desktop": {
+    "value": 300
+  },
+  "zen-product-gallery-slider-navigation-arrows": {
+    "value": "inside"
+  },
+  "zen-product-gallery-slider-navigation-dots": {
+    "value": "inside"
+  },
+  "zen-product-gallery-slider-gallery-image-ratio": {
+    "value": true
+  },
+  "zen-product-gallery-slider-gallery-position": {
+    "value": "underneath"
+  },
+  "zen-product-gallery-slider-gallery-style": {
+    "value": "alternate"
+  },
+  "zen-max-items-to-show-mobile-nav": {
+    "value": 5
+  },
+  "zen-max-items-to-show-nav": {
+    "value": 8
+  },
+  "zen-product-gallery-slider-zoom": {
+    "value": true
+  },
+  "zen-product-gallery-slider-zoom-factor": {
+    "value": 3
+  },
+  "zen-product-gallery-slider-keep-aspect-ratio-on-zoom": {
+    "value": false
+  },
+  "zen-product-gallery-slider-magnifier-over-gallery": {
+    "value": false
+  },
+  "zen-product-gallery-slider-zoom-modal": {
+    "value": true
+  },
+  "zen-product-detail-tabs-bg": {
+    "value": "#ffffff"
+  },
+  "zen-product-detail-tabs-position": {
+    "value": "default"
+  },
+  "zen-product-detail-tabs-mode-mobile": {
+    "value": "offcanvas"
+  },
+  "zen-product-detail-tabs-mode": {
+    "value": "tabs"
+  },
+  "zen-product-tabs-bg": {
+    "value": "transparent"
+  },
+  "zen-product-tabs-hover-bg": {
+    "value": "$sw-background-color"
+  },
+  "zen-product-tabs-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-product-tabs-hover-color": {
+    "value": "$sw-text-color"
+  },
+  "zen-product-tabs-style": {
+    "value": "pills"
+  },
+  "zen-product-tabs-align": {
+    "value": "flex-start"
+  },
+  "zen-product-tabs-font-size": {
+    "value": 18
+  },
+  "zen-product-tabs-font-weight": {
+    "value": "500"
+  },
+  "zen-product-tabs-text-transform": {
+    "value": "none"
+  },
+  "zen-product-tabs-font-align": {
+    "value": "center"
+  },
+  "zen-product-tabs-margin": {
+    "value": 16
+  },
+  "zen-product-tabs-manufacturer": {
+    "value": true
+  },
+  "zen-product-tabs-properties": {
+    "value": true
+  },
+  "zen-product-tabs-content-bg": {
+    "value": "#ffffff"
+  },
+  "zen-product-tabs-content-product-description-title": {
+    "value": true
+  },
+  "zen-product-tabs-content-product-description-title-mode": {
+    "value": "default"
+  },
+  "zen-cart-shipping-costs-collapse-state": {
+    "value": false
+  },
+  "zen-cart-offcanvas-prevent": {
+    "value": false
+  },
+  "zen-cart-product-number-input": {
+    "value": "default"
+  },
+  "zen-cart-product-number-input-offcanvas": {
+    "value": "default"
+  },
+  "zen-checkout-layout": {
+    "value": "two-column"
+  },
+  "zen-checkout-sticky": {
+    "value": true
+  },
+  "zen-checkout-steps": {
+    "value": true
+  },
+  "zen-checkout-confirm-tos-position": {
+    "value": "close-to-confirm-order-button"
+  },
+  "zen-checkout-confirm-payment-shipping-description-length": {
+    "value": 75
+  },
+  "zen-checkout-confirm-visible-payment-methods-limit": {
+    "value": 5
+  },
+  "zen-checkout-confirm-visible-shipping-methods-limit": {
+    "value": 5
+  }
+}

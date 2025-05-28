@@ -1,0 +1,300 @@
+{% block zen_element_search_banner %}
+    {% set config = element.fieldConfig.elements %}
+
+    {% set customClasses = config.customClasses.value %}
+
+    {% set elemClasses = [
+        'hover-image-' ~ config.imageHover.value,
+        config.searchLarge.value ? 'has-form-control-lg' : null
+    ] | filter(item => item is not null) %}
+
+    {% set contentBeforeClasses = [
+        config.headlineBeforeScale.value ? 'has-headline-lg' : null,
+        config.textBeforeScale.value ? 'has-text-lg' : null
+    ] | filter(item => item is not null) %}
+
+    {% set contentAfterClasses = [
+        config.headlineAfterScale.value ? 'has-headline-lg' : null,
+        config.textAfterScale.value ? 'has-text-lg' : null
+    ] | filter(item => item is not null) %}
+
+    {% set commonBorderRadius = config.imageBorderRadius.value ? config.imageBorderRadiusTopLeft.value ~ ' ' ~ config.imageBorderRadiusTopRight.value ~ ' ' ~ config.imageBorderRadiusBottomRight.value ~ ' ' ~ config.imageBorderRadiusBottomLeft.value : null %}
+
+    {% set elemStyles = {
+        'border-radius': commonBorderRadius
+    } | filter(item => item is not null) %}
+
+    {% set imgStyles = {
+        'border-radius': commonBorderRadius
+    } | filter(item => item is not null) %}
+
+    {% if config.displayMode.value == "cover" %}
+        {% set horizontalImageAlignment = config.horizontalImageAlign.value|default('center') %}
+        {% set verticalImageAlignment = config.verticalImageAlign.value|default('center') %}
+        {% set imgStyles = imgStyles|merge({ 'object-position': horizontalImageAlignment ~ ' ' ~ verticalImageAlignment }) %}
+    {% endif %}
+
+    {% if config.overlay.value %}
+        {% set overlayStyles = {
+            'background-color': config.overlayColor.value|default('transparent'),
+            'opacity': config.overlayOpacity.value|default('0%'),
+            'border-radius': config.imageBorderRadius.value ? config.imageBorderRadiusTopLeft.value ~ ' ' ~ config.imageBorderRadiusTopRight.value ~ ' ' ~ config.imageBorderRadiusBottomRight.value ~ ' ' ~ config.imageBorderRadiusBottomLeft.value : null
+        } | filter(item => item is not null) %}
+    {% endif %}
+
+    {% set contentContainerStyles = {
+        'align-items': config.verticalContentAlign.value|default('flex-start'),
+        'justify-content': config.horizontalContentAlign.value|default('flex-start'),
+    } %}
+
+    {% set contentStyles = {
+        'border-radius': (config.contentBorderRadius.value ?: '0px') ? (config.contentBorderRadiusTopLeft.value ?: '0px') ~ ' ' ~ (config.contentBorderRadiusTopRight.value ?: '0px') ~ ' ' ~ (config.contentBorderRadiusBottomRight.value ?: '0px') ~ ' ' ~ (config.contentBorderRadiusBottomLeft.value ?: '0px') : null,
+        padding: (config.contentPaddings.value ?: '0px') ? (config.contentPaddingTop.value ?: '0px') ~ ' ' ~ (config.contentPaddingRight.value ?: '0px') ~ ' ' ~ (config.contentPaddingBottom.value ?: '0px') ~ ' ' ~ (config.contentPaddingLeft.value ?: '0px') : null,
+        margin: (config.contentMargins.value ?: '0px') ? (config.contentMarginTop.value ?: '0px') ~ ' ' ~ (config.contentMarginRight.value ?: '0px') ~ ' ' ~ (config.contentMarginBottom.value ?: '0px') ~ ' ' ~ (config.contentMarginLeft.value ?: '0px') : null,
+        'color': config.textColor.value,
+        'background-color': config.backgroundColor.value,
+        '-webkit-backdrop-filter': config.backgroundBlur.value ? "blur(#{config.backgroundBlur.value})" : null,
+        'backdrop-filter': config.backgroundBlur.value ? "blur(#{config.backgroundBlur.value})" : null
+    } | filter(item => item is not null) %}
+
+    {% if config.contentMinWidth.value and config.contentMaxWidth.value %}
+        {% set contentStyles = contentStyles|merge({ width: 'clamp(' ~ config.contentMinWidth.value ~ ', 50%, ' ~ config.contentMaxWidth.value ~ ')' }) %}
+    {% else %}
+        {% set contentStyles = config.contentMinWidth.value ? contentStyles|merge({ width: config.contentMinWidth.value }) : contentStyles %}
+        {% set contentStyles = config.contentMaxWidth.value ? contentStyles|merge({ 'max-width': config.contentMaxWidth.value }) : contentStyles %}
+    {% endif %}
+
+    {% set searchStyles = {
+        'background-color': config.customSearchField.value ? (theme_config('zen-layout-forms-style') == 'underlined' ? 'transparent' : config.searchBackgroundColor.value) : null,
+        'color': config.customSearchField.value ? config.searchColor.value : null,
+        'border-color': config.customSearchField.value ? config.searchBorderColor.value : null
+    } | filter(item => item is not null) %}
+
+    {% set searchFocusStyles = {
+        'background-color': config.customSearchField.value ? (theme_config('zen-layout-forms-style') == 'underlined' ? 'transparent' : config.searchFocusBackgroundColor.value) : null,
+        'color': config.customSearchField.value ? config.searchFocusColor.value : null,
+        'border-color': config.customSearchField.value ? config.searchFocusBorderColor.value : null
+    } | filter(item => item is not null) %}
+
+    <style>
+        {% if config.hideHeaderSearch.value %}
+            .header-search {
+                display: none;
+            }
+        {% endif %}
+
+        {% if elemStyles %}
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-search-banner-inner {
+                {% for property, value in elemStyles %}
+                    {{ property }}: {{ value }};
+                {% endfor %}
+            }
+        {% endif %}
+
+        {% if imgStyles %}
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-search-banner-image-container {
+                {% for property, value in imgStyles %}
+                    {{ property }}: {{ value }};
+                {% endfor %}
+            }
+
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-search-banner-image {
+                {% for property, value in imgStyles %}
+                    {{ property }}: {{ value }};
+                {% endfor %}
+            }
+        {% endif %}
+
+        {% if overlayStyles %}
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-search-banner-overlay {
+                {% for property, value in overlayStyles %}
+                    {{ property }}: {{ value }};
+                {% endfor %}
+            }
+        {% endif %}
+
+        {% if contentContainerStyles %}
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-search-banner-content-container {
+                {% for property, value in contentContainerStyles %}
+                    {{ property }}: {{ value }};
+                {% endfor %}
+            }
+        {% endif %}
+
+        {% if contentStyles %}
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-search-banner-content {
+                {% for property, value in contentStyles %}
+                    {{ property }}: {{ value }};
+                {% endfor %}
+            }
+        {% endif %}
+
+        {% if searchStyles %}
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-search-form .cms-search-input,
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-search-form .cms-search-btn {
+                {% for property, value in searchStyles %}
+                    {{ property }}: {{ value }};
+                {% endfor %}
+            }
+
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-search-form .cms-search-input::placeholder {
+                color: {{ config.searchColor.value }};
+            }
+
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-search-form .cms-search-btn .icon {
+                color: {{ searchStyles.color }};
+            }
+        {% endif %}
+
+        {% if searchFocusStyles %}
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-search-form .cms-search-input:focus,
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-search-form .cms-search-input:focus ~ .cms-search-btn {
+                {% for property, value in searchFocusStyles %}
+                    {{ property }}: {{ value }};
+                {% endfor %}
+            }
+
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-search-form .cms-search-input:focus ~ .cms-search-btn .icon {
+                color: {{ searchFocusStyles.color }};
+            }
+        {% endif %}
+    </style>
+
+    {% block zen_element_search_banner_element %}
+        <div id="cms-element-{{ element.type }}-{{ element.id }}"
+             class="cms-element-{{ element.type }}-{{ element.id }} cms-element-{{ element.type }}{% if config.verticalAlign.value %} has-vertical-alignment{% endif %}{% if config.horizontalAlign.value == "center" %} justify-content-center{% elseif config.horizontalAlign.value == "flex-end" %} justify-content-end{% else %} justify-content-start{% endif %} {{ elemClasses|sort|join(' ') }} {{ customClasses }}"
+             data-zen-search-banner="true"
+        >
+            {% block zen_element_search_banner_alignment %}
+                {% if config.verticalAlign.value %}
+                    <div class="cms-element-alignment is-{{ element.translated.config.displayMode.value }}{% if config.verticalAlign.value == "center" %} align-self-center{% elseif config.verticalAlign.value == "flex-end" %} align-self-end{% else %} align-self-start{% endif %}">
+                {% endif %}
+                {% block zen_element_search_banner_inner %}
+                    <div class="cms-search-banner-inner cms-element-inner is-{{ element.translated.config.displayMode.value }}">
+                        {% block zen_element_search_banner_image_container %}
+                            {% if element.data.media.url %}
+                                <div class="cms-search-banner-image-container is-{{ element.translated.config.displayMode.value }}"
+                                    {% if element.translated.config.minHeight.value and element.translated.config.displayMode.value == "cover" %} style="min-height: {{ element.translated.config.minHeight.value }};"{% endif %}>
+                                    {% block zen_element_search_banner_media %}
+                                        {% set attributes = {
+                                            class: 'cms-search-banner-image',
+                                            alt: (element.data.media.translated.alt|default(element.data.media.fileName)),
+                                            title: (element.data.media.translated.title|default(element.data.media.fileName))
+                                        } %}
+
+                                        {% if element.translated.config.displayMode.value == 'cover' or element.translated.config.displayMode.value == 'contain' %}
+                                            {% set attributes = attributes|merge({ 'data-object-fit': element.translated.config.displayMode.value }) %}
+                                        {% endif %}
+
+                                        {# ... @zenit - enables lazy loading for images #}
+                                        {% if config('zenitPlatformGravity.config.lazyloading') %}
+                                            {% set attributes = attributes|merge({ loading: 'lazy' }) %}
+                                        {% endif %}
+
+                                        {% if element.data.media.getMediaType().getName() === 'VIDEO' %}
+                                            {% set attributes = attributes|merge({
+                                                autoplay: true,
+                                                loop: true,
+                                                muted: true
+                                            }) %}
+
+                                            {% block zen_element_text_banner_video %}
+                                                {% sw_include '@Storefront/storefront/utilities/video.html.twig' with {
+                                                    media: element.data.media,
+                                                    attributes: attributes
+                                                } %}
+                                            {% endblock %}
+                                        {% else %}
+                                            {% block zen_element_text_banner_media_thumbnail %}
+                                                {% sw_thumbnails 'cms-image-thumbnails' with {
+                                                    media: element.data.media
+                                                } %}
+                                            {% endblock %}
+                                        {% endif %}
+                                    {% endblock %}
+                                </div>
+                            {% endif %}
+                        {% endblock %}
+
+                        {% block zen_element_search_banner_content_container %}
+                            <div class="cms-search-banner-content-container is-{{ element.translated.config.displayMode.value }}" {% if element.translated.config.minHeight.value and element.translated.config.displayMode.value == "cover" %} style="min-height: {{ element.translated.config.minHeight.value }};"{% endif %}>
+                                {% set textBefore = element.data.textBefore %}
+                                {% set textAfter = element.data.textAfter %}
+
+                                {% block zen_element_search_banner_overlay %}
+                                    {% if config.overlay.value %}
+                                        <div class="cms-search-banner-overlay"></div>
+                                    {% endif %}
+                                {% endblock %}
+
+                                <div class="cms-search-banner-content">
+                                    <span class="cms-search-banner-text {{ contentBeforeClasses|sort|join(' ') }}">
+                                        {% if config('zenitPlatformGravity.config.twigStringLoaderExtension') %}
+                                            {% sw_include '@zenitPlatformGravity/storefront/utilities/zen-template-from-string.html.twig' with {
+                                                content: textBefore
+                                            } %}
+                                        {% else %}
+                                            {{ textBefore|raw }}
+                                        {% endif %}
+                                    </span>
+
+                                    {% block zen_element_search_banner_form %}
+                                        <div class="cms-search-banner-search">
+                                            <form action="{{ path('frontend.search.page') }}"
+                                                  method="get"
+                                                  data-search-widget="true"
+                                                  data-search-widget-options='{{ searchWidgetOptions|json_encode }}'
+                                                  data-url="{{ path('frontend.search.suggest') }}?search="
+                                                  class="cms-search-form">
+                                                {% block zen_element_search_banner_input_group %}
+                                                    <div class="input-group">
+                                                        {% block zen_element_search_banner_input %}
+                                                            <input type="search"
+                                                                   name="search"
+                                                                   class="form-control cms-search-input{% if config.searchLarge.value %} form-control-lg{% endif %}"
+                                                                   autocomplete="off"
+                                                                   autocapitalize="off"
+                                                                   placeholder="{{ 'header.searchPlaceholder'|trans|striptags }}"
+                                                                   aria-label="{{ 'header.searchPlaceholder'|trans|striptags }}"
+                                                                   value="{{ page.searchTerm }}"
+                                                            >
+                                                        {% endblock %}
+
+                                                        {% block zen_element_search_banner_button %}
+                                                            <button type="submit"
+                                                                    class="btn cms-search-btn"
+                                                                    aria-label="{{ 'header.searchButton'|trans|striptags }}">
+                                                                <span class="cms-search-icon">
+                                                                    {% sw_icon 'search' %}
+                                                                </span>
+                                                            </button>
+                                                        {% endblock %}
+                                                    </div>
+                                                {% endblock %}
+                                            </form>
+                                        </div>
+                                    {% endblock %}
+
+                                    <span class="cms-search-banner-text {{ contentAfterClasses|sort|join(' ') }}">
+                                        {% if config('zenitPlatformGravity.config.twigStringLoaderExtension') %}
+                                            {% sw_include '@zenitPlatformGravity/storefront/utilities/zen-template-from-string.html.twig' with {
+                                                content: textAfter
+                                            } %}
+                                        {% else %}
+                                            {{ textAfter|raw }}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+
+                {% if config.verticalAlign.value %}
+                    </div>
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+{% endblock %}

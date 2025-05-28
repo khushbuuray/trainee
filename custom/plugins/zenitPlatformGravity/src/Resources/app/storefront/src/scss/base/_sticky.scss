@@ -1,0 +1,131 @@
+/*
+Sticky elements
+==================================================
+Contains the sticky styles added by Sticky Plugin
+*/
+
+.js-sticky {
+    $additional-space: remToPx($spacer-lg);
+    $top-bar-addition: px($zen-top-bar-height) + $additional-space;
+    $multi-line-header-addition: px($zen-main-navigation-height) + $additional-space;
+    $multi-line-header-with-top-bar-addition: px($zen-top-bar-height) + px($zen-main-navigation-height) + $additional-space;
+    --#{$zen-prefix}-sticky-header-height: #{px($zen-header-height)}; // may be changed on js-header-sticky
+
+    $breakpoint-up: null;
+    @if $zen-main-navigation-style == "offcanvas-md" {
+        $breakpoint-up: lg;
+    } @else if $zen-main-navigation-style == "offcanvas-lg" {
+        $breakpoint-up: xl;
+    }
+
+    top: $spacer-lg;
+
+    body:not(.modal-open) & { // needed to prevent issue with modals in inner context
+        position: sticky;
+    }
+
+    &:not(.js-has-minimal-header) {
+        @include transition();
+        top: calc(var(--#{$zen-prefix}-sticky-header-height) + #{$additional-space});
+
+        .js-top-bar-open &,
+        .is-tb-default & {
+            top: calc(var(--#{$zen-prefix}-sticky-header-height) + #{$top-bar-addition});
+        }
+
+        .js-header-sticky-hide.js-header-sticky-down ~ .content-main & {
+            top: $spacer-lg;
+        }
+
+        // multi line headers
+        @if $zen-header-style != "single-line" and $zen-main-navigation-style != "offcanvas-xl" {
+            @include media-breakpoint-up($breakpoint-up) {
+                top: calc(var(--#{$zen-prefix}-sticky-header-height) + #{$multi-line-header-addition});
+
+                .js-top-bar-open &,
+                .is-tb-default & {
+                    top: calc(var(--#{$zen-prefix}-sticky-header-height) + #{$multi-line-header-with-top-bar-addition});
+                }
+
+                .js-header-sticky-hide.js-header-sticky-down ~ .content-main & {
+                    top: calc(var(--#{$zen-prefix}-sticky-header-height) + #{$additional-space});
+
+                    .js-top-bar-open &,
+                    .is-tb-default & {
+                        top: calc(var(--#{$zen-prefix}-sticky-header-height) + #{$top-bar-addition});
+                    }
+                }
+            }
+        }
+
+        // sticky sidebar
+        &.cms-section-sidebar-sidebar-content-inner {
+            max-height: calc( 100vh - (var(--#{$zen-prefix}-sticky-header-height) + #{$top-bar-addition}) );
+            overflow-y: auto;
+            overflow-x: hidden;
+            -ms-overflow-style: none;
+            scrollbar-color: transparent transparent;
+            scrollbar-width: thin;
+            z-index: 1;
+            padding-bottom: $spacer-xl;
+
+            .js-top-bar-open &,
+            .is-tb-default & {
+                max-height: calc( 100vh - (var(--#{$zen-prefix}-sticky-header-height) + #{$top-bar-addition}) );
+            }
+
+            .js-header-sticky-hide.js-header-sticky-down ~ .content-main & {
+                height: calc( 100vh - #{$spacer-lg} );
+            }
+
+            // multi line headers
+            @if $zen-header-style != "single-line" and $zen-main-navigation-style != "offcanvas-xl" {
+                @include media-breakpoint-up($breakpoint-up) {
+                    height: calc( 100vh - (var(--#{$zen-prefix}-sticky-header-height) + #{$multi-line-header-addition}) );
+
+                    .js-top-bar-open &,
+                    .is-tb-default & {
+                        height: calc( 100vh - (var(--#{$zen-prefix}-sticky-header-height) + #{$multi-line-header-with-top-bar-addition}) );
+                    }
+
+                    .js-header-sticky-hide.js-header-sticky-down ~ .content-main & {
+                        height: calc( 100vh - (var(--#{$zen-prefix}-sticky-header-height) + #{$additional-space}) );
+
+                        .js-top-bar-open &,
+                        .is-tb-default & {
+                            height: calc( 100vh - (var(--#{$zen-prefix}-sticky-header-height) + #{$top-bar-addition}) );
+                        }
+                    }
+                }
+            }
+
+            &::-webkit-scrollbar {
+                width: 6px
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background-color: transparent;
+                border-radius: 3px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            &:hover {
+                scrollbar-color: $sw-border-color transparent;
+            }
+
+            &:hover::-webkit-scrollbar-thumb {
+                background-color: $sw-border-color;
+            }
+        }
+    }
+}
+
+// if the header is sticky, sticky-header-height must be applied.
+.js-header-sticky {
+    ~ .content-main .js-sticky {
+        --#{$zen-prefix}-sticky-header-height: #{if($zen-sticky-header-size == 1, px($zen-sticky-header-height), px($zen-header-height))};
+    }
+}

@@ -1,0 +1,18 @@
+/*
+Input group
+==============================================
+Custom skin styling for bootstrap input group.
+
+https://getbootstrap.com/docs/4.3/components/forms/
+*/
+
+.input-group {
+    .btn {
+        --#{$prefix}btn-padding-x: 0.75rem;
+        @include border-radius($zen-layout-input-radius * 1px);
+    }
+}
+
+.input-group-text {
+    @include border-radius($zen-layout-input-radius * 1px);
+}

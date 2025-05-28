@@ -1,0 +1,43 @@
+{% block block_zen_layout_simple_teaser_reversed %}
+    {% set columns = 2 %}
+    {% set isInSidebar = block.sectionPosition == 'sidebar' %}
+    {% set customFields = block.getCustomFields() %}
+    {% set gridGap = (customFields and customFields['zenit_grid_gap'] is defined) ? customFields['zenit_grid_gap'] : '' %}
+
+    {% block block_zen_layout_simple_teaser_reversed_left %}
+        <div class="{% if isInSidebar %}col-12{% else %}col-md-6{% endif %}">
+            {% block block_zen_layout_simple_teaser_reversed_left_inner %}
+                {% set element = block.slots.getSlot('left') %}
+
+                <div class="left" data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+    {% block block_zen_layout_simple_teaser_reversed_right %}
+        <div class="{% if isInSidebar %}col-12{% else %}col-md-6{% endif %}">
+            <div class="cms-row row"{% if gridGap is not empty %} style="--zen-gutter-x: {{ gridGap }}; --zen-gutter-y: {{ gridGap }};"{% endif %}>
+                <div class="col-12">
+                    {% block block_zen_layout_simple_teaser_reversed_right_top %}
+                        {% set element = block.slots.getSlot('right-top') %}
+
+                        <div class="right-top" data-cms-element-id="{{ element.id }}">
+                            {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                        </div>
+                    {% endblock %}
+                </div>
+                <div class="col-12">
+                    {% block block_zen_layout_simple_teaser_reversed_right_bottom %}
+                        {% set element = block.slots.getSlot('right-bottom') %}
+
+                        <div class="right-bottom" data-cms-element-id="{{ element.id }}">
+                            {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                        </div>
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+{% endblock %}

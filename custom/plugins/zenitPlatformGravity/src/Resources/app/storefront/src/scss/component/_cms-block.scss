@@ -1,0 +1,110 @@
+.cms-row {
+    position: relative;
+    @include make-cms-row();
+
+    > * {
+        @include make-cms-col-ready();
+    }
+}
+
+@include make-cms-grid-gutters();
+
+@if $zen-product-listing-card-shadow == 1 or $zen-product-listing-card-hover-shadow == 1 {
+    .cms-block-product-listing {
+        overflow: visible;
+    }
+}
+
+// zenit search banner block
+.cms-block-zen-search-banner {
+    overflow: initial; // needed to display search suggest list
+}
+
+// reset margin, because we are using cms-row and row gutters
+.cms-block-image-simple-grid {
+    .left-top {
+        margin-bottom: 0;
+    }
+
+    @include media-breakpoint-down(md) {
+        .left-bottom {
+            margin-bottom: 0;
+        }
+    }
+}
+
+// zenit block layout advanced grid one (reversed)
+.cms-block-zen-layout-advanced-grid-one {
+    @include media-breakpoint-up(md) {
+        .left {
+            height: 100%;
+        }
+    }
+}
+
+.cms-block-zen-layout-advanced-grid-one-reversed {
+    @include media-breakpoint-up(md) {
+        .right {
+            height: 100%;
+        }
+    }
+}
+
+// zenit block layout simple (reversed)
+.cms-block-zen-layout-simple,
+.cms-block-zen-layout-simple-4-8,
+.cms-block-zen-layout-simple-8-4 {
+    @include media-breakpoint-up(md) {
+        .right {
+            height: 100%;
+        }
+    }
+}
+
+.cms-block-zen-layout-simple-reversed,
+.cms-block-zen-layout-simple-4-8-reversed,
+.cms-block-zen-layout-simple-8-4-reversed {
+    @include media-breakpoint-up(md) {
+        .left {
+            height: 100%;
+        }
+    }
+}
+
+// zenit block layout simple teaser (reversed)
+.cms-block-zen-layout-simple-teaser {
+    @include media-breakpoint-up(md) {
+        .right {
+            height: 100%;
+        }
+    }
+}
+
+.cms-block-zen-layout-simple-teaser-reversed {
+    @include media-breakpoint-up(md) {
+        .left {
+            height: 100%;
+        }
+    }
+}
+
+.cms-element-manufacturer-logo {
+    .cms-image-container.is-standard {
+        img {
+            max-width: px($zen-manufacturer-logo-height-mobile);
+
+            @include media-breakpoint-up(lg) {
+                max-width: px($zen-manufacturer-logo-height);
+            }
+        }
+    }
+}
+
+// zenit block layout two row
+.cms-block-zen-grid-6-6-el-2,
+.cms-block-zen-grid-4-4-4-el-2,
+.cms-block-zen-grid-3-3-3-3-el-2 {
+    .cms-element-text {
+        padding-top: 20px;
+    }
+}

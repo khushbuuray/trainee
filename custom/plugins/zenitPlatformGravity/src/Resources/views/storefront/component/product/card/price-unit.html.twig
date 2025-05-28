@@ -1,0 +1,65 @@
+{% sw_extends '@Storefront/storefront/component/product/card/price-unit.html.twig' %}
+
+{% block component_product_box_price_unit %}
+    {# ... @zenit - add if statement #}
+    {% if theme_config('zen-product-listing-card-product-price-unit') is not same as (false) %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block component_product_box_price %}
+    <div class="product-price-wrapper">
+        {% set price = real %}
+        {% set isListPrice = price.listPrice.percentage > 0 %}
+        {% set isRegulationPrice = price.regulationPrice != null %}
+
+        {# ... @zenit - add if statement #}
+        {% if theme_config('zen-product-listing-card-cheapest-price') is not same as (false) %}
+            <div class="product-cheapest-price{% if isListPrice and isRegulationPrice and not displayFrom and not displayFromVariants %} with-list-price{% endif %}{% if isRegulationPrice and not displayFrom and displayFromVariants %} with-regulation-price{% endif %}{% if displayFrom and isRegulationPrice %} with-from-price{% endif %}">
+                {% if cheapest.unitPrice != real.unitPrice and cheapest.variantId != product.id %}
+                    <div>{{ 'listing.cheapestPriceLabel'|trans|sw_sanitize }}<span class="product-cheapest-price-price"> {{ cheapest.unitPrice|currency }}{{ 'general.star'|trans|sw_sanitize }}</span></div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if displayFrom or (displayParent and hasDifferentPrice and totalVariants|length > 1) %}
+            {{ 'listing.listingTextFrom'|trans|sw_sanitize }}
+        {% endif %}
+
+        <span class="product-price{% if isListPrice and not displayFrom and not displayFromVariants %} with-list-price{% endif %}">
+            {{ price.unitPrice|currency }}{{ 'general.star'|trans|sw_sanitize }}
+
+            {% if isListPrice and not displayFrom and not displayFromVariants %}
+                {% set afterListPriceSnippetExists = 'listing.afterListPrice'|trans|length > 0 %}
+                {% set beforeListPriceSnippetExists = 'listing.beforeListPrice'|trans|length > 0 %}
+                {% set hideStrikeTrough = beforeListPriceSnippetExists or afterListPriceSnippetExists %}
+
+                <span class="list-price{% if hideStrikeTrough %} list-price-no-line-through{% endif %}">
+                    {% if beforeListPriceSnippetExists %}{{ 'listing.beforeListPrice'|trans|trim|sw_sanitize }}{% endif %}
+
+                    <span class="list-price-price">{{ price.listPrice.price|currency }}{{ 'general.star'|trans|sw_sanitize }}</span>
+
+                    {% if afterListPriceSnippetExists %}{{ 'listing.afterListPrice'|trans|trim|sw_sanitize }}{% endif %}
+
+                    {# ... @zenit - add if statement #}
+                    {% set pricePercentage = theme_config('zen-product-listing-card-list-price-percentage')|default('default') %}
+                    {% if pricePercentage is same as ('default') %}
+                        <span class="list-price-percentage">{{ 'detail.listPricePercentage'|trans({'%price%': price.listPrice.percentage })|sw_sanitize }}</span>
+                    {% endif %}
+                </span>
+            {% endif %}
+        </span>
+        {% if isRegulationPrice %}
+            <span class="product-price with-regulation-price">
+                {% if isListPrice %}
+                    {# ... @zenit - remove </br> if there is no price percentage, add brackets #}
+                    {% set pricePercentage = theme_config('zen-product-listing-card-list-price-percentage')|default('default') %}
+                    {% if pricePercentage is same as ('default') %}
+                        <br>
+                    {% endif %}
+                {% endif %}
+                <span class="regulation-price">({{ 'general.listPricePreviously'|trans({'%price%': price.regulationPrice.price|currency }) }}{{ 'general.star'|trans|sw_sanitize }})</span>
+            </span>
+        {% endif %}
+    </div>
+{% endblock %}

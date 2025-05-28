@@ -1,0 +1,66 @@
+{% sw_extends '@Storefront/storefront/utilities/offcanvas.html.twig' %}
+
+{% block utilities_offcanvas_content %}
+    {% block zen_page_product_detail_datasheets_container %}
+        <div class="product-detail-datasheets tab-pane-container">
+            {% set mediaCollection = searchMedia(datasheetsIds, context.context) %}
+
+            {% for datasheetId in datasheetsIds %}
+                {% set datasheetMedia = mediaCollection.get(datasheetId) %}
+
+                {% if datasheetMedia.mediaType.name is same as ('IMAGE') %}
+
+                    {% block zen_page_product_detail_datasheets_image %}
+                        {% sw_thumbnails 'datasheets-image-thumbnails' with {
+                            media: datasheetMedia,
+                            attributes: {
+                                alt: (datasheetMedia.translated.alt|default(datasheetMedia.translated.name)),
+                                title: (datasheetMedia.translated.title|default(datasheetMedia.translated.name))
+                            }
+                        } %}
+                    {% endblock %}
+                {% else %}
+                    {% block zen_page_product_detail_datasheets_embed %}
+                        <div class="datasheets-embed ratio ratio-1x1">
+                            {% if config('zenitPlatformGravity.config.pdfrenderer') is same as ('pdfjs') %}
+                                {% if context.context.extensions['zenitPlatformGravity'].system is not defined %}
+                                    {% set viewer = asset('/assets/pdfviewer/web/viewer.html?file=', 'theme') %}
+                                {% else %}
+                                    {% set viewer = asset('bundles/zenitplatformgravity/storefront/assets/pdfviewer/web/viewer.html?file=') %}
+                                {% endif %}
+                                <iframe loading="lazy" title="{{ datasheetMedia.fileName }}" src="{{ viewer }}{{ datasheetMedia.url|url_encode }}" class="embed-responsive-item"></iframe>
+                            {% else %}
+                                {% set viewerUrl = 'https://docs.google.com/viewer?url=' %}
+                                {% set itemUrl = viewerUrl ~ datasheetMedia.url|url_encode ~ '&embedded=true' %}
+
+                                {% set iframeClass = 'embed-responsive-item' %}
+
+                                {% set pluginConfiguration = {
+                                    itemUrl: itemUrl,
+                                    iframeClasses: [ iframeClass ],
+                                    btnClasses: [ 'btn', 'btn-outline-secondary' ],
+                                    backdropClasses: [ 'product-detail-datasheets-embed__backdrop' ],
+                                    confirmButtonText: 'zentheme.gdpr.datasheets.acceptButtonLabel'|trans,
+                                    overlayText: 'zentheme.gdpr.datasheets.privacyNoticeText'|trans({
+                                        '%url%': path('frontend.cms.page',{ id: config('core.basicInformation.privacyPage') }),
+                                        '%platform%': 'Google Docs'
+                                    })|raw
+                                } %}
+
+                                {% block zen_page_product_detail_datasheets_embed_placeholder %}
+                                    <div class="product-detail-datasheets-embed-placeholder"
+                                         data-zen-gdpr-viewer-element="true"
+                                         data-zen-gdpr-viewer-element-options="{{ pluginConfiguration|json_encode }}">
+                                        <div class="product-detail-datasheets-embed-placeholder-element">
+                                            {% sw_icon 'file' style { size: 'fluid' } %}
+                                        </div>
+                                    </div>
+                                {% endblock %}
+                            {% endif %}
+                        </div>
+                    {% endblock %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endblock %}
+{% endblock %}

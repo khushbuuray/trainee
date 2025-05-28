@@ -1,0 +1,8 @@
+{% sw_extends '@Storefront/storefront/page/account/guest-auth.html.twig' %}
+
+{% block page_account_guest_auth_postcode_label %}
+    {# ... @zenit - for-attribute value should be 'zipcode' instead of 'recoverMail2' #}
+    <label class="form-label" for="zipcode">
+        {{ 'address.zipcodeLabel'|trans }}{{ 'general.required'|trans|sw_sanitize }}
+    </label>
+{% endblock %}

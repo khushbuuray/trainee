@@ -1,0 +1,35 @@
+{% sw_extends '@Storefront/storefront/component/pagination.html.twig' %}
+
+{% set hideDisabled = theme_config('zen-layout-pagination-hide-disabled') ?: false %}
+
+{% block component_pagination_first %}
+    {# ... @compatibility - hide only because of tanmar infinite scrolling #}
+    <li class="page-item page-first{% if currentPage == 1 %} disabled{% if hideDisabled %} d-none{% endif %}{% endif %}">
+        {{ block('component_pagination_first_input') }}
+        {{ block('component_pagination_first_label') }}
+    </li>
+{% endblock %}
+
+{% block component_pagination_prev %}
+    {# ... @compatibility - hide only because of tanmar infinite scrolling #}
+    <li class="page-item page-prev{% if currentPage == 1 %} disabled{% if hideDisabled %} d-none{% endif %}{% endif %}">
+        {{ block('component_pagination_prev_input') }}
+        {{ block('component_pagination_prev_label') }}
+    </li>
+{% endblock %}
+
+{% block component_pagination_next %}
+    {# ... @compatibility - hide only because of tanmar infinite scrolling #}
+    <li class="page-item page-next{% if currentPage == totalPages %} disabled{% if hideDisabled %} d-none{% endif %}{% endif %}">
+        {{ block('component_pagination_next_input') }}
+        {{ block('component_pagination_next_label') }}
+    </li>
+{% endblock %}
+
+{% block component_pagination_last %}
+    {# ... @compatibility - hide only because of tanmar infinite scrolling #}
+    <li class="page-item page-last{% if currentPage == totalPages %} disabled{% if hideDisabled %} d-none{% endif %}{% endif %}">
+        {{ block('component_pagination_last_input') }}
+        {{ block('component_pagination_last_label') }}
+    </li>
+{% endblock %}

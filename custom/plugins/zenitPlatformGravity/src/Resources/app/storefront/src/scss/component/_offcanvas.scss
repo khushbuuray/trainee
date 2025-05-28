@@ -1,0 +1,180 @@
+/*
+Offcanvas
+==============================================
+Move page content like the navigation menu in a sliding offcanvas menu.
+The sliding direction can be left or right.
+*/
+
+.offcanvas {
+    @if $zen-container-bg == transparent {
+        background: $body-bg;
+        color: color-contrast($body-bg, $sw-text-color, $zen-light-text-color);
+    } @else {
+        background: $zen-container-bg;
+        color: color-contrast($zen-container-bg, $sw-text-color, $zen-light-text-color);
+    }
+
+    @if $zen-offcanvas-margin > 0 {
+        overflow: hidden;
+        margin: px($zen-offcanvas-margin * .25);
+        @include border-radius($zen-layout-element-radius * 1px);
+        box-shadow: $zen-box-shadow-smooth-lg;
+
+        &:hover {
+            box-shadow: $zen-box-shadow-hover-lg;
+        }
+
+        @include media-breakpoint-up(lg) {
+            margin: px($zen-offcanvas-margin);
+        }
+
+        // For horizontal OffCanvas, always reserve some space when the mobile viewport
+        // reaches the width of the OffCanvas itself, so it does not cover the whole viewport.
+        &.offcanvas-end,
+        &.offcanvas-start {
+            @media (max-width: $offcanvas-horizontal-width + px($zen-offcanvas-margin)) {
+                width: calc(100% - #{px($zen-offcanvas-margin)});
+            }
+        }
+
+        &.offcanvas-bottom,
+        &.offcanvas-top {
+            margin: px($zen-offcanvas-margin * .5);
+            @include border-radius($zen-layout-element-radius * 1px);
+            width: calc(100% - #{px($zen-offcanvas-margin)});
+        }
+    }
+
+    /* ... removed because of remove button icon */
+    //.icon {
+    //    @if $zen-container-bg == transparent {
+    //        color: color-contrast($body-bg, $sw-text-color, $zen-light-text-color);
+    //    } @else {
+    //        color: color-contrast($zen-container-bg, $sw-text-color, $zen-light-text-color);
+    //    }
+    //}
+
+    &.offcanvas-start .offcanvas-close {
+        margin-left: auto;
+    }
+
+    &.is-bottom {
+        left: 0; // ... fixes incorrect positioning
+    }
+
+    .offcanvas-header {
+        --#{$prefix}offcanvas-padding-x: #{$offcanvas-padding-x};
+        --#{$prefix}offcanvas-padding-y: #{$offcanvas-padding-y};
+        background: transparent;
+
+        @if $zen-container-bg == transparent {
+            color: color-contrast($body-bg, $sw-text-color, $zen-light-text-color);
+        } @else {
+            color: color-contrast($zen-container-bg, $sw-text-color, $zen-light-text-color);
+        }
+
+        .offcanvas-title {
+            display: flex;
+            align-items: center;
+            @include font-size($h3-font-size);
+            font-weight: $font-weight-bold;
+            margin-bottom: 0;
+        }
+
+        .badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            --#{$prefix}badge-padding-x: .45em;
+            --#{$prefix}badge-padding-y: .25em;
+            @include rfs(.75em, --#{$prefix}badge-font-size);
+            --#{$prefix}badge-font-weight: #{$badge-font-weight};
+            line-height: 1;
+            height: 26px;
+            width: 26px;
+            min-width: min-content;
+            box-sizing: border-box;
+            top: 0;
+
+            @if $zen-container-bg == transparent {
+                color: darken($body-bg, 5%);
+            } @else {
+                color: darken($zen-container-bg, 5%);
+            }
+
+            @if $zen-container-bg == transparent {
+                background-color: color-contrast($body-bg, $sw-text-color, $zen-light-text-color);
+            } @else {
+                background-color: color-contrast($zen-container-bg, $sw-text-color, $zen-light-text-color);
+            }
+        }
+    }
+
+    .offcanvas-close {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: $input-font-size;
+        line-height: $input-height;
+        height: $input-height;
+        min-width: $input-height;
+        --#{$prefix}btn-active-border-color: transparent;
+        padding: 0;
+
+        &,
+        .icon {
+            @if $zen-container-bg == transparent {
+                color: color-contrast($body-bg, $sw-text-color, $zen-light-text-color);
+            } @else {
+                color: color-contrast($zen-container-bg, $sw-text-color, $zen-light-text-color);
+            }
+        }
+
+        &:hover {
+            background-color: var(--#{$prefix}btn-bg);
+        }
+    }
+
+    .offcanvas-body {
+        padding-top: unset; // ... fixes to much spacing due to the offcanvas-header
+
+        .offcanvas-cookie {
+            .form-check {
+                .form-check-input {
+                    float: unset;
+                    margin-right: 0.25rem;
+                }
+            }
+        }
+    }
+
+    // service menu
+    .service-menu {
+        .top-bar-nav-btn {
+            display: none;
+        }
+
+        .dropdown-menu {
+            display: block;
+            position: static;
+            transform: translate3d(0px, 0px, 0px);
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 0;
+            margin: auto;
+            width: 100%;
+        }
+
+        .top-bar-list-item {
+            @include transition();
+            align-items: center;
+            text-align: center;
+            padding: 12px $spacer-md;
+            @include border-radius($zen-layout-button-radius * 1px);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+}

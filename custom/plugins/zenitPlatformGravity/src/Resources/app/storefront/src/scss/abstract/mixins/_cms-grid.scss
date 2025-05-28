@@ -1,0 +1,42 @@
+@mixin make-cms-row($gutter: $grid-gutter-width) {
+    --#{$zen-prefix}gutter-x: #{$gutter};
+    --#{$zen-prefix}gutter-y: #{$gutter * .5};
+
+    @include media-breakpoint-up(md) {
+        --#{$zen-prefix}gutter-y: #{$gutter};
+    }
+
+    margin-bottom: calc(-1 * var(--#{$zen-prefix}gutter-y)); // stylelint-disable-line function-disallowed-list
+    margin-right: calc(-.5 * var(--#{$zen-prefix}gutter-x)); // stylelint-disable-line function-disallowed-list
+    margin-left: calc(-.5 * var(--#{$zen-prefix}gutter-x)); // stylelint-disable-line function-disallowed-list
+}
+
+@mixin make-cms-col-ready() {
+    margin-bottom: var(--#{$zen-prefix}gutter-y);
+    padding-right: calc(var(--#{$zen-prefix}gutter-x) * .5); // stylelint-disable-line function-disallowed-list
+    padding-left: calc(var(--#{$zen-prefix}gutter-x) * .5); // stylelint-disable-line function-disallowed-list
+}
+
+@mixin make-cms-grid-gutters($breakpoints: $grid-breakpoints) {
+    @each $breakpoint in map-keys($breakpoints) {
+        $infix: breakpoint-infix($breakpoint, $breakpoints);
+
+        @include media-breakpoint-up($breakpoint, $breakpoints) {
+
+            // Gutters
+            //
+            // Make use of `.g-*`, `.gx-*` or `.gy-*` utilities to change spacing between the columns.
+            @each $key, $value in $zen-cms-gutters {
+                .zen-cms-g#{$infix}-#{$key} .cms-row,
+                .zen-cms-gx#{$infix}-#{$key} .cms-row {
+                    --#{$zen-prefix}gutter-x: #{$value};
+                }
+
+                .zen-cms-g#{$infix}-#{$key} .cms-row,
+                .zen-cms-gy#{$infix}-#{$key} .cms-row {
+                    --#{$zen-prefix}gutter-y: #{$value};
+                }
+            }
+        }
+    }
+}

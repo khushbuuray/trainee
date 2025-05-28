@@ -1,0 +1,125 @@
+// tabs accordion
+.product-detail-tabs-content {
+    $contrastBackground: if($zen-container-bg != transparent, $zen-container-bg, $body-bg);
+    $contrastBackground: if($zen-product-details-bg != transparent, $zen-product-details-bg, $contrastBackground);
+
+    .accordion-item {
+        --#{$prefix}accordion-color: #{color-contrast($contrastBackground, $sw-text-color, $zen-light-text-color)};
+        --#{$prefix}accordion-bg: transparent;
+        --#{$prefix}accordion-border-radius: 0;
+        --#{$prefix}accordion-inner-border-radius: 0;
+        @if (contrast-ratio($contrastBackground, $black) < $min-contrast-ratio) {
+            --#{$prefix}accordion-btn-icon: #{escape-svg($zen-accordion-light-button-icon)};
+            --#{$prefix}accordion-btn-active-icon: #{escape-svg($zen-accordion-light-button-icon)};
+        }
+
+        @if $zen-product-tabs-style == "default" {
+            --#{$prefix}accordion-border-color: #{$zen-product-tabs-bg};
+            border: none;
+
+            &:not(:last-of-type) {
+                border-bottom: 1px solid $zen-product-tabs-bg;
+            }
+        }
+
+        @if $zen-product-tabs-style == "tabs" {
+            --#{$prefix}accordion-border-color: #{$zen-product-tabs-hover-bg};
+        }
+
+        @if $zen-product-tabs-style == "pills" {
+            --#{$prefix}accordion-inner-border-radius: #{$zen-layout-button-radius * 1px};
+            border: none;
+            margin-bottom: $spacer;
+        }
+    }
+
+    .accordion-button {
+        --#{$prefix}accordion-btn-color: #{$zen-product-tabs-color};
+
+        @include font-size(px($zen-product-tabs-font-size));
+        font-weight: $zen-product-tabs-font-weight;
+        text-transform: $zen-product-tabs-text-transform;
+
+        @if $zen-product-tabs-style == "default" {
+            --#{$prefix}accordion-btn-bg: transparent;
+
+            &:not(:last-of-type) {
+                border-bottom: 2px solid $zen-product-tabs-bg;
+            }
+        }
+
+        @if $zen-product-tabs-style == "pills" {
+            --#{$prefix}accordion-btn-bg: #{$zen-product-tabs-bg};
+            @include border-radius($zen-layout-button-radius * 1px);
+        }
+
+        @if $zen-product-tabs-style == "tabs" {
+            --#{$prefix}accordion-btn-bg: #{$zen-product-tabs-bg};
+        }
+
+        &:not(.collapsed) {
+            --#{$prefix}accordion-active-color: #{$zen-product-tabs-hover-color};
+
+            box-shadow: none;
+
+            @if $zen-product-tabs-style == "default" {
+                --#{$prefix}accordion-active-bg: transparent;
+            }
+
+            @if $zen-product-tabs-style == "pills" {
+                --#{$prefix}accordion-active-bg: #{$zen-product-tabs-hover-bg};
+            }
+
+            @if $zen-product-tabs-style == "tabs" {
+                --#{$prefix}accordion-active-bg: #{$zen-product-tabs-hover-bg};
+            }
+        }
+    }
+}
+
+@if $zen-product-detail-tabs-mode-mobile == "accordion" {
+    @include media-breakpoint-between(xs, sm) {
+        .product-detail-tabs:not(.product-detail-cross-selling) {
+            .product-detail-tab-navigation {
+                display: none;
+            }
+
+            .tab-content {
+                > .tab-pane {
+                    display: block;
+                    opacity: 1;
+                    padding-bottom: 30px;
+                }
+            }
+
+            .product-detail-tabs-content {
+                display: block;
+
+                .offcanvas-body {
+                    padding: var(--#{$prefix}accordion-body-padding-y) var(--#{$prefix}accordion-body-padding-x);
+                }
+            }
+
+            .offcanvas-header,
+            .product-detail-tab-preview {
+                display: none;
+            }
+        }
+    }
+}
+
+@if $zen-product-detail-tabs-mode == "accordion" {
+    @include media-breakpoint-up(sm) {
+        .product-detail-tabs:not(.product-detail-cross-selling) {
+            .product-detail-tab-navigation {
+                display: none;
+            }
+
+            .product-detail-tabs-content {
+                .offcanvas-body {
+                    padding: var(--#{$prefix}accordion-body-padding-y) var(--#{$prefix}accordion-body-padding-x);
+                }
+            }
+        }
+    }
+}

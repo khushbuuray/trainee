@@ -1,0 +1,83 @@
+{# @deprecated tag:v6.7.0 - This template will be removed, use src/Storefront/Resources/views/storefront/layout/navbar/categories.html.twig #}
+{% sw_extends '@Storefront/storefront/layout/navigation/categories.html.twig' %}
+
+{% block layout_navigation_categories %}
+    {% set navigationMaxDepth = 3 %}
+
+    {% if not level %}
+        {% set level = 0 %}
+    {% endif %}
+    {% set activeId = page.header.navigation.active.id %}
+
+    {% set activePath = page.header.navigation.active.path %}
+
+    {# ... @zenit - custom fields #}
+    {% set zenCustomFields = {
+        category: page.header.navigation.active.translated.customFields,
+    } %}
+
+    <div class="{% if level == 0 %}row {% endif %}navigation-flyout-categories is-level-{{ level }}{% if navigationMedia %} has-media{% endif %}">
+        {% for treeItem in navigationTree %}
+            {% set id = treeItem.category.id %}
+            {% set name = treeItem.category.translated.name %}
+            {% set link = category_url(treeItem.category) %}
+
+            {% block layout_navigation_categories_item %}
+                {# ... @zenit - override navigation MaxDepth, taking into account that the flyout menu starts
+                counting the level without top categories level, unlike the sidebar categories or the dropdown.
+                So we have to reduce zen-flyout-navigation-max-depth and context.salesChannel.navigationCategoryDepth by one #}
+                {% set navigationMaxDepth = theme_config('zen-flyout-navigation-max-depth') ? theme_config('zen-flyout-navigation-max-depth') - 1 : context.salesChannel.navigationCategoryDepth - 1 %}
+
+                {# ... @zenit - fallbacks for older child-themes without these configs #}
+                {% set dynamicCols = (theme_config('zen-flyout-navigation-dynamic-cols') is not null) ? theme_config('zen-flyout-navigation-dynamic-cols') : false %}
+
+                {% if not dynamicCols %}
+                    {# ... @zenit - add navigation cols from config #}
+                    {% set navigationCols = theme_config('zen-flyout-navigation-cols') ? theme_config('zen-flyout-navigation-cols') : '4' %}
+                    {% set navigationColsMedia = theme_config('zen-flyout-navigation-cols') ? theme_config('zen-flyout-navigation-cols') - 1 : '3' %}
+
+                    {% set colClass %}{% apply spaceless %}
+                        {% if navigationMedia and navigationColsMedia != 0 %}
+                            col-{{ (12 / navigationColsMedia)|replace({'.': '_'}) }}
+                        {% else %}
+                            col-{{ (12 / navigationCols)|replace({'.': '_'}) }}
+                        {% endif %}
+                    {% endapply %}{% endset %}
+                {% endif %}
+
+                <div class="{% if level == 0 %}{{ colClass }} {% endif %}navigation-flyout-col">
+                    {% block layout_navigation_categories_item_link %}
+                        {% if treeItem.category.type == 'folder' %}
+                            <div class="nav-item nav-link navigation-flyout-link is-level-{{ level }}"
+                                 title="{{ name }}">
+                                <span itemprop="name">{{ name }}</span>
+
+                                {# ... @zenit - add badge #}
+                                {% sw_include '@zenitPlatformGravity/storefront/layout/navigation/zen-navigation-badge.html.twig' with {
+                                    category: treeItem.category,
+                                } only %}
+                            </div>
+                        {% else %}
+                            <a class="nav-item nav-link navigation-flyout-link is-level-{{ level }}{% if id == activeId or id in activePath %} active{% endif %}"
+                               href="{{ link }}"
+                               itemprop="url"
+                               {% if category_linknewtab(treeItem.category) %}target="_blank"
+                                    {% if treeItem.category.linkType == 'external' %}rel="noopener noreferrer"{% endif %}
+                               {% endif %}
+                               title="{{ name }}">
+                                <span itemprop="name">{{ name }}</span>
+
+                                {# ... @zenit - add badge #}
+                                {% sw_include '@zenitPlatformGravity/storefront/layout/navigation/zen-navigation-badge.html.twig' with {
+                                    category: treeItem.category,
+                                } only %}
+                            </a>
+                        {% endif %}
+                    {% endblock %}
+
+                    {{ block('layout_navigation_categories_recoursion') }}
+                </div>
+            {% endblock %}
+        {% endfor %}
+    </div>
+{% endblock %}

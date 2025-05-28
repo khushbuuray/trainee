@@ -1,0 +1,45 @@
+{% sw_extends '@Storefront/storefront/page/checkout/confirm/index.html.twig' %}
+
+{% block base_breadcrumb %}{% endblock %}
+
+{% block base_flashbags_checkout %}
+    {% if theme_config('zen-checkout-steps') %}
+        {% sw_include '@zenitPlatformGravity/storefront/page/checkout/zen-checkout-breadcrumb.html.twig' with {
+            completed: ['cartPage', 'checkoutRegisterPage']
+        } %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}
+
+{% block page_checkout_confirm %}
+    {% if theme_config('zen-checkout-confirm-tos-position') is same as ('close-to-confirm-order-button') %}
+        {{ block('page_checkout_confirm_header') }}
+
+        {{ block('page_checkout_confirm_alerts') }}
+
+        {# ... @zenit - remove tos here an move to aside
+        {{ block('page_checkout_confirm_tos') }} #}
+
+        {{ block('page_checkout_confirm_address') }}
+
+        {{ block('page_checkout_confirm_payment_shipping') }}
+
+        {{ block('page_checkout_confirm_product_table') }}
+
+        {{ block('page_checkout_confirm_hidden_line_items_information') }}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block page_checkout_aside_actions %}
+    {% if theme_config('zen-checkout-confirm-tos-position') is same as ('close-to-confirm-order-button') %}
+        <div class="checkout-aside-summary">
+            {{ block('page_checkout_confirm_tos') }}
+        </div>
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}
+

@@ -1,0 +1,88 @@
+/*
+Offcanvas cart
+==============================================
+Custom skin styling for the cart offcanvas.
+*/
+
+// .offcanvas-cart-scroll exists only if there is no SwagAmazonPayButton
+@include media-breakpoint-up(lg) {
+    .offcanvas-cart-scroll {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+
+        .offcanvas-cart-items {
+            flex: 1;
+            overflow-y: auto;
+            margin-left: $grid-gutter-width / -2;
+            margin-right: $grid-gutter-width / -2;
+            padding: 0 $grid-gutter-width / 2 150px $grid-gutter-width / 2;
+        }
+
+        .offcanvas-summary {
+            position: relative;
+
+            &::before {
+                $gradient-color: $zen-container-bg;
+
+                @if $zen-container-bg == transparent {
+                    $gradient-color: $body-bg;
+                }
+
+                content: '';
+                display: block;
+                position: absolute;
+                height: 150px;
+                left: 0;
+                bottom: calc(100% + #{remToPx($spacer) + remToPx($spacer) + 1px});
+                right: 0;
+                margin-left: $grid-gutter-width / -2;
+                margin-right: $grid-gutter-width / -2;
+                background: linear-gradient(0deg, $gradient-color 0%, transparent 100%);
+                pointer-events: none;
+            }
+        }
+    }
+}
+
+.offcanvas-cart-actions {
+    .input-group {
+        > .form-control {
+            // bugfix because of wrong placed label
+            &:not(:first-child) {
+                @if $zen-layout-forms-style != "underlined" {
+                    @include border-start-radius($zen-layout-input-radius * 1px);
+                } @else {
+                    &::-webkit-input-placeholder {
+                        @include text-color-contrast;
+                    }
+
+                    &::-moz-placeholder {
+                        @include text-color-contrast;
+                    }
+
+                    &:-ms-input-placeholder {
+                        @include text-color-contrast;
+                    }
+
+                    &::-ms-input-placeholder {
+                        @include text-color-contrast;
+                    }
+
+                    &::placeholder {
+                        @include text-color-contrast;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.offcanvas-cart-header-count,
+.offcanvas-cart-tax {
+    @if $zen-container-bg == transparent {
+        color: color-contrast($body-bg, $text-muted, $zen-light-text-muted);
+    } @else {
+        color: color-contrast($zen-container-bg, $text-muted, $zen-light-text-muted);
+    }
+}

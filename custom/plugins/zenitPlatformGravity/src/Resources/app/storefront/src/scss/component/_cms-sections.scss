@@ -1,0 +1,431 @@
+.cms-section {
+    overflow: visible;
+
+    .boxed {
+        &.g-0 {
+            --#{$prefix}gutter-x: 0;
+        }
+    }
+
+    &.has-opacity {
+        .cms-section-bg-color-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+    }
+
+    // ... header background alias hero section
+    &.cms-section-hero {
+        position: relative;
+
+        .cms-section-bg-image-container {
+            clip-path: inset(0); // needed for attachment fixed recreation with position fixed
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .cms-section-bg-image {
+            pointer-events: none;
+
+            &[data-object-fit="cover"],
+            &[data-object-fit="contain"] {
+                width: 100%;
+                height: 100%;
+            }
+
+        }
+
+        .cms-block {
+            &[class*="cms-block-text"]:not(.cms-block-text-on-image) {
+                max-width: px($zen-category-image-content-max-width);
+
+                @if $zen-category-image-content-align == "flex-end" {
+                    margin-left: auto;
+                } @else if $zen-category-image-content-align == "center" {
+                    margin: auto;
+                }
+            }
+        }
+
+        // sibling breadcrumbs must not be pushed under the cms section
+        + .breadcrumb-container {
+            margin-top: 0;
+        }
+
+        // breadcrumbs overlaying an image must not have any background
+        .breadcrumb-wrap,
+        .breadcrumb {
+            background: transparent;
+        }
+
+        &.light-text {
+            color: $zen-light-text-color;
+
+            hr {
+                border-color: $zen-light-text-color;
+            }
+
+            .cms-element-text {
+                h1, h2, h3, h4, h5, h6,
+                .h1, .h2, .h3, .h4, .h5, .h6 {
+                    color: $zen-light-headline-color;
+                }
+
+                a:not(.btn) {
+                    color: $zen-light-headline-color;
+                    text-decoration: underline;
+
+                    &:hover {
+                        color: $zen-light-headline-color;
+                        text-decoration: none;
+                    }
+                }
+            }
+
+            .breadcrumb .icon,
+            .breadcrumb .breadcrumb-pretext,
+            .breadcrumb .breadcrumb-item,
+            .breadcrumb .breadcrumb-link,
+            .breadcrumb .breadcrumb-link.is-active {
+                color: $zen-light-text-color;
+                border-bottom-color: $zen-light-text-color;
+            }
+
+            .breadcrumb .breadcrumb-link:hover,
+            .breadcrumb .breadcrumb-link.is-active {
+                color: $zen-light-text-color;
+                border-bottom-color: $zen-light-text-color;
+            }
+
+            // forms
+            .cms-element-form {
+                .card-title {
+                    color: $zen-light-headline-color;
+                    border-color: $zen-light-text-color;
+                }
+
+                .form-text {
+                    color: $zen-light-text-color;
+                }
+
+                @if $zen-layout-forms-style == "underlined" {
+                    label,
+                    .form-control {
+                        color: $zen-light-text-color;
+                    }
+
+                    select.form-select {
+                        /* ... if underlined selects have no background,
+                        therefore the background icons then becomes relevant */
+                        background-image: escape-svg($zen-form-select-light-indicator);
+                        color: $zen-light-text-color;
+
+                        &:focus { // needed because firefox
+                            color: $form-select-color;
+                        }
+                    }
+
+                    .form-group:not(.js-label-floating) {
+                        .form-control {
+                            color: $zen-light-text-color;
+
+                            // Placeholder
+                            &::placeholder {
+                                color: rgba($zen-light-text-color, .75);
+                            }
+
+                            /* Workaround for missing placeholder color in chrome */
+                            /* stylelint-disable-next-line selector-no-vendor-prefix */
+                            &::-webkit-input-placeholder {
+                                color: rgba($zen-light-text-color, .75);
+                            }
+                        }
+                    }
+
+                    // floating labels
+                    .js-label-floating {
+                        select.form-select {
+                            color: transparent;
+
+                            &:invalid {
+                                color: transparent;
+                            }
+
+                            &:focus { // needed because js-focus does not work on firefox
+                                color: $form-select-color;
+                            }
+                        }
+                    }
+
+                    .js-floated {
+                        label {
+                            color: rgba($zen-light-text-color, 75%);
+                        }
+
+                        select.form-select {
+                            color: $zen-light-text-color;
+                        }
+                    }
+
+                    .js-focus {
+                        label {
+                            color: $zen-input-focus-color;
+                        }
+
+                        select.form-select {
+                            color: $form-select-color;
+                        }
+                    }
+
+                    .js-hover {
+                        label {
+                            color: $zen-input-focus-color;
+                        }
+                    }
+                }
+            }
+        }
+
+        &.dark-text {
+            color: $sw-text-color;
+
+            hr {
+                border-color: $sw-text-color;
+            }
+
+            .cms-element-text {
+                h1, h2, h3, h4, h5, h6,
+                .h1, .h2, .h3, .h4, .h5, .h6 {
+                    color: $headings-color;
+                }
+
+                a:not(.btn) {
+                    color: $sw-text-color;
+                    text-decoration: underline;
+
+                    &:hover {
+                        color: $sw-text-color;
+                        text-decoration: none;
+                    }
+                }
+            }
+
+            .breadcrumb .icon,
+            .breadcrumb .breadcrumb-pretext,
+            .breadcrumb .breadcrumb-item,
+            .breadcrumb .breadcrumb-link,
+            .breadcrumb .breadcrumb-link.is-active {
+                color: $sw-text-color;
+                border-bottom-color: $sw-text-color;
+            }
+
+            .breadcrumb .breadcrumb-link:hover,
+            .breadcrumb .breadcrumb-link.is-active {
+                color: $sw-text-color;
+                border-bottom-color: $sw-text-color;
+            }
+
+            // forms
+            .cms-element-form {
+                .card-title {
+                    color: $headings-color;
+                    border-color: $headings-color;
+                }
+
+                .form-text {
+                    color: $sw-text-color;
+                }
+
+                @if $zen-layout-forms-style == "underlined" {
+                    label,
+                    .form-control, {
+                        color: $sw-text-color;
+                    }
+
+                    select.form-select {
+                        /* if underlined selects have no background,
+                        therefore the background icons then becomes relevant */
+                        background-image: escape-svg($form-select-indicator);
+                        color: $sw-text-color;
+
+                        &:focus { // needed because firefox
+                            color: $form-select-color;
+                        }
+                    }
+
+                    .form-group:not(.js-label-floating) {
+                        .form-control {
+                            color: $sw-text-color;
+
+                            // Placeholder
+                            &::placeholder {
+                                color: rgba($sw-text-color, .75);
+                            }
+
+                            /* Workaround for missing placeholder color in chrome */
+                            /* stylelint-disable-next-line selector-no-vendor-prefix */
+                            &::-webkit-input-placeholder {
+                                color: rgba($sw-text-color, .75);
+                            }
+                        }
+                    }
+
+                    // floating labels
+                    .js-label-floating {
+                        select.form-select {
+                            color: transparent;
+
+                            &:invalid {
+                                color: transparent;
+                            }
+
+                            &:focus { // needed because js-focus does not work on firefox
+                                color: $form-select-color;
+                            }
+                        }
+                    }
+
+                    .js-floated {
+                        label {
+                            color: rgba($sw-text-color, 75%);
+                        }
+
+                        select.form-select {
+                            color: $sw-text-color;
+                        }
+                    }
+
+                    .js-focus {
+                        select.form-select {
+                            color: $form-select-color;
+                        }
+
+                        label {
+                            color: $zen-input-focus-color;
+                        }
+                    }
+
+                    .js-hover {
+                        label {
+                            color: $zen-input-focus-color;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/*
+absolute positioned header
+==================================================
+... controls overlaying cms-elements with absolute positioned header
+*/
+.header-pos-absolute {
+    @include media-breakpoint-up(lg) {
+        ~ .content-main {
+            .container-main {
+                padding-top: 0;
+                padding-bottom: 0;
+
+                > .breadcrumb-container:first-child {
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    z-index: 1;
+                    transition: top .35s ease;
+
+                    @if $zen-header-style == "single-line" {
+                        top: px($zen-header-height + $zen-header-padding-top + $zen-header-padding-bottom);
+                    } @else {
+                        top: px($zen-header-height + $zen-main-navigation-height + $zen-header-padding-top + $zen-header-padding-bottom);
+                    }
+
+                    .js-top-bar-open &,
+                    .is-tb-default & {
+                        @if $zen-header-style == "single-line" {
+                            top: px($zen-header-height + $zen-header-padding-top + $zen-header-padding-bottom + $zen-top-bar-height);
+                        } @else {
+                            top: px($zen-header-height + $zen-main-navigation-height + $zen-header-padding-top + $zen-header-padding-bottom + $zen-top-bar-height);
+                        }
+                    }
+                }
+            }
+
+            .cms-page {
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    ~ .content-main {
+        .cms-section-overlay:not(.cms-section-hero) {
+            .pos-0 {
+                &.cms-block-zen-breadcrumb,
+                &[class*="cms-block-text"],
+                &[class*="cms-block-image-text"],
+                &[class*="cms-block-center-text"],
+                &[class*="cms-block-form"],
+                &[class*="cms-block-sidebar"] {
+                    transition: padding .35s ease;
+
+                    @include media-breakpoint-up(lg) {
+                        @if $zen-header-style == 'single-line' {
+                            padding-top: px($zen-header-height + $zen-header-padding-top + $zen-header-padding-bottom + $zen-breadcrumbs-height);
+                        } @else {
+                            padding-top: px($zen-header-height + $zen-main-navigation-height + $zen-header-padding-top + $zen-header-padding-bottom + $zen-breadcrumbs-height);
+                        }
+
+                        .js-top-bar-open &,
+                        .is-tb-default & {
+                            @if $zen-header-style == 'single-line' {
+                                padding-top: px($zen-header-height + $zen-header-padding-top + $zen-header-padding-bottom + $zen-top-bar-height + $zen-breadcrumbs-height);
+                            } @else {
+                                padding-top: px($zen-header-height + $zen-main-navigation-height + $zen-header-padding-top + $zen-header-padding-bottom + $zen-top-bar-height + $zen-breadcrumbs-height);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // cms section hero do not need paddings for $zen-breadcrumbs-height
+        .cms-section-hero {
+            .pos-0 {
+                &.cms-block-zen-breadcrumb,
+                &[class*="cms-block-text"],
+                &[class*="cms-block-image-text"],
+                &[class*="cms-block-center-text"],
+                &[class*="cms-block-form"],
+                &[class*="cms-block-sidebar"] {
+                    transition: padding .35s ease;
+
+                    @include media-breakpoint-up(lg) {
+                        @if $zen-header-style == 'single-line' {
+                            padding-top: px($zen-header-height + $zen-header-padding-top + $zen-header-padding-bottom);
+                        } @else {
+                            padding-top: px($zen-header-height + $zen-main-navigation-height + $zen-header-padding-top + $zen-header-padding-bottom);
+                        }
+
+                        .js-top-bar-open &,
+                        .is-tb-default & {
+                            @if $zen-header-style == 'single-line' {
+                                padding-top: px($zen-header-height + $zen-header-padding-top + $zen-header-padding-bottom + $zen-top-bar-height);
+                            } @else {
+                                padding-top: px($zen-header-height + $zen-main-navigation-height + $zen-header-padding-top + $zen-header-padding-bottom + $zen-top-bar-height);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

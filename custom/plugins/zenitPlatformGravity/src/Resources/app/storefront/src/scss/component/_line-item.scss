@@ -1,0 +1,120 @@
+.line-item-quantity-container {
+    &.disabled {
+        border: none;
+
+        @if $zen-buy-quantity-style == "input" {
+            background-color: transparent;
+        }
+
+        input,
+        select {
+            border: 1px solid $gray-200;
+        }
+
+        button {
+            @if $zen-buy-quantity-style == "input" {
+                background-color: transparent;
+                color: $gray-600;
+                border: none;
+            } @else {
+                background-color: $gray-200;
+                color: $gray-600;
+                border-color: $gray-200;
+            }
+        }
+    }
+}
+
+.line-item-label {
+    @include text-color-contrast;
+}
+
+.line-item-img-link {
+    position: relative;
+    @include border-radius($zen-layout-element-radius * 1px);
+
+    @if $zen-product-listing-card-img-color-overlay == 1 and $zen-product-listing-card-img-display-bg == 1 {
+        background-color: #fff;
+
+        &::after {
+            content: '';
+            background-color: $zen-product-listing-card-img-bg;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            opacity: .03;
+            pointer-events: none;
+            @include border-radius($zen-layout-element-radius * 1px);
+        }
+    } @else if $zen-product-listing-card-img-display-bg == 1 {
+        background-color: $zen-product-listing-card-img-bg;
+    }
+}
+
+
+.line-item-img {
+    @include border-radius($zen-layout-element-radius * 1px);
+}
+
+.line-item-quantity-label,
+.line-item-unit-price-label,
+.line-item-total-price-label,
+.line-item-tax-price-label {
+    @include text-color-contrast;
+}
+
+@include media-breakpoint-up(sm) {
+    .line-item-quantity-container {
+        width: auto;
+    }
+}
+
+.offcanvas-cart {
+    .line-item-details {
+        // Equals: .col-8;
+        @include make-col(8);
+    }
+
+    .line-item-quantity {
+        @include make-col(8);
+
+        .input-group {
+            .btn {
+                z-index: unset;
+            }
+        }
+    }
+
+    .line-item-quantity-select-wrapper {
+        @include make-col(8);
+    }
+
+    .line-item-total-price {
+        @include make-col(4);
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    // Omit wishlist in OffCanvas
+    .product-wishlist {
+        display: none;
+    }
+
+    // Omit labels in OffCanvas
+    .line-item-quantity-label,
+    .line-item-total-price-label {
+        display: none;
+    }
+}
+
+// Apply tablet and desktop styling only for default and order items
+.is-default,
+.is-order {
+    @include media-breakpoint-up(sm) {
+        .line-item-quantity-container {
+            width: auto; // ... otherwise quantity input will have not width
+        }
+    }
+}

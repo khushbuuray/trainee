@@ -1,0 +1,43 @@
+{% block block_image_simple_grid %}
+    {% set columns = 2 %}
+    {% set customFields = block.getCustomFields() %}
+    {% set gridGap = (customFields and customFields['zenit_grid_gap'] is defined) ? customFields['zenit_grid_gap'] : '' %}
+
+    {% block block_image_simple_grid_left %}
+        <div class="col-md-6">
+            {# ... @zenit - add inner cms-row for grid gutter purposes #}
+            <div class="cms-row row"{% if gridGap is not empty %} style="--zen-gutter-x: {{ gridGap }}; --zen-gutter-y: {{ gridGap }};"{% endif %}>
+                <div class="col-12">
+                    {% block block_image_simple_grid_left_top %}
+                        {% set element = block.slots.getSlot('left-top') %}
+
+                        <div class="left-top" data-cms-element-id="{{ element.id }}">
+                            {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                        </div>
+                    {% endblock %}
+                </div>
+                <div class="col-12">
+                    {% block block_image_simple_grid_left_bottom %}
+                        {% set element = block.slots.getSlot('left-bottom') %}
+
+                        <div class="left-bottom" data-cms-element-id="{{ element.id }}">
+                            {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                        </div>
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block block_image_simple_grid_right %}
+        <div class="col-md-6">
+            {% block block_image_simple_grid_right_inner %}
+                {% set element = block.slots.getSlot('right') %}
+
+                <div class="right" data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+        </div>
+    {% endblock %}
+{% endblock %}

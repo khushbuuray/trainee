@@ -1,0 +1,191 @@
+@if $zen-checkout-layout == "two-column" {
+    .is-ctl-checkout {
+
+        // ... ensure content fills remaining height of the page
+        .content-main {
+            display: flex;
+            flex-direction: column;
+
+            > .container {
+                display: flex;
+                flex-grow: 1;
+                flex-direction: column;
+
+                > .container-main {
+                    display: flex;
+                    flex-grow: 1;
+                }
+            }
+        }
+
+        .checkout {
+            display: flex;
+            flex-wrap: wrap; // because of alerts
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .checkout,
+        .checkout-container {
+            flex-grow: 1;
+        }
+    }
+
+    .is-act-checkoutregisterpage,
+    .is-act-confirmpage,
+    .is-act-finishpage,
+    .is-act-editorder,
+    .is-act-cartpage {
+        .checkout {
+            padding: 0;
+
+            .checkout-container {
+                min-height: 50vh;
+                @include layout-container-negative-horizontal-margin(px($zen-layout-container-spacing-left), px($zen-layout-container-spacing-right));
+
+                &:first-child {
+                    // ... make sure grid .row negative margin is not larger than gutter
+                    $margin-top-mobile: if($zen-layout-container-spacing-top / 2 < $zen-grid-gutter-single-width, $zen-grid-gutter-single-width, $zen-layout-container-spacing-top / 2);
+                    $margin-bottom-mobile: if($zen-layout-container-spacing-bottom / 2 < $zen-grid-gutter-single-width, $zen-grid-gutter-single-width, $zen-layout-container-spacing-bottom / 2);
+
+                    margin-top: px($margin-top-mobile * -1);
+                    margin-bottom: px($margin-bottom-mobile * -1);
+
+                    @include media-breakpoint-up(lg) {
+                        margin-top: px($zen-layout-container-spacing-top * -1);
+                        margin-bottom: px($zen-layout-container-spacing-bottom * -1);
+                    }
+                }
+            }
+
+            .checkout-main {
+                @include make-col(12);
+                @include layout-container-vertical-padding(px($zen-layout-container-spacing-top), px($zen-layout-container-spacing-bottom));
+                @include layout-container-horizontal-padding(px($zen-layout-container-spacing-left), px($zen-layout-container-spacing-right));
+                margin: 0;
+
+                @include media-breakpoint-up(xl) {
+                    @include make-col(7);
+                }
+            }
+
+            .checkout-aside {
+                @include make-col(12);
+                @include layout-container-vertical-padding(px($zen-layout-container-spacing-top), px($zen-layout-container-spacing-bottom));
+                @include layout-container-horizontal-padding(px($zen-layout-container-spacing-left), px($zen-layout-container-spacing-right));
+                margin: 0;
+                border-top: 1px solid $sw-border-color;
+
+                @include media-breakpoint-up(xl) {
+                    border-top: none;
+                    border-left: 1px solid $sw-border-color;
+                    @include make-col(5);
+                }
+
+                .checkout-aside-container:not([data-zen-sticky]) {
+                    position: unset;
+                }
+            }
+        }
+    }
+}
+
+@if $zen-checkout-steps == 1 {
+    .checkout-breadcrumb {
+        display: block;
+
+        .breadcrumb-steps {
+            margin-bottom: $spacer-xl;
+        }
+
+        .breadcrumb-steps-item {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            position: relative;
+            text-align: center;
+
+            + .breadcrumb-steps-item {
+                padding-left: 0;
+
+                &::before {
+                    content: "";
+                    height: 1px;
+                    background-color: rgba($zen-breadcrumbs-color, .25);
+                    left: -40%;
+                    top: 18px;
+                    width: 80%;
+                    position: absolute;
+                    z-index: 0;
+                }
+
+                &.completed,
+                &.active {
+                    &::before {
+                        background-color: $zen-breadcrumbs-hover-color;
+                    }
+                }
+            }
+        }
+
+        .breadcrumb-steps-title {
+            font-size: unset;
+
+            &.active {
+                border-bottom: none;
+                color: $zen-breadcrumbs-hover-color;
+                font-weight: $zen-breadcrumbs-font-weight;
+                text-transform: $zen-breadcrumbs-text-transform;
+
+                .breadcrumb-steps-indicator {
+                    background: $zen-breadcrumbs-hover-color;
+                    color: color-contrast($zen-breadcrumbs-hover-color, $sw-text-color, $zen-light-text-color);
+                    box-shadow: 0 0 0 0.3rem $zen-breadcrumbs-hover-color;
+                }
+
+                .breadcrumb-steps-text {
+                    font-weight: $font-weight-bold;
+                }
+            }
+
+            &:hover {
+                border-bottom: none;
+            }
+
+            &.completed {
+                .breadcrumb-steps-indicator {
+                    background: $zen-breadcrumbs-hover-color;
+                    box-shadow: 0 0 0 0 $zen-breadcrumbs-hover-color;
+                }
+
+                &:hover {
+                    .breadcrumb-steps-indicator {
+                        box-shadow: 0 0 0 .2rem $zen-breadcrumbs-hover-color;
+                    }
+                }
+            }
+        }
+
+        .breadcrumb-steps-indicator {
+            display: inline-block;
+            position: relative;
+            width: $spacer;
+            height: $spacer;
+            margin: auto;
+            padding: 0;
+            z-index: 10;
+            @include transition($btn-transition);
+            background: rgba($zen-breadcrumbs-color, .25);
+            color: color-contrast($zen-breadcrumbs-hover-color, $sw-text-color, $zen-light-text-color);
+            box-shadow: 0 0 0 0 $zen-breadcrumbs-hover-color;
+        }
+
+        .breadcrumb-steps-text {
+            display: inline-block;
+            width: 100%;
+            line-height: 1;
+            padding: 0 $spacer-sm;
+            @include font-size(px($zen-breadcrumbs-font-size));
+        }
+    }
+}

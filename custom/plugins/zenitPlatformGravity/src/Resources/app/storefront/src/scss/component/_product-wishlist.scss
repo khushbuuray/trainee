@@ -1,0 +1,32 @@
+.product-wishlist {
+    &-action {
+        @include text-color-contrast;
+
+        .icon {
+            @include text-color-contrast;
+        }
+    }
+}
+
+.product-wishlist-info {
+    &-item {
+        @include font-size(px($zen-product-listing-card-description-font-size));
+        font-weight: $zen-product-listing-card-description-font-weight;
+        color: $zen-product-listing-card-description-color;
+        text-align: $zen-product-listing-card-description-font-align;
+    }
+}
+
+@if $zen-product-details-bg != transparent {
+    .product-detail-content {
+        .product-wishlist {
+            &-action {
+                color: color-contrast($zen-product-details-bg, $sw-text-color, $zen-light-text-color);
+
+                .icon {
+                    color: color-contrast($zen-product-details-bg, $sw-text-color, $zen-light-text-color);
+                }
+            }
+        }
+    }
+}

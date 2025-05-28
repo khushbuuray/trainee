@@ -1,0 +1,25 @@
+{% sw_extends '@Storefront/storefront/utilities/offcanvas.html.twig' %}
+
+{% block utilities_offcanvas_content %}
+    {% block zen_page_product_detail_custom_field2_container %}
+        <div class="product-detail-custom-field2 tab-pane-container">
+
+            {% block zen_page_product_detail_custom_field2_content %}
+                {% set content = page.product.translated["customFields"]["zenit_gravity_custom_tab2_text"]|raw %}
+
+                {% if config('zenitPlatformGravity.config.twigStringLoaderExtension') %}
+                    {% sw_include '@zenitPlatformGravity/storefront/utilities/zen-template-from-string.html.twig' with {
+                        content: content
+                    } %}
+                {% else %}
+                    {{ content|raw }}
+                {% endif %}
+            {% endblock %}
+
+        </div>
+    {% endblock %}
+{% endblock %}
+
+{% block utilities_offcanvas_close_text %}
+    {{ page.product.translated["customFields"]["zenit_gravity_custom_tab2_title"]|trans|sw_sanitize }}
+{% endblock %}

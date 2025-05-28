@@ -1,0 +1,18 @@
+{% block zen_layout_navigation_dropdown %}
+    {% set category = navigationTree.category %}
+    {% set name = category.translated.name %}
+
+    {% block zen_layout_navigation_dropdown_lists %}
+        <div class="navigation-dropdown-list-wrapper" data-zen-dropdown-menu-id="{{ category.id }}">
+            {% block zen_layout_navigation_dropdown_recursion %}
+                {% sw_include '@zenitPlatformGravity/storefront/layout/navigation/zen-dropdown-categories.html.twig' with {
+                    id: category.id,
+                    parentNavigationTree: navigationTree,
+                    navigationTree: navigationTree.children,
+                    page: page,
+                    trigger: trigger
+                } only %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+{% endblock %}

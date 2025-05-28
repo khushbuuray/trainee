@@ -1,0 +1,64 @@
+{% sw_extends '@Storefront/storefront/section/cms-section-block-container.html.twig' %}
+
+{% block section_content_block_background_image %}
+    {% if block.backgroundMedia %}
+        {% set attributes = {
+            class: 'cms-block-background media-mode--' ~ block.backgroundMediaMode
+        } %}
+
+        {# ... @zenit - enables lazy loading for images #}
+        {% if config('zenitPlatformGravity.config.lazyloading') %}
+            {% set attributes = attributes|merge({ loading: 'lazy' }) %}
+        {% endif %}
+
+        {% sw_thumbnails 'cms-block-background' with {
+            media: block.backgroundMedia
+        } %}
+    {% endif %}
+{% endblock %}
+
+{% block section_content_block_container %}
+    {# ... @zenit - add auto settings as fallback #}
+    {# ... @zenit - if null or auto, use value from the css stylesheet! #}
+    {% set top = block.marginTop|length ? block.marginTop : 'auto' %}
+    {% set right = block.marginRight|length ? block.marginRight : 'auto' %}
+    {% set bottom = block.marginBottom|length ? block.marginBottom : 'auto' %}
+    {% set left = block.marginLeft|length ? block.marginLeft : 'auto' %}
+
+    {# ... @zenit - set horizontal auto spacings for locked cms product_detail default page #}
+    {% if cmsPage.type === 'product_detail' and cmsPage.locked === true %}
+        {% if block.marginLeft === '0' %}
+            {% set left = 'auto' %}
+        {% endif %}
+        {% if block.marginRight === '0' %}
+            {% set right = 'auto' %}
+        {% endif %}
+    {% endif %}
+
+    {# ... @zenit - set horizontal auto spacings for locked cms product_list default page #}
+    {% if cmsPage.type === 'product_list' and cmsPage.locked === true %}
+        {% if block.marginLeft === '20px' %}
+            {% set left = 'auto' %}
+        {% endif %}
+        {% if block.marginRight === '20px' %}
+            {% set right = 'auto' %}
+        {% endif %}
+    {% endif %}
+
+    {# ... @zenit - split padding into separeted properties #}
+    {# ... @zenit - using padding instead of margins to prevent collapsing margins #}
+    <div class="cms-block-container"
+         style="{% if top is not same as ('auto') %}padding-top: {{ top }};{% endif %}{% if right is not same as ('auto') %} padding-right: {{ right }};{% endif %}{% if bottom is not same as ('auto') %} padding-bottom: {{ bottom }};{% endif %}{% if left is not same as ('auto') %} padding-left: {{ left }};{% endif %}">
+
+        {% block section_content_block_row %}
+            {# ... @zenit - set grid gap from block #}
+            {% set customFields = block.getCustomFields() %}
+            {% set gridGap = (customFields and customFields['zenit_grid_gap'] is defined) ? customFields['zenit_grid_gap'] : '' %}
+
+            <div class="cms-block-container-row row cms-row {{ sidebarClasses }}"
+                {% if gridGap is not empty %} style="--zen-gutter-x: {{ gridGap }}; --zen-gutter-y: {{ gridGap }};"{% endif %}>
+                {% sw_include '@Storefront/storefront/block/cms-block-' ~ block.type ~ '.html.twig' ignore missing %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

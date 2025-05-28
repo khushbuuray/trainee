@@ -1,0 +1,60 @@
+{% sw_extends '@Storefront/storefront/layout/breadcrumb.html.twig' %}
+
+{% block layout_breadcrumb_list %}
+    <ol class="breadcrumb"
+        itemscope
+        itemtype="https://schema.org/BreadcrumbList">
+
+        {# ... @zenit - add pretext #}
+        {% block zen_layout_breadcrumb_list_pretext %}
+            {% if theme_config('zen-breadcrumbs-pretext') %}
+                <li class="breadcrumb-pretext">
+                    <span class="breadcrumb-title">{{ 'zentheme.layout.breadcrumbs.pretext'|trans|sw_sanitize }}</span>
+                </li>
+            {% endif %}
+        {% endblock %}
+
+        {# ... @zenit - add home link #}
+        {% block zen_layout_breadcrumb_list_home %}
+            {% if theme_config('zen-breadcrumbs-home') %}
+                {% set homeLabel = context.salesChannel.translated.homeName|default( 'general.homeLink'|trans) %}
+
+                <li class="breadcrumb-item home-link"
+                    itemprop="itemListElement"
+                    itemscope
+                    itemtype="https://schema.org/ListItem">
+
+                    <a href="{{ path('frontend.home.page') }}"
+                       class="breadcrumb-link{% if controllerAction is same as('home') %} is-active{% endif %}"
+                       title="{{ homeLabel|striptags }}"
+                       itemprop="item">
+                        <link itemprop="url"
+                              href="{{ path('frontend.home.page') }}">
+                        <span class="breadcrumb-title" itemprop="name">{{ homeLabel|sw_sanitize }}</span>
+                    </a>
+                    <meta itemprop="position" content="0">
+                </li>
+
+                {{ block('layout_breadcrumb_placeholder') }}
+            {% endif %}
+        {% endblock %}
+
+        {% for breadcrumbCategory in breadcrumbCategories %}
+            {% set key = breadcrumbCategory.id %}
+            {% set name = breadcrumbCategory.translated.name %}
+
+            {{ block('layout_breadcrumb_list_item') }}
+
+            {# ... @zenit - change div to li #}
+            {% block layout_breadcrumb_placeholder %}
+                {% if key != breadcrumbKeys|last %}
+                    <li class="breadcrumb-placeholder"
+                        aria-hidden="true"
+                    >
+                        {% sw_icon 'arrow-medium-right' style { size: 'fluid', pack: 'solid' } %}
+                    </li>
+                {% endif %}
+            {% endblock %}
+        {% endfor %}
+    </ol>
+{% endblock %}

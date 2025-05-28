@@ -1,0 +1,232 @@
+{% block zen_element_teaser %}
+    {% set config = element.fieldConfig.elements %}
+
+    {% set customClasses = config.customClasses.value %}
+
+    {% set elemClasses = [
+        'hover-text-' ~ config.textHover.value,
+        'hover-image-' ~ config.imageHover.value
+    ] %}
+
+    {% set textClasses = [
+        'zen-font-family-' ~ config.fontFamily.value
+    ] %}
+
+    {% set animationClasses = [
+        config.animationIn.value != 'none' ? 'animation-in-' ~ config.animationIn.value : null,
+        config.animationOut.value != 'none' ? 'animation-out-' ~ config.animationOut.value : null
+    ] | filter(item => item is not null) %}
+
+    {% set commonBorderRadius = config.imageBorderRadius.value ? config.imageBorderRadiusTopLeft.value ~ ' ' ~ config.imageBorderRadiusTopRight.value ~ ' ' ~ config.imageBorderRadiusBottomRight.value ~ ' ' ~ config.imageBorderRadiusBottomLeft.value : null %}
+
+    {% set elemStyles = {
+        'border-radius': commonBorderRadius
+    } | filter(item => item is not null) %}
+
+    {% set imgStyles = {
+        'border-radius': commonBorderRadius,
+        'object-position': config.displayMode.value == "cover" ? config.horizontalImageAlign.value|default('center') ~ ' ' ~ config.verticalImageAlign.value|default('center') : null
+    } | filter(item => item is not null) %}
+
+    {% set overlayStyles = {
+        'background-color': config.overlay.value ? config.overlayColor.value|default('transparent') : null,
+        opacity: config.overlay.value ? config.overlayOpacity.value|default('0%') : null,
+        'border-radius': config.overlay.value and config.imageBorderRadius.value ? commonBorderRadius : null
+        } | filter(item => item is not null) %}
+
+        {% set textContainerStyles = {
+        'align-items': config.verticalTextAlign.value|default('flex-start'),
+        'justify-content': config.horizontalTextAlign.value|default('flex-start')
+    } %}
+
+    {% set textStyles = {
+        '--zen-font-size-max': config.fontSize.value,
+        'border-radius': config.textBorderRadius.value ? (config.textBorderRadiusTopLeft.value ?: '0px') ~ ' ' ~ (config.textBorderRadiusTopRight.value ?: '0px') ~ ' ' ~ (config.textBorderRadiusBottomRight.value ?: '0px') ~ ' ' ~ (config.textBorderRadiusBottomLeft.value ?: '0px') : null,
+        padding: config.textPaddings.value ? (config.textPaddingTop.value ?: '0px') ~ ' ' ~ (config.textPaddingRight.value ?: '0px') ~ ' ' ~ (config.textPaddingBottom.value ?: '0px') ~ ' ' ~ (config.textPaddingLeft.value ?: '0px') : null,
+        margin: config.textMargins.value ? (config.textMarginTop.value ?: '0px') ~ ' ' ~ (config.textMarginRight.value ?: '0px') ~ ' ' ~ (config.textMarginBottom.value ?: '0px') ~ ' ' ~ (config.textMarginLeft.value ?: '0px') : null,
+        color: config.color.value,
+        'background-color': config.backgroundColor.value,
+        '-webkit-backdrop-filter': config.backgroundBlur.value ? "blur(#{config.backgroundBlur.value})" : null,
+        'backdrop-filter': config.backgroundBlur.value ? "blur(#{config.backgroundBlur.value})" : null,
+        'text-align': config.textAlign.value,
+        'font-weight': config.fontWeight.value
+    } | filter(item => item is not null) %}
+
+    {% set textWidthStyles = {
+        width: config.textMinWidth.value and config.textMaxWidth.value ? 'clamp(' ~ config.textMinWidth.value ~ ', 50%, ' ~ config.textMaxWidth.value ~ ')' : config.textMinWidth.value ? config.textMinWidth.value : null,
+        'max-width': config.textMinWidth.value ? null : config.textMaxWidth.value
+    } | filter(item => item is not null) %}
+
+    {% set textStyles = textStyles|merge(textWidthStyles) %}
+
+    <style>
+        {% if elemStyles %}
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-teaser-inner {
+                {% for property, value in elemStyles %}
+                    {{ property }}: {{ value }};
+                {% endfor %}
+            }
+        {% endif %}
+
+        {% if imgStyles %}
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-teaser-image {
+                {% for property, value in imgStyles %}
+                    {{ property }}: {{ value }};
+                {% endfor %}
+            }
+        {% endif %}
+
+        {% if overlayStyles %}
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-teaser-overlay {
+                {% for property, value in overlayStyles %}
+                    {{ property }}: {{ value }};
+                {% endfor %}
+            }
+        {% endif %}
+
+        {% if textContainerStyles %}
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-teaser-content-container {
+                {% for property, value in textContainerStyles %}
+                    {{ property }}: {{ value }};
+                {% endfor %}
+            }
+        {% endif %}
+
+        {% if textStyles %}
+            .cms-element-{{ element.type }}-{{ element.id }} .cms-teaser-content {
+                {% for property, value in textStyles %}
+                    {{ property }}: {{ value }};
+                {% endfor %}
+            }
+        {% endif %}
+
+        .cms-element-{{ element.type }}-{{ element.id }} .icon-cms-teaser {
+            width: {{ config.fontSize.value }};
+            height: {{ config.fontSize.value }};
+            color: {{ config.color.value }};
+        }
+
+        .cms-element-{{ element.type }}-{{ element.id }}.hover-text-distance-arrow .cms-teaser-text {
+            padding-right: {{ config.fontSize.value }};
+        }
+
+        .cms-element-{{ element.type }}-{{ element.id }}.hover-text-distance-arrow:hover .cms-teaser-text {
+            padding-right: calc( {{ config.fontSize.value }} + 10px );
+        }
+
+        .cms-element-{{ element.type }}-{{ element.id }}.hover-text-distance-arrow .icon-cms-teaser {
+            left: calc(100% - {{ config.fontSize.value }} - {{ config.textPaddingRight.value }})
+        }
+
+        .cms-element-{{ element.type }}-{{ element.id }}.hover-text-show-arrow:hover .cms-teaser-text {
+            padding-right: {{ config.fontSize.value }};
+        }
+
+        .cms-element-{{ element.type }}-{{ element.id }}.hover-text-show-arrow:hover .icon-cms-teaser {
+            left: calc(100% - {{ config.fontSize.value }} - {{ config.textPaddingRight.value }})
+        }
+    </style>
+
+    {% block zen_element_teaser_element %}
+        <div id="cms-element-{{ element.type }}-{{ element.id }}"
+             class="cms-element-{{ element.type }}-{{ element.id }} cms-element-{{ element.type }}{% if config.verticalAlign.value %} has-vertical-alignment{% endif %}{% if config.horizontalAlign.value == "center" %} justify-content-center{% elseif config.horizontalAlign.value == "flex-end" %} justify-content-end{% else %} justify-content-start{% endif %} {{ elemClasses|sort|join(' ') }} {{ customClasses }}">
+            {% block zen_element_teaser_alignment %}
+                {% if config.verticalAlign.value %}
+                    <div class="cms-element-alignment is-{{ config.displayMode.value }}{% if config.verticalAlign.value == "center" %} align-self-center{% elseif config.verticalAlign.value == "flex-end" %} align-self-end{% else %} align-self-start{% endif %}">
+                {% endif %}
+                {% block zen_element_teaser_inner %}
+                    <div class="cms-teaser-inner cms-element-inner is-{{ config.displayMode.value }}">
+                        {% block zen_element_teaser_image_container %}
+                            {% if element.data.media.url %}
+                                <div class="cms-teaser-image-container is-{{ config.displayMode.value }}"
+                                    {% if config.minHeight.value and config.displayMode.value == "cover" %} style="min-height: {{ config.minHeight.value }};"{% endif %}>
+                                    {% block zen_element_teaser_media %}
+                                        {% set attributes = {
+                                            class: 'cms-teaser-image',
+                                            alt: (element.data.media.translated.alt|default(element.data.media.fileName)),
+                                            title: (element.data.media.translated.title|default(element.data.media.fileName))
+                                        } %}
+
+                                        {% if config.displayMode.value == 'cover' or config.displayMode.value == 'contain' %}
+                                            {% set attributes = attributes|merge({ 'data-object-fit': config.displayMode.value }) %}
+                                        {% endif %}
+
+                                        {# ... @zenit - enables lazy loading for images #}
+                                        {% if config('zenitPlatformGravity.config.lazyloading') %}
+                                            {% set attributes = attributes|merge({ loading: 'lazy' }) %}
+                                        {% endif %}
+
+                                        {% if element.data.media.getMediaType().getName() === 'VIDEO' %}
+                                            {% set attributes = attributes|merge({
+                                                autoplay: true,
+                                                loop: true,
+                                                muted: true
+                                            }) %}
+
+                                            {% block zen_element_text_banner_video %}
+                                                {% sw_include '@Storefront/storefront/utilities/video.html.twig' with {
+                                                    media: element.data.media,
+                                                    attributes: attributes
+                                                } %}
+                                            {% endblock %}
+                                        {% else %}
+                                            {% block zen_element_text_banner_media_thumbnail %}
+                                                {% sw_thumbnails 'cms-image-thumbnails' with {
+                                                    media: element.data.media
+                                                } %}
+                                            {% endblock %}
+                                        {% endif %}
+                                    {% endblock %}
+                                </div>
+                            {% endif %}
+                        {% endblock %}
+
+                        {% if config.url.value %}
+                            <a href="{{ config.url.value }}"
+                               class="cms-teaser-image-link"
+                               {% if config.text.value %}title="{{ config.text.value|striptags }}"{% endif %}
+                                {% if config.newTab.value %}target="_blank" rel="noopener"{% endif %}>
+                            </a>
+                        {% endif %}
+
+                        {% block zen_element_teaser_content_container %}
+                            <div class="cms-teaser-content-container {{ animationClasses|sort|join(' ') }} is-{{ config.displayMode.value }}" {% if config.minHeight.value and config.displayMode.value == "cover" %} style="min-height: {{ config.minHeight.value }};"{% endif %}
+                                 {% if config.animationIn.value != 'none' or config.animationOut.value != 'none' %}data-zen-animation="true"{% endif %}
+                            >
+                                {% block zen_element_teaser_overlay %}
+                                    {% if config.overlay.value %}
+                                        <div class="cms-teaser-overlay"></div>
+                                    {% endif %}
+                                {% endblock %}
+
+                                {% if config.text.value %}
+                                    {% set content = config.text.value|raw %}
+
+                                    <div class="cms-teaser-content">
+                                        <span class="cms-teaser-text {{ textClasses|sort|join(' ') }}">
+                                            {% if config('zenitPlatformGravity.config.twigStringLoaderExtension') %}
+                                                {% sw_include '@zenitPlatformGravity/storefront/utilities/zen-template-from-string.html.twig' with {
+                                                    content: content
+                                                } %}
+                                            {% else %}
+                                                {{ content|raw }}
+                                            {% endif %}
+                                        </span>
+                                        {% if config.textHover.value == 'show-arrow' or config.textHover.value == 'distance-arrow' %}
+                                            {% sw_icon 'arrow-medium-right' style { pack: 'solid', class: 'cms-teaser' } %}
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+
+                {% if config.verticalAlign.value %}
+                    </div>
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+{% endblock %}

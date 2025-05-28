@@ -1,0 +1,10 @@
+{% block zen_layout_navigation_badge %}
+    {% if category.translated.customFields.zenit_gravity_category_badge_text is not empty %}
+        {% set color = category.translated.customFields.zenit_gravity_category_badge_color ? category.translated.customFields.zenit_gravity_category_badge_color : '' %}
+        {% set background = category.translated.customFields.zenit_gravity_category_badge_bg ? category.translated.customFields.zenit_gravity_category_badge_bg : '' %}
+
+        <span class="badge navigation-badge" style="{% if color %}color:{{ color }};{% endif %}{% if background %} background:{{ background }};{% endif %}">
+            {{ category.translated.customFields.zenit_gravity_category_badge_text }}
+        </span>
+    {% endif %}
+{% endblock %}

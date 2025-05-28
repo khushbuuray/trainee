@@ -1,0 +1,11 @@
+{% sw_extends '@Storefront/storefront/component/payment/payment-form.html.twig' %}
+
+{% block page_checkout_change_payment_form_fields %}
+    {# ... @zenit - set config variable visiblePaymentMethodsLimit #}
+    {% set visiblePaymentMethodsLimit = theme_config('zen-checkout-confirm-visible-payment-methods-limit')|default(5) %}
+
+    {% sw_include '@Storefront/storefront/component/payment/payment-fields.html.twig' with {
+        visiblePaymentMethodsLimit: visiblePaymentMethodsLimit,
+        selectedPaymentMethodId: context.paymentMethod.id
+    } %}
+{% endblock %}

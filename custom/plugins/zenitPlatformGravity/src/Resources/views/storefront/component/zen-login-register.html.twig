@@ -1,0 +1,46 @@
+{% block zen_component_login_register %}
+    <div class="top-bar-nav-item top-bar-login-register {{ visibleClasses|join(' ') }}">
+    {% if not context.customer %}
+        <span class="top-bar-login">
+            {% block zen_component_login_register_login %}
+                <a href="{{ path('frontend.account.login.page') }}"
+                   title="{{ 'account.loginSubmit'|trans|striptags }}"
+                   class="top-bar-login-item">
+                    {{ 'account.loginSubmit'|trans|sw_sanitize }}
+                </a>
+            {% endblock %}
+        </span>
+        <span>{{ 'account.orRegister'|trans|sw_sanitize }}</span>
+        <span class="top-bar-register">
+            {% block zen_component_login_register_register %}
+                <a href="{{ path('frontend.account.login.page') }}"
+                   title="{{ 'account.orRegisterLink'|trans|striptags }}"
+                   class="top-bar-register-item">
+                    {{ 'account.orRegisterLink'|trans|striptags }}
+                </a>
+            {% endblock %}
+        </span>
+    {% else %}
+        <span class="top-bar-logout">
+            {% if not context.customer.guest %}
+                {% block zen_component_login_register_logout %}
+                    <a href="{{ path('frontend.account.logout.page') }}"
+                       class="top-bar-logout-item">
+                        {% sw_icon 'log-out' style { size: 'xs' } %}
+                        {{ 'account.logout'|trans|sw_sanitize }}
+                    </a>
+                {% endblock %}
+            {% else %}
+                {% block zen_component_login_register_guest_abort %}
+                    <a href="{{ path('frontend.account.logout.page') }}"
+                       data-account-guest-abort-button="true"
+                       class="top-bar-logout-item">
+                        {% sw_icon 'log-out' style { size: 'xs' } %}
+                        {{ 'account.guestAbort'|trans|sw_sanitize }}
+                    </a>
+                {% endblock %}
+            {% endif %}
+        </span>
+    {% endif %}
+    </div>
+{% endblock %}

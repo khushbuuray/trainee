@@ -1,0 +1,25 @@
+.scroll-navigation-sidebar {
+    a, a:hover {
+        color: color-contrast($body-bg, $sw-text-color, $zen-light-text-color);
+    }
+
+    &-mobile {
+        &-button {
+            &-icon {
+                & > span {
+                    color: color-contrast($body-bg, $sw-text-color, $zen-light-text-color);
+                }
+            }
+        }
+    }
+
+    &-entry {
+        &-line {
+            border-color: color-contrast($body-bg, $sw-text-color, $zen-light-text-color);
+        }
+
+        &-bullet {
+            background-color: color-contrast($body-bg, $sw-text-color, $zen-light-text-color);
+        }
+    }
+}

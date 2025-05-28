@@ -1,0 +1,243 @@
+/*
+Zenit Image slider
+==============================================
+Styling for zen image slider component.
+Displays images in a reusable slider component with text.
+based on "image-slider" and "base-slider" component and "tiny-slider" (https://github.com/ganlanyuan/tiny-slider)
+*/
+.cms-element-zen-image-slider {
+    overflow: hidden; // ... because of animations & border radius
+
+    // ... ensure slider is equal height to other elements
+    &.has-full-height {
+        &,
+        .zen-image-slider,
+        .tns-outer,
+        .tns-ovh,
+        .tns-inner,
+        .image-slider-container,
+        .image-slider-item-container,
+        .image-slider-item-inner {
+            height: 100%;
+        }
+    }
+
+    > .has-nav-outside {
+        padding-left: 50px;
+        padding-right: 50px;
+
+        .image-slider-item-container {
+            padding: 0;
+        }
+    }
+
+    .tns-carousel {
+        .image-slider-item-inner {
+            position: relative;
+            overflow: hidden;
+        }
+    }
+
+    .js-slider-initialized {
+        .image-slider-item.is-not-first {
+            display: flex;
+        }
+    }
+
+    // image
+    .zen-image-slider-item-image-container {
+        display: block;
+        max-width: 100%;
+
+        &.is-contain {
+            .image-slider-image {
+                object-fit: contain;
+                height: 100%;
+            }
+        }
+
+        &.is-cover {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+
+            .image-slider-image {
+                object-fit: cover;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+        }
+    }
+
+    .zen-image-slider-item-content-container {
+        display: flex;
+        height: 100%;
+
+        &.is-standard,
+        &.is-contain {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        &.is-cover {
+            position: relative;
+        }
+    }
+
+    .zen-image-slider-item-overlay {
+        display: flex;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    .image-slider-link {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        ~ .zen-image-slider-item-content {
+            pointer-events: none;
+
+            a {
+                pointer-events: all;
+            }
+        }
+    }
+
+    .zen-image-slider-item-content {
+        position: relative;
+        color: $sw-text-color;
+        font-size: $font-size-base;
+        font-weight: $font-weight-base;
+        padding: 8px 16px;
+        margin: 20px 10%;
+        border-radius: 2px;
+        transition: transform .3s ease-out;
+        transform: translateX(0) translateY(0);
+
+        h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, p {
+            color: inherit;
+        }
+    }
+
+    .zen-image-slider-item-text-value {
+        transition: all .3s ease;
+
+        &.has-headline-lg {
+            h1, .h1 {
+                @include font-size($h1-font-size * 2.5);
+            }
+            h2, .h2 {
+                @include font-size($h2-font-size * 2.5);
+            }
+            h3, .h3 {
+                @include font-size($h3-font-size * 2.5);
+            }
+            h4, .h4 {
+                @include font-size($h4-font-size * 2.5);
+            }
+            h5, .h5 {
+                @include font-size($h5-font-size * 2.5);
+            }
+            h6, .h6 {
+                @include font-size($h6-font-size * 2.5);
+            }
+        }
+
+        &.has-text-lg {
+            @include font-size($font-size-base * 1.5);
+
+            p, div, a:not(.btn) {
+                @include font-size($font-size-base * 1.5);
+            }
+        }
+    }
+
+    // initial states for animation-in entrance animations
+    .animation-in-fade-in,
+    .animation-in-fade-in-top,
+    .animation-in-slide-in-top,
+    .animation-in-slide-in-bottom,
+    .animation-in-slide-in-left,
+    .animation-in-slide-in-right ,
+    .animation-in-slide-in-bck-center,
+    .animation-in-slide-in-blurred-top,
+    .animation-in-slide-in-blurred-bottom,
+    .animation-in-puff-in-center,
+    .animation-in-flip-in-hor-top,
+    .animation-in-flip-in-hor-bottom {
+        opacity: 0;
+    }
+
+    // triggers the animation
+    .tns-slide-active {
+        .animation-in-fade-in { @extend .fade-in; }
+        .animation-in-fade-in-top { @extend .fade-in-top; }
+        .animation-in-slide-in-top { @extend .slide-in-top; }
+        .animation-in-slide-in-bottom { @extend .slide-in-bottom; }
+        .animation-in-slide-in-left { @extend .slide-in-left; }
+        .animation-in-slide-in-right { @extend .slide-in-right; }
+        .animation-in-slide-in-bck-center { @extend .slide-in-bck-center; }
+        .animation-in-slide-in-blurred-top { @extend .slide-in-blurred-top; }
+        .animation-in-slide-in-blurred-bottom { @extend .slide-in-blurred-bottom;  }
+        .animation-in-puff-in-center { @extend .puff-in-center; }
+        .animation-in-flip-in-hor-top { @extend .flip-in-hor-top; }
+        .animation-in-flip-in-hor-bottom { @extend .flip-in-hor-bottom; }
+    }
+
+    .animation-zoom {
+        .image-slider-item {
+            .image-slider-video,
+            .image-slider-image {
+                transition: all .3s ease;
+                transform: scale(1);
+            }
+        }
+
+        &:hover {
+            .image-slider-item {
+                .image-slider-video,
+                .image-slider-image {
+                    transition-duration: 1s;
+                    transform: scale(1.05);
+                }
+            }
+        }
+    }
+
+    .animation-kenburns-bottom-left {
+        .image-slider-item {
+            overflow: hidden;
+
+            .image-slider-video,
+            .image-slider-image {
+                animation: kenburns-bottom-left 40s ease-out infinite alternate both;
+            }
+        }
+    }
+
+    .animation-kenburns-top-right {
+        .image-slider-item {
+            overflow: hidden;
+
+            .image-slider-video,
+            .image-slider-image {
+                animation: kenburns-top-right 40s ease-out infinite alternate both;
+            }
+        }
+    }
+}

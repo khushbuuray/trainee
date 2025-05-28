@@ -1,0 +1,7 @@
+.alert {
+    --#{$prefix}alert-border-radius: #{px($zen-layout-element-radius)};
+
+    .alert-content-container {
+        @include border-end-radius(var(--#{$prefix}alert-border-radius));
+    }
+}

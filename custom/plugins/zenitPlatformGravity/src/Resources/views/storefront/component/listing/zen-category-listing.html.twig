@@ -1,0 +1,28 @@
+{% block zen_category_listing %}
+    <div class="cms-element-category-listing-wrapper">
+        <div id="cms-element-{{ element.type }}-{{ element.id }}"
+             class="cms-element-{{ element.type }}-{{ element.id }} cms-element-{{ element.type }}{% if config.verticalAlign.value %} has-vertical-alignment{% endif %}{% if config.horizontalAlign.value == "center" %} justify-content-center{% elseif config.horizontalAlign.value == "flex-end" %} justify-content-end{% else %} justify-content-start{% endif %} {{ customClasses }}">
+
+            {% block zen_element_category_listing_wrapper_content %}
+                <div class="cms-element-category-listing">
+                    {% block zen_element_category_listing_row %}
+                        <div class="row cms-listing-row">
+                            {% block zen_element_category_listing_col %}
+                                {% for treeItem in navigationTree %}
+                                    <div class="cms-category-listing-col {{ listingColumns }}">
+                                        {% block zen_element_category_listing_box %}
+                                            {% sw_include '@zenitPlatformGravity/storefront/component/listing/zen-category-listing-box.html.twig' with {
+                                                treeItem: treeItem,
+                                                listingColumns: listingColumns
+                                            } %}
+                                        {% endblock %}
+                                    </div>
+                                {% endfor %}
+                            {% endblock %}
+                        </div>
+                    {% endblock %}
+                </div>
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

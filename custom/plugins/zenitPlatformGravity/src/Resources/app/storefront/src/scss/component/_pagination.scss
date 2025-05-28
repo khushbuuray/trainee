@@ -1,0 +1,118 @@
+.pagination {
+    @include media-breakpoint-down(md) {
+        justify-content: center;
+    }
+
+    @include media-breakpoint-down(sm) {
+        .page-first,
+        .page-last {
+            display: none;
+        }
+    }
+
+    .page-item {
+        &.disabled {
+            .page-link {
+                background: $pagination-disabled-bg;
+                color: $pagination-disabled-color;
+                border-color: $pagination-disabled-border-color;
+            }
+
+            a {
+                color: $pagination-disabled-color;
+            }
+        }
+
+        &.active {
+            a {
+                color: $pagination-active-color;
+            }
+        }
+    }
+
+    .page-link {
+        min-width: px($zen-font-size-base * 2.5);
+    }
+}
+
+.page-link {
+    box-shadow: 0 0 0 0 var(--#{$prefix}pagination-bg);
+
+    .icon > svg {
+        color: $pagination-color;
+    }
+
+    &:hover {
+        box-shadow: 0 0 0 .2rem var(--#{$prefix}pagination-hover-bg);
+
+        .icon > svg {
+            color: $pagination-hover-color;
+        }
+    }
+
+    &.active,
+    .active > & {
+        &:hover {
+            box-shadow: 0 0 0 .2rem var(--#{$prefix}pagination-active-bg);
+        }
+    }
+}
+
+.page-item {
+    @if $zen-layout-pagination-style == "pills" {
+        margin: 0 $spacer-xs;
+        min-width: px($zen-font-size-base * 2.5);
+        height: px($zen-font-size-base * 2.5);
+    }
+
+    &.active .page-link {
+        .icon > svg {
+            color: $pagination-active-color;
+        }
+    }
+
+    &.disabled .page-link {
+        .icon > svg {
+            color: $pagination-disabled-color;
+        }
+    }
+
+    .page-link {
+        @if $zen-layout-pagination-border == 0 {
+            border: none;
+        }
+
+        @if $zen-layout-pagination-style == "pills" {
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .icon > svg {
+                top: 0;
+            }
+        }
+    }
+
+    @if $zen-layout-pagination-style == "default" {
+        &:first-child {
+            .page-link {
+                @include border-start-radius($zen-layout-button-radius * 1px);
+            }
+        }
+
+        &:last-child {
+            .page-link {
+                @include border-end-radius($zen-layout-button-radius * 1px);
+            }
+        }
+    } @else {
+        .page-link,
+        &:first-child .page-link,
+        &:last-child .page-link {
+            @include border-radius($zen-layout-button-radius * 1px);
+        }
+    }
+}

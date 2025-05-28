@@ -1,0 +1,59 @@
+{% block block_zen_grid_4_4_4_el_2 %}
+    {% set columns = 2 %}
+
+    {% block block_zen_grid_4_4_4_el_2_cols %}
+        <div class="col-md-6 col-lg-4">
+            {% block block_zen_grid_4_4_4_el_2_col1_row1 %}
+                {% set element = block.slots.getSlot('col1row1') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+
+            {% block block_zen_grid_4_4_4_el_2_col1_row2 %}
+                {% set element = block.slots.getSlot('col1row2') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+        </div>
+        <div class="col-md-6 col-lg-4">
+            {% block block_zen_grid_4_4_4_el_2_col2_row1 %}
+                {% set element = block.slots.getSlot('col2row1') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+
+            {% block block_zen_grid_4_4_4_el_2_col2_row2 %}
+                {% set element = block.slots.getSlot('col2row2') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+        </div>
+        <div class="col-md-6 col-lg-4">
+            {% block block_zen_grid_4_4_4_el_2_col3_row1 %}
+                {% set element = block.slots.getSlot('col3row1') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+
+            {% block block_zen_grid_4_4_4_el_2_col3_row2 %}
+                {% set element = block.slots.getSlot('col3row2') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+
+{% endblock %}

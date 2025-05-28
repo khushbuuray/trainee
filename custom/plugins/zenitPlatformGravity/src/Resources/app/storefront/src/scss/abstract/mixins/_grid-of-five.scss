@@ -1,0 +1,26 @@
+// Grid of five equal columns with bootstrap grid
+//
+// The grid of five cannot be integrated into the inheritance order of the normal grid without recreating it. This in turn leads to problems with plugins that extend the grid classes.
+// Therefore, media-breakpoint-between is used here. Be aware that the grid of five is not inherited by higher viewports.
+
+@mixin zen-make-grid-of-five-columns($columns: $grid-columns, $breakpoints: $grid-breakpoints) {
+    @each $breakpoint in map-keys($breakpoints) {
+        $infix: breakpoint-infix($breakpoint, $breakpoints);
+
+        @include media-breakpoint-only($breakpoint, $breakpoints) {
+            .col#{$infix}-2_4 {
+                @include make-col(2.4, $columns);
+            }
+        }
+    }
+}
+
+@if $enable-grid-classes {
+    @include zen-make-grid-of-five-columns();
+}
+
+.navigation-flyout-col {
+    &.col-2_4 {
+        @include make-col(2.4, $grid-columns);
+    }
+}

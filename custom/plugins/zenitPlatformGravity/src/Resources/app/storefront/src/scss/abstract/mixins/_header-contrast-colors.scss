@@ -1,0 +1,386 @@
+@mixin header-contrast-colors($mode, $color, $bg, $border-color, $hover-color, $hover-bg, $border-hover-color) {
+    .header-main {
+        &.is-#{$mode} {
+            .header-logo-picture-#{$mode}-header {
+                display: none;
+            }
+
+            &:not(.js-header-sticky) {
+                @include media-breakpoint-up(lg) {
+                    .header-logo-picture-#{$mode}-header {
+                        display: block;
+
+                        ~ .header-logo-picture {
+                            display: none;
+                        }
+                    }
+
+                    .nav-header {
+                        background-color: $bg;
+                        color: $color;
+
+                        // transparent header classes
+                        $i: 0;
+                        @while $i < 100 {
+                            &.bg-opacity-#{$i} {
+                                background-color: rgba($bg, 0.01 * $i);
+                            }
+                            $i: $i + 5;
+                        }
+                    }
+
+                    // main navigation
+                    .nav-main {
+                        @if $zen-header-style == "single-line" {
+                            .main-navigation {
+                                background: $bg;
+                            }
+                        } @else {
+                            background: $bg;
+                        }
+
+                        // transparent header classes
+                        $i: 0;
+                        @while $i < 100 {
+                            &.bg-opacity-#{$i} {
+                                @if $zen-header-style == "single-line" {
+                                    .main-navigation {
+                                        background-color: rgba($bg, 0.01 * $i);
+                                    }
+                                } @else {
+                                    background-color: rgba($bg, 0.01 * $i);
+                                }
+                            }
+
+                            $i: $i + 5;
+                        }
+                    }
+
+                    .main-navigation {
+                        // navigation badge
+                        .main-navigation-link-text {
+                            > .navigation-badge {
+                                background: $color;
+                                color: $bg;
+                            }
+                        }
+                    }
+
+                    .main-navigation-link {
+                        color: $color;
+                        @include main-navigation-hover($zen-main-navigation-hover-animation, $color, $bg, $hover-color, $hover-bg);
+
+                        @if $zen-main-navigation-extern-link-icon  == 1 {
+                            &[target=_blank] {
+                                .main-navigation-link-name::after {
+                                    background-color: $bg;
+                                }
+                            }
+                        }
+
+                        .icon {
+                            color: $color;
+                        }
+                    }
+
+                    .main-navigation-divider {
+                        color: $color;
+                    }
+
+                    // shop navigation
+                    .header-actions-btn:not(.header-cart-btn) {
+                        $conditional-bg: $bg;
+
+                        @if $zen-shop-navigation-bg == transparent {
+                            $conditional-bg: transparent;
+                        }
+
+                        background: $conditional-bg;
+                        color: $color;
+
+                        @if $zen-shop-navigation-border == 1 {
+                            $conditional-border-color: $border-color;
+
+                            @if $zen-shop-navigation-border-color == transparent {
+                                $conditional-border-color: transparent;
+                            }
+
+                            @if $zen-shop-navigation-border-color == $zen-shop-navigation-bg {
+                                $conditional-border-color: $conditional-bg;
+                            }
+
+                            border: 1px solid $conditional-border-color;
+
+                            @if ($zen-shop-navigation-border-hover-color == $zen-shop-navigation-hover-bg) {
+                                box-shadow: 0 0 0 0 $conditional-bg;
+                            }
+                        } @else {
+                            box-shadow: 0 0 0 0 $conditional-bg;
+                        }
+
+                        .icon {
+                            color: $color;
+                        }
+
+                        &:hover {
+                            $conditional-bg: $hover-bg;
+
+                            @if $zen-shop-navigation-hover-bg == transparent {
+                                $conditional-bg: transparent;
+                            }
+
+                            background: $conditional-bg;
+                            color: $hover-color;
+
+                            @if $zen-shop-navigation-border == 1 {
+                                $conditional-border-color: $border-hover-color;
+
+                                @if $zen-shop-navigation-border-hover-color == transparent {
+                                    $conditional-border-color: transparent;
+                                }
+
+                                @if $zen-shop-navigation-border-hover-color == $zen-shop-navigation-hover-bg {
+                                    $conditional-border-color: $conditional-bg;
+                                }
+
+                                border-color: $conditional-border-color;
+
+                                @if ($zen-shop-navigation-border-hover-color == $zen-shop-navigation-hover-bg) {
+                                    box-shadow: 0 0 0 .2rem $conditional-bg;
+                                }
+                            } @else {
+                                box-shadow: 0 0 0 .2rem $conditional-bg;
+                            }
+
+                            .icon {
+                                color: $hover-color;
+                            }
+                        }
+                    }
+
+                    .header-cart-btn {
+                        $conditional-bg: $bg;
+
+                        @if $zen-shop-navigation-cart-bg == transparent {
+                            $conditional-bg: transparent;
+                        }
+
+                        background: $conditional-bg;
+
+                        @if $zen-shop-navigation-cart-border == 1 {
+                            $conditional-border-color: $border-color;
+
+                            @if $zen-shop-navigation-cart-border-color == transparent {
+                                $conditional-border-color: transparent;
+                            }
+
+                            @if $zen-shop-navigation-cart-border-color == $zen-shop-navigation-cart-bg {
+                                $conditional-border-color: $conditional-bg;
+                            }
+
+                            border: 1px solid $conditional-border-color;
+
+                            @if ($zen-shop-navigation-cart-border-hover-color == $zen-shop-navigation-cart-hover-bg) {
+                                box-shadow: 0 0 0 0 $conditional-bg;
+                            }
+                        } @else {
+                            box-shadow: 0 0 0 0 $conditional-bg;
+                        }
+
+                        .icon {
+                            color: $color;
+                        }
+
+                        .header-cart-total {
+                            color: $color;
+                        }
+
+                        &:hover {
+                            $conditional-bg: $hover-bg;
+
+                            @if $zen-shop-navigation-cart-hover-bg == transparent {
+                                $conditional-bg: transparent;
+                            }
+
+                            background: $conditional-bg;
+
+                            @if $zen-shop-navigation-cart-border == 1 {
+                                $conditional-border-color: $border-hover-color;
+
+                                @if $zen-shop-navigation-cart-border-hover-color == transparent {
+                                    $conditional-border-color: transparent;
+                                }
+
+                                @if $zen-shop-navigation-cart-border-hover-color == $zen-shop-navigation-cart-hover-bg {
+                                    $conditional-border-color: $conditional-bg;
+                                }
+
+                                border-color: $conditional-border-color;
+
+                                @if ($zen-shop-navigation-cart-border-hover-color == $zen-shop-navigation-cart-hover-bg) {
+                                    box-shadow: 0 0 0 .2rem $conditional-bg;
+                                }
+                            } @else {
+                                box-shadow: 0 0 0 .2rem $conditional-bg;
+                            }
+
+                            .icon,
+                            .header-cart-total {
+                                color: $hover-color;
+                            }
+                        }
+                    }
+
+                    .js-nav-scroller-control {
+                        background: $color;
+                        color: $bg;
+
+                        .icon {
+                            > svg {
+                                color: $bg;
+                            }
+                        }
+                    }
+
+                    // @config - header-two-line - top bar navigation
+                    .header-top-bar-col {
+                        .top-bar-nav-btn {
+                            &.btn {
+                                background: $bg;
+                                color: $color;
+
+                                .icon {
+                                    color: $color;
+                                }
+
+                                &:hover {
+                                    background: $hover-bg;
+                                    color: $hover-color;
+
+                                    .icon {
+                                        color: $hover-color;
+                                    }
+                                }
+                            }
+                        }
+
+                        .dropdown.show {
+                            .top-bar-nav-btn {
+                                background: $hover-bg;
+
+                                &,
+                                .icon {
+                                    color: $hover-color;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // search
+    &.is-srch-default {
+        .header-main {
+            &.is-#{$mode} {
+                &:not(.js-header-sticky) {
+                    @include media-breakpoint-up(lg) {
+                        .header-search-input {
+                            $conditional-bg: $color;
+                            $conditional-color: $bg;
+                            $conditional-border: transparent;
+
+                            @if $zen-layout-forms-style == "underlined" {
+                                $conditional-bg: transparent;
+                                $conditional-color: $color;
+                                $conditional-border: $color;
+                            }
+
+                            background: $conditional-bg;
+                            color: $conditional-color;
+                            border-color: $conditional-border;
+
+                            &::placeholder {
+                                color: rgba($conditional-color, .75);
+                            }
+
+                            /* Workaround for missing placeholder color in chrome */
+                            /* stylelint-disable-next-line selector-no-vendor-prefix */
+                            &::-webkit-input-placeholder {
+                                color: rgba($conditional-color, .75);
+                            }
+
+                            &:focus {
+                                $conditional-bg: $hover-color;
+                                $conditional-color: $hover-bg;
+                                $conditional-border: transparent;
+
+                                @if $zen-layout-forms-style == "underlined" {
+                                    $conditional-bg: transparent;
+                                    $conditional-color: $hover-color;
+                                    $conditional-border: $hover-color;
+                                }
+
+                                background: $conditional-bg;
+                                color: $conditional-color;
+                                border-color: $conditional-border;
+
+                                &::placeholder {
+                                    color: rgba($conditional-color, .75);
+                                }
+
+                                /* Workaround for missing placeholder color in chrome */
+                                /* stylelint-disable-next-line selector-no-vendor-prefix */
+                                &::-webkit-input-placeholder {
+                                    color: rgba($conditional-color, .75);
+                                }
+
+                                ~ .header-search-btn {
+                                    $conditional-bg: $hover-color;
+                                    $conditional-color: $hover-bg;
+                                    $conditional-border: transparent;
+
+                                    @if $zen-layout-forms-style == "underlined" {
+                                        $conditional-bg: transparent;
+                                        $conditional-color: $hover-color;
+                                        $conditional-border: $hover-color;
+                                    }
+
+                                    background: $conditional-bg;
+                                    color: $conditional-color;
+                                    border-color: $conditional-border;
+
+                                    .icon {
+                                        color: $conditional-color;
+                                    }
+                                }
+                            }
+                        }
+
+                        .header-search-btn {
+                            $conditional-bg: $color;
+                            $conditional-color: $bg;
+                            $conditional-border: transparent;
+
+
+                            @if $zen-layout-forms-style == "underlined" {
+                                $conditional-bg: transparent;
+                                $conditional-color: $color;
+                                $conditional-border: $color;
+                            }
+
+                            background: $conditional-bg;
+                            color: $conditional-color;
+                            border-color: $conditional-border;
+
+                            .icon {
+                                color: $conditional-color;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

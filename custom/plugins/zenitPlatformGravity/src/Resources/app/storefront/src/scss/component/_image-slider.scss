@@ -1,0 +1,239 @@
+/*
+Image slider
+==============================================
+Styling for image slider component.
+Displays images in a reusable slider component.
+based on "base-slider" component and "tiny-slider" (https://github.com/ganlanyuan/tiny-slider)
+*/
+
+// arrow navigation inside
+.image-slider-controls-prev,
+.image-slider-controls-next {
+    --#{$zen-prefix}slider-controls-shadow-color: #{$zen-image-slider-controls-inside-bg};
+    --#{$zen-prefix}slider-controls-shadow-hover-color: #{$zen-image-slider-controls-inside-hover-bg};
+
+    border: none;
+    background: $zen-image-slider-controls-inside-bg;
+
+    @if $zen-image-slider-controls-inside-bg == transparent {
+        &::after {
+            display: none;
+        }
+    }
+
+    .icon {
+        color: $zen-image-slider-controls-inside-color;
+    }
+
+    &:hover {
+        background: $zen-image-slider-controls-inside-hover-bg;
+
+        .icon {
+            color: $zen-image-slider-controls-inside-hover-color;
+        }
+    }
+}
+
+@if $zen-layout-element-radius > 0 {
+    .image-slider-controls-prev {
+        &.is-nav-prev-inside {
+            left: px($zen-slider-controls-spacer);
+        }
+    }
+
+    .image-slider-controls-next {
+        &.is-nav-next-inside {
+            right: px($zen-slider-controls-spacer);
+        }
+    }
+}
+
+// arrow navigation outside
+.has-nav-outside {
+    .image-slider-controls-prev,
+    .image-slider-controls-next {
+        --#{$zen-prefix}slider-controls-shadow-color: #{$zen-image-slider-controls-outside-bg};
+        --#{$zen-prefix}slider-controls-shadow-hover-color: #{$zen-image-slider-controls-outside-hover-bg};
+
+        border: none;
+        background: $zen-image-slider-controls-outside-bg;
+
+        @if $zen-image-slider-controls-outside-bg == transparent {
+            &::after {
+                display: none;
+            }
+        }
+
+        .icon {
+            color: $zen-image-slider-controls-outside-color;
+        }
+
+        &:hover {
+            background: $zen-image-slider-controls-outside-hover-bg;
+
+            .icon {
+                color: $zen-image-slider-controls-outside-hover-color;
+            }
+        }
+    }
+}
+
+@if $zen-layout-element-radius > 0 {
+    .image-slider-controls-prev {
+        &.is-nav-prev-outside {
+            left: px($zen-slider-controls-spacer);
+        }
+    }
+
+    .image-slider-controls-next {
+        &.is-nav-next-outside {
+            right: px($zen-slider-controls-spacer);
+        }
+    }
+}
+
+// alternative slider controls
+@if $zen-image-slider-controls-style == "alternate" {
+    .image-slider-controls-container {
+        // arrow navigation
+        .image-slider-controls-prev,
+        .image-slider-controls-next {
+            transform: none;
+            top: auto;
+
+            @if $zen-layout-button-radius != 0 {
+                bottom: 10px;
+            } @else {
+                bottom: 0;
+            }
+
+            // set bottom > 108 because of modal-footer
+            .modal.zoom-modal & {
+                bottom: 120px;
+            }
+        }
+
+        .image-slider-controls-prev {
+            &.is-nav-prev-inside,
+            .modal.zoom-modal & { // including zoom modal arrows
+                left: auto;
+                z-index: 1;
+
+                @if $zen-layout-button-radius != 0 {
+                    right: #{px($zen-slider-controls-size) + 4px + 10px};
+                } @else {
+                    right: px($zen-slider-controls-size);
+                }
+            }
+        }
+
+        .image-slider-controls-next {
+            &.is-nav-next-inside,
+            .modal.zoom-modal & { // including zoom modal arrows
+                z-index: 1;
+
+                @if $zen-layout-button-radius != 0 {
+                    right: 10px;
+                } @else {
+                    right: 0;
+                }
+            }
+        }
+    }
+}
+
+// dots nav inside
+.image-slider {
+    .tns-nav {
+        button {
+            border-color: $zen-image-slider-controls-dots-inside-color;
+
+            @if $zen-image-slider-controls-dots-style == 'expanding' {
+                background: $zen-image-slider-controls-dots-inside-color;
+            } @else {
+                background: transparent;
+            }
+
+            &:hover,
+            &.tns-nav-active {
+                background: $zen-image-slider-controls-dots-inside-hover-color;
+                border-color: $zen-image-slider-controls-dots-inside-hover-color;
+            }
+        }
+    }
+}
+
+// dots nav outside
+.has-dots-outside {
+    &.image-slider .tns-nav {
+        button {
+            border-color: $zen-image-slider-controls-dots-outside-color;
+
+            @if $zen-image-slider-controls-dots-style == 'expanding' {
+                background: $zen-image-slider-controls-dots-outside-color;
+            } @else {
+                background: transparent;
+            }
+
+            &:hover,
+            &.tns-nav-active {
+                background: $zen-image-slider-controls-dots-outside-hover-color;
+                border-color: $zen-image-slider-controls-dots-outside-hover-color;
+            }
+        }
+    }
+}
+
+@if $zen-image-slider-controls-show-hover == 1 {
+    @include media-breakpoint-up(xl) {
+        .image-slider {
+            .image-slider-controls-prev {
+                opacity: 0;
+                visibility: hidden;
+
+                @if $zen-image-slider-controls-style == "alternate" {
+                    transform: translate3d(-100%,0,0);
+                } @else {
+                    transform: translate3d(-100%,-50%,0);
+                }
+            }
+
+            .image-slider-controls-next {
+                opacity: 0;
+                visibility: hidden;
+
+                @if $zen-image-slider-controls-style == "alternate" {
+                    transform: translate3d(100%,0,0);
+                } @else {
+                    transform: translate3d(100%,-50%,0);
+                }
+            }
+
+            &:hover {
+                .image-slider-controls-prev {
+                    opacity: 1;
+                    visibility: visible;
+
+                    @if $zen-image-slider-controls-style == "alternate" {
+                        transform: none;
+                    } @else {
+                        transform: translate3d(0,-50%,0);
+                    }
+                }
+
+                .image-slider-controls-next {
+                    opacity: 1;
+                    visibility: visible;
+
+                    @if $zen-image-slider-controls-style == "alternate" {
+                        transform: none;
+                    } @else {
+                        transform: translate3d(0,-50%,0);
+                    }
+                }
+            }
+        }
+    }
+}
+
+

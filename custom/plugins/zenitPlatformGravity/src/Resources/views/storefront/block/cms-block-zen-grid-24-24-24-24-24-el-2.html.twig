@@ -1,0 +1,91 @@
+{% block block_zen_grid_24_24_24_24_24_el_2 %}
+    {% set columns = 5 %}
+
+    {% block block_zen_grid_24_24_24_24_24_el_2_cols %}
+        <div class="col-md-6 col-lg-2_4 col-xl-2_4 col-xxl-2_4">
+            {% block block_zen_grid_24_24_24_24_24_el_2_col1_row1 %}
+                {% set element = block.slots.getSlot('col1row1') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+
+            {% block block_zen_grid_24_24_24_24_24_el_2_col1_row2 %}
+                {% set element = block.slots.getSlot('col1row2') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+        </div>
+        <div class="col-md-6 col-lg-2_4 col-xl-2_4 col-xxl-2_4">
+            {% block block_zen_grid_24_24_24_24_24_el_2_col2_row1 %}
+                {% set element = block.slots.getSlot('col2row1') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+
+            {% block block_zen_grid_24_24_24_24_24_el_2_col2_row2 %}
+                {% set element = block.slots.getSlot('col2row2') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+        </div>
+        <div class="col-md-6 col-lg-2_4 col-xl-2_4 col-xxl-2_4">
+            {% block block_zen_grid_24_24_24_24_24_el_2_col3_row1 %}
+                {% set element = block.slots.getSlot('col3row1') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+
+            {% block block_zen_grid_24_24_24_24_24_el_2_col3_row2 %}
+                {% set element = block.slots.getSlot('col3row2') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+        </div>
+        <div class="col-md-6 col-lg-2_4 col-xl-2_4 col-xxl-2_4">
+            {% block block_zen_grid_24_24_24_24_24_el_2_col4_row1 %}
+                {% set element = block.slots.getSlot('col4row1') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+
+            {% block block_zen_grid_24_24_24_24_24_el_2_col4_row2 %}
+                {% set element = block.slots.getSlot('col4row2') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+        </div>
+        <div class="col-md-6 col-lg-2_4 col-xl-2_4 col-xxl-2_4">
+            {% block block_zen_grid_24_24_24_24_24_el_2_col5_row1 %}
+                {% set element = block.slots.getSlot('col5row1') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+
+            {% block block_zen_grid_24_24_24_24_24_el_2_col5_row2 %}
+                {% set element = block.slots.getSlot('col5row2') %}
+
+                <div data-cms-element-id="{{ element.id }}">
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                </div>
+            {% endblock %}
+        </div>
+    {% endblock %}
+{% endblock %}

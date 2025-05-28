@@ -1,0 +1,66 @@
+{% sw_extends '@Storefront/storefront/block/cms-block-gallery-buybox.html.twig' %}
+
+{% block block_gallery_buybox %}
+    {% set galleryWidthConfig = theme_config('zen-product-gallery-slider-width')|default(7) %}
+    {% set buyboxWidthConfig = theme_config('zen-product-gallery-slider-width') ? 12 - theme_config('zen-product-gallery-slider-width') : 5 %}
+
+    {% set stickyGallery = (theme_config('zen-product-gallery-sticky') is not null) ? theme_config('zen-product-gallery-sticky') : true %}
+    {% set stickyGalleryForced = (theme_config('zen-product-gallery-sticky-forced') is not null) ? theme_config('zen-product-gallery-sticky-forced') : true %}
+    {% set stickyBuybox = (theme_config('zen-product-details-buybox-sticky') is not null) ? theme_config('zen-product-details-buybox-sticky') : true %}
+    {% set stickyBuyboxForced = (theme_config('zen-product-details-buybox-sticky-forced') is not null) ? theme_config('zen-product-details-buybox-sticky-forced') : true %}
+
+    {% if galleryWidthConfig > 6 %}
+        {% set columns = 1 %}
+    {% else %}
+        {% set columns = 2 %}
+    {% endif %}
+
+    {% block block_gallery_buybox_column_left %}
+        {% set element = block.slots.getSlot('left') %}
+        {% set config = element.fieldConfig.elements %}
+
+        {# ... @zenit - sticky js options #}
+        {% set stickyOptions = {
+            forced: stickyGalleryForced,
+            checkHeight: (stickyGallery and stickyBuybox) ? false : true
+        } %}
+
+        <div class="col-lg-7 col-xl-{{ galleryWidthConfig }} product-detail-media"
+            {% if stickyGallery %}
+                data-zen-sticky="true"
+                data-zen-sticky-options="{{ stickyOptions|json_encode }}"
+            {% endif %}
+             data-cms-element-id="{{ element.id }}">
+            {# ... @zenit - add fallbackImageTitle #}
+            {% block block_gallery_buybox_column_left_inner %}
+                {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing
+                    with {
+                    isProduct: config.sliderItems.value == 'product.media' and config.sliderItems.source == 'mapped',
+                    startIndexThumbnails: 1,
+                    startIndexSlider: 1,
+                    fallbackImageTitle: page.product.translated.name
+                } %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+    {% block block_gallery_buybox_column_right %}
+        {% set element = block.slots.getSlot('right') %}
+
+        {# ... @zenit - sticky js options #}
+        {% set stickyOptions = {
+            forced: stickyBuyboxForced,
+            checkHeight: (stickyGallery and stickyBuybox) ? false : true
+        } %}
+
+        <div class="col-lg-5 col-xl-{{ buyboxWidthConfig }} product-detail-buy"
+             data-cms-element-id="{{ element.id }}"
+             {% if stickyBuybox %}
+                data-zen-sticky="true"
+                data-zen-sticky-options="{{ stickyOptions|json_encode }}"
+             {% endif %}
+        >
+            {{ block('block_gallery_buybox_column_right_inner') }}
+        </div>
+    {% endblock %}
+{% endblock %}

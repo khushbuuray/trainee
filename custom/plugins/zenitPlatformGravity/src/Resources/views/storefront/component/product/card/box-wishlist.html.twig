@@ -1,0 +1,54 @@
+{% sw_extends '@Storefront/storefront/component/product/card/box-wishlist.html.twig' %}
+
+{% block component_product_box_content %}
+    {{ sw_icon_cache_disable() }}
+
+    <div class="card-body card-body-wishlist">
+        {{ block('component_product_box_badges') }}
+
+        {{ block('component_product_box_image') }}
+
+        {% block component_product_box_wishlist_action %}{% endblock %}
+
+        {# ... @zenit - remove block component_product_box_wishlist here #}
+
+        {{ block('component_product_box_info') }}
+    </div>
+
+    {{ sw_icon_cache_enable() }}
+{% endblock %}
+
+{% block component_product_box_rating %}
+    {% if theme_config('zen-product-listing-card-rating-position') is same as ('default') %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block component_product_box_variant_characteristics %}
+    {% if theme_config('zen-product-listing-card-variant-characteristics') %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+ {% block component_product_box_action %}
+     {% if theme_config('zen-product-listing-card-actions') is not same as ('overlay') %}
+         {{ parent() }}
+     {% endif %}
+ {% endblock %}
+
+{% block zen_component_product_box_overlay_product_actions_inner %}
+    {# ... @zenit - add block component_product_box_wishlist here #}
+    {{ block('component_product_box_wishlist') }}
+
+    {{ parent() }}
+{% endblock %}
+
+{% block component_product_wishlist_remove_submit %}
+    <button type="submit"
+            class="btn product-wishlist-btn product-wishlist-btn-remove"
+            title="{{ 'listing.removeFromWishlist'|trans|sw_sanitize }}"
+            data-zen-toggle="tooltip"
+            data-bs-placement="{{ tooltipPlacement|default('left') }}">
+        {% sw_icon 'x' style { class: 'wishlist wishlist-remove', 'size': size, pack: 'solid' } %}
+    </button>
+{% endblock %}

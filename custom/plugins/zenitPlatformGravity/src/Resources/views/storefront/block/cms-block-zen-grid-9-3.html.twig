@@ -1,0 +1,12 @@
+{% block block_zen_grid_9_3 %}
+    {% block block_zen_grid_9_3_inner %}
+        {% sw_include '@zenitPlatformGravity/storefront/block/cms-block-zen-grid.html.twig' with {
+            elements: block.slots,
+            cols: {
+                md: [8,4],
+                lg: [9,3]
+            },
+            columns: 1
+        } %}
+    {% endblock %}
+{% endblock %}

@@ -1,0 +1,134 @@
+/*
+Basic styles
+==================================================
+Contains the imports to all basic styles.
+
+The file organization follows the 7-1 pattern architecture
+https://sass-guidelin.es/#the-7-1-pattern
+*/
+
+/*
+ * Variables, Mixins, Functions
+ * ----------------------------
+ * loaded in variables.scss because some mixins modify custom variables
+ * and need to be loaded first
+ *
+ */
+@import 'abstract/utilities/cms-utility-classes';
+@import 'abstract/utilities/utility-classes';
+
+/*
+ * Vendors
+ * ------- */
+
+/*
+ * Base stuff
+ * ---------- */
+@import 'base/root';
+@import 'base/font';
+@import 'base/base';
+@import 'base/typography';
+@import 'base/sticky';
+@import 'base/plugins';
+@import 'base/fixes';
+
+/*
+ * Components
+ * ---------- */
+@import 'component/alert';
+@import 'component/button';
+@import 'component/breadcrumb';
+@import 'component/backdrop';
+@import 'component/basic-captcha';
+@import 'component/delivery-status';
+@import 'component/input-group';
+@import 'component/forms';
+@import 'component/modal';
+@import 'component/magnifier';
+@import 'component/form-number';
+@import 'component/form-select';
+@import 'component/card';
+@import 'component/gallery-slider';
+@import 'component/offcanvas';
+@import 'component/line-item';
+@import 'component/loader';
+@import 'component/pagination';
+@import 'component/preloader';
+@import 'component/text-slider';
+@import 'component/payment-method';
+@import 'component/shipping-method';
+@import 'component/product-box';
+@import 'component/product-detail-content-scroller';
+@import 'component/product-detail-content-linear';
+@import 'component/product-detail-content-accordion';
+@import 'component/product-slider';
+@import 'component/product-wishlist';
+@import 'component/social';
+@import 'component/category-navigation';
+@import 'component/filter-panel';
+@import 'component/filter-multi-select';
+@import 'component/cms-sections';
+@import 'component/cms-block';
+@import 'component/cms-block-zen-gallery-description-heading-buybox';
+@import 'component/cms-element';
+@import 'component/cms-element-category-listing';
+@import 'component/cms-element-divider';
+@import 'component/cms-element-features';
+@import 'component/cms-element-grid-placeholder';
+@import 'component/cms-element-image-text-slider';
+@import 'component/cms-element-search-banner';
+@import 'component/cms-element-teaser';
+@import 'component/cms-element-text-banner';
+@import 'component/tab-menu';
+@import 'component/tables';
+@import 'component/base-slider';
+@import 'component/image-slider';
+@import 'component/quantity-input';
+@import 'component/quickview-modal';
+@import 'component/scroll-navigation';
+@import 'component/tooltip';
+@import 'component/zoom-modal';
+@import 'component/nav-scroller';
+
+/*
+ * Layout-related sections
+ * ----------------------- */
+@import 'layout/account-menu';
+@import 'layout/header';
+@import 'layout/header-inverted';
+@import 'layout/header-dark';
+@import 'layout/header-minimal';
+@import 'layout/header-light';
+@import 'layout/header-sticky';
+@import 'layout/footer';
+@import 'layout/top-bar';
+@import 'layout/main-navigation';
+@import 'layout/navigation-offcanvas';
+@import 'layout/navigation-flyout';
+@import 'layout/navigation-dropdown';
+@import 'layout/container';
+@import 'layout/offcanvas-cart';
+@import 'layout/offcanvas-top-bar';
+@import 'layout/background';
+@import 'layout/cookie-permission';
+@import 'layout/scroll-up';
+
+/*
+ * Page-specific styles
+ * -------------------- */
+@import 'page/account/aside';
+@import 'page/account/order';
+@import 'page/account/order-detail';
+@import 'page/checkout/aside';
+@import 'page/checkout/checkout';
+@import 'page/checkout/register';
+@import 'page/checkout/confirm';
+@import 'page/checkout/finish';
+@import 'page/checkout/cart';
+@import 'page/product-detail/product-detail';
+@import 'page/product-detail/cross-selling';
+@import 'page/product-detail/review';
+@import 'page/product-detail/tabs';
+@import 'page/product-detail/configurator';
+@import 'page/wishlist/wishlist';
+@import 'page/content/breadcrumb';

@@ -1,0 +1,160 @@
+{% block zen_element_features %}
+
+    {%  set config = element.fieldConfig.elements %}
+
+    {% set textValues = [] %}
+    {% set iconValues = [] %}
+    {% set itemsCount = [] %}
+
+    {% for item in config %}
+        {% if 'Icon' in item.name %}
+            {% set iconValues = iconValues|merge([item.value]) %}
+        {% elseif 'feature' in item.name %}
+            {% if item.value is not iterable %}
+                {% set textValues = textValues|merge([item.value]) %}
+            {% endif %}
+
+            {% if item.value is not empty and item.value is not iterable %}
+                {% set itemsCount = itemsCount|merge([item.value]) %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% set itemsCount = itemsCount|length %}
+    {% if itemsCount > 0 %}
+        {% set gridColumns = [] %}
+
+        {% if section and section.type == 'sidebar' %}
+            {% set gridColumns = ['col-12'] %}
+        {% else %}
+            {% set gridColumns = ['col-' ~ 12]|merge(gridColumns) %}
+            {% if itemsCount > 1 %}
+                {% set gridColumns = ['col-md-' ~ 12 / 2]|merge(gridColumns) %}
+                {% set gridColumns = ['col-lg-' ~ 12 / itemsCount]|merge(gridColumns) %}
+            {% endif %}
+        {% endif %}
+
+        {% set customClasses = config.customClasses.value %}
+
+        {% set elemClasses = [] %}
+        {% set elemClasses = config.appearance.value == 'iconsLeft' ? ['icon-align-left']|merge(elemClasses) : ['icon-align-top']|merge(elemClasses) %}
+
+        {% set elemStyles = {} %}
+        {% if config.appearance.value is same as ('iconsTop') %}
+            {% set elemStyles = elemStyles|merge({ 'flex-direction': 'column' }) %}
+            {% if config.alignment.value is same as ('start') %}
+                {% set elemStyles = elemStyles|merge({ 'align-items': 'flex-start' }) %}
+            {% elseif config.alignment.value is same as ('center') %}
+                {% set elemStyles = elemStyles|merge({ 'align-items': 'center' }) %}
+            {% elseif config.alignment.value is same as ('end') %}
+                {% set elemStyles = elemStyles|merge({ 'align-items': 'flex-end' }) %}
+            {% endif %}
+        {% else %}
+            {% if config.alignment.value is same as ('start') %}
+                {% set elemStyles = elemStyles|merge({ 'justify-content': 'flex-start' }) %}
+            {% elseif config.alignment.value is same as ('center') %}
+                {% set elemStyles = elemStyles|merge({ 'justify-content': 'center' }) %}
+            {% elseif config.alignment.value is same as ('end') %}
+                {% set elemStyles = elemStyles|merge({ 'justify-content': 'flex-end' }) %}
+            {% endif %}
+        {% endif %}
+
+        {% set iconStyles = {
+            width: config.iconSize.value,
+            height: config.iconSize.value,
+            'margin-bottom': config.appearance.value is same as ('iconsTop') ? (config.iconSize.value|number_format / 2) ~ 'px' : null,
+            'margin-right': config.appearance.value is not same as ('iconsTop') ? (config.iconSize.value|number_format / 2) ~ 'px' : null,
+            color: config.iconColor.value,
+            'align-self': config.appearance.value is same as ('iconsTop') ? {
+                start: 'flex-start',
+                center: 'center',
+                end: 'flex-end'
+            }[config.alignment.value] : null
+        } | filter(item => item is not null) %}
+
+        {% set textStyles = {
+            'text-align': {
+                start: 'left',
+                center: 'center',
+                end: 'right'
+            }[config.alignment.value],
+            'font-size': config.fontSize.value,
+            'font-weight': config.fontWeight.value,
+            color: config.textColor.value
+        } | filter(item => item is not null) %}
+
+        {% set textClasses = [] %}
+        {% set textClasses = ['zen-font-family-' ~ config.fontFamily.value]|merge(textClasses) %}
+
+        <style>
+            {% if elemStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .cms-element-{{ element.type }}-element {
+                    {% for property, value in elemStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+
+            {% if iconStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .icon-cms-element-zen-features-icon {
+                    {% for property, value in iconStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+
+            {% if textStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .cms-element-{{ element.type }}-text {
+                    {% for property, value in textStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+        </style>
+
+        <div id="cms-element-{{ element.type }}-{{ element.id }}"
+             class="cms-element-{{ element.type }}-{{ element.id }} cms-element-{{ element.type }} row {{ elemClasses|sort|join(' ') }} {{ customClasses }}">
+            {% block zen_element_features_inner %}
+                {% for item in textValues %}
+                    {% if item is not empty %}
+                        {% set content = item|raw %}
+
+                        {% set customIcons = [
+                            'chart-bar-pie',
+                            'recycle',
+                            'sync'
+                        ] %}
+
+                        {% block zen_element_features_item %}
+                            <div class="{{ gridColumns|join(' ') }}">
+                                <div class="cms-element-{{ element.type }}-element cms-element-inner">
+                                    {% block zen_element_features_item_icon %}
+                                        {% if iconValues[loop.index0] != 'none' %}
+                                            {% if iconValues[loop.index0] in customIcons %}
+                                                {% sw_include '@Storefront/storefront/utilities/icon.html.twig' with { name: iconValues[loop.index0], size: 'md', class: 'cms-element-zen-features-icon', pack: 'meteor', namespace: 'zenitPlatformGravity' } %}
+                                            {% else %}
+                                                {% sw_include '@Storefront/storefront/utilities/icon.html.twig' with { name: iconValues[loop.index0], size: 'md', class: 'cms-element-zen-features-icon'} %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endblock %}
+
+                                    {% block zen_element_features_item_text %}
+                                        <div class="cms-element-{{ element.type }}-text {{ textClasses|sort|join(' ') }}">
+                                            {% if config('zenitPlatformGravity.config.twigStringLoaderExtension') %}
+                                                {% sw_include '@zenitPlatformGravity/storefront/utilities/zen-template-from-string.html.twig' with {
+                                                    content: content
+                                                } %}
+                                            {% else %}
+                                                {{ content|raw }}
+                                            {% endif %}
+                                        </div>
+                                    {% endblock %}
+                                </div>
+                            </div>
+                        {% endblock %}
+                    {% endif %}
+                {% endfor %}
+            {% endblock %}
+        </div>
+    {% endif %}
+{% endblock %}

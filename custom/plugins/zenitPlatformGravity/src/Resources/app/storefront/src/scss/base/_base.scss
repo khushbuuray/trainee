@@ -1,0 +1,207 @@
+/*
+Base
+==================================================
+Contains global base styles for all pages and
+and the specific styles of the different layout modes
+*/
+
+body {
+    // override body colors here instead of overwriting $body-color in overrides.scss
+    // ... due to missing color-contrast function in overrides.scss
+    @if $zen-container-bg == transparent {
+        --#{$prefix}body-color: #{color-contrast($body-bg, $sw-text-color, $zen-light-text-color)};
+    } @else {
+        background-color: $body-bg;
+        --#{$prefix}body-bg: #{$zen-container-bg}; // --#{$prefix}body-bg should be $zen-container-bg to prevent color issues if for e.g. $zen-container-bg is light and $body-bg is a dark color
+        --#{$prefix}body-color: #{color-contrast($zen-container-bg, $sw-text-color, $zen-light-text-color)};
+    }
+
+    border-top: $zen-layout-border-top-width * 1px solid $zen-layout-border-top-color;
+    @include layout-horizontal-padding;
+    @include layout-vertical-padding;
+    overflow-x: hidden; // prevents horizontal scrolling e.g. crossselling cms pages without horizontal paddings
+}
+
+.top-bar,
+.nav-header,
+.main-navigation,
+.navigation-flyout,
+.container-main,
+.breadcrumb-container,
+.content-main,
+.product-detail-content,
+.product-detail-tabs,
+.footer-main,
+.footer-newsletter,
+.footer-bottom,
+.header-minimal {
+    > .container {
+        @include layout-container-horizontal-padding(px($zen-layout-container-spacing-left), px($zen-layout-container-spacing-right));
+    }
+}
+
+@if $zen-layout-style == "boxed" {
+    .is-lo-boxed {
+        .page-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: px($zen-layout-container-width);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .breadcrumb-wrap {
+            max-width: px($zen-layout-container-width);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        // ... additional paddings for boxed layouts footer,
+        // but only if there is any bg color on one of these cols
+        @if $zen-footer-hotline-column-bg != transparent
+            or $zen-footer-social-column-bg != transparent
+            or $zen-footer-newsletter-column-bg != transparent
+            or $zen-footer-custom-column-bg != transparent
+            or $zen-footer-custom-2-column-bg != transparent
+            or $zen-footer-custom-2-column-bg != transparent
+            or $zen-footer-payment-logos-column-bg != transparent
+            or $zen-footer-shipping-logos-column-bg != transparent {
+            .footer-columns {
+                @include layout-container-horizontal-padding(px($zen-layout-container-spacing-left), px($zen-layout-container-spacing-right));
+                @include layout-container-vertical-padding(px($zen-layout-container-spacing-top), px($zen-layout-container-spacing-bottom));
+            }
+        }
+
+        // ... full width cms section on boxed layout
+        .cms-page {
+            .cms-section,
+            .cms-section-default {
+                overflow: visible;
+
+                &.full-width {
+                    width: 100vw;
+                    position: relative;
+                    left: calc(-1 * (100vw - 100%) / 2);
+                }
+            }
+        }
+    }
+}
+
+@if $zen-layout-style == "full-width" {
+    .is-lo-full-width {
+        .container {
+            max-width: none;
+        }
+
+        .cms-page .cms-section .boxed {
+            max-width: px($zen-layout-container-width);
+        }
+    }
+}
+
+@if $zen-layout-style == "full-width-header" {
+    .is-lo-full-width-header {
+        .header-main,
+        .nav-main,
+        .header-minimal {
+            .container {
+                max-width: none;
+            }
+        }
+    }
+}
+
+@if $zen-layout-style == "full-width-header-footer" {
+    .is-lo-full-width-header-footer {
+        .header-main,
+        .nav-main,
+        .header-minimal,
+        .footer-main {
+            .container {
+                max-width: none;
+            }
+        }
+    }
+}
+
+.page-wrapper {
+    // ... otherwise the accent line would be covered by the absolutely positioned header
+    position: relative;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    // overflow-x: hidden; ... do not use overflow here because of position sticky elements
+}
+
+.content-main {
+    background: $zen-container-bg;
+}
+
+.container-main {
+    .is-not-cms & {
+        @include layout-container-vertical-padding(px($zen-layout-container-spacing-top), px($zen-layout-container-spacing-bottom));
+    }
+
+    .is-cms & {
+        padding-block: 0; // ... vertical paddings will be configured in the shopping experience blocks
+    }
+}
+
+.cms-section {
+    .boxed {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    // ... set horizontal paddings, if they are configured as auto in
+    // the shopping experience block layout margins
+    .cms-block-container {
+        @include layout-container-horizontal-padding(px($zen-layout-container-spacing-left), px($zen-layout-container-spacing-right));
+    }
+
+    &.cms-section-sidebar {
+        .cms-section-sidebar-sidebar-content {
+            .cms-block-container {
+                @include media-breakpoint-up(lg) {
+                    padding-right: px($zen-layout-container-spacing-right * .5);
+                }
+            }
+        }
+
+        .cms-section-sidebar-main-content {
+            .cms-block-container {
+                @include media-breakpoint-up(lg) {
+                    padding-left: px($zen-layout-container-spacing-left * .5);
+                }
+            }
+        }
+    }
+}
+
+// flashbags
+.flashbags {
+    overflow: hidden;  // prevent collapsing margins
+
+    .alert {
+        margin-top: $zen-grid-gutter-single-width;
+        margin-bottom: $zen-grid-gutter-single-width;
+    }
+}
+
+.header-pos-absolute ~ .content-main {
+    .flashbags {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1020;
+        max-width: none;
+
+        @if $zen-container-bg == transparent {
+            background: $body-bg;
+        } @else {
+            background: $zen-container-bg;
+        }
+    }
+}

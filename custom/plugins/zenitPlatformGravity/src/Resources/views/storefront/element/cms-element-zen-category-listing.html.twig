@@ -1,0 +1,304 @@
+{% block zen_element_category_listing %}
+    {% set config = element.fieldConfig.elements %}
+    {% set activeResult = page.header.navigation.active %}
+    {% set navigationTree = navigationTree ? navigationTree : page.header.navigation.tree %}
+    {% set serviceMenu = page.header.serviceMenu %}
+    {% set footerNavigationTree = page.footer.navigation.tree %}
+
+    {% if element.config.customEntryPoint.value === true %}
+        {% set customEntryPoint = element.config.category.value %}
+
+        {% macro recursiveCategory(navigationTree, customEntryPoint) %}
+            {% for treeItem in navigationTree %}
+                {% if customEntryPoint == treeItem.category.id %}
+                    {% set navigationTree = treeItem.children %}
+
+                    {% return navigationTree %}
+                {% endif %}
+
+                {% set childTree = _self.recursiveCategory(treeItem.children, customEntryPoint) %}
+                {% if childTree is not same as([]) %}
+                    {% return childTree %}
+                {% endif %}
+            {% endfor %}
+
+            {% return [] %}
+        {% endmacro %}
+
+        {% from _self import recursiveCategory %}
+
+        {# ... @zenit - first check if customEntryPoint is any menu entry point #}
+        {% if customEntryPoint == context.salesChannel.navigationCategoryId %}
+            {% set customNavigationTree = navigationTree %}
+        {% elseif customEntryPoint == context.salesChannel.footerCategoryId %}
+            {% set customNavigationTree = footerNavigationTree %}
+        {% elseif customEntryPoint == context.salesChannel.serviceCategoryId %}
+            {% set customNavigationTree = serviceMenu %}
+            {% set isServiceMenu = customNavigationTree ? true : false %}
+        {% endif %}
+
+        {# ... @zenit - customEntryPoint is not any menu entry point, let's search in the navigation tree #}
+        {% set customNavigationTree = customNavigationTree ?: recursiveCategory(navigationTree, customEntryPoint) %}
+
+        {# ... @zenit - customEntryPoint is not in the navigationTree, let's search the footer navigation tree #}
+        {% set customNavigationTree = customNavigationTree ?: recursiveCategory(footerNavigationTree, customEntryPoint) %}
+
+        {# ... @zenit - customEntryPoint is not in the footer navigation, let's search the service menu #}
+        {% if customNavigationTree is empty %}
+            {% set customNavigationTree = customNavigationTree ?: recursiveCategory(serviceMenu, customEntryPoint) %}
+            {% set isServiceMenu = customNavigationTree ? true : false %}
+        {% endif %}
+
+        {# ... @zenit - fallback to default navigationTree #}
+        {% if customNavigationTree is empty %}
+            {% set activeResultNavigationTree = navigationTree|filter(item => item.category.id === activeResult.id)|first %}
+            {% set customNavigationTree = controllerAction is same as ('home') ? navigationTree : activeResultNavigationTree.children %}
+        {% endif %}
+    {% else %}
+        {% set activeResultNavigationTree = navigationTree|filter(item => item.category.id === activeResult.id)|first %}
+        {% set customNavigationTree = controllerAction is same as ('home') ? navigationTree : activeResultNavigationTree.children %}
+    {% endif %}
+
+    {% if customNavigationTree is not empty %}
+        {% set configListingColumns = [
+            'col-' ~ 12 / config.itemsXS.value|default(1),
+            'col-sm-' ~ 12 / config.itemsSM.value|default(2),
+            'col-md-' ~ 12 / config.itemsMD.value|default(3),
+            'col-lg-' ~ 12 / config.itemsLG.value|default(3),
+            'col-xl-' ~ 12 / config.itemsXL.value|default(4),
+            'col-xxl-' ~ 12 / config.itemsXXL.value|default(4)
+        ] %}
+
+        {% set sidebar = sectionType === 'sidebar' %}
+
+        {% if sidebar %}
+            {% set configListingColumns = [
+                'col-' ~ 12 / config.itemsXS.value|default(1),
+                'col-sm-' ~ 12 / config.itemsSM.value|default(2),
+            ] %}
+        {% endif %}
+
+        {# ... @zenit - replace dot by underscore because of grid of five #}
+        {% set configListingColumns = configListingColumns|join(',')|replace({'.': '_'})|split(',') %}
+        {% set listingColumns = configListingColumns|join(' ') %}
+
+        {% set isColumnReverse = config.textPosition.value === 'next-to-image' and config.textHorizontalAlign.value === 'center' and config.textVerticalAlign.value === 'flex-start' %}
+        {% set isColumn = config.textPosition.value === 'next-to-image' and config.textHorizontalAlign.value === 'center' and config.textVerticalAlign.value === 'flex-end' %}
+        {% set isRowReverse = config.textPosition.value === 'next-to-image' and config.textHorizontalAlign.value === 'flex-start' %}
+        {% set isRow = config.textPosition.value === 'next-to-image' and config.textHorizontalAlign.value === 'flex-end' %}
+
+        {% set customClasses = config.customClasses.value %}
+
+        {% set elemClasses = [
+            'hover-text-' ~ config.textHover.value,
+            'hover-image-' ~ config.imageHover.value,
+            'is-text-' ~ config.textPosition.value
+        ] %}
+
+        {% set nameClasses = [
+            'zen-font-family-' ~ config.fontFamily.value
+        ] %}
+
+        {% set animationClasses = [
+            config.animationIn.value != 'none' ? 'animation-in-' ~ config.animationIn.value : null,
+            config.animationOut.value != 'none' ? 'animation-out-' ~ config.animationOut.value : null
+        ] | filter(item => item is not null) %}
+
+        {% set commonBorderRadius = config.imageBorderRadius.value ? config.imageBorderRadiusTopLeft.value ~ ' ' ~ config.imageBorderRadiusTopRight.value ~ ' ' ~ config.imageBorderRadiusBottomRight.value ~ ' ' ~ config.imageBorderRadiusBottomLeft.value : null %}
+
+        {% set gutterNumber = config.gutter.value|replace({ 'px': '' })|trim %}
+
+        {% if 'px' in config.gutter.value and gutterNumber|length > 0 %}
+            {% set gutterResult = gutterNumber * 2 ~ 'px' %}
+        {% else %}
+            {% set gutterResult = '0' %}
+        {% endif %}
+
+        {% set rowStyles = {
+            '--bs-gutter-x': gutterResult,
+            '--bs-gutter-y': gutterResult,
+        } | filter(item => item is not null) %}
+
+        {% set boxStyles = {
+            '--zen-cms-box-background-color': config.elementBackgroundColor.value ? config.elementBackgroundColor.value|default('transparent') : null,
+            '--zen-cms-box-border-width': config.elementBorder.value ? config.elementBorderWidth.value : null,
+            '--zen-cms-box-border-style': config.elementBorder.value ? config.elementBorderStyle.value : null,
+            '--zen-cms-box-border-color': config.elementBorder.value ? config.elementBorderColor.value : null,
+            '--zen-cms-box-border-radius': config.elementBorderRadius.value ? config.elementBorderRadiusTopLeft.value ~ ' ' ~ config.elementBorderRadiusTopRight.value ~ ' ' ~ config.elementBorderRadiusBottomRight.value ~ ' ' ~ config.elementBorderRadiusBottomLeft.value : null,
+            '--zen-cms-box-box-shadow-color': config.elementBackgroundColor.value ? config.elementBackgroundColor.value|default('transparent') : null,
+            '--zen-cms-box-padding': config.elementPaddings.value ? config.elementPaddingTop.value ~ ' ' ~ config.elementPaddingRight.value ~ ' ' ~ config.elementPaddingBottom.value ~ ' ' ~ config.elementPaddingLeft.value : null,
+        } | filter(item => item is not null) %}
+
+        {% set cardStyles = {
+            '--zen-cms-card-flex-direction': (
+                isColumnReverse ? 'column-reverse' :
+                isColumn ? 'column' :
+                isRowReverse ? 'row-reverse' :
+                isRow ? 'row' :
+                null
+            ),
+            '--zen-cms-card-border-radius': commonBorderRadius,
+        } | filter(item => item is not null) %}
+
+        {% set imgStyles = {
+            '--zen-cms-img-object-position': config.imageHorizontalAlign.value|default('center') ~ ' ' ~ config.imageVerticalAlign.value|default('center')
+        } | filter(item => item is not null) %}
+
+        {% set imgContainerStyles = {
+            '--zen-cms-img-container-border-radius': commonBorderRadius,
+            'min-height': (config.minHeight.value and config.textPosition.value !== 'next-to-image' and config.layout.value !== 'text') ? config.minHeight.value : null,
+            'height': (config.minHeight.value and config.textPosition.value === 'next-to-image') ? config.minHeight.value : null,
+            'flex': (isRow or isRowReverse) ? '1 1 auto' : null
+        } | filter(item => item is not null) %}
+
+        {% set overlayStyles = {
+            '--zen-cms-overlay-background-color': config.overlay.value ? config.overlayColor.value|default('transparent') : null,
+            '--zen-cms-overlay-opacity': config.overlay.value ? config.overlayOpacity.value|default('0%') : null,
+            '--zen-cms-overlay-border-radius': config.overlay.value and config.imageBorderRadius.value ? commonBorderRadius : null,
+            'background': config.gradientOverlay.value ? 'linear-gradient(' ~ config.gradientAngle.value ~ ',' ~ config.overlayColor.value|default('transparent')  ~ ', transparent)'
+        } | filter(item => item is not null) %}
+
+        {% set labelContainerStyles = {
+            '--zen-cms-label-container-min-height': (config.minHeight.value and config.textPosition.value !== 'next-to-image' and config.layout.value !== 'text' ) ? config.minHeight.value : null,
+            '--zen-cms-label-container-align-items': config.textVerticalAlign.value|default('flex-start'),
+            '--zen-cms-label-container-justify-content': config.textHorizontalAlign.value|default('flex-start'),
+            '--zen-cms-label-container-flex': (config.textMinWidth.value or config.textMaxWidth.value) ? '0 0 auto' : '1'
+        } | filter(item => item is not null) %}
+
+        {% set labelStyles = {
+            '--zen-cms-label-font-size-max': config.fontSize.value,
+            '--zen-cms-label-border-radius': config.textBorderRadius.value ? config.textBorderRadiusTopLeft.value ~ ' ' ~ config.textBorderRadiusTopRight.value ~ ' ' ~ config.textBorderRadiusBottomRight.value ~ ' ' ~ config.textBorderRadiusBottomLeft.value : null,
+            '--zen-cms-label-padding': config.textPaddings.value ? config.textPaddingTop.value ~ ' ' ~ config.textPaddingRight.value ~ ' ' ~ config.textPaddingBottom.value ~ ' ' ~ config.textPaddingLeft.value : null,
+            '--zen-cms-label-color': config.textColor.value,
+            '--zen-cms-label-background-color': config.textBackgroundColor.value,
+            '--zen-cms-label-backdrop-filter': config.textBackgroundBlur.value ? "blur(#{config.textBackgroundBlur.value})" : null,
+            '--zen-cms-label-text-align': config.textAlign.value,
+            '--zen-cms-label-font-weight': config.fontWeight.value,
+            width: ((isRow or isRowReverse) and (config.textMinWidth.value or config.textMaxWidth.value)) ? '100%' : null
+        } | filter(item => item is not null) %}
+
+        {% set textConditionalStyles = {
+            margin: config.textMargins.value ? config.textMarginTop.value ~ ' ' ~ config.textMarginRight.value ~ ' ' ~ config.textMarginBottom.value ~ ' ' ~ config.textMarginLeft.value : null,
+            width: config.textMinWidth.value and config.textMaxWidth.value ? 'clamp(' ~ config.textMinWidth.value ~ ', 50%, ' ~ config.textMaxWidth.value ~ ')' : config.textMinWidth.value ? config.textMinWidth.value : null,
+            'max-width': config.textMinWidth.value ? null : config.textMaxWidth.value
+        } | filter(item => item is not null) %}
+
+        {% if isRow or isRowReverse %}
+            {% set labelContainerStyles = labelContainerStyles|merge(textConditionalStyles) %}
+        {% else %}
+            {% set labelStyles = labelStyles|merge(textConditionalStyles) %}
+        {% endif %}
+
+        <style>
+            {% if rowStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .cms-listing-row {
+                    {% for property, value in rowStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+
+            {% if boxStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .category-listing-box {
+                    {% for property, value in boxStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+
+            {% if cardStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .category-listing-box .card-body {
+                    {% for property, value in cardStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+
+            {% if imgContainerStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .category-listing-image-container {
+                    {% for property, value in imgContainerStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+
+            {% if imgStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .category-listing-image {
+                    {% for property, value in imgStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+
+            {% if overlayStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .category-listing-overlay {
+                    {% for property, value in overlayStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+
+            {% if labelContainerStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .category-listing-label-container {
+                    {% for property, value in labelContainerStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+
+            {% if labelStyles %}
+                .cms-element-{{ element.type }}-{{ element.id }} .category-listing-label {
+                    {% for property, value in labelStyles %}
+                        {{ property }}: {{ value }};
+                    {% endfor %}
+                }
+            {% endif %}
+
+            .cms-element-{{ element.type }}-{{ element.id }} .icon-category-listing {
+                width: {{ config.fontSize.value }};
+                height: {{ config.fontSize.value }};
+                color: {{ config.textColor.value }};
+            }
+
+            .cms-element-{{ element.type }}-{{ element.id }} .hover-text-distance-arrow .category-listing-name {
+                padding-right: {{ config.fontSize.value }};
+            }
+
+            .cms-element-{{ element.type }}-{{ element.id }} .hover-text-distance-arrow:hover .category-listing-name {
+                padding-right: calc( {{ config.fontSize.value }} + 10px );
+            }
+
+            .cms-element-{{ element.type }}-{{ element.id }} .hover-text-distance-arrow .icon-category-listing {
+                left: calc(100% - {{ config.fontSize.value }} - {{ config.textPaddingRight.value }})
+            }
+
+            .cms-element-{{ element.type }}-{{ element.id }} .hover-text-show-arrow:hover .category-listing-name {
+                padding-right: {{ config.fontSize.value }};
+            }
+
+            .cms-element-{{ element.type }}-{{ element.id }} .hover-text-show-arrow:hover .icon-category-listing {
+                left: calc(100% - {{ config.fontSize.value }} - {{ config.textPaddingRight.value }})
+            }
+        </style>
+
+        {% block zen_element_category_listing_wrapper %}
+            {% sw_include '@zenitPlatformGravity/storefront/component/listing/zen-category-listing.html.twig' with {
+                navigationTree: customNavigationTree,
+                listingColumns: listingColumns,
+            } %}
+        {% endblock %}
+    {% else %}
+        {% block zen_element_category_listing_recoursion %}
+            {% for treeItem in navigationTree %}
+                {% if treeItem.children %}
+                    {% sw_include '@zenitPlatformGravity/storefront/element/cms-element-zen-category-listing.html.twig' with {
+                        navigationTree: treeItem.children,
+                        listingColumns: listingColumns,
+                        page: page,
+                        element: element
+                    } only %}
+                {% endif %}
+            {% endfor %}
+        {% endblock %}
+    {% endif %}
+{% endblock %}

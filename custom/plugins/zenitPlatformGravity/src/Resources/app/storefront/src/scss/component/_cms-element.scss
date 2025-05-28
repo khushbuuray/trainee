@@ -1,0 +1,132 @@
+/*
+CMS elements
+==============================================
+General styling for cms elements
+*/
+.cms-element-image-gallery {
+    .cms-element-alignment {
+        width: 100%; // is needed so that the gallery is initialized correctly, because images are absolute positioned
+    }
+}
+
+.cms-element-product-slider {
+    .cms-element-alignment {
+        width: 100%; // needed to prevent product slider from overflowing other elements.
+    }
+
+    .cms-element-title {
+        @include headline-color-contrast;
+        font-family: $sw-font-family-headline;
+        font-size: 1.5rem;
+    }
+}
+
+.cms-element-text {
+    .cms-element-alignment {
+        width: 100%; // is needed so that the content of the editor can be centered horizontally
+    }
+
+    hr {
+        opacity: 1;
+        border-color: rgba(0,0,0,.1);
+    }
+}
+
+.cms-element-product-box {
+    height: 100%; // needed for equal height product-box
+}
+
+.cms-element-text,
+.cms-element-image,
+.cms-element-product-box,
+.cms-element-buy-box,
+.cms-element-product-slider,
+.cms-element-image-slider,
+.cms-element-product-description-reviews,
+.cms-element-image-gallery {
+
+    // ... needed to make bootstrap responsive tables work
+    [class*="table-responsive"] {
+        word-break: initial;
+    }
+}
+
+.cms-element-product-listing-wrapper {
+    &:not(.no-sorting):not(.no-filter) {
+        .cms-element-product-listing-actions {
+            position: relative;
+
+            @if $zen-product-listing-actions-border-top == 1 {
+                padding-top: $spacer-lg;
+
+                &::before {
+                    content: '';
+                    position: absolute;
+                    left: $zen-grid-gutter-single-width;
+                    right: $zen-grid-gutter-single-width;
+                    height: 1px;
+                    background: $zen-product-listing-actions-border-top-color;
+                    bottom: 100%;
+                }
+            }
+
+            @if $zen-product-listing-actions-border-bottom == 1 {
+                padding-bottom: $spacer-lg;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    left: $zen-grid-gutter-single-width;
+                    right: $zen-grid-gutter-single-width;
+                    height: 1px;
+                    background: $zen-product-listing-actions-border-bottom-color;
+                    top: 100%;
+                }
+            }
+        }
+    }
+}
+
+.cms-block-product-heading {
+    .cms-row {
+        --#{$zen-prefix}gutter-y: 0;
+    }
+}
+
+.cms-element-product-listing {
+    .cms-listing-row {
+        @if $zen-product-listing-card-padding <= 8 {
+            margin-top: $spacer-lg;
+            margin-bottom: $spacer-lg;
+        } @else if $zen-product-listing-card-padding <= 16 {
+            margin-top: $spacer-sm;
+            margin-bottom: $spacer-sm;
+        }
+    }
+
+    @media (max-width: 374px) {
+        .cms-listing-col {
+            &.col-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+    }
+}
+
+.cms-element-youtube-video {
+    &__backdrop {
+        @extend .video-backdrop;
+    }
+
+    &__placeholder {
+        color: $sw-text-color;
+    }
+}
+
+[class^="cms-element-zen"],
+[class^="cms-element-text"] {
+    .btn + .btn {
+        margin: $spacer-xs;
+    }
+}

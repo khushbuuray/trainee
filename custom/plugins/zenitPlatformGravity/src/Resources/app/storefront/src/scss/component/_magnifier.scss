@@ -1,0 +1,10 @@
+.magnifier-zoom-image {
+    @if $zen-product-details-bg != transparent {
+        background-color: $zen-product-details-bg;
+    } @else if $zen-container-bg != transparent {
+        background-color: $zen-container-bg;
+    } @else {
+        background-color: $sw-background-color;
+    }
+}
+

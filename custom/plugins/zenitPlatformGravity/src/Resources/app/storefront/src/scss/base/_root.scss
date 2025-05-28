@@ -1,0 +1,57 @@
+:root {
+    --#{$zen-prefix}viewport-width: calc(100vw - (100vw - 100%));
+    --#{$zen-prefix}layout-container-width: #{px($zen-layout-container-width)};
+    --#{$zen-prefix}layout-button-radius: #{px($zen-layout-button-radius)};
+    --#{$zen-prefix}layout-input-radius: #{px($zen-layout-input-radius)};
+    --#{$zen-prefix}layout-element-radius: #{px($zen-layout-element-radius)};
+
+    // Colors
+    //
+    // Generate palettes for full colors, grays, and theme colors.
+    --#{$zen-prefix}color-brand-primary: #{$sw-color-brand-primary};
+    --#{$zen-prefix}color-brand-secondary: #{$sw-color-brand-secondary};
+    --#{$zen-prefix}border-color: #{$sw-border-color};
+    --#{$zen-prefix}background-color: #{$sw-background-color};
+    --#{$zen-prefix}container-bg: #{$zen-container-bg};
+    --#{$zen-prefix}meta-theme-color: #{$zen-meta-theme-color};
+    --#{$zen-prefix}text-color: #{$sw-text-color};
+    --#{$zen-prefix}light-text-color: #{$zen-light-text-color};
+    --#{$zen-prefix}headline-color: #{$sw-headline-color};
+    --#{$zen-prefix}light-headline-color: #{$zen-light-headline-color};
+    --#{$zen-prefix}color-price: #{$sw-color-price};
+    --#{$zen-prefix}color-buy-button: #{$sw-color-buy-button};
+    --#{$zen-prefix}color-buy-button-text: #{$sw-color-buy-button-text};
+    --#{$zen-prefix}gray-100: #{$gray-100};
+    --#{$zen-prefix}gray-200: #{$gray-200};
+    --#{$zen-prefix}gray-300: #{$gray-300};
+    --#{$zen-prefix}gray-400: #{$gray-400};
+    --#{$zen-prefix}gray-500: #{$gray-500};
+    --#{$zen-prefix}gray-600: #{$gray-600};
+    --#{$zen-prefix}gray-700: #{$gray-700};
+    --#{$zen-prefix}gray-800: #{$gray-800};
+    --#{$zen-prefix}gray-900: #{$gray-900};
+
+    // Typography
+    --#{$zen-prefix}font-family-base: #{inspect($sw-font-family-base)};
+    --#{$zen-prefix}font-family-headline: #{inspect($sw-font-family-headline)};
+
+    // Sizes
+    --#{$zen-prefix}font-size-scale: 4vw;
+    --#{$zen-prefix}font-size-min: .5rem;
+    --#{$zen-prefix}font-size-max: #{$font-size-base};
+    --#{$zen-prefix}font-size-base: #{$font-size-base};
+    --#{$zen-prefix}h1-font-size: #{$h1-font-size};
+    --#{$zen-prefix}h2-font-size: #{$h2-font-size};
+    --#{$zen-prefix}h3-font-size: #{$h3-font-size};
+    --#{$zen-prefix}h4-font-size: #{$h4-font-size};
+    --#{$zen-prefix}h5-font-size: #{$h5-font-size};
+    --#{$zen-prefix}h6-font-size: #{$h6-font-size};
+
+    // Weights
+    --#{$zen-prefix}font-weight-base: #{$font-weight-base};
+    --#{$zen-prefix}headings-font-weight: #{$font-weight-base};
+
+    // Theme information
+    --#{$zen-prefix}theme: 'gravity';
+    --#{$zen-prefix}version: 'v4.4.1';
+}

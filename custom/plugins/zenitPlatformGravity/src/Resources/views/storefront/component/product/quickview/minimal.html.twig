@@ -1,0 +1,298 @@
+{% sw_extends '@Storefront/storefront/component/product/quickview/minimal.html.twig' %}
+
+{# @var product \Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity #}
+{% set product = page.product %}
+
+{% block component_product_quickview_minimal %}
+    {% set name = product.translated.name %}
+    {% set manufacturer = product.manufacturer %}
+
+    {# ... @zenit - fallbacks for older child-themes without these configs #}
+    {% set productDetailRatingPosition = theme_config('zen-product-details-rating-position')|default('default') %}
+    {% set productDetailRatingMode = theme_config('zen-product-details-rating-mode')|default('default') %}
+    {% set productDetailWishlistPosition = theme_config('zen-product-details-wishlist-position')|default('default') %}
+    {% set productDetailManufacturerPosition = theme_config('zen-product-details-manufacturer-position')|default('default') %}
+    {% set detailHeadlinePosition = (theme_config('zen-quickview-product-name-position') is not null) ? theme_config('zen-quickview-product-name-position') : 'buybox' %}
+
+    {% set quickviewConfig = {
+        elementId: 'zenitQuickview'
+    } %}
+
+    <div id="zenitQuickview"
+         class="quickview-minimal-container container"
+         data-zen-quickview="true"
+         data-zen-quickview-variant-switch="true"
+         data-zen-quickview-variant-switch-options='{{ quickviewConfig|json_encode }}'>
+
+        {% if detailHeadlinePosition == 'default' %}
+            {% block zen_component_product_quickview_minimal_product_detail_headline %}
+                <div class="row product-detail-headline">
+
+                    {% if productDetailRatingPosition is same as ('headline') %}
+                        {% block zen_component_product_quickview_minimal_product_detail_reviews %}
+                            {% if config('core.listing.showReview') %}
+                                {% if productDetailRatingMode is same as ('placeholder') %}
+                                    <div class="{% if productDetailRatingPosition is same as ('headline') %}{% if productDetailManufacturerPosition is same as ('top') %}col-auto {% else%}col-12 {% endif %}{% endif %}product-detail-review-container">
+                                        <span class="product-detail-reviews">
+                                            {% sw_include '@Storefront/storefront/component/review/rating.html.twig' with {
+                                                points: product.ratingAverage,
+                                                style: 'text-primary'
+                                            } %}
+                                        </span>
+                                    </div>
+                                {% else %}
+                                    {% if product.ratingAverage %}
+                                        <div class="{% if productDetailManufacturerPosition is same as ('top') %}col-auto {% else%}col-12 {% endif %}product-detail-review-container">
+                                            <span class="product-detail-reviews">
+                                                {% sw_include '@Storefront/storefront/component/review/rating.html.twig' with {
+                                                    points: product.ratingAverage,
+                                                    style: 'text-primary'
+                                                } %}
+                                            </span>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% endblock %}
+                    {% endif %}
+
+                    {% if productDetailManufacturerPosition is same as ('top') %}
+                        {% block component_product_quickview_minimal_product_manufacturer %}
+                            {% if manufacturer %}
+                                {% set manufacturerElement %}
+                                    {% if manufacturer.media %}
+                                        {% sw_thumbnails 'quickview-minimal-product-manufacturer-logo' with {
+                                            media: manufacturer.media,
+                                            sizes: {
+                                                'default': '200px'
+                                            },
+                                            attributes: {
+                                                class: 'quickview-minimal-product-manufacturer-logo',
+                                                alt: ( manufacturer.translated.name|default(''))
+                                            }
+                                        } %}
+                                    {% else %}
+                                        {{ manufacturer.translated.name }}
+                                    {% endif %}
+                                {% endset %}
+
+                                <div class="col-auto product-detail-manufacturer">
+                                    {% if manufacturer.link %}
+                                        <a href="{{ manufacturer.link }}"
+                                           {% if '://' in manufacturer.link %}target="_blank" rel="noreferrer noopener"{% endif %}
+                                           title="{{ manufacturer.translated.name }}"
+                                           class="quickview-minimal-product-manufacturer">
+                                            {{ manufacturerElement }}
+                                        </a>
+                                    {% else %}
+                                        {{ manufacturerElement }}
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endblock %}
+                    {% endif %}
+
+                    {% block component_product_quickview_minimal_product_name %}
+                        <div class="{% if productDetailManufacturerPosition is same as ('default') %}col {% else%}col-12 {% endif %}product-detail-name-container">
+                            <a href="{{ seoUrl('frontend.detail.page', {'productId': product.id}) }}"
+                               title="{{ name }}"
+                               class="h4 quickview-minimal-product-name">
+                                {{ name }}
+                            </a>
+
+                            {# ... @zenit - add variant characteristics #}
+                            {% block component_product_quickview_minimal_variant_characteristics %}
+                                {% if theme_config('zen-product-details-variant-characteristics') %}
+                                    <div class="product-variant-characteristics">
+                                        {% for variation in product.variation %}
+                                            {{ variation.group }}:
+                                            <span class="product-variant-characteristics-option">
+                                                {{ variation.option }}
+                                            </span>
+
+                                            {% if product.variation|last != variation %}
+                                                {{ " | " }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endblock %}
+                        </div>
+                    {% endblock %}
+
+                    {% if productDetailManufacturerPosition is same as ('default') %}
+                        {{ block('component_product_quickview_minimal_product_manufacturer') }}
+                    {% endif %}
+                </div>
+            {% endblock %}
+        {% endif %}
+
+        {% block component_product_quickview_minimal_top %}
+            <div class="row quickview-minimal-top">
+                {% block component_product_quickview_minimal_img %}
+                    <div class="col-12 col-lg-7 quickview-minimal-image">
+                        {% if product.media %}
+                            {% set mediaItems = product.media.media %}
+
+                            {# ... @zenit - these settings are only available on default product-pages (non-cms product pages) #}
+                            {% set displayModeConfig = theme_config('zen-product-gallery-slider-display-mode')|default('contain') %}
+
+                            {% sw_include '@Storefront/storefront/element/cms-element-image-gallery.html.twig' with {
+                                mediaItems: mediaItems,
+                                zoom: true,
+                                zoomModal: false,
+                                displayMode: displayModeConfig,
+                                gutter: 5,
+                                minHeight: '430px',
+                                navigationArrows: 'inside',
+                                navigationDots: 'inside',
+                                galleryPosition: 'left',
+                                isProduct: true,
+                                fallbackImageTitle: product.translated.name,
+                                startIndexThumbnails: product.cover.position + 1,
+                                startIndexSlider: product.cover.position + 1
+                            } %}
+                        {% endif %}
+                    </div>
+                {% endblock %}
+
+                {% block component_product_quickview_minimal_product %}
+                    <div class="col-12 col-lg-5 quickview-minimal-product js-magnifier-zoom-image-container">
+
+                        {% if detailHeadlinePosition == 'buybox' %}
+                            {{ block('zen_component_product_quickview_minimal_product_detail_headline') }}
+                        {% endif %}
+
+                        {% block component_product_quickview_minimal_product_number %}{% endblock %}
+
+                        {% block zen_component_product_quickview_minimal_product_description %}
+                            {% if product.translated.description %}
+                                <p class="quickview-minimal-product-short-description">
+                                    {{ product.translated.description|raw|striptags|sw_sanitize|u.truncate(180, '…') }}
+                                </p>
+                            {% endif %}
+                        {% endblock %}
+
+                        {% block zen_component_product_quickview_minimal_product_detail_price %}
+                            {# ... @zenit - add compatibility with NetiNextAccessManager #}
+                            {% if not page.netiAMblockedPrices %}
+                                <div class="product-detail-price-container">
+                                    {% sw_include '@Storefront/storefront/component/buy-widget/buy-widget-price.html.twig' %}
+                                </div>
+                            {% endif %}
+                        {% endblock %}
+
+                        {% block zen_component_product_quickview_minimal_product_tax %}
+                            {# ... @zenit - add compatibility with NetiNextAccessManager #}
+                            {% if not page.netiAMblockedPrices %}
+                                <div class="product-detail-tax-container">
+                                    {% if context.taxState == "gross" %}
+                                        {% set taxText = 'general.grossTaxInformation'|trans|sw_sanitize %}
+                                    {% else %}
+                                        {% set taxText = 'general.netTaxInformation'|trans|sw_sanitize %}
+                                    {% endif %}
+
+                                    <p class="product-detail-tax">
+                                        {% block page_product_detail_tax_link %}
+                                            <a class="product-detail-tax-link"
+                                               href="{{ path('frontend.cms.page',{ id: config('core.basicInformation.shippingPaymentInfoPage') }) }}"
+                                               title="{{ taxText }}"
+                                               data-ajax-modal="true"
+                                               data-url="{{ path('frontend.cms.page',{ id: config('core.basicInformation.shippingPaymentInfoPage') }) }}">
+                                                {{ taxText }}
+                                            </a>
+                                        {% endblock %}
+                                    </p>
+                                </div>
+                            {% endif %}
+                        {% endblock %}
+
+                        {% if productDetailRatingPosition is same as ('default') %}
+                            {{ block('zen_component_product_quickview_minimal_product_detail_reviews') }}
+                        {% endif %}
+
+                        {% block zen_component_product_quickview_minimal_product_detail_delivery_informations %}
+                            <div class="product-detail-delivery-information">
+                                {% sw_include '@Storefront/storefront/component/delivery-information.html.twig' %}
+                            </div>
+                        {% endblock %}
+
+                        {% block zen_component_product_quickview_minimal_product_detail_configurator_include %}
+                            {% if context.context.extensions['zenitPlatformGravity'].system is defined and page.product.parentId and page.configuratorSettings|length > 0 %}
+                                <div class="product-detail-configurator-container">
+                                    {# ... @zenit - add quickviewContext to enable configurator config in configurator.html.twig #}
+                                    {% sw_include '@Storefront/storefront/component/buy-widget/configurator.html.twig' with {
+                                        quickviewContext: true,
+                                        configuratorSettings: page.configuratorSettings
+                                    } %}
+                                </div>
+                            {% endif %}
+                        {% endblock %}
+
+                        {% set isAvailable = not product.isCloseout or (product.availableStock >= product.minPurchase) %}
+                        {% set displayBuyButton = isAvailable and product.childCount <= 0 %}
+
+                        {# ...@zenit - app system only can not change variants. So variants should have details button,
+                        if variants are configurated to be displayed with a detail button #}
+                        {% if context.context.extensions['zenitPlatformGravity'].system is not defined %}
+                            {% if page.configuratorSettings|length > 0 %}
+                                {% set displayBuyButton = false %}
+                            {% endif %}
+                        {% endif %}
+
+                        {% if displayBuyButton is same as (false) %}
+                            {% block zen_component_product_quickview_minimal_variant_detail %}
+                                <div class="product-detail-form-container d-grid">
+                                    <a href="{{ seoUrl('frontend.detail.page', {'productId': product.id}) }}"
+                                       class="btn btn-light btn-detail"
+                                       title="{{ 'listing.boxProductDetails'|trans|striptags }}">
+                                        {{ 'listing.boxProductDetails'|trans|sw_sanitize }}
+                                    </a>
+                                </div>
+                            {% endblock %}
+                        {% else %}
+                            {% block zen_component_product_quickview_minimal_product_detail_buy_form %}
+                                {% set bstConfig = context.context.extensions.BstCatalogMode6.config %}
+                                {# ... @zenit - add compatibility with NetiNextAccessManager, add compatibility with BstCatalogMode6 #}
+                                {% if not page.netiAMblockedPrices and bstConfig.disableCheckout == false %}
+                                    {# ... @zenit - include custom zen-quickview-buy-widget-form.html.twig because of checkout add to cart redirect #}
+                                    {% if page.product.active %}
+                                        <div class="product-detail-form-container">
+                                            {% sw_include '@zenitPlatformGravity/storefront/component/product/quickview/zen-quickview-buy-widget-form.html.twig' with {
+                                                quickviewContext: true
+                                            } %}
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endblock %}
+                        {% endif %}
+
+                        {% if config('core.cart.wishlistEnabled') %}
+                            {% block zen_component_product_quickview_minimal_product_detail_wishlist %}
+                                {% if productDetailWishlistPosition is same as ('default') %}
+                                    {% sw_include '@Storefront/storefront/component/product/card/wishlist.html.twig' with {
+                                        showText: true,
+                                        size: 'md',
+                                        productId: page.product.id
+                                    } %}
+                                {% endif %}
+                            {% endblock %}
+                        {% endif %}
+                    </div>
+                {% endblock %}
+            </div>
+        {% endblock %}
+
+        {% block component_product_quickview_minimal_footer %}
+            <div class="quickview-minimal-footer d-grid">
+                {% block zen_component_product_quickview_minimal_action_detail %}
+                    <a href="{{ seoUrl('frontend.detail.page', {'productId': product.id}) }}"
+                       class="btn btn-light btn-detail"
+                       title="{{ 'listing.boxProductDetails'|trans|striptags }}">
+                        {{ 'listing.boxProductDetails'|trans|sw_sanitize }}
+                    </a>
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

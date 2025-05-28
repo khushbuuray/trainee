@@ -1,0 +1,53 @@
+@if $zen-checkout-layout == "two-column" {
+    .is-act-checkoutregisterpage {
+        .login-card,
+        .register-card {
+            margin: $spacer-xl auto;
+        }
+
+        .login-card {
+            .login-form {
+                max-width: 400px;
+                margin-top: $spacer-xl;
+            }
+
+            .form-group {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+    }
+
+    .address-main-header-separator {
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        margin: $spacer-xl 0;
+        font-weight: $font-weight-bold;
+
+        span {
+            display: inline-block;
+            vertical-align: baseline;
+            zoom: 1;
+            position: relative;
+            padding: 0 20px;
+
+            &::before, &::after {
+                content: '';
+                display: block;
+                width: 1000px;
+                position: absolute;
+                top: 0.73em;
+                border-top: 1px solid $sw-border-color;
+            }
+
+            &::before {
+                right: 100%;
+            }
+
+            &::after {
+                left: 100%;
+            }
+        }
+    }
+}

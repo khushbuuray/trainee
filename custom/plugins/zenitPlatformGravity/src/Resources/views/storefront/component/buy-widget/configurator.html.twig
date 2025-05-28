@@ -1,0 +1,19 @@
+{% sw_extends '@Storefront/storefront/component/buy-widget/configurator.html.twig' %}
+
+{% block buy_widget_configurator_form %}
+    {% if quickviewContext and context.context.extensions['zenitPlatformGravity'].system is defined %}
+        {% set config = {
+            url: url('widgets.zenit.PlatformGravity.quickview.variant', { productId: page.product.parentId }),
+            elementId: 'zenitQuickview'
+        } %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}
+
+{% block buy_widget_configurator_option %}
+    {% set configuratorTooltips = (theme_config('zen-product-details-configurator-tooltips') is not null) ? theme_config('zen-product-details-configurator-tooltips') : true %}
+    <div class="product-detail-configurator-option{% if configuratorTooltips %} has-tooltips{% endif %}">
+        {{ block('buy_widget_configurator_option_radio') }}
+    </div>
+{% endblock %}

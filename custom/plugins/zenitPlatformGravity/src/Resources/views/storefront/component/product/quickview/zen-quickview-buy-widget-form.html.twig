@@ -1,0 +1,29 @@
+{% sw_extends '@Storefront/storefront/component/buy-widget/buy-widget-form.html.twig' %}
+
+{% block buy_widget_buy_form_inner %}
+    {# ... @zenit - change add to cart plugin to prevent calling on confirm pages #}
+    <form id="productDetailPageBuyProductForm"
+        action="{{ formAction }}"
+        method="post"
+        class="buy-widget"
+        data-zen-add-to-cart="true">
+        {% set DOWNLOAD_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_DOWNLOAD') %}
+        {% set showQuantitySelect = not product.states is defined or DOWNLOAD_STATE not in product.states or (DOWNLOAD_STATE in product.states and product.maxPurchase !== 1) %}
+        {% set buyable = product.available and product.childCount <= 0 and product.calculatedMaxPurchase > 0 %}
+
+        {{ block('buy_widget_buy_container') }}
+    </form>
+{% endblock %}
+
+
+{% block buy_widget_buy_redirect_input %}
+    {# fallback redirect back to detail page is deactivated via js #}
+    <input type="hidden"
+           name="redirectTo"
+           value="frontend.checkout.confirm.page">
+
+    <input type="hidden"
+           name="redirectParameters"
+           data-redirect-parameters="true"
+           value="{{ {productId: product.id}|json_encode }}">
+{% endblock %}

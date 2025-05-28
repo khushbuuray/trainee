@@ -1,0 +1,45 @@
+/*
+ * Bugfixes
+ * ---------- */
+// ... @fixes NEXT-29812 | Storefront SVG Icons are not vertically centered on firefox
+.btn {
+    .icon {
+        vertical-align: middle;
+
+        > svg {
+            top: 0;
+            position: static;
+        }
+    }
+}
+
+.btn-icon-only {
+    // ... some icon fonts need optical centering of the cart icon
+    @if $zen-icon-set == "entypo"
+    or $zen-icon-set == "feather"
+    or $zen-icon-set == "iconic"
+    or $zen-icon-set == "iconly-broken"
+    or $zen-icon-set == "iconly-bulk"
+    or $zen-icon-set == "iconly-light-outline"
+    or $zen-icon-set == "simple" {
+        .icon-bag {
+            margin-left: -2px;
+        }
+    }
+}
+
+// ... @workaround NEXT-31696 | Wrong usage of bootstrap input-group
+.input-group {
+    $validation-messages: "";
+    @each $state in map-keys($form-validation-states) {
+        $validation-messages: $validation-messages + ":not(." + unquote($state) + "-tooltip)" + ":not(." + unquote($state) + "-feedback)";
+    }
+    @if $zen-layout-forms-style != "underlined" {
+        > label {
+            + button:not(:first-child):not(.dropdown-menu)#{$validation-messages},
+            + input:not(:first-child):not(.dropdown-menu)#{$validation-messages} {
+                @include border-start-radius($zen-layout-input-radius * 1px);
+            }
+        }
+    }
+}

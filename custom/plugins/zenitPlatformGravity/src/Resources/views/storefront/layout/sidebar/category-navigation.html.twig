@@ -1,0 +1,114 @@
+{% sw_extends '@Storefront/storefront/layout/sidebar/category-navigation.html.twig' %}
+
+{% set navigationMode = theme_config('zen-sidebar-navigation-mode')|default('default') %}
+{% set navigationModeExpandable = navigationMode is same as ('expandable') %}
+{% set navigationModeDefault = navigationMode is not same as ('expandable') %}
+
+{% block layout_navigation_categories_list %}
+    {# ... @zenit - add .collapse, .show and id attribute #}
+    {% if navigationTree %} {# ... @zenit - add query to prevent empty category-navigation with border-color #}
+        <ul class="category-navigation level-{{ level }}{% if currentId and navigationModeExpandable %} collapse{% if itemCategoryId in activeResult.path or itemCategoryId is same as(activeResult.id) %} show{% endif %}{% endif %}"{% if currentId %}
+            id="{{ currentId }}"{% endif %}>
+            {% for item in navigationTree %}
+                {% block layout_navigation_categories_list_entry %}
+                    <li class="category-navigation-entry">
+                        {% if (item.category.id in activeResult.id) or (item.category.id in activeResult.path) %}
+                            {% if item.category.type == 'folder' %}
+                                {% block layout_navigation_categories_folder_children %}
+                                    {# ... @zenit - add .has-children #}
+                                    <span class="category-navigation-link{% if item.children %} has-children{% endif %} is-expanded"
+                                          id="item-{{ item.category.id }}">
+                                        {{ item.category.translated.name }}
+                                    </span>
+
+                                    {# ... @zenit - add collapse toggle #}
+                                    {% block zen_layout_navigation_categories_folder_children_toggle %}
+                                        {% sw_include '@zenitPlatformGravity/storefront/layout/sidebar/zen-expandable-category-navigation-toggle.html.twig' %}
+                                    {% endblock %}
+                                {% endblock %}
+                            {% else %}
+                                {% block layout_navigation_categories_link_children %}
+                                    {# ... @zenit - add .has-children #}
+                                    <a class="category-navigation-link{% if item.category.id is same as(activeResult.id) %} is-active{% endif %}{% if item.category.id in activeResult.path %} in-path{% endif %}{% if item.children %} has-children{% endif %} is-expanded"
+                                       id="item-{{ item.category.id }}"
+                                       href="{{ category_url(item.category) }}"
+                                       {% if category_linknewtab(item.category) %}target="_blank"{% endif %}>
+                                        {% block layout_navigation_categories_link_children_name %}
+                                            {# ... @zenit - add inner span #}
+                                            <span class="category-navigation-link-inner">{{ item.category.translated.name }}</span>
+                                        {% endblock %}
+                                    </a>
+
+                                    {# ... @zenit - add collapse toggle #}
+                                    {% block zen_layout_navigation_categories_link_children_toggle %}
+                                        {% sw_include '@zenitPlatformGravity/storefront/layout/sidebar/zen-expandable-category-navigation-toggle.html.twig' %}
+                                    {% endblock %}
+                                {% endblock %}
+                            {% endif %}
+
+                            {% block layout_navigation_categories_recoursion %}
+                                {% if level < navigationMaxDepth %}
+                                    {# ... @zenit - add currentId, itemCategoryId #}
+                                    {% sw_include '@Storefront/storefront/layout/sidebar/category-navigation.html.twig' with {
+                                        navigationTree: item.children,
+                                        activeResult: activeResult,
+                                        level: level + 1,
+                                        currentId: 'collapse-'~item.category.id,
+                                        itemCategoryId: item.category.id
+                                    } only %}
+                                {% endif %}
+                            {% endblock %}
+                        {% else %}
+                            {% if item.category.type == 'folder' %}
+                                {% block layout_navigation_categories_text %}
+                                    {# ... @zenit - add .has-children #}
+                                    <span class="category-navigation-link{% if item.children %} has-children{% endif %}"
+                                          id="item-{{ item.category.id }}">
+                                        {{ item.category.translated.name }}
+                                    </span>
+
+                                    {# ... @zenit - add collapse toggle #}
+                                    {% block zen_layout_navigation_categories_text_toggle %}
+                                        {% sw_include '@zenitPlatformGravity/storefront/layout/sidebar/zen-expandable-category-navigation-toggle.html.twig' %}
+                                    {% endblock %}
+                                {% endblock %}
+                            {% else %}
+                                {% block layout_navigation_categories_link %}
+                                    {# ... @zenit - add .has-children #}
+                                    <a class="category-navigation-link{% if item.category.id is same as(activeResult.id) %} is-active{% endif %}{% if item.children %} has-children{% endif %}"
+                                       id="item-{{ item.category.id }}"
+                                       href="{{ category_url(item.category) }}"
+                                       {% if category_linknewtab(item.category) %}target="_blank"{% endif %}>
+                                        {% block layout_navigation_categories_link_name %}
+                                            {# ... @zenit - add inner span #}
+                                            <span class="category-navigation-link-inner">{{ item.category.translated.name }}</span>
+                                        {% endblock %}
+                                    </a>
+
+                                    {# ... @zenit - add collapse toggle #}
+                                    {% block zen_layout_navigation_categories_link_toggle %}
+                                        {% sw_include '@zenitPlatformGravity/storefront/layout/sidebar/zen-expandable-category-navigation-toggle.html.twig' %}
+                                    {% endblock %}
+                                {% endblock %}
+                            {% endif %}
+
+                            {# ... @zenit - recoursion for expandable navigation #}
+                            {% block zen_layout_navigation_categories_recoursion %}
+                                {% if level < navigationMaxDepth and navigationModeExpandable %}
+                                    {# ... @zenit - add currentId, itemCategoryId #}
+                                    {% sw_include '@Storefront/storefront/layout/sidebar/category-navigation.html.twig' with {
+                                        navigationTree: item.children,
+                                        activeResult: activeResult,
+                                        level: level + 1,
+                                        currentId: 'collapse-'~item.category.id,
+                                        itemCategoryId: item.category.id
+                                    } only %}
+                                {% endif %}
+                            {% endblock %}
+                        {% endif %}
+                    </li>
+                {% endblock %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

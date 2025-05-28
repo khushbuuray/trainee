@@ -1,0 +1,188 @@
+// quantity input
+.quantity-input-group {
+    flex-wrap: nowrap;
+    height: 100%;
+
+    .btn {
+        @include media-breakpoint-down(sm) {
+            padding: 4px;
+        }
+    }
+
+    @if $zen-layout-forms-style != "underlined" {
+        $validation-messages: "";
+        @each $state in map-keys($form-validation-states) {
+            $validation-messages: $validation-messages + ":not(." + unquote($state) + "-tooltip)" + ":not(." + unquote($state) + "-feedback)";
+        }
+
+        .quantity-input-pack-unit {
+            &:not(:first-child):not(.dropdown-menu)#{$validation-messages} {
+                @include border-end-radius($zen-layout-input-radius * 1px);
+            }
+        }
+    }
+
+    .icon {
+        @include text-color-contrast;
+    }
+}
+
+.quantity-input {
+    height: auto;
+    padding-left: 0;
+    padding-right: 0;
+
+    .input-group > & {
+        min-width: 24px;
+    }
+
+    @if $zen-layout-forms-style != "underlined" {
+        .input-group > & {
+            $validation-messages: "";
+            @each $state in map-keys($form-validation-states) {
+                $validation-messages: $validation-messages + ":not(." + unquote($state) + "-tooltip)" + ":not(." + unquote($state) + "-feedback)";
+            }
+            &:not(:first-child):not(.dropdown-menu)#{$validation-messages} {
+                @include border-radius($zen-layout-input-radius * 1px);
+            }
+
+            &.has-pack-unit {
+                $validation-messages: "";
+                @each $state in map-keys($form-validation-states) {
+                    $validation-messages: $validation-messages + ":not(." + unquote($state) + "-tooltip)" + ":not(." + unquote($state) + "-feedback)";
+                }
+                &:not(:first-child):not(.dropdown-menu)#{$validation-messages} {
+                    @include border-end-radius(0);
+                }
+            }
+        }
+    }
+
+    &:focus {
+        + .quantity-input-pack-unit {
+            color: $input-focus-color;
+            border-color: $input-focus-border-color;
+            z-index: 5; // ... @bootstrap - Bring the "active" form control to the top of surrounding elements
+            @if $zen-layout-forms-style != "underlined" {
+                background-color: $input-focus-bg;
+            }
+        }
+    }
+}
+
+.quantity-input-pack-unit {
+    height: auto;
+    @include transition($input-transition);
+    color: $input-color;
+    background-color: $input-bg;
+    border-top: $input-border-width solid $input-border-color;
+    border-left: none;
+    position: relative; // ... stacking context, to overlap input by 1px negative margin
+    padding-left: 0;
+
+    @if $zen-layout-forms-style == "underlined" {
+        border-radius: 0;
+        border-top: none;
+        border-right: none;
+        border-left: none;
+        border-bottom-width: 1px;
+        background: transparent;
+    }
+}
+
+// shopware default quantity -/+ input
+.quantity-selector-group {
+    .form-control {
+        &:focus {
+            color: $input-color;
+            background-color: $input-bg;
+            border-color: $input-border-color;
+
+            ~ .input-group-text {
+                color: $input-color;
+                background-color: $input-bg;
+                border-color: $input-border-color;
+            }
+        }
+
+        @if $zen-layout-forms-style == "underlined" {
+            &:focus {
+                ~ .input-group-text {
+                    background: transparent;
+                }
+            }
+        }
+    }
+
+    .input-group-text {
+        color: $input-color;
+        background-color: $input-bg;
+        border: $input-border-width solid $input-border-color;
+        border-left: none;
+        z-index: 10; // overlay input border
+
+        @if $zen-layout-forms-style == "underlined" {
+            border-radius: 0;
+            border-top: none;
+            border-right: none;
+            border-left: none;
+            border-bottom-width: 1px;
+            background: transparent;
+        }
+    }
+
+    .input-group-text,
+    .form-control {
+        @include transition($btn-transition);
+    }
+
+    &:hover {
+        button:not(:disabled),
+        input:not(:disabled),
+        .input-group-text {
+            background-color: $input-focus-bg;
+            color: $input-focus-color;
+            border-color: $input-focus-border-color;
+
+            .icon {
+                color: $input-focus-color;
+            }
+        }
+    }
+
+    .btn-outline-light {
+        --#{$prefix}btn-bg: #{$input-bg};
+        --#{$prefix}btn-color: #{$input-color};
+        --#{$prefix}btn-border-color: #{$input-border-color};
+        @include border-radius($zen-layout-input-radius * 1px);
+        text-overflow: unset;
+
+        @if $zen-layout-forms-style == "underlined" {
+            border-radius: 0;
+            border-top: none;
+            border-right: none;
+            border-left: none;
+            border-bottom-width: 1px;
+            background: transparent;
+        }
+
+        .icon {
+            color: $input-color;
+        }
+
+        &:hover,
+        &:active {
+            --#{$prefix}btn-active-bg: #{$input-focus-bg};
+            --#{$prefix}btn-active-color: #{$input-focus-color};
+            --#{$prefix}btn-active-border-color: #{$input-focus-border-color};
+
+            @if $zen-layout-forms-style == "underlined" {
+                background: transparent;
+            }
+
+            .icon {
+                color: $input-focus-color;
+            }
+        }
+    }
+}

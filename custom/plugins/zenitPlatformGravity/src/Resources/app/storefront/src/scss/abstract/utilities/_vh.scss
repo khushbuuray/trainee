@@ -1,0 +1,5 @@
+@function vh($size) {
+    $vhSize: strip-unit($size);
+    @return $vhSize * 1vh;
+    //@return #{$vhSize}vh; can not calc with strings
+}

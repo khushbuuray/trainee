@@ -1,0 +1,37 @@
+{% sw_extends '@Storefront/storefront/page/checkout/address/index.html.twig' %}
+
+{% block base_breadcrumb %}{% endblock %}
+
+{% block base_flashbags_checkout %}
+    {% if theme_config('zen-checkout-steps') %}
+        {% sw_include '@zenitPlatformGravity/storefront/page/checkout/zen-checkout-breadcrumb.html.twig' with {
+            completed: ['cartPage']
+        } %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}
+
+{% block page_checkout_address_login_toggle %}
+    {% if theme_config('zen-checkout-layout') is not same as ('two-column') %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block page_checkout_address_login %}
+    {% if theme_config('zen-checkout-layout') is same as ('two-column') %}
+        {% set cardTitle = 'account.loginHeader'|trans|sw_sanitize %} {# ... @zenit - add compatiblity with AccessManager - NetInventors #}
+
+        {% block page_checkout_address_login_card %}
+            {% sw_include '@Storefront/storefront/component/account/login.html.twig' with {
+                cardTitle: 'account.loginHeader'|trans|sw_sanitize
+            } %}
+        {% endblock %}
+
+        <div class="address-main-header-separator">
+            <span>{{ 'zentheme.checkout.account.loginRegisterSeparator'|trans|sw_sanitize }}</span>
+        </div>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

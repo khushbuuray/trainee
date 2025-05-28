@@ -1,0 +1,279 @@
+/*
+Base slider
+==============================================
+Styling for base slider component.
+Contains minimal styling for a slider with arrow and/or dot navigation.
+based on: https://github.com/ganlanyuan/tiny-slider
+*/
+
+.base-slider {
+    // dots nav inside
+    .base-slider-dots {
+        display: flex;
+        justify-content: center;
+
+        @if $zen-image-slider-controls-style == "alternate" {
+            flex-direction: column;
+        }
+
+        .base-slider-dot {
+            border-color: $zen-base-slider-controls-dots-inside-color;
+            margin: 0 $spacer-sm;
+            @include transition($btn-transition);
+
+            @if $zen-image-slider-controls-dots-style == "expanding" {
+                background: $zen-base-slider-controls-dots-inside-color;
+            } @else {
+                background: transparent;
+            }
+
+            &:hover {
+                box-shadow: 0 0 0 .2rem $zen-base-slider-controls-dots-inside-hover-color;
+            }
+
+            &:hover,
+            &.tns-nav-active {
+                background: $zen-base-slider-controls-dots-inside-hover-color;
+                border-color: $zen-base-slider-controls-dots-inside-hover-color;
+            }
+        }
+    }
+
+    // styling works both for auto generated markup by the tiny-slider and normal template markup
+    .tns-nav,
+    .base-slider-dots {
+        text-align: center;
+
+        .base-slider-dot,
+        button {
+            @include transition($transition-base);
+            padding: 5.5px;
+            border-width: 2px;
+            border-style: solid;
+
+            @if $zen-image-slider-controls-dots-style == "bars" {
+                @include border-radius($zen-layout-element-radius * 1px);
+                padding: 0;
+                width: 32px;
+            }
+
+            @if $zen-image-slider-controls-dots-style == "expanding" {
+                &.tns-nav-active {
+                    border-radius: 15px;
+                    padding: 5.5px;
+
+                    @if $zen-image-slider-controls-style == "alternate" {
+                        height: 36px;
+                    } @else {
+                        width: 36px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.has-dots-outside {
+    &.base-slider {
+        margin-bottom: 0;
+        padding-bottom: 35px;
+    }
+
+    &.base-slider .base-slider-dots {
+        .base-slider-dot {
+            border-color: $zen-base-slider-controls-dots-outside-color;
+
+            @if $zen-image-slider-controls-dots-style == "expanding" {
+                background: $zen-base-slider-controls-dots-outside-color;
+            } @else {
+                background: transparent;
+            }
+
+            &:hover,
+            &.tns-nav-active {
+                background: $zen-base-slider-controls-dots-outside-hover-color;
+                border-color: $zen-base-slider-controls-dots-outside-hover-color;
+            }
+        }
+    }
+}
+
+// arrow navigation
+.base-slider-controls-prev,
+.base-slider-controls-next {
+    --#{$zen-prefix}slider-controls-shadow-color: #{$zen-base-slider-controls-inside-bg};
+    --#{$zen-prefix}slider-controls-shadow-hover-color: #{$zen-base-slider-controls-inside-hover-bg};
+
+    border: none;
+    background: $zen-base-slider-controls-inside-bg;
+    opacity: 1;
+    width: px($zen-slider-controls-size);
+    height: px($zen-slider-controls-size);
+    line-height: px($zen-slider-controls-size);
+    @include border-radius($zen-layout-button-radius * 1px);
+    @include transition();
+    box-shadow: 0 0 0 0 var(--#{$zen-prefix}slider-controls-shadow-color);
+    z-index: 1;
+
+    // ... increase tap target size
+    &::before {
+        content: '';
+        position: absolute;
+        width: px($zen-slider-controls-tap-target-size);
+        height: px($zen-slider-controls-tap-target-size);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    @if $zen-base-slider-controls-inside-bg != transparent {
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            @include border-radius($zen-layout-button-radius * 1px);
+            box-shadow: 0 2px 4px rgba($black, .15);
+            z-index: -1;
+        }
+    }
+
+    .icon {
+        width: 18px;
+        height: 18px;
+        color: $zen-base-slider-controls-inside-color;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        > svg {
+            top: 0;
+        }
+    }
+
+    &:hover {
+        background: $zen-base-slider-controls-inside-hover-bg;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 0 .2rem var(--#{$zen-prefix}slider-controls-shadow-hover-color);
+
+        .icon {
+            color: $zen-base-slider-controls-inside-hover-color;
+        }
+
+        @if $zen-base-slider-controls-inside-bg != transparent {
+            &::after {
+                box-shadow: 0 0 0 rgba($black, .15);
+            }
+        }
+    }
+
+    &[disabled] {
+        visibility: hidden;
+        opacity: 0;
+        cursor: default;
+    }
+}
+
+// arrow navigation outside
+.has-nav-outside {
+    .base-slider-controls-prev,
+    .base-slider-controls-next {
+        --#{$zen-prefix}slider-controls-shadow-color: #{$zen-base-slider-controls-outside-bg};
+        --#{$zen-prefix}slider-controls-shadow-hover-color: #{$zen-base-slider-controls-outside-hover-bg};
+        @include border-radius($zen-layout-button-radius * 1px);
+        border: none;
+        background: $zen-base-slider-controls-outside-bg;
+
+        .icon {
+            color: $zen-base-slider-controls-outside-color;
+        }
+
+        @if $zen-base-slider-controls-outside-bg == transparent {
+            &::after {
+                display: none;
+            }
+        }
+
+        &:hover {
+            background: $zen-base-slider-controls-outside-hover-bg;
+
+            .icon {
+                color: $zen-base-slider-controls-outside-hover-color;
+            }
+        }
+    }
+}
+
+// alternative slider controls
+@if $zen-image-slider-controls-style == "alternate" {
+    .base-slider {
+        &.has-nav-outside,
+        &.has-dots-outside {
+            padding-left: 25px;
+            padding-right: 25px;
+            margin-bottom: 0;
+        }
+
+        &.has-dots-outside:not(.has-nav-outside) {
+            .base-slider-controls-prev {
+                &.is-nav-prev-inside {
+                    @if $zen-layout-button-radius != 0 {
+                        right: #{px($zen-slider-controls-size) + px($zen-slider-controls-spacer) + 25px};
+                    } @else {
+                        right: #{px($zen-slider-controls-size) + 25px};
+                    }
+                }
+            }
+
+            .base-slider-controls-next {
+                &.is-nav-next-inside {
+                    @if $zen-layout-button-radius != 0 {
+                        right: calc(10px + 25px);
+                    } @else {
+                        right: calc(0px + 25px);
+                    }
+                }
+            }
+        }
+
+        // dots navigation
+        .base-slider-dots,
+        .tns-nav {
+            transform: translateY(-50%);
+            top: 50%;
+            right: 20px;
+            bottom: auto;
+            left: auto;
+            width: auto;
+
+            .base-slider-dot,
+            button {
+                display: block;
+                margin: 5px;
+            }
+        }
+
+        &.has-dots-outside {
+            .base-slider-dots,
+            .tns-nav {
+                right: 0;
+            }
+        }
+    }
+}
+
+.base-slider-controls-prev {
+    .icon-arrow-head-left { // ... don't affect vertical gallery-slider-thumbnails-controls
+        left: calc(50% - 2px);
+    }
+}
+
+.base-slider-controls-next {
+    .icon-arrow-head-right { // ... don't affect vertical gallery-slider-thumbnails-controls
+        left: calc(50% + 2px);
+    }
+}

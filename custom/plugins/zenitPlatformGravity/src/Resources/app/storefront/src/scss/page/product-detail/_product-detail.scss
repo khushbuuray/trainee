@@ -1,0 +1,906 @@
+@if $zen-product-detail-tabs-bg != transparent {
+    @if ($zen-container-bg != transparent and $zen-product-detail-tabs-bg != $zen-container-bg)
+        or ($zen-container-bg == transparent and $zen-product-detail-tabs-bg != $sw-background-color) {
+        .is-ctl-product {
+            .container-main {
+                padding-bottom: 0;
+
+                .cms-page {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+}
+
+.product-detail-tabs {
+    &:not(.product-detail-cross-selling) {
+        .product-detail-tabs-content {
+            padding-bottom: $spacer;
+        }
+    }
+}
+
+.has-el-gallery-buybox { // ... make product-details-bg available on sections with gallery-buybox
+    background: $zen-product-details-bg; // background is overridable by section-background
+    margin-bottom: 0;
+
+    @if $zen-product-details-bg != transparent {
+        color: color-contrast($zen-product-details-bg, $sw-text-color, $zen-light-text-color);
+    }
+
+    .product-breadcrumb {
+        margin-top: 0;
+    }
+}
+
+.has-el-product-description, // ... make $zen-product-detail-tabs-bg available on sections with product-description
+.has-el-cross-selling { // ... make $zen-product-detail-tabs-bg available on sections with cross-selling
+    background: $zen-product-detail-tabs-bg;
+
+    @if $zen-product-detail-tabs-bg != transparent {
+        color: color-contrast($zen-product-detail-tabs-bg, $sw-text-color, $zen-light-text-color);
+    }
+}
+
+// @config - detail tabs position is 'buybox'
+.product-detail-buy .product-detail-tabs {
+    margin-top: $spacer-lg;
+    margin-bottom: $spacer-lg;
+    background: $zen-product-detail-tabs-bg;
+
+    @if $zen-product-detail-tabs-bg != transparent {
+        color: color-contrast($zen-product-detail-tabs-bg, $sw-text-color, $zen-light-text-color);
+    }
+
+    @if $zen-product-tabs-content-bg != transparent or $zen-product-detail-tabs-bg != transparent {
+        @include media-breakpoint-down(lg) {
+            --#{$prefix}gutter-x: #{$grid-gutter-width};
+            margin-right: calc(-.5 * var(--#{$prefix}gutter-x)); // stylelint-disable-line function-disallowed-list
+            margin-left: calc(-.5 * var(--#{$prefix}gutter-x)); // stylelint-disable-line function-disallowed-list
+            margin-bottom: px($zen-layout-container-spacing-bottom * -1);
+        }
+
+        @include media-breakpoint-up(lg) {
+            @include border-radius($zen-layout-element-radius * 1px);
+        }
+    }
+
+    .card {
+        // set contrastBackground
+        $contrastBackground: transparent;
+        @if $zen-product-details-bg != transparent {
+            $contrastBackground: $zen-product-details-bg;
+        } @else if $zen-container-bg != transparent  {
+            $contrastBackground: $zen-product-details-bg;
+        } @else {
+            $contrastBackground: $sw-background-color;
+        }
+
+        @if $zen-product-detail-tabs-bg != transparent and $zen-product-detail-tabs-bg != $contrastBackground {
+            padding-top: px($zen-layout-container-spacing-top);
+            padding-bottom: px($zen-layout-container-spacing-bottom);
+            @include layout-container-horizontal-padding(px($zen-layout-container-spacing-left), px($zen-layout-container-spacing-right));
+        }
+    }
+
+    .tab-pane {
+        // set contrastBackground
+        $contrastBackground: transparent;
+        @if $zen-product-tabs-content-bg != transparent {
+            $contrastBackground: $zen-product-tabs-content-bg;
+        } @else if $zen-product-detail-tabs-bg != transparent {
+            $contrastBackground: $zen-product-detail-tabs-bg;
+        } @else if $zen-product-details-bg != transparent {
+            $contrastBackground: $zen-product-details-bg;
+        }
+
+        /* ... in case there is any contrastBackground,
+        therefore we have to overwrite some color-contrasts */
+        @if $contrastBackground != transparent {
+            background: $zen-product-tabs-content-bg;
+            color: color-contrast($contrastBackground, $sw-text-color, $zen-light-text-color);
+
+            @if $zen-product-tabs-content-bg != transparent {
+                $containerStylings: false;
+
+                @if $zen-product-detail-tabs-bg != transparent and $zen-product-detail-tabs-bg != $zen-product-tabs-content-bg
+                or $zen-product-detail-tabs-bg == transparent and $zen-product-details-bg != transparent and $zen-product-details-bg != $zen-product-tabs-content-bg
+                or $zen-product-detail-tabs-bg == transparent and $zen-product-details-bg == transparent and $zen-container-bg != transparent and $zen-container-bg != $zen-product-tabs-content-bg
+                or $zen-product-detail-tabs-bg == transparent and $zen-product-details-bg == transparent and $zen-container-bg == transparent and $sw-background-color != $zen-product-tabs-content-bg {
+                    $containerStylings: true;
+                }
+
+                @if $containerStylings {
+                    @include layout-container-horizontal-padding(remToPx($spacer-xl), remToPx($spacer-xl));
+                    @include layout-container-vertical-padding(remToPx($spacer-xl), remToPx($spacer-xl));
+
+                    @if $zen-product-tabs-style != "tabs" or $zen-product-detail-tabs-mode != "accordion" {
+                        @include border-radius($zen-layout-element-radius * 1px);
+                    }
+                }
+            }
+
+            @if $zen-product-tabs-style != "tabs" {
+                margin-bottom: $spacer-lg;
+            }
+
+            h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6,
+            p,
+            .table {
+                color: color-contrast($contrastBackground, $sw-text-color, $zen-light-text-color);
+            }
+
+            .product-detail-review-sortby-form {
+                .form-select {
+                    color: color-contrast($contrastBackground, $sw-text-color, $zen-light-text-color);
+                }
+            }
+
+            .form-select {
+                @if $zen-layout-forms-style == "underlined" {
+                    /* ... if underlined selects have no background,
+                    therefore the background icons then becomes relevant */
+                    @if (contrast-ratio($contrastBackground, $form-select-indicator-color) < $min-contrast-ratio) {
+                        background-image: escape-svg($zen-form-select-light-indicator);
+                    }
+                }
+            }
+
+            .blockquote-footer {
+                color: color-contrast($contrastBackground, lighten($sw-text-color, 20%), darken($zen-light-text-color, 20%));
+            }
+
+            .custom-control-input {
+                &:disabled {
+                    ~ .custom-control-label {
+                        color: color-contrast($contrastBackground, lighten($sw-text-color, 20%), darken($zen-light-text-color, 20%));
+                    }
+                }
+            }
+        }
+    }
+
+    @include media-breakpoint-up(lg) {
+        .product-detail-review {
+            .product-detail-review-content {
+                .col-sm-4 {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
+.has-el-product-description .cms-block-product-description-reviews {
+    .tab-pane {
+        // set contrastBackground
+        $contrastBackground: transparent;
+        @if $zen-product-tabs-content-bg != transparent {
+            $contrastBackground: $zen-product-tabs-content-bg;
+        } @else if $zen-product-detail-tabs-bg != transparent {
+            $contrastBackground: $zen-product-detail-tabs-bg;
+        }
+
+        /* ... in case there is any contrastBackground,
+        therefore we have to overwrite some color-contrasts */
+        @if $contrastBackground != transparent {
+            background: $zen-product-tabs-content-bg;
+            color: color-contrast($contrastBackground, $sw-text-color, $zen-light-text-color);
+
+            @if $zen-product-tabs-content-bg != transparent {
+                $containerStylings: false;
+
+                @if $zen-product-detail-tabs-bg != transparent and $zen-product-detail-tabs-bg != $zen-product-tabs-content-bg
+                    or $zen-product-detail-tabs-bg == transparent and $zen-container-bg != transparent and $zen-container-bg != $zen-product-tabs-content-bg
+                    or $zen-product-detail-tabs-bg == transparent and $zen-container-bg == transparent and $sw-background-color != $zen-product-tabs-content-bg {
+                    $containerStylings: true;
+                }
+
+                @if $containerStylings {
+                    @include layout-container-horizontal-padding(remToPx($spacer-xl), remToPx($spacer-xl));
+                    @include layout-container-vertical-padding(remToPx($spacer-xl), remToPx($spacer-xl));
+
+                    @if $zen-product-tabs-style != "tabs" or $zen-product-detail-tabs-mode != "accordion" {
+                        @include border-radius($zen-layout-element-radius * 1px);
+                    }
+                }
+            }
+
+            @if $zen-product-tabs-style != "tabs" {
+                margin-bottom: $spacer-lg;
+            }
+
+            h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6,
+            p,
+            .table {
+                color: inherit;
+            }
+
+            .product-detail-review-sortby-form {
+                .form-select {
+                    color: color-contrast($contrastBackground, $sw-text-color, $zen-light-text-color);
+                }
+            }
+
+            .form-select {
+                @if $zen-layout-forms-style == "underlined" {
+                    /* ... if underlined selects have no background,
+                    therefore the background icons then becomes relevant */
+                    @if (contrast-ratio($contrastBackground, $form-select-indicator-color) < $min-contrast-ratio) {
+                        background-image: escape-svg($zen-form-select-light-indicator);
+                    }
+                }
+            }
+
+            .blockquote-footer {
+                color: color-contrast($contrastBackground, lighten($sw-text-color, 20%), darken($zen-light-text-color, 20%));
+            }
+
+            .custom-control-input {
+                &:disabled {
+                    ~ .custom-control-label {
+                        color: color-contrast($contrastBackground, lighten($sw-text-color, 20%), darken($zen-light-text-color, 20%));
+                    }
+                }
+            }
+        }
+    }
+}
+
+.has-el-cross-selling .cms-block-cross-selling {
+    .tab-pane {
+        margin-bottom: $spacer-lg;
+
+        // set contrastBackground
+        $contrastBackground: transparent;
+        @if $zen-product-tabs-content-bg != transparent {
+            $contrastBackground: $zen-product-tabs-content-bg;
+        } @else if $zen-product-detail-tabs-bg != transparent {
+            $contrastBackground: $zen-product-detail-tabs-bg;
+        }
+
+        /* ... in case there is any contrastBackground,
+        therefore we have to overwrite some color-contrasts */
+        @if $contrastBackground != transparent {
+            background: $zen-product-tabs-content-bg;
+            color: color-contrast($contrastBackground, $sw-text-color, $zen-light-text-color);
+
+            @if $zen-product-tabs-content-bg != transparent {
+                $containerStylings: false;
+
+                @if $zen-product-detail-tabs-bg != transparent and $zen-product-detail-tabs-bg != $zen-product-tabs-content-bg
+                    or $zen-product-detail-tabs-bg == transparent and $zen-container-bg != transparent and $zen-container-bg != $zen-product-tabs-content-bg
+                    or $zen-product-detail-tabs-bg == transparent and $zen-container-bg == transparent and $sw-background-color != $zen-product-tabs-content-bg {
+                    $containerStylings: true;
+                }
+
+                @if $containerStylings {
+                    @include layout-container-horizontal-padding(remToPx($spacer-xl), remToPx($spacer-xl));
+                    @include layout-container-vertical-padding(remToPx($spacer-xl), remToPx($spacer-xl));
+
+                    @if $zen-product-tabs-style != "tabs" or $zen-product-detail-tabs-mode != "accordion" {
+                        @include border-radius($zen-layout-element-radius * 1px);
+                    }
+                }
+            }
+
+            h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+                color: color-contrast($contrastBackground, $sw-text-color, $zen-light-text-color);
+            }
+        }
+    }
+}
+
+.product-detail-reviews {
+    display: block;
+}
+
+.product-detail-manufacturer-logo {
+    max-width: px($zen-manufacturer-logo-height-mobile);
+
+    @include media-breakpoint-up(lg) {
+        max-width: px($zen-manufacturer-logo-height);
+    }
+}
+
+.product-detail-headline {
+    margin-bottom: $spacer-md;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.product-detail-name-container {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.product-detail-name {
+    margin-bottom: 0;
+    color: $zen-product-details-name-color;
+    @include font-size(px($zen-product-details-name-font-size));
+    font-weight: $zen-product-details-name-font-weight;
+    text-transform: $zen-product-details-name-text-transform;
+    line-height: 1.2;
+
+    @if $zen-product-details-name-font-family == "headline" {
+        font-family: $headings-font-family;
+    } @else {
+        font-family: $font-family-base;
+    }
+}
+
+.product-detail-variant-characteristics {
+    padding-left: 0;
+}
+
+.product-detail-short-description-container {
+    margin-top: $spacer-md;
+}
+
+.product-detail-short-description {
+    border-bottom: 1px solid $border-color;
+    padding-bottom: $spacer-md;
+    margin-bottom: $spacer-md;
+}
+
+.product-detail-price {
+    color: $zen-product-details-price-color;
+    @include font-size(px($zen-product-details-price-font-size));
+    font-weight: $zen-product-details-price-font-weight;
+
+    @if $zen-product-details-price-font-family == "headline" {
+        font-family: $headings-font-family;
+    } @else {
+        font-family: $font-family-base;
+    }
+}
+
+.product-detail-regulation-price-wrapper,
+.product-detail-list-price-wrapper {
+    @include text-color-contrast;
+}
+
+.product-detail-tax-container {
+    .product-detail-tax {
+        .product-detail-tax-link {
+            color: inherit;
+        }
+    }
+}
+
+.buy-widget-container-inner {
+    container-name: buy-widget-container-inner;
+    container-type: inline-size;
+
+    @container buy-widget-container-inner (width < 430px) {
+        .btn-buy {
+            --#{$prefix}btn-padding-x: 0.75rem;
+        }
+    }
+
+    @container buy-widget-container-inner (width < 400px) {
+        [class*="col-"] {
+            width: 100%;
+        }
+    }
+}
+
+.product-detail-form-container {
+    [class*="col"] {
+        margin-bottom: $spacer-sm;
+    }
+
+    .buy-widget-quantity-input-group {
+        .icon {
+            @if $zen-product-details-bg != transparent {
+                color: color-contrast($zen-product-details-bg, $sw-text-color, $zen-light-text-color);
+            }
+        }
+    }
+
+    // shopware default quantity -/+ input && zenit quantity -/+ input
+    .product-detail-quantity-group {
+        > .form-control,
+        > .form-select,
+        > .input-group-text,
+        > .btn {
+            padding-top: $input-padding-y-lg;
+            padding-bottom: $input-padding-y-lg;
+            line-height: $input-btn-line-height  * $zen-font-size-lg-multiplier; // do not increase font-size instead increase line-height
+        }
+
+        .btn-icon-only {
+            font-size: $input-font-size-lg;
+            line-height: $input-height-lg;
+            height: $input-height-lg;
+        }
+    }
+
+    // shopware old default quantity selection
+    .product-detail-quantity-select {
+        &.form-select {
+            padding-top: $form-select-padding-y-lg;
+            padding-bottom: $form-select-padding-y-lg;
+            padding-left: $form-select-padding-x-lg;
+            @include font-size($form-select-font-size-lg);
+        }
+    }
+
+    .btn-buy,
+    .paypal-buttons {
+        @include media-breakpoint-up(sm) {
+            max-width: $zen-btn-max-width;
+        }
+    }
+
+    [data-swag-pay-pal-express-button-options] {
+        @include media-breakpoint-down(sm) {
+            width: 100%
+        }
+    }
+}
+
+// product details
+.product-detail-container {
+    border-top: 1px solid $border-color;
+    padding-top: $spacer-md;
+    margin-top: $spacer-md;
+    margin-bottom: $spacer-sm;
+
+    ~ .product-detail-container {
+        border-top: none;
+        padding-top: 0;
+        margin-top: 0;
+    }
+}
+
+.product-detail-label {
+    font-weight: $font-weight-bold;
+}
+
+// sticky buy box
+@if $zen-product-details-buybox-sticky == 1 {
+    .is-ctl-product {
+        .cms-section,
+        .cms-block-gallery-buybox,
+        .cms-block-gallery-buybox-component,
+        .cms-block-zen-gallery-description-buybox,
+        .cms-block-zen-gallery-heading-buybox,
+        .cms-block-zen-gallery-heading-buybox-component,
+        .cms-block-zen-gallery-heading-description-buybox,
+        .cms-block-zen-gallery-heading-description-buybox-component {
+            overflow: initial; // ... position sticky not working with overflow hidden
+        }
+
+        .cms-block-gallery-buybox,
+        .cms-block-zen-gallery-description-buybox,
+        .cms-block-zen-gallery-heading-buybox,
+        .cms-block-zen-gallery-heading-buybox-component,
+        .cms-block-zen-gallery-heading-description-buybox,
+        .cms-block-zen-gallery-heading-description-buybox-component,
+        .cms-block-zen-gallery-description-heading-buybox,
+        .cms-block-zen-gallery-description-heading-buybox-component {
+            .cms-block-container-row {
+                align-items: flex-start; // ... needed for position sticky
+            }
+        }
+    }
+}
+
+.product-detail-buy {
+    // Prevents the magnifier-zoom-image overlaying
+    // by the product-detail-tab-navigation.
+    z-index: $zen-product-detail-buy-zindex;
+}
+
+.gallery-slider-row {
+    &.has-thumbnails-left {
+        @include media-breakpoint-up(md) {
+            flex-wrap: nowrap; // prevents wrap thumbnail-navigation on outside nav
+        }
+    }
+
+    // Gallery slider loading state
+    // height is needed to display placeholder properly
+    &.is-loading {
+        @if $zen-product-gallery-slider-image-ratio == 1 {
+            height: auto;
+        } @else {
+            @include media-breakpoint-down(xl) {
+                height: px($zen-product-gallery-slider-min-height-tablet);
+            }
+
+            @include media-breakpoint-down(lg) {
+                height: px($zen-product-gallery-slider-min-height-mobile);
+            }
+        }
+
+        // ... reduces cumulative layout shift (CLS);
+        @if $zen-product-gallery-slider-image-ratio == 1 {
+            .gallery-slider-container { // ... element is not available for placeholder, therefore, no exception needs to be written for placeholders
+                // ... do not use pseudo-element in this context
+                height: 0;
+                padding-top: if($zen-product-listing-card-img-width == 0 or $zen-product-listing-card-img-height == 0, percent($zen-product-listing-card-img-padding), percent(strip-unit($zen-product-listing-card-img-height) / strip-unit($zen-product-listing-card-img-width) * 100));
+            }
+
+            .gallery-slider-thumbnails-col {
+                @include media-breakpoint-down(md) {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+// Gallery
+.product-detail-media,
+.quickview-minimal-image {
+
+    // wishlist over gallery
+    .product-wishlist {
+        .product-wishlist-action {
+            display: flex;
+            justify-content: center;
+            position: absolute;
+            top: $spacer-lg;
+            right: $spacer-lg;
+            margin-bottom: 10px;
+            background: $white;
+            height: $input-height-lg;
+            width: $input-height-lg;
+            @include transition($btn-transition);
+            @include border-radius($zen-layout-button-radius * 1px);
+            overflow: visible;
+            z-index: 1;
+
+            .icon {
+                color: color-contrast($white);
+
+                // ... some icon fonts need color indicator because the wishlist-added icon is the same as the default icon
+                &.icon-wishlist-added {
+                    color: $sw-color-brand-primary;
+                }
+            }
+
+            .icon-xl {
+                @include sw-icon-size(24px);
+            }
+
+            &::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                @include border-radius($zen-layout-button-radius * 1px);
+                box-shadow: 0 2px 4px rgba($black, .15);
+                z-index: -1;
+            }
+
+            &:hover {
+                background: $sw-color-brand-primary;
+                box-shadow: 0 0 0 .2rem rgba($sw-color-brand-primary, 1);
+
+                .icon {
+                    color: color-contrast($sw-color-brand-primary);
+                }
+
+                &::after {
+                    box-shadow: 0 0 0 rgba($black, .15);
+                }
+            }
+        }
+    }
+
+    // override inline style on mobile devices
+    .gallery-slider-item,
+    .gallery-slider-single-image {
+        @include border-radius($zen-layout-element-radius * 1px);
+
+        @if $zen-product-gallery-img-color-overlay == 1 {
+            position: relative;
+            background-color: #fff;
+
+            &::after {
+                content: '';
+                background-color: $zen-product-gallery-img-bg;
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                opacity: .03;
+                pointer-events: none;
+                @include border-radius($zen-layout-element-radius * 1px);
+            }
+        } @else {
+            background-color: $zen-product-gallery-img-bg;
+        }
+    }
+
+    .gallery-slider-col { // ... exclude zoom modal
+        .gallery-slider-item,
+        .gallery-slider-single-image {
+            &.is-cover,
+            &.is-contain {
+                @include media-breakpoint-down(xl) {
+                    min-height: px($zen-product-gallery-slider-min-height-tablet);
+                }
+
+                @include media-breakpoint-down(lg) {
+                    min-height: px($zen-product-gallery-slider-min-height-mobile);
+                }
+            }
+
+            @if $zen-product-gallery-slider-image-ratio == 1 {
+                &::before {
+                    content: '';
+                    display: block;
+                    padding-top: if($zen-product-listing-card-img-width == 0 or $zen-product-listing-card-img-height == 0, percent($zen-product-listing-card-img-padding), percent(strip-unit($zen-product-listing-card-img-height) / strip-unit($zen-product-listing-card-img-width) * 100));
+                }
+
+                .gallery-slider-image,
+                .icon-placeholder {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    margin: auto;
+                }
+
+                &.is-standard {
+                    .gallery-slider-image {
+                        object-fit: scale-down;
+                    }
+                }
+            }
+
+            &.is-placeholder {
+                @if $zen-product-gallery-slider-image-ratio == 1 {
+                    &::before {
+                        display: none;
+                    }
+                }
+
+                .icon-placeholder {
+                    margin: 0 auto;
+                    max-width: 600px;
+                }
+            }
+        }
+
+        // ... needed because of shopware !important styles
+        @include media-breakpoint-down(sm) {
+            .gallery-slider-item {
+                &.is-cover,
+                &.is-contain {
+                    @if $zen-product-gallery-slider-image-ratio == 1 {
+                        &::before {
+                            min-height: px($zen-product-gallery-slider-min-height-mobile); // ... additional min-height in before pseudo-element, because shopware uses min-height with !important and we should not use !important
+                        }
+                    } @else {
+                        height: px($zen-product-gallery-slider-min-height-mobile); // ... use height instead of min-height, because shopware uses min-height with !important and we should not use !important
+                    }
+                }
+            }
+        }
+
+        // ... needed because of shopware !important styles
+        @include media-breakpoint-down(md) {
+            .gallery-slider-single-image {
+                &.is-cover,
+                &.is-contain {
+                    @if $zen-product-gallery-slider-image-ratio == 1 {
+                        &::before {
+                            min-height: px($zen-product-gallery-slider-min-height-mobile); // ... additional min-height in before pseudo-element, because shopware uses min-height with !important and we should not use !important
+                        }
+                    } @else {
+                        height: px($zen-product-gallery-slider-min-height-mobile); // ... use height instead of min-height, because shopware uses min-height with !important and we should not use !important
+                    }
+                }
+            }
+        }
+    }
+
+    .gallery-slider-image {
+        @include border-radius($zen-layout-element-radius * 1px);
+    }
+
+    &.is-standard {
+        .gallery-slider-image {
+            margin: auto;
+        }
+    }
+
+    .gallery-slider-thumbnails-item {
+        @if $zen-product-gallery-slider-gallery-image-ratio == 1 {
+            height: auto;
+        }
+
+        &.tns-nav-active,
+        &:hover {
+            .gallery-slider-thumbnails-item-inner {
+                @if $zen-product-gallery-slider-gallery-style == "alternate" {
+                    opacity: 1;
+                }
+
+                @if $zen-product-gallery-slider-gallery-style == "default" {
+                    .gallery-slider-thumbnails-image {
+                        border-color: $primary;
+                    }
+                }
+            }
+        }
+    }
+
+    .gallery-slider-thumbnails-item-inner {
+        @include border-radius($zen-layout-element-radius * 1px);
+
+        @if $zen-product-gallery-slider-gallery-style == "alternate" {
+            opacity: .5;
+            transition: opacity .3s ease;
+        }
+
+        @if $zen-product-gallery-img-color-overlay == 1 {
+            position: relative;
+            background-color: #fff;
+
+            &::after {
+                content: '';
+                background-color: $zen-product-gallery-img-bg;
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                opacity: .03;
+                pointer-events: none;
+                @include border-radius($zen-layout-element-radius * 1px);
+            }
+        } @else {
+            background-color: $zen-product-gallery-img-bg;
+        }
+
+        @if $zen-product-gallery-slider-gallery-image-ratio == 1 {
+            position: relative;
+            padding: 0;
+
+            @if $zen-product-gallery-slider-gallery-style == "alternate" {
+                border: none;
+            }
+
+            &::before {
+                content: '';
+                display: block;
+                padding-top: if($zen-product-listing-card-img-width == 0 or $zen-product-listing-card-img-height == 0, percent($zen-product-listing-card-img-padding), percent(strip-unit($zen-product-listing-card-img-height) / strip-unit($zen-product-listing-card-img-width) * 100));
+            }
+        }
+
+        .gallery-slider-thumbnails-image {
+            @if $zen-product-gallery-slider-gallery-image-ratio == 1 {
+                margin: auto;
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                object-fit: scale-down;
+                width: 100%;
+            }
+        }
+    }
+}
+
+// gallery scroller
+.is-gallery-scroller {
+    .gallery-slider { // ... prevent affecting modal
+        .base-slider-dots {
+            display: none;
+        }
+    }
+
+    .gallery-slider-item,
+    .gallery-slider-single-image {
+        margin-bottom: $spacer;
+    }
+}
+
+// gallery grid
+.is-gallery-grid { // ... prevent flash of thumbnails, can not wait until js-gallery-grid is set
+    @include media-breakpoint-up(lg) {
+        .gallery-slider-thumbnails-col {
+            display: none;
+        }
+    }
+
+    .gallery-grid-container {
+        --#{$prefix}gutter-x: #{$spacer};
+        --#{$prefix}gutter-y: #{$spacer};
+    }
+
+    .product-wishlist { // ... gutter-y on gallery-grid-item-containers needs to be observed by the wishlist-icon
+        .product-wishlist-action {
+            top: $spacer-lg + $spacer;
+        }
+    }
+
+    .gallery-slider { // ... prevent affecting modal
+        .base-slider-dots {
+            display: none;
+        }
+    }
+}
+
+.product-block-prices-grid {
+    $contrastBackground: if($zen-container-bg != transparent, $zen-container-bg, $body-bg);
+
+    @if $zen-product-details-bg == transparent {
+        @if (contrast-ratio($contrastBackground, $black) < $min-contrast-ratio) {
+            --#{$prefix}table-bg: rgba(255,255,255,.025);
+        } @else {
+            --#{$prefix}table-bg: rgba(0,0,0,.025);
+        }
+    } @else {
+        @if (contrast-ratio($zen-product-details-bg, $black) < $min-contrast-ratio) {
+            --#{$prefix}table-bg: rgba(255,255,255,.025);
+        } @else {
+            --#{$prefix}table-bg: rgba(0,0,0,.025);
+        }
+    }
+
+    thead {
+        background-color: transparent;
+    }
+
+    .product-block-prices-body .product-block-prices-row {
+        border-top: none;
+    }
+}
+
+@if $zen-buy-quantity-style == "input" { // affect only own quantity input
+    .product-detail-form-container {
+        .product-detail-quantity-group {
+            .quantity-input {
+                @include media-breakpoint-up(sm) {
+                    max-width: 80px;
+                }
+
+                &:not(.has-pack-unit) {
+                    min-width: 80px;
+                }
+            }
+        }
+    }
+}
+
+// product features
+.product-detail-features {
+    $contrastBackground: if($zen-container-bg != transparent, $zen-container-bg, $sw-background-color);
+    $contrastBackground: if($zen-product-details-bg != transparent, $zen-product-details-bg, $contrastBackground);
+
+    .product-detail-features-headline {
+        --#{$prefix}list-group-color: #{color-contrast($contrastBackground, $sw-text-color, $zen-light-text-color)};
+        color: var(--#{$prefix}list-group-color);
+    }
+
+    .list-item {
+        display: flex;
+        margin-bottom: $spacer-xs;
+    }
+
+    .list-group-item {
+        display: flex;
+        --#{$prefix}list-group-border-color: #{$border-color};
+        --#{$prefix}list-group-color: #{color-contrast($contrastBackground, $sw-text-color, $zen-light-text-color)};
+    }
+
+    .feature-icon {
+        flex: 0 0 auto;
+        align-self: flex-start;
+        --#{$prefix}list-group-color: #{color-contrast($contrastBackground, $sw-text-color, $zen-light-text-color)};
+        color: var(--#{$prefix}list-group-color);
+    }
+}

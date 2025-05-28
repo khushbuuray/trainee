@@ -1,0 +1,15 @@
+.order-table-header-context-menu-content-link {
+    color: var(--#{$prefix}dropdown-link-color);
+
+    &:hover {
+        color: var(--#{$prefix}dropdown-link-hover-color);
+    }
+}
+
+.order-table-header-context-menu {
+    .icon {
+        > svg {
+            color: var(--#{$prefix}btn-color);
+        }
+    }
+}

@@ -1,0 +1,3 @@
+.is-ctl-navigation {
+    @include header-contrast-colors(light, $black, $white, $black, tint-color($black, 20%), shade-color($white, 20%), tint-color($black, 20%));
+}

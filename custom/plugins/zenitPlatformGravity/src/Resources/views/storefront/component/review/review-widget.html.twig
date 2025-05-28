@@ -1,0 +1,31 @@
+{% sw_extends '@Storefront/storefront/component/review/review-widget.html.twig' %}
+
+{% block component_review_filter_checkbox %}
+    <div class="col-5 col-sm-12 col-xl-5 product-detail-review-checkbox">
+        <div class="form-check">
+            {{ block('component_review_filter_checkbox_input') }}
+
+            {{ block('component_review_filter_checkbox_label') }}
+        </div>
+    </div>
+{% endblock %}
+
+{# ... @zenit - remove d-none d-lg-block #}
+{% block component_review_filter_progressbar %}
+    <div class="col col-sm-12 col-md-8 col-xl product-detail-review-progressbar-col">
+        <div class="progress product-detail-review-progressbar-container">
+            <div class="progress-bar product-detail-review-progressbar-bar"
+                 role="progressbar"
+                 style="width: {{ matrix.percent }}%;"
+                 aria-valuenow="{{ matrix.percent }}"
+                 aria-valuemin="0"
+                 aria-valuemax="100"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block component_review_filter_share %}
+    <div class="col-3 col-sm-12 col-md-3 col-xl-3 product-detail-review-share">
+        <p><small>{{ matrix.percent|round }}%</small></p>
+    </div>
+{% endblock %}

@@ -1,0 +1,284 @@
+/*
+Main navigation
+==============================================
+Custom styling for main navigation on larger screens.
+
+Based on bootstrap nav:
+https://getbootstrap.com/docs/4.3/components/navs/
+
+@deprecated tag:v6.7.0 - Remove this file without replacement.
+*/
+
+//one line header
+.header-single-line {
+    .main-navigation {
+        > .container {
+            padding: 0;
+        }
+    }
+}
+
+// main navigation
+.nav-main {
+    @if $zen-header-style == "single-line" {
+        .main-navigation {
+            background: $zen-main-navigation-bg;
+        }
+    } @else {
+        background: $zen-main-navigation-bg;
+    }
+
+    @include media-breakpoint-up(lg) {
+        // transparent header classes
+        $i: 0;
+        @while $i < 100 {
+            &.bg-opacity-#{$i} {
+                @if $zen-header-style == "single-line" {
+                    .main-navigation {
+                        background-color: rgba($zen-main-navigation-bg, 0.01 * $i);
+                    }
+                } @else {
+                    background-color: rgba($zen-main-navigation-bg, 0.01 * $i);
+                }
+            }
+
+            $i: $i + 5;
+        }
+    }
+}
+
+.main-navigation {
+    width: 100%;
+    position: relative; // needed for flyout-menu positioning
+
+    @if $zen-main-navigation-border-top == 1 and $zen-main-navigation-border-top-full-width == 1 {
+        border-top: px($zen-main-navigation-border-top-width) solid $zen-main-navigation-border-top-color;
+    }
+
+    // navigation badge
+    .main-navigation-link-text {
+        > .navigation-badge {
+            background: $zen-main-navigation-color;
+            color: $zen-main-navigation-bg;
+            @include border-radius($zen-layout-button-radius * 1px);
+        }
+    }
+}
+
+// navigation badge
+.navigation-badge {
+    text-transform: uppercase;
+    font-size: $zen-font-size-xs;
+    height: 1rem;
+    line-height: 1rem; // different fonts align different...
+    vertical-align: middle;
+}
+
+@include media-breakpoint-up(md) {
+    .main-navigation-menu {
+        > .main-navigation-link,
+        > .main-navigation-dropdown-item {
+
+            // ... pulls first item to left, so that it is in line with the logo
+            @if $zen-header-style != "single-line" {
+                @if $zen-main-navigation-hover-animation == "hover-1"
+                    or $zen-main-navigation-hover-animation == "hover-2"
+                    or $zen-main-navigation-hover-animation == "hover-6"
+                    or $zen-main-navigation-hover-animation == "hover-7"
+                    or $zen-main-navigation-hover-animation == "hover-8"
+                    or $zen-main-navigation-hover-animation == "hover-9"
+                    or $zen-main-navigation-hover-animation == "hover-11"
+                    or $zen-main-navigation-hover-animation == "hover-12"
+                    or $zen-main-navigation-hover-animation == "hover-13"
+                    or $zen-main-navigation-hover-animation == "hover-14" {
+
+                    // ... make sure negative margin is not larger than container padding
+                    $negative-margin-sm: if($zen-layout-container-spacing-left / 2 < $zen-main-navigation-padding, $zen-layout-container-spacing-left, $zen-main-navigation-padding);
+                    $negative-margin: if($zen-layout-container-spacing-left < $zen-main-navigation-padding, $zen-layout-container-spacing-left, $zen-main-navigation-padding);
+
+                    @if $zen-main-navigation-align == "flex-start" {
+                        &:first-child {
+                            margin-left: px(-$negative-margin-sm);
+
+                            @include media-breakpoint-up(lg) {
+                                margin-left: px(-$negative-margin);
+                            }
+                        }
+                    }
+
+                    // @edge-case: do not use on flex-end, it breaks menu-scroller
+                    //@if $zen-main-navigation-align == "flex-end" {
+                    //    &:last-child {
+                    //        margin-right: px(-$negative-margin-sm);
+                    //
+                    //        @include media-breakpoint-up(lg) {
+                    //            margin-right: px(-$negative-margin);
+                    //        }
+                    //    }
+                    //}
+                }
+            }
+
+            @if $zen-main-navigation-hover-animation == "hover-0" {
+                margin: 0 $spacer-xs;
+
+                &:first-child {
+                    margin-left: 0;
+                }
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
+
+        > .main-navigation-link,
+        > .main-navigation-dropdown-item > .main-navigation-link {
+            @if $zen-main-navigation-hover-animation == "hover-0" {
+                @include border-radius($zen-layout-button-radius * 1px);
+            }
+        }
+
+        @if $zen-main-navigation-align == "center" {
+            //justify-content: $zen-main-navigation-align; // do not use because of nav-scroller
+
+            > .main-navigation-link:first-child,
+            > .main-navigation-dropdown-item:first-child {
+                margin-left: auto;
+            }
+
+            > .main-navigation-link:last-child,
+            > .main-navigation-dropdown-item:last-child {
+                margin-right: auto;
+            }
+        } @else if $zen-main-navigation-align == "flex-end" {
+            > .main-navigation-link:first-child,
+            > .main-navigation-dropdown-item:first-child {
+                margin-left: auto;
+            }
+        } @else {
+            justify-content: $zen-main-navigation-align;
+        }
+
+        @if $zen-main-navigation-border-top == 1 and $zen-main-navigation-border-top-full-width == 0 {
+            border-top: px($zen-main-navigation-border-top-width) solid $zen-main-navigation-border-top-color;
+        }
+    }
+
+    .main-navigation-link {
+        position: relative;
+        @include font-size(px($zen-main-navigation-font-size));
+        font-weight: $zen-main-navigation-font-weight;
+        line-height: px($zen-main-navigation-height);
+        text-transform: $zen-main-navigation-text-transform;
+        color: $zen-main-navigation-color;
+        @include main-navigation-hover($zen-main-navigation-hover-animation, $zen-main-navigation-color, $zen-main-navigation-bg, $zen-main-navigation-hover-color, $zen-main-navigation-hover-bg);
+
+        @if $zen-main-navigation-hover-animation != "hover-3" and $zen-main-navigation-hover-animation != "hover-4" {
+            padding: 0 px($zen-main-navigation-padding);
+        } @else {
+            padding: 0;
+        }
+
+        @if $zen-main-navigation-font-family == "headline" {
+            font-family: $headings-font-family;
+        }
+
+        // sets cursor to default for structuring elements
+        &:not(a) {
+            cursor: default;
+        }
+
+        @if $zen-main-navigation-extern-link-icon  == 1 {
+            &[target=_blank] {
+                .main-navigation-link-name::after {
+                    content: "";
+                    display: inline-block;
+                    width: .715em;
+                    height: .715em;
+                    position: relative;
+                    margin-left: .285em;
+                    -webkit-mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23758CA3' fill-rule='evenodd' d='M12.586 2H10a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 01-2 0V3.414l-6.793 6.793a1 1 0 11-1.414-1.414L12.586 2zM6 1a1 1 0 110 2H3a1 1 0 00-1 1v9a1 1 0 001 1h8.967a1 1 0 001-.99L13 9.99a1 1 0 112 .02l-.033 3.023a3 3 0 01-3 2.967H3a3 3 0 01-3-3V4a3 3 0 013-3h3z'/%3E%3C/svg%3E");
+                    -webkit-mask-repeat: no-repeat;
+                    -webkit-mask-size: .715em .715em;
+                    mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23758CA3' fill-rule='evenodd' d='M12.586 2H10a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 01-2 0V3.414l-6.793 6.793a1 1 0 11-1.414-1.414L12.586 2zM6 1a1 1 0 110 2H3a1 1 0 00-1 1v9a1 1 0 001 1h8.967a1 1 0 001-.99L13 9.99a1 1 0 112 .02l-.033 3.023a3 3 0 01-3 2.967H3a3 3 0 01-3-3V4a3 3 0 013-3h3z'/%3E%3C/svg%3E");
+                    mask-repeat: no-repeat;
+                    mask-size: .715em .715em;
+                    background-color: $zen-main-navigation-color;
+                }
+            }
+        }
+
+        .main-navigation-link-text {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .icon {
+            color: $zen-main-navigation-color;
+
+            > svg {
+                top: .15em;
+            }
+        }
+
+        &.active {
+            font-weight: $zen-main-navigation-active-font-weight;
+        }
+
+        &.is-open {
+            z-index: $z-index-dropdown + 1;
+        }
+    }
+
+    .main-navigation-divider {
+        position: relative;
+        line-height: px($zen-main-navigation-height);
+        color: $zen-main-navigation-color;
+
+        &::after {
+            position: absolute;
+            right: 0;
+            top: 0;
+            line-height: px($zen-main-navigation-height);
+            transform: translateX(50%);
+            z-index: 1;
+
+            @if $zen-main-navigation-divider == 1 {
+                content: '/';
+            }
+
+            @if $zen-main-navigation-divider == 2 {
+                content: '|';
+            }
+
+            @if $zen-main-navigation-divider == 3 {
+                content: '-';
+            }
+
+            @if $zen-main-navigation-divider == 4 {
+                content: '+';
+            }
+        }
+    }
+}
+
+@include media-breakpoint-up(lg) {
+    .main-navigation {
+        display: none;
+    }
+
+    .is-mn-offcanvas-md {
+        .main-navigation {
+            display: inherit;
+        }
+    }
+}
+
+@include media-breakpoint-up(xl) {
+    .is-mn-offcanvas-lg {
+        .main-navigation {
+            display: inherit;
+        }
+    }
+}

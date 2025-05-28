@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="zenit\PlatformGravity\Subscriber\KernelControllerSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="zenit\PlatformGravity\Subscriber\StorefrontRenderSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="zenit\PlatformGravity\Subscriber\ProductListingSubscriber">
+            <argument type="service" id="Shopware\Storefront\Theme\ThemeConfigValueAccessor" />
+            <argument type="service" id="theme.repository"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="zenit\PlatformGravity\Subscriber\QuickViewSubscriber">
+            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Detail\ProductDetailRoute"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="zenit\PlatformGravity\Framework\Cookie\CustomCookieProvider"
+                 decorates="Shopware\Storefront\Framework\Cookie\CookieProviderInterface">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument type="service" id="zenit\PlatformGravity\Framework\Cookie\CustomCookieProvider.inner" />
+        </service>
+
+        <service id="zenit\PlatformGravity\Storefront\Controller\QuickViewController" public="true">
+            <argument type="service" id="Shopware\Storefront\Page\Product\QuickView\MinimalQuickViewPageLoader"/>
+            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\FindVariant\FindProductVariantRoute"/>
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <service id="zenit\PlatformGravity\Administration\Controller\ThemeConfigPresetController" public="true">
+            <argument type="service" id="media.repository"/>
+            <argument type="service" id="media_folder.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
+            <argument>%kernel.project_dir%</argument>
+        </service>
+
+        <service id="Twig\Extension\StringLoaderExtension">
+            <tag name="twig.extension"/>
+        </service>
+    </services>
+</container>

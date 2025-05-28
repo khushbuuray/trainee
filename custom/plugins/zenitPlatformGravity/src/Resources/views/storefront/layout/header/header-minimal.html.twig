@@ -1,0 +1,48 @@
+{% sw_extends '@Storefront/storefront/layout/header/header-minimal.html.twig' %}
+
+{% block layout_header %}
+    {% if theme_config('zen-logo-position') is same as ('left') %}
+        {% set minimalLogoClasses =                        'order-1 col-6 col-md-4' %}
+        {% set minimalContactClasses =                     'order-2 col-md-4 py-2 justify-content-center text-center' %}
+        {% set minimalButtonClasses =                      'order-3 col-6 col-md-4' %}
+        {% set minimalButtonTextClasses =                  'd-none d-sm-inline-block' %}
+    {% elseif theme_config('zen-logo-position') is same as ('center') %}
+        {% set minimalLogoClasses =                        'order-2 col-12 col-md-4 justify-content-center' %}
+        {% set minimalContactClasses =                     'order-1 col-md-4 py-2' %}
+        {% set minimalButtonClasses =                      'order-3 col-12 col-md-4 justify-content-center justify-content-md-end' %}
+        {% set minimalButtonTextClasses =                  '' %}
+    {% elseif theme_config('zen-logo-position') is same as ('right') %}
+        {% set minimalLogoClasses =                        'order-3 col-6 col-md-4 justify-content-end' %}
+        {% set minimalContactClasses =                     'order-2 col-md-4 py-2 justify-content-center text-center' %}
+        {% set minimalButtonClasses =                      'order-1 col-6 col-md-4 justify-content-start' %}
+        {% set minimalButtonTextClasses =                  'd-none d-sm-inline-block' %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}
+
+{% block layout_header_minimal_logo %}
+    <div class="header-minimal-logo {{ minimalLogoClasses }}">
+        {% sw_include '@Storefront/storefront/layout/header/logo.html.twig' %}
+    </div>
+{% endblock %}
+
+{% block layout_header_minimal_contact %}
+    <div class="header-minimal-contact {{ minimalContactClasses }}">
+        {{ 'header.supportInfo'|trans|sw_sanitize }}
+    </div>
+{% endblock %}
+
+{% block layout_header_minimal_button %}
+    <div class="header-minimal-back-to-shop {{ minimalButtonClasses }}">
+        <a href="{{ path('frontend.home.page') }}"
+           class="btn header-minimal-back-to-shop-button"
+           title="{{ 'checkout.finishButtonBackToShop'|trans|striptags }}">
+            {% sw_icon 'arrow-medium-left' style {
+                size: 'sm',
+                pack: 'solid'
+            } %}
+            <span class="{{ minimalButtonTextClasses }}">{{ 'checkout.finishButtonBackToShop'|trans|striptags }}</span>
+        </a>
+    </div>
+{% endblock %}

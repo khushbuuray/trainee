@@ -1,0 +1,116 @@
+{% block zen_layout_navigation_dropdown_categories %}
+    {% set navigationMaxDepth = (theme_config('zen-dropdown-navigation-max-depth') is not null) ? theme_config('zen-dropdown-navigation-max-depth') : context.salesChannel.navigationCategoryDepth %}
+
+    {% if not level %}
+        {% set level = 1 %}
+    {% endif %}
+    {% set activeId = page.header.navigation.active.id %}
+
+    {% set activePath = page.header.navigation.active.path %}
+
+    <ul class="navigation-dropdown-list dropdown-menu is-level-{{ level }} shadow"
+        aria-labelledby="category-{{ id }}">
+
+        {% block zen_layout_navigation_dropdown_categories_parent_item %}
+            {% if trigger is same as ('click') and parentNavigationTree.category %}
+                {% if parentNavigationTree.category.type is not same as ('folder') %}
+                    <li class="navigation-dropdown-item is-current-category">
+                        {% block zen_layout_navigation_dropdown_categories_parent_item_link %}
+
+                            {% set id = parentNavigationTree.category.id %}
+                            {% set name = parentNavigationTree.category.translated.name %}
+                            {% set link = category_url(parentNavigationTree.category) %}
+
+                            <a class="nav-item nav-link navigation-dropdown-link is-level-{{ level }}{% if id == activeId or id in activePath %} active{% endif %}"
+                               href="{{ link }}"
+                               itemprop="url"
+                               {% if category_linknewtab(parentNavigationTree.category) %}target="_blank"
+                               {% if parentNavigationTree.category.linkType == "external" %}rel="noopener noreferrer"{% endif %}
+                                {% endif %}
+                               title="{{ name }}">
+                                <span itemprop="name">
+                                    {{ 'general.showCategory'|trans({'%category%': name})|sw_sanitize }}
+                                </span>
+
+                                {# ... @zenit - add badge #}
+                                {% sw_include '@zenitPlatformGravity/storefront/layout/navigation/zen-navigation-badge.html.twig' with {
+                                    category: parentNavigationTree.category,
+                                } only %}
+                            </a>
+
+                        {% endblock %}
+                    </li>
+                    <div class="dropdown-divider"></div>
+                {% endif %}
+            {% endif %}
+        {% endblock %}
+
+
+        {% for treeItem in navigationTree %}
+            {% set id = treeItem.category.id %}
+            {% set name = treeItem.category.translated.name %}
+            {% set link = category_url(treeItem.category) %}
+            {% set hasChildren = treeItem.category.visibleChildCount > 0 %}
+
+            {% block zen_layout_navigation_dropdown_categories_item %}
+                <li class="navigation-dropdown-item">
+                    {% block zen_layout_navigation_dropdown_categories_item_link %}
+                        {% if treeItem.category.type == 'folder' %}
+                            <div class="nav-item nav-link navigation-dropdown-link is-level-{{ level }}"
+                                 title="{{ name }}">
+                                <span itemprop="name">{{ name }}</span>
+
+                                {# ... @zenit - add badge #}
+                                {% sw_include '@zenitPlatformGravity/storefront/layout/navigation/zen-navigation-badge.html.twig' with {
+                                    category: treeItem.category,
+                                } only %}
+
+                                {% if hasChildren %}
+                                    {% block zen_layout_navigation_dropdown_categories_item_folder_icon %}
+                                        <span class="navigation-dropdown-link-icon">
+                                            {% sw_icon 'arrow-medium-right' style { 'pack':'solid', size: 'xs' } %}
+                                        </span>
+                                    {% endblock %}
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <a class="nav-item nav-link navigation-dropdown-link is-level-{{ level }}{% if id == activeId or id in activePath %} active{% endif %}"
+                               href="{{ link }}"
+                               itemprop="url"
+                               {% if category_linknewtab(treeItem.category) %}target="_blank"
+                               {% if treeItem.category.linkType == "external" %}rel="noopener noreferrer"{% endif %}
+                                {% endif %}
+                               title="{{ name }}">
+                                <span class="navigation-dropdown-link-name" itemprop="name">{{ name }}</span>
+
+                                {# ... @zenit - add badge #}
+                                {% sw_include '@zenitPlatformGravity/storefront/layout/navigation/zen-navigation-badge.html.twig' with {
+                                    category: treeItem.category,
+                                } only %}
+
+                                {% if level < navigationMaxDepth and hasChildren %}
+                                    {% block zen_layout_navigation_dropdown_categories_item_link_icon %}
+                                        <span class="navigation-dropdown-link-icon">
+                                            {% sw_icon 'arrow-medium-right' style { 'pack':'solid', size: 'xs' } %}
+                                        </span>
+                                    {% endblock %}
+                                {% endif %}
+                            </a>
+                        {% endif %}
+                    {% endblock %}
+
+                    {% block layout_navigation_categories_recoursion %}
+                        {% if level < navigationMaxDepth and treeItem.children|length > 0 %}
+                            {% sw_include '@zenitPlatformGravity/storefront/layout/navigation/zen-dropdown-categories.html.twig' with {
+                                navigationTree: treeItem.children,
+                                level: level + 1,
+                                page: page
+                            } only %}
+                        {% endif %}
+                    {% endblock %}
+                </li>
+            {% endblock %}
+        {% endfor %}
+    </ul>
+
+{% endblock %}

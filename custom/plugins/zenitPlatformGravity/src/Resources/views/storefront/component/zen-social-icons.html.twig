@@ -1,0 +1,173 @@
+{% block zen_component_social_icons %}
+    {% set social = {
+        translated: {
+            facebookUrl: 'zentheme.gravity.content.socialFacebookUrl'|trans({'%placeholder%': config('zenitPlatformGravity.config.socialFacebookUrl')}),
+            twitterUrl: 'zentheme.gravity.content.socialTwitterUrl'|trans({'%placeholder%': config('zenitPlatformGravity.config.socialTwitterUrl')}),
+            youtubeUrl: 'zentheme.gravity.content.socialYoutubeUrl'|trans({'%placeholder%': config('zenitPlatformGravity.config.socialYoutubeUrl')}),
+            vimeoUrl: 'zentheme.gravity.content.socialVimeoUrl'|trans({'%placeholder%': config('zenitPlatformGravity.config.socialVimeoUrl')}),
+            pinterestUrl: 'zentheme.gravity.content.socialPinterestUrl'|trans({'%placeholder%': config('zenitPlatformGravity.config.socialPinterestUrl')}),
+            instagramUrl: 'zentheme.gravity.content.socialInstagramUrl'|trans({'%placeholder%': config('zenitPlatformGravity.config.socialInstagramUrl')}),
+            flickrUrl: 'zentheme.gravity.content.socialFlickrUrl'|trans({'%placeholder%': config('zenitPlatformGravity.config.socialFlickrUrl')}),
+            linkedInUrl: 'zentheme.gravity.content.socialLinkedInUrl'|trans({'%placeholder%': config('zenitPlatformGravity.config.socialLinkedInUrl')}),
+            xingUrl: 'zentheme.gravity.content.socialXingUrl'|trans({'%placeholder%': config('zenitPlatformGravity.config.socialXingUrl')}),
+            whatsappUrl: 'zentheme.gravity.content.socialWhatsappUrl'|trans({'%placeholder%': config('zenitPlatformGravity.config.socialWhatsappUrl')}),
+            telegramUrl: 'zentheme.gravity.content.socialTelegramUrl'|trans({'%placeholder%': config('zenitPlatformGravity.config.socialTelegramUrl')}),
+            amazonUrl: 'zentheme.gravity.content.socialAmazonUrl'|trans({'%placeholder%': config('zenitPlatformGravity.config.socialAmazonUrl')}),
+            tikTokUrl: 'zentheme.gravity.content.socialTikTokUrl'|trans({'%placeholder%': config('zenitPlatformGravity.config.socialTikTokUrl')}),
+            RSSUrl: 'zentheme.gravity.content.socialRSSUrl'|trans({'%placeholder%': config('zenitPlatformGravity.config.socialRSSUrl')})
+        }
+    } %}
+
+    {% set hasSocial = false %}
+    {% for item in social.translated %}
+        {% if item is not empty %}
+            {% set hasSocial = true %}
+        {% endif %}
+    {% endfor %}
+
+    {% if hasSocial %}
+        <div class="{{ classes }} social-icons">
+            {% block zen_component_social_icons_items %}
+                {% if config('zenitPlatformGravity.config.socialFacebookUrl')|length %}
+                    <a href="{{ social.translated.facebookUrl }}"
+                       class="social-icon icon-style-{{ config('zenitPlatformGravity.config.socialIconStyle') }}"
+                       title="{{ config('core.basicInformation.shopName') }} on Facebook"
+                       target="_blank" rel="noopener"
+                       aria-label="Facebook">
+                        {% sw_icon 'facebook' style { pack: 'social',  namespace: 'zenitPlatformGravity' } %}
+                    </a>
+                {% endif %}
+
+                {% if config('zenitPlatformGravity.config.socialTwitterUrl')|length %}
+                    <a href="{{ social.translated.twitterUrl }}"
+                       class="social-icon icon-style-{{ config('zenitPlatformGravity.config.socialIconStyle') }}"
+                       title="{{ config('core.basicInformation.shopName') }} on Twitter"
+                       target="_blank" rel="noopener"
+                       aria-label="Twitter">
+                        {% sw_icon 'x' style { pack: 'social',  namespace: 'zenitPlatformGravity' } %}
+                    </a>
+                {% endif %}
+
+                {% if config('zenitPlatformGravity.config.socialYoutubeUrl')|length %}
+                    <a href="{{ social.translated.youtubeUrl }}"
+                       class="social-icon icon-style-{{ config('zenitPlatformGravity.config.socialIconStyle') }}"
+                       title="{{ config('core.basicInformation.shopName') }} on Youtube"
+                       target="_blank" rel="noopener"
+                       aria-label="Youtube">
+                        {% sw_icon 'youtube' style { pack: 'social',  namespace: 'zenitPlatformGravity' } %}
+                    </a>
+                {% endif %}
+
+                {% if config('zenitPlatformGravity.config.socialVimeoUrl')|length %}
+                    <a href="{{ social.translated.vimeoUrl }}"
+                       class="social-icon icon-style-{{ config('zenitPlatformGravity.config.socialIconStyle') }}"
+                       title="{{ config('core.basicInformation.shopName') }} on Vimeo"
+                       target="_blank" rel="noopener"
+                       aria-label="Vimeo">
+                        {% sw_icon 'vimeo' style { pack: 'social',  namespace: 'zenitPlatformGravity' } %}
+                    </a>
+                {% endif %}
+
+                {% if config('zenitPlatformGravity.config.socialPinterestUrl')|length %}
+                    <a href="{{ social.translated.pinterestUrl }}"
+                       class="social-icon icon-style-{{ config('zenitPlatformGravity.config.socialIconStyle') }}"
+                       title="{{ config('core.basicInformation.shopName') }} on Pinterest"
+                       target="_blank" rel="noopener"
+                       aria-label="Pinterest">
+                        {% sw_icon 'pinterest' style { pack: 'social',  namespace: 'zenitPlatformGravity' } %}
+                    </a>
+                {% endif %}
+
+                {% if config('zenitPlatformGravity.config.socialInstagramUrl')|length %}
+                    <a href="{{ social.translated.instagramUrl }}"
+                       class="social-icon icon-style-{{ config('zenitPlatformGravity.config.socialIconStyle') }}"
+                       title="{{ config('core.basicInformation.shopName') }} on Instagram"
+                       target="_blank" rel="noopener"
+                       aria-label="Instagram">
+                        {% sw_icon 'instagram' style { pack: 'social',  namespace: 'zenitPlatformGravity' } %}
+                    </a>
+                {% endif %}
+
+                {% if config('zenitPlatformGravity.config.socialFlickrUrl')|length %}
+                    <a href="{{ social.translated.flickrUrl }}"
+                       class="social-icon icon-style-{{ config('zenitPlatformGravity.config.socialIconStyle') }}"
+                       title="{{ config('core.basicInformation.shopName') }} on Flickr"
+                       target="_blank" rel="noopener"
+                       aria-label="Flickr">
+                        {% sw_icon 'flickr' style { pack: 'social',  namespace: 'zenitPlatformGravity' } %}
+                    </a>
+                {% endif %}
+
+                {% if config('zenitPlatformGravity.config.socialLinkedInUrl')|length %}
+                    <a href="{{ social.translated.linkedInUrl }}"
+                       class="social-icon icon-style-{{ config('zenitPlatformGravity.config.socialIconStyle') }}"
+                       title="{{ config('core.basicInformation.shopName') }} on LinkedIn"
+                       target="_blank" rel="noopener"
+                       aria-label="LinkedIn">
+                        {% sw_icon 'linkedin' style { pack: 'social',  namespace: 'zenitPlatformGravity' } %}
+                    </a>
+                {% endif %}
+
+                {% if config('zenitPlatformGravity.config.socialXingUrl')|length %}
+                    <a href="{{ social.translated.xingUrl }}"
+                       class="social-icon icon-style-{{ config('zenitPlatformGravity.config.socialIconStyle') }}"
+                       title="{{ config('core.basicInformation.shopName') }} on Xing"
+                       target="_blank" rel="noopener"
+                       aria-label="Xing">
+                        {% sw_icon 'xing' style { pack: 'social',  namespace: 'zenitPlatformGravity' } %}
+                    </a>
+                {% endif %}
+
+                {% if config('zenitPlatformGravity.config.socialWhatsappUrl')|length %}
+                    <a href="{{ social.translated.whatsappUrl }}"
+                       class="social-icon icon-style-{{ config('zenitPlatformGravity.config.socialIconStyle') }}"
+                       title="{{ config('core.basicInformation.shopName') }} on Whatsapp"
+                       target="_blank" rel="noopener"
+                       aria-label="Whatsapp">
+                        {% sw_icon 'whatsapp' style { pack: 'social',  namespace: 'zenitPlatformGravity' } %}
+                    </a>
+                {% endif %}
+
+                {% if config('zenitPlatformGravity.config.socialTelegramUrl')|length %}
+                    <a href="{{ social.translated.telegramUrl }}"
+                       class="social-icon icon-style-{{ config('zenitPlatformGravity.config.socialIconStyle') }}"
+                       title="{{ config('core.basicInformation.shopName') }} on Telegram"
+                       target="_blank" rel="noopener"
+                       aria-label="Telegram">
+                        {% sw_icon 'telegram' style { pack: 'social',  namespace: 'zenitPlatformGravity' } %}
+                    </a>
+                {% endif %}
+
+                {% if config('zenitPlatformGravity.config.socialAmazonUrl')|length %}
+                    <a href="{{ social.translated.amazonUrl }}"
+                       class="social-icon icon-style-{{ config('zenitPlatformGravity.config.socialIconStyle') }}"
+                       title="{{ config('core.basicInformation.shopName') }} on Amazon"
+                       target="_blank" rel="noopener"
+                       aria-label="Amazon">
+                        {% sw_icon 'amazon' style { pack: 'social',  namespace: 'zenitPlatformGravity' } %}
+                    </a>
+                {% endif %}
+
+                {% if config('zenitPlatformGravity.config.socialTikTokUrl')|length %}
+                    <a href="{{ social.translated.tikTokUrl }}"
+                       class="social-icon icon-style-{{ config('zenitPlatformGravity.config.socialIconStyle') }}"
+                       title="{{ config('core.basicInformation.shopName') }} on TikTok"
+                       target="_blank" rel="noopener"
+                       aria-label="TikTok">
+                        {% sw_icon 'tiktok' style { pack: 'social',  namespace: 'zenitPlatformGravity' } %}
+                    </a>
+                {% endif %}
+
+                {% if config('zenitPlatformGravity.config.socialRSSUrl')|length %}
+                    <a href="{{ social.translated.RSSUrl }}"
+                       class="social-icon icon-style-{{ config('zenitPlatformGravity.config.socialIconStyle') }}"
+                       title="{{ config('core.basicInformation.shopName') }} RSS Feed"
+                       target="_blank" rel="noopener"
+                       aria-label="RSS">
+                        {% sw_icon 'rss' style { pack: 'social',  namespace: 'zenitPlatformGravity' } %}
+                    </a>
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endif %}
+{% endblock %}

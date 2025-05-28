@@ -1,0 +1,104 @@
+.nav-main-scroller {
+    .main-navigation {
+        /*
+            Start preventing content from stretching parent .nav-main to 100% width
+            on one line header.
+
+            Use this instead of using using 'overflow: hidden' on .nav-main!
+            Using 'overflow: hidden' causes that 'position: absolute' does not
+            ignore 'overflow: hidden' rule on parent which is needed to place
+            dropdowns when using nav-scroll
+        */
+        width: 0;
+        min-width: 100%;
+        /*
+            End preventing content from stretching parent .nav-main to 100% width
+            on one line header.
+        */
+    }
+
+    .js-main-navigation-scroller {
+        .container {
+            position: relative;
+        }
+    }
+
+    .main-navigation-menu {
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+        -ms-overflow-style: none;
+        scrollbar-width: none; /* Firefox */
+        width: auto;
+        max-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    // dropdowns
+    .main-navigation-dropdown-item {
+        &.dropdown {
+            position: static; // ... remove position:relative; rule from box with overflow:hidden; and set it to one of her parent boxes. Then absolute boxes in the box with overflow:hidden; will ignore this rule.
+        }
+    }
+
+    // controls
+    .main-navigation-scroller-controls-next,
+    .main-navigation-scroller-controls-prev {
+        display: none;
+    }
+
+    .js-main-navigation-scroller-controls {
+        // handle transparent background colors
+        @if $zen-main-navigation-bg == transparent {
+            $zen-main-navigation-bg: color-contrast($zen-main-navigation-color);
+        }
+
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: $zen-main-navigation-color;
+        color: $zen-main-navigation-bg;
+        width: px($zen-main-navigation-height * .5);
+        max-width: 24px;
+        height: px($zen-main-navigation-height - 8);
+        max-height: 42px;
+        z-index: $menu-flyout-zindex + 10; // ... increase z-index to get over flyout menu
+        line-height: 36px;
+        font-size: 12px;
+        text-align: center;
+        cursor: pointer;
+        @include border-radius($zen-layout-button-radius * 1px);
+
+        .icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            > svg {
+                top: 0;
+                color: $zen-main-navigation-bg;
+            }
+        }
+
+        &.left-control {
+            @if $zen-header-style != "single-line" {
+                left: px($zen-layout-container-spacing-left);
+            } @else {
+                left: 0;
+            }
+        }
+
+        &.right-control {
+            @if $zen-header-style != "single-line" {
+                right: px($zen-layout-container-spacing-right);
+            } @else {
+                right: 0;
+            }
+        }
+    }
+}

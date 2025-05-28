@@ -1,0 +1,26 @@
+{% block block_zen_grid %}
+    {% block block_zen_grid_inner %}
+
+        {% for element in elements %}
+            {% set loopIndexElements = loop.index0 %}
+            {% set gridClasses = [] %}
+
+            {% for key, value in cols %}
+                {% set gridClasses = ['col-' ~ key ~ '-' ~ value[loopIndexElements]]|merge(gridClasses) %}
+            {% endfor %}
+
+            {% if loop.first %}
+                {% set gridClasses = ['col-first']|merge(gridClasses) %}
+            {% endif %}
+
+            {% if loop.last %}
+                {% set gridClasses = ['col-last']|merge(gridClasses) %}
+            {% endif %}
+
+            <div class="col-12 {{ gridClasses|reverse|join(' ') }}">
+                {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+            </div>
+        {% endfor %}
+
+    {% endblock %}
+{% endblock %}

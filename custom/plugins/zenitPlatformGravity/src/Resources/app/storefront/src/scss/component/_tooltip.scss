@@ -1,0 +1,9 @@
+.tooltip {
+    pointer-events: none;
+
+    @if $zen-container-bg == transparent {
+        --#{$prefix}emphasis-color: #{color-contrast($body-bg, $sw-text-color, $zen-light-text-color)};
+    } @else {
+        --#{$prefix}emphasis-color: #{color-contrast($zen-container-bg, $sw-text-color, $zen-light-text-color)};
+    }
+}

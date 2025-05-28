@@ -1,0 +1,9 @@
+/*
+    Is needed to avoid flashing through the background due to pixel
+    inaccuracies on elements with percentage widths.
+ */
+@mixin prevent-pixel-inaccuracies {
+    max-width: calc(100% + 2px);
+    width: calc(100% + 2px);
+    margin-left: -1px;
+}

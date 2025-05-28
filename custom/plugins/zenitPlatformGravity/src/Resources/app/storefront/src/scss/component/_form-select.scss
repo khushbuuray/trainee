@@ -1,0 +1,47 @@
+/*
+Custom Select
+==============================================
+Custom skin styling for bootstrap custom select menu.
+
+https://getbootstrap.com/docs/4.3/components/forms/#select-menu
+*/
+
+.form-select {
+    -webkit-appearance: none; // ... fix NEXT-29814 for older safari browsers
+    $zen-form-select-indicator-color:     $input-color;
+    $zen-form-select-indicator:           url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='none' stroke='#{$zen-form-select-indicator-color}' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/></svg>");
+    background-image: escape-svg($zen-form-select-indicator);
+
+    @if $zen-layout-forms-style == "underlined" {
+        border-radius: 0;
+        border-top: none;
+        border-right: none;
+        border-left: none;
+        border-bottom-width: 1px;
+        background-color: transparent;
+    } @else {
+        @include border-radius($zen-layout-input-radius * 1px);
+    }
+
+    &:focus {
+        &:not(:disabled) {
+            border-color: $input-focus-border-color;
+            color: $input-focus-color;
+            $zen-form-select-indicator-color:     $input-focus-color;
+            $zen-form-select-indicator:           url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='none' stroke='#{$zen-form-select-indicator-color}' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/></svg>");
+            background-image: escape-svg($zen-form-select-indicator);
+
+            @if $zen-layout-forms-style == "underlined" {
+                background-color: transparent;
+            } @else {
+                background-color: $input-focus-bg;
+            }
+
+            box-shadow: none;
+        }
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+}

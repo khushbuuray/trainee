@@ -1,0 +1,110 @@
+{% block zen_element_divider %}
+    {% set config = element.fieldConfig.elements %}
+    {% set showLeftDivider = config.textAlign.value == 'right' or config.textAlign.value == 'center' %}
+    {% set showRightDivider = config.textAlign.value == 'left' or config.textAlign.value == 'center' %}
+
+    {% set zenClasses = config.zenClasses.value %}
+
+    {% set textClasses = [] %}
+    {% set textClasses = ['zen-font-family-' ~ config.fontFamily.value]|merge(textClasses) %}
+
+    {% set elemStyles = {
+        'align-items': config.verticalAlign.value|default('center'),
+        'justify-content': config.horizontalAlign.value|default('center'),
+    } %}
+
+    {% set wrapperStyles = {
+        width: config.dividerWidth.value|default('100%'),
+    } %}
+
+    {% set dividerStyles = {
+        'border-top-style': config.dividerStyle.value|default('solid'),
+        'border-top-color': config.dividerColor.value|default('#333333'),
+        'border-top-width': config.dividerHeight.value|default('0px'),
+    } %}
+
+    {% set textStyles = {
+        color: config.color.value|default('#333333'),
+        'text-align': config.textAlign.value|default('#333333'),
+        'font-size': config.fontSize.value|default('16px'),
+        'font-weight': config.fontWeight.value|default('400'),
+    } %}
+
+    {% if config.textAlign.value == "left" %}
+        {% set textStyles = textStyles|merge({ 'margin-left': '0' }) %}
+    {% endif %}
+
+    {% if config.textAlign.value == "right" %}
+        {% set textStyles = textStyles|merge({ 'margin-right': '0' }) %}
+    {% endif %}
+
+    {% set tag = config.hTag.value|default('div') %}
+
+    <style>
+        {% if elemStyles %}
+        .cms-element-{{ element.type }}-{{ element.id }},
+        .cms-element-{{ element.type }}-{{ element.id }} .cms-element-alignment {
+            {% for property, value in elemStyles %}
+                {{ property }}: {{ value }};
+            {% endfor %}
+        }
+        {% endif %}
+
+        {% if wrapperStyles %}
+        .cms-element-{{ element.type }}-{{ element.id }} .cms-divider-wrapper {
+            {% for property, value in wrapperStyles %}
+                {{ property }}: {{ value }};
+            {% endfor %}
+        }
+        {% endif %}
+
+        {% if dividerStyles %}
+        .cms-element-{{ element.type }}-{{ element.id }} .cms-divider-divider {
+            {% for property, value in dividerStyles %}
+                {{ property }}: {{ value }};
+            {% endfor %}
+        }
+        {% endif %}
+
+        {% if textStyles %}
+        .cms-element-{{ element.type }}-{{ element.id }} .cms-divider-text {
+            {% for property, value in textStyles %}
+                {{ property }}: {{ value }};
+            {% endfor %}
+        }
+        {% endif %}
+    </style>
+
+    {% block zen_element_divider_element %}
+        <div class="cms-element-{{ element.type }} cms-element-{{ element.type }}-{{ element.id }}{% if config.verticalAlign.value %} has-vertical-alignment{% endif %} {{ zenClasses }}">
+            {% block zen_element_divider_alignment %}
+                {% if config.verticalAlign.value %}
+                    <div class="cms-element-alignment{% if config.verticalAlign.value == "center" %} align-self-center{% elseif config.verticalAlign.value == "flex-end" %} align-self-end{% else %} align-self-start{% endif %}">
+                {% endif %}
+
+                {% block zen_element_divider_inner %}
+                    <div class="cms-divider-wrapper">
+                        {% if config.text.value %}
+                            {% if showLeftDivider %}
+                                <div class="cms-divider-divider"></div>
+                            {% endif %}
+                            <{{ tag|raw }} class="cms-divider-text {{ textClasses|sort|join(' ') }}">
+                                {{ config.text.value }}
+                            </{{ tag|raw }}>
+                            {% if showRightDivider %}
+                                <div class="cms-divider-divider"></div>
+                            {% endif %}
+                        {% else %}
+                            <div class="cms-divider-divider"></div>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+
+                {% if config.verticalAlign.value %}
+                    </div>
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+{% endblock %}

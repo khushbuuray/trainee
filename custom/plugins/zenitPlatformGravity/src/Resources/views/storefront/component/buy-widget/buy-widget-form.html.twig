@@ -1,0 +1,114 @@
+{% sw_extends '@Storefront/storefront/component/buy-widget/buy-widget-form.html.twig' %}
+
+{# @deprecated tag:v6.7.0 - @zenit keep this variable, because it is needed #}
+{% set selectQuantityThreshold = 100 %}
+{% set purchaseSteps = product.purchaseSteps|default(1) %}
+{% set selectQuantityThresholdExceeded = (product.calculatedMaxPurchase - product.minPurchase) / purchaseSteps > selectQuantityThreshold %}
+
+{% if theme_config('zen-buy-quantity-style') is same as ('input') or (theme_config('zen-buy-quantity-style') is same as ('select') and selectQuantityThresholdExceeded) %}
+    {% set quantityGridClasses = 'col-12 col-sm-auto' %}
+    {% set btnGridClasses = 'col-12 col-sm' %}
+{% else %}
+    {% set quantityGridClasses = 'col-12 col-sm-4' %}
+    {% set btnGridClasses = 'col-12 col-sm-8' %}
+{% endif %}
+
+{% block buy_widget_buy_form_inner %}
+    <form
+        id="productDetailPageBuyProductForm"
+        action="{{ formAction }}"
+        method="post"
+        class="buy-widget"
+        {% if theme_config('zen-cart-offcanvas-prevent') %}
+            data-zen-add-to-cart="true"
+        {% else %}
+            data-add-to-cart="true"
+        {% endif %}>
+
+        {% set DOWNLOAD_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_DOWNLOAD') %}
+        {% set showQuantitySelect = not product.states is defined or DOWNLOAD_STATE not in product.states or (DOWNLOAD_STATE in product.states and product.maxPurchase !== 1) %}
+        {% set buyable = product.available and product.childCount <= 0 and product.calculatedMaxPurchase > 0 %}
+        {% block buy_widget_buy_container %}
+            {% if buyable %}
+                <div class="row g-2 buy-widget-container">
+                    <div class="row g-1 d-flex buy-widget-container-inner">
+                        {% block buy_widget_buy_quantity_container %}
+                            {% if theme_config('zen-product-details-buy-quantity') is not same as (false) and showQuantitySelect is not same as (false) %}
+                                {# ... @zenit - change col to col-auto #}
+                                <div class="{{ quantityGridClasses }}">
+                                    {% if theme_config('zen-buy-quantity-style') is same as ('input') or (theme_config('zen-buy-quantity-style') is same as ('select') and selectQuantityThresholdExceeded) %}
+                                        {% block zen_buy_widget_buy_quantity_zenit_input %}
+                                            {% sw_include '@zenitPlatformGravity/storefront/component/buy-widget/zen-buy-widget-quantity.html.twig' with {
+                                                value: product.value,
+                                                id: product.id,
+                                                minPurchase: product.minPurchase,
+                                                maxPurchase: product.calculatedMaxPurchase,
+                                                step: purchaseSteps,
+                                                name: "lineItems[#{product.id}][quantity]",
+                                                quantityGroupClasses: 'product-detail-quantity-group',
+                                                quantityClasses: 'product-detail-quantity-input'
+                                            } %}
+                                        {% endblock %}
+                                    {% else %}
+                                        {% if theme_config('zen-buy-quantity-style') is same as ('select') %}
+                                            {% block zen_buy_widget_buy_quantity_select %}
+                                                <select name="lineItems[{{ product.id }}][quantity]"
+                                                        class="form-select product-detail-quantity-select"
+                                                        aria-label="{{ 'component.product.quantitySelect.label'|trans|striptags }}">
+                                                    {% for quantity in range(product.minPurchase, product.calculatedMaxPurchase, purchaseSteps) %}
+                                                        <option value="{{ quantity }}">
+                                                            {{ quantity }}
+                                                            {% if quantity == 1 %}
+                                                                {% if product.translated.packUnit %} {{ product.translated.packUnit }}{% endif %}
+                                                            {% else %}
+                                                                {% if product.translated.packUnitPlural %}
+                                                                    {{ product.translated.packUnitPlural }}
+                                                                {% elseif product.translated.packUnit %}
+                                                                    {{ product.translated.packUnit }}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            {% endblock %}
+                                        {% else %}
+                                            {{ block('buy_widget_buy_quantity_input_group') }}
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                {# ensure that quantity is not missing in the request #}
+                                <input
+                                    type="hidden"
+                                    class="form-control quantity-input-hidden"
+                                    value="{{ product.minPurchase }}"
+                                    name="lineItems[{{ product.id }}][quantity]"
+                                    data-product-id="{{ product.id }}"
+                                    aria-hidden="true"
+                                >
+                            {% endif %}
+                        {% endblock %}
+
+                        {% block buy_widget_buy_redirect_input %}
+                            {{ parent() }}
+                        {% endblock %}
+
+                        {% block buy_widget_buy_product_buy_info %}
+                            {{ parent() }}
+                        {% endblock %}
+
+                        {% block buy_widget_product_buy_meta %}
+                            {{ parent() }}
+                        {% endblock %}
+
+                        {% block buy_widget_buy_button_container %}
+                            <div class="{{ btnGridClasses }}">
+                                {{ block('buy_widget_buy_button') }}
+                            </div>
+                        {% endblock %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endblock %}
+    </form>
+{% endblock %}

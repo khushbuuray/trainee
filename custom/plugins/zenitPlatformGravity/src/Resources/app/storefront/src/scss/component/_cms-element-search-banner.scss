@@ -1,0 +1,273 @@
+// zenit search banner element
+.cms-element-zen-search-banner {
+    // should not be overflow:hidden because of search suggests, does not have entrance animations
+    position: relative;
+    height: 100%;
+    word-break: break-word;
+
+    &.has-vertical-alignment {
+        display: flex;
+        height: 100%;
+    }
+
+    .cms-element-alignment {
+        &.is-stretch {
+            width: 100%; // is needed so that the image could be stretched to full width
+        }
+    }
+
+    .cms-search-banner-inner {
+        // should not be overflow:hidden because of search suggests, does not have entrance animations
+        position: relative;
+        display: block;
+
+        &.is-cover {
+            height: 100%;
+        }
+    }
+
+    &.has-form-control-lg {
+        .search-suggest-container {
+            top: add(add($input-line-height * 1.8em, add($input-padding-y-lg * 2, $input-height-border, false)), 10px);
+        }
+    }
+
+    // image
+    .cms-search-banner-image-container {
+        overflow: hidden;
+        display: block;
+        max-width: 100%;
+
+        &.is-standard,
+        &.is-stretch {
+            position: relative;
+        }
+
+        &.is-cover {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+
+            .cms-search-banner-image {
+                object-fit: cover;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+        }
+
+        &.is-cover,
+        &.is-stretch {
+            .cms-search-banner-image {
+                width: 100%;
+            }
+        }
+    }
+
+    .cms-search-banner-image {
+        transition: all .3s ease;
+        display: block;
+        max-width: 100%;
+    }
+
+    // content
+    .cms-search-banner-content-container {
+        display: flex;
+        z-index: 1;
+        height: 100%;
+
+        &.is-standard,
+        &.is-stretch {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        &.is-cover {
+            position: relative;
+        }
+    }
+
+    .cms-search-banner-overlay {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    .cms-search-banner-content {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        column-gap: $spacer-lg;
+        row-gap: $spacer-lg;
+        color: $sw-text-color;
+        font-size: $font-size-base;
+        font-weight: $font-weight-base;
+        padding: 8px 16px;
+        margin: 20px;
+        border-radius: 2px;
+
+        h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, p {
+            color: inherit;
+        }
+    }
+
+    .cms-search-banner-text {
+        transition: all .3s ease;
+
+        &.has-headline-lg {
+            h1, .h1 {
+                @include font-size($h1-font-size * 2.5);
+            }
+            h2, .h2 {
+                @include font-size($h2-font-size * 2.5);
+            }
+            h3, .h3 {
+                @include font-size($h3-font-size * 2.5);
+            }
+            h4, .h4 {
+                @include font-size($h4-font-size * 2.5);
+            }
+            h5, .h5 {
+                @include font-size($h5-font-size * 2.5);
+            }
+            h6, .h6 {
+                @include font-size($h6-font-size * 2.5);
+            }
+        }
+
+        &.has-text-lg {
+            @include font-size($font-size-base * 1.5);
+
+            p, div, a:not(.btn) {
+                @include font-size($font-size-base * 1.5);
+            }
+        }
+    }
+
+    &.hover-image-zoom {
+        &:hover {
+            .cms-search-banner-image {
+                transition-duration: 1s;
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    // search field
+    .cms-search-form {
+        position: relative;
+
+        .cms-search-input {
+            @include transition($btn-transition);
+            background: $zen-search-bg;
+            color: $zen-search-color;
+            border-color: $zen-search-border;
+            border-right: 0;
+
+            &::placeholder {
+                color: rgba($zen-search-color, .75);
+            }
+
+            /* Workaround for missing placeholder color in chrome */
+            /* stylelint-disable-next-line selector-no-vendor-prefix */
+            &::-webkit-input-placeholder {
+                color: rgba($zen-search-color, .75);
+            }
+
+            @if $zen-layout-forms-style == "underlined" {
+                background: transparent;
+            }
+
+            &:focus {
+                background: $zen-search-focus-bg;
+                color: $zen-search-focus-color;
+                border-color: $zen-search-focus-border;
+
+                @if $zen-layout-forms-style == "underlined" {
+                    background: transparent;
+                }
+
+                &::placeholder {
+                    color: rgba($zen-search-focus-color, .75);
+                }
+
+                /* Workaround for missing placeholder color in chrome */
+                /* stylelint-disable-next-line selector-no-vendor-prefix */
+                &::-webkit-input-placeholder {
+                    color: rgba($zen-search-focus-color, .75);
+                }
+
+                ~ .cms-search-btn {
+                    background: $zen-search-focus-bg;
+                    color: $zen-search-focus-color;
+                    border-color: $zen-search-focus-border;
+
+                    @if $zen-layout-forms-style == "underlined" {
+                        background: transparent;
+                    }
+
+                    .icon {
+                        color: $zen-search-focus-color;
+                    }
+                }
+            }
+        }
+
+        .cms-search-btn {
+            background: $zen-search-bg;
+            color: $zen-search-color;
+            border-color: $zen-search-border;
+            border-left: 0;
+
+            @if $zen-layout-forms-style == "underlined" {
+                background: transparent;
+                border-radius: 0;
+                border-top: none;
+                border-right: none;
+                border-left: none;
+                border-bottom-width: 1px;
+            } @else {
+                @include border-end-radius($zen-layout-input-radius * 1px);
+            }
+
+            .icon {
+                color: $zen-search-color;
+            }
+
+            .loader {
+                vertical-align: middle;
+
+                ~ .cms-search-icon {
+                    display: none;
+                }
+            }
+        }
+
+        .form-control-lg {
+            @include font-size($input-font-size);
+            min-height: add($input-line-height * 1.8em, add($input-padding-y-lg * 2, $input-height-border, false));
+
+            ~ .cms-search-btn {
+                --#{$prefix}btn-padding-x: 1.5rem;
+
+                .cms-search-icon {
+                    .icon {
+                        > svg {
+                            top: 15px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

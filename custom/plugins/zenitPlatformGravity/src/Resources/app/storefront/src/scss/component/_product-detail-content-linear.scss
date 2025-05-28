@@ -1,0 +1,49 @@
+// tabs linear
+@if $zen-product-detail-tabs-mode-mobile == "linear" {
+    @include media-breakpoint-between(xs, sm) {
+        .product-detail-tabs:not(.product-detail-cross-selling) {
+            @if $zen-product-details-bg != transparent or $zen-product-detail-tabs-bg != transparent {
+                padding-top: $spacer-xl;
+                padding-bottom: $spacer-xl;
+            }
+
+            .offcanvas-header,
+            .product-detail-tab-preview,
+            .product-detail-tab-navigation {
+                display: none;
+            }
+
+            .product-detail-tabs-content {
+                display: block;
+            }
+
+            .tab-content {
+                > .tab-pane {
+                    display: block;
+                    opacity: 1;
+                    padding-bottom: 30px;
+                }
+            }
+        }
+    }
+}
+
+@if $zen-product-detail-tabs-mode == "linear" {
+    @include media-breakpoint-up(sm) {
+        .product-detail-tabs:not(.product-detail-cross-selling) {
+            .offcanvas-header,
+            .product-detail-tab-preview,
+            .product-detail-tab-navigation {
+                display: none;
+            }
+
+            .tab-content {
+                > .tab-pane {
+                    display: block;
+                    opacity: 1;
+                    padding-bottom: 30px;
+                }
+            }
+        }
+    }
+}

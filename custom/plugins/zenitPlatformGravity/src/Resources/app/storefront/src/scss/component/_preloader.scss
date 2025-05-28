@@ -1,0 +1,330 @@
+/*
+Preloader
+==========================================
+Loading Animation on Site load
+*/
+.preloader {
+    background-color: $zen-layout-preloader-bg;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: 2000;
+    margin-top: 0;
+    top: 0;
+    left: 0;
+
+    // ...  force hides the preloader if there is any javascript error
+    animation: fade-out 0.5s ease-out calc(#{$zen-layout-preloader-timeout}ms + 2000ms) both;
+
+    // ...  fade in effects for page unload
+    &.js-fade-in-fwd {
+        @extend .fade-in-fwd;
+    }
+
+    // ...  fade out effects for page load
+    &.js-fade-out {
+        @extend .fade-out;
+    }
+
+    &.js-fade-out-top {
+        @extend .fade-out-top;
+    }
+
+    &.js-puff-out-center {
+         @extend .puff-out-center;
+    }
+
+    &.js-slide-out-blurred-top {
+        @extend .slide-out-blurred-top;
+    }
+
+    &.js-slide-out-bck-center {
+        @extend .slide-out-bck-center;
+    }
+
+    &.js-slide-out-top {
+        @extend .slide-out-top;
+    }
+}
+
+.preloader-center {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+// preloader 1
+.preloader-1 {
+    .preloader-center-absolute {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        height: 150px;
+        width: 120px;
+        margin-top: -75px;
+        margin-left: -50px;
+    }
+
+    .object-round {
+        width: 20px;
+        height: 20px;
+        background-color: $zen-layout-preloader-color;
+        float: left;
+        margin-right: 20px;
+        margin-top: 65px;
+        border-radius: 50% 50% 50% 50%;
+    }
+
+    #round-one {
+        animation: round-one 1.5s infinite;
+    }
+
+    #round-two {
+        animation: round-two 1.5s infinite;
+        animation-delay: .25s;
+    }
+
+    #round-three {
+        animation: round-three 1.5s infinite;
+        animation-delay: .5s;
+    }
+
+    @keyframes round-one {
+        75% {
+            transform: scale(0);
+        }
+    }
+
+    @keyframes round-two {
+        75% {
+            transform: scale(0);
+        }
+    }
+
+    @keyframes round-three {
+        75% {
+            transform: scale(0);
+        }
+    }
+}
+
+// preloader 2
+.preloader-2 {
+    .preloader-center-absolute {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        height: 50px;
+        width: 300px;
+        margin-top: -25px;
+        margin-left: -150px;
+    }
+    .object-wave {
+        width: 18px;
+        height: 18px;
+        background-color: $zen-layout-preloader-color;
+        float: left;
+        margin-top: 15px;
+        margin-right: 15px;
+        border-radius: 50% 50% 50% 50%;
+        animation: object-wave 1s infinite;
+    }
+    .object-wave:last-child {
+        margin-right: 0;
+    }
+
+    .object-wave:nth-child(9) {
+        animation-delay: .9s;
+    }
+    .object-wave:nth-child(8) {
+        animation-delay: .8s;
+    }
+    .object-wave:nth-child(7) {
+        animation-delay: .7s;
+    }
+    .object-wave:nth-child(6) {
+        animation-delay: .6s;
+    }
+    .object-wave:nth-child(5) {
+        animation-delay: .5s;
+    }
+    .object-wave:nth-child(4) {
+        animation-delay: .4s;
+    }
+    .object-wave:nth-child(3) {
+        animation-delay: .3s;
+    }
+    .object-wave:nth-child(2) {
+        animation-delay: .2s;
+    }
+
+    @keyframes object-wave {
+        50% {
+            transform: translate(0, -50px);
+        }
+    }
+}
+
+// preloader 3
+.preloader-3 {
+    .preloader-center-absolute {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        height: 60px;
+        width: 60px;
+        margin-top: -30px;
+        margin-left: -30px;
+        animation: loading-center-absolute 1s infinite;
+    }
+    .object-rotate {
+        width: 20px;
+        height: 20px;
+        background-color: $zen-layout-preloader-color;
+        float: left;
+        border-radius: 50% 50% 50% 50%;
+        margin-right: 20px;
+        margin-bottom: 20px;
+    }
+    .object-rotate:nth-child(2n+0) {
+        margin-right: 0;
+    }
+
+    #rotate-one {
+        animation: rotate-one 1s infinite;
+    }
+
+    #rotate-two {
+        animation: rotate-two 1s infinite;
+    }
+
+    #rotate-three {
+        animation: rotate-three 1s infinite;
+    }
+
+    #rotate-four {
+        animation: rotate-four 1s infinite;
+    }
+
+    @keyframes loading-center-absolute {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes rotate-one {
+        50% {
+            transform: translate(20px, 20px);
+        }
+    }
+
+    @keyframes rotate-two {
+        50% {
+            transform: translate(-20px, 20px);
+        }
+    }
+
+    @keyframes rotate-three {
+        50% {
+            transform: translate(20px, -20px);
+        }
+    }
+
+    @keyframes rotate-four {
+        50% {
+            transform: translate(-20px, -20px);
+        }
+    }
+}
+
+// preloader 4
+.preloader-4 {
+    .preloader-center-absolute {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        height: 200px;
+        width: 200px;
+        margin-top: -100px;
+        margin-left: -100px;
+        transform: rotate(-135deg);
+    }
+    .object-border {
+        border-radius: 50% 50% 50% 50%;
+        position: absolute;
+        border-top: 5px solid $zen-layout-preloader-color;
+        border-bottom: 5px solid transparent;
+        border-left: 5px solid $zen-layout-preloader-color;
+        border-right: 5px solid transparent;
+        animation: animate 2s infinite;
+    }
+
+    #border-one {
+        left: 75px;
+        top: 75px;
+        width: 50px;
+        height: 50px;
+    }
+
+    #border-two {
+        left: 65px;
+        top: 65px;
+        width: 70px;
+        height: 70px;
+        animation-delay: .2s;
+    }
+
+    #border-three {
+        left: 55px;
+        top: 55px;
+        width: 90px;
+        height: 90px;
+        animation-delay: .4s;
+    }
+    #border-four {
+        left: 45px;
+        top: 45px;
+        width: 110px;
+        height: 110px;
+        animation-delay: .6s;
+    }
+
+    @keyframes animate {
+        50% {
+            transform: rotate(360deg) scale(.8);
+        }
+    }
+}
+
+// preloader 5
+.preloader-5 {
+    .preloader-center-absolute {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        height: 200px;
+        width: 200px;
+        margin-top: -100px;
+        margin-left: -100px
+    }
+
+    .object-logo {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    &:not(.js-fade-out) { // stop pulse if not visible
+        .object-logo {
+            animation: logo-pulse 2s infinite;
+        }
+    }
+
+    @keyframes logo-pulse {
+        50% {
+            transform: scale(.9);
+        }
+    }
+}

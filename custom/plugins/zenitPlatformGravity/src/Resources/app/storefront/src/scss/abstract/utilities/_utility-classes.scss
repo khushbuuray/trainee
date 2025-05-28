@@ -1,0 +1,15 @@
+.zen-font-family-base {
+    font-family: $sw-font-family-base;
+}
+
+.zen-font-family-headline {
+    font-family: $sw-font-family-headline;
+}
+
+.zen-animate {
+    visibility: hidden; // initially hides the content because the animation brakes when using product sliders
+}
+
+.js-overflow-hidden {
+    @extend .overflow-hidden;
+}

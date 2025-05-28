@@ -1,0 +1,114 @@
+{
+    "zentheme": {
+        "gravity": {
+            "content": {
+                "marketingText": "%placeholder%",
+                "marketingButtonText": "%placeholder%",
+                "marketingButtonLink": "%placeholder%",
+                "customTabTitle": "%placeholder%",
+                "customTabText": "%placeholder%",
+                "customColumnTitle": "%placeholder%",
+                "customColumnText": "%placeholder%",
+                "custom2ColumnTitle": "%placeholder%",
+                "custom2ColumnText": "%placeholder%",
+                "custom3ColumnTitle": "%placeholder%",
+                "custom3ColumnText": "%placeholder%",
+                "socialFacebookUrl": "%placeholder%",
+                "socialTwitterUrl": "%placeholder%",
+                "socialYoutubeUrl": "%placeholder%",
+                "socialVimeoUrl": "%placeholder%",
+                "socialPinterestUrl": "%placeholder%",
+                "socialInstagramUrl": "%placeholder%",
+                "socialFlickrUrl": "%placeholder%",
+                "socialLinkedInUrl": "%placeholder%",
+                "socialXingUrl": "%placeholder%",
+                "socialWhatsappUrl": "%placeholder%",
+                "socialTelegramUrl": "%placeholder%",
+                "socialAmazonUrl": "%placeholder%",
+                "socialTikTokUrl": "%placeholder%",
+                "socialRSSUrl": "%placeholder%"
+            }
+        },
+        "cookie": {
+            "googleFonts": {
+                "name": "Google Fonts",
+                "description": "Loads the required web fonts from Google servers."
+            },
+            "googleDocs": {
+                "name": "Google Docs",
+                "description": "To display PDF files embedded in the window."
+            }
+        },
+        "gdpr": {
+            "datasheets": {
+                "privacyNoticeText": "By viewing the file you agree that your data will be transferred to %platform% and that you have read the <a data-ajax-modal=\"true\" data-url=\"%url%\" href=\"%url%\" title=\"Privacy policy\">Privacy policy</a>.",
+                "acceptButtonLabel": "Accept"
+            }
+        },
+        "layout": {
+            "breadcrumbs": {
+                "pretext": "You are here:"
+            },
+            "preloader": {
+                "loading": "Loading"
+            }
+        },
+        "checkout": {
+            "breadcrumbs": {
+                "cart": "Shopping cart",
+                "register": "Login",
+                "confirm": "Complete order"
+            },
+            "account": {
+                "loginRegisterSeparator": "or"
+            }
+        },
+        "general": {
+            "copyright": "© %year% %shopname% - with %love% by <a href=\"%href%\" title=\"%title%\" rel=\"dofollow noopener\" target=\"_blank\">%name%</a>",
+            "moreLink": "More",
+            "lessLink": "Less",
+            "closeTopBar": "Close Top bar",
+            "plusLabel": "plus",
+            "minusLabel": "minus"
+        },
+        "footer": {
+            "socialMediaHeadline": "Follow us",
+            "newsletterHeadline": "Newsletter",
+            "newsletterContent": "Subscribe to the free newsletter and do not miss any news or promotions.",
+            "paymentLogosHeadline": "Payment methods",
+            "shippingLogosHeadline": "Shipping methods"
+        },
+        "detail": {
+            "reviewLinkText": "Create review",
+            "stockLabel": "Stock:",
+            "isCloseoutLabel": "Clearance sale",
+            "eanLabel": "EAN:",
+            "manufacturerNameLabel": "Manufacturer:",
+            "manufacturerNumberLabel": "Manufacturer number:",
+            "lengthLabel": "Length:",
+            "widthLabel": "Width:",
+            "heightLabel": "Height:",
+            "weightLabel": "Weight:",
+            "tabsDatasheets": "Datasheets",
+            "tabsManufacturer": "Manufacturer",
+            "tabsProperties": "Properties",
+            "tabsVideo": "Video",
+            "manufacturerWebsite": "Manufacturer website",
+            "features": "Features"
+        },
+        "listing": {
+            "selectOptions": "Select options",
+            "quickview": "Quickview",
+            "boxAddProductWithIcon": "Add to",
+            "productNumberLabel": "Prod. no.:"
+        },
+        "component": {
+            "product": {
+                "quantitySelect": {
+                    "increase": "Increase quantity",
+                    "decrease": "Decrease quantity"
+                }
+            }
+        }
+    }
+}

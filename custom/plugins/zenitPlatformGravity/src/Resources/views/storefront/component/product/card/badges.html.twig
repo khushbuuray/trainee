@@ -1,0 +1,32 @@
+{% sw_extends '@Storefront/storefront/component/product/card/badges.html.twig' %}
+
+{# TODO: @zenit - check on sw update #}
+{# Discount badge with Percentage #}
+ {% block component_product_badges_discount %}
+     {% set price = product.calculatedPrice %}
+     {% if product.calculatedPrices.count > 0 %}
+         {% set price = product.calculatedPrices.last %}
+     {% endif %}
+
+     {% set listPrice = price.listPrice.percentage > 0 %}
+     {% set hasRange = product.calculatedPrices.count > 1 %}
+
+     {% set displayParent = product.variantListingConfig.displayParent and product.parentId === null %}
+     {% if displayParent %}
+         {% set displayFromVariants = displayParent and price.unitPrice !== product.calculatedCheapestPrice.unitPrice %}
+     {% endif %}
+
+     {% if listPrice and not hasRange and not displayFromVariants %}
+         <div class="badge bg-danger badge-discount">
+             {# ... @zenit - add if statement #}
+             {% set pricePercentage = theme_config('zen-product-listing-card-list-price-percentage')|default('default') %}
+
+             {% if pricePercentage is same as ('badge-rounded') %}
+                 {{ price.listPrice.percentage|round }}
+             {% elseif pricePercentage is same as ('badge') %}
+                 {{ price.listPrice.percentage }}
+             {% endif %}
+             <span>&#37;</span>
+         </div>
+     {% endif %}
+ {% endblock %}

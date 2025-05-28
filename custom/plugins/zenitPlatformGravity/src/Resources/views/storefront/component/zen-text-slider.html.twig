@@ -1,0 +1,45 @@
+{% block zen_component_text_slider %}
+    {% set marketing = {
+        translated: {
+            text: 'zentheme.gravity.content.marketingText'|trans({'%placeholder%': text})|replace({'\n': ';'})|trim|trim(';')|split(';'),
+            buttonText: 'zentheme.gravity.content.marketingButtonText'|trans({'%placeholder%': buttonText}),
+            buttonLink: 'zentheme.gravity.content.marketingButtonLink'|trans({'%placeholder%': buttonLink})
+        }
+    } %}
+
+    {% if active %}
+        {% set textSliderOptions = {
+            interval: 4000
+        } %}
+
+        <div class="text-slider"
+             data-zen-text-slider="true"
+             data-zen-text-slider-options="{{ textSliderOptions|json_encode }}">
+            <div class="text-items text-slider-items">
+                {% for entry in marketing.translated.text %}
+                    <div class="text-item text-slider-item">
+                        <span class="item-entry">
+                            {% if config('zenitPlatformGravity.config.twigStringLoaderExtension') %}
+                                {% sw_include '@zenitPlatformGravity/storefront/utilities/zen-template-from-string.html.twig' with {
+                                    content: entry
+                                } %}
+                            {% else %}
+                                {{ entry|raw }}
+                            {% endif %}
+                        </span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% if buttonText and buttonLink %}
+            <div class="text-slider-button">
+                <a href="{{ marketing.translated.buttonLink }}"
+                   {% if buttonTarget is same as ('_blank') %}target="_blank" rel="noopener"{% endif %}
+                   title="{{ marketing.translated.buttonText }}"
+                   class="btn btn-outline btn-sm">
+                    {{ marketing.translated.buttonText }}
+                </a>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,33 @@
+{% sw_extends '@Storefront/storefront/component/product/description.html.twig' %}
+
+{% block component_product_description_title %}
+    {# ... @zenit - fallbacks for older child-themes without these configs #}
+    {% set productDescriptionTitle = (theme_config('zen-product-tabs-content-product-description-title') is not null) ? theme_config('zen-product-tabs-content-product-description-title') : true %}
+    {% set productDescriptionTitleMode = theme_config('zen-product-tabs-content-product-description-title-mode') ?: 'default' %}
+
+    {% set descriptionTitle %}
+        {% if productDescriptionTitleMode == 'title' %}
+            {{ 'detail.descriptionTitle'|trans|sw_sanitize }}
+        {% elseif productDescriptionTitleMode == 'product-name' %}
+            {{ page.product.translated.name }}
+        {% else %}
+            {{ 'detail.descriptionTitle'|trans|sw_sanitize }} "{{ page.product.translated.name }}"
+        {% endif %}
+    {% endset %}
+
+    {% if productDescriptionTitle %}
+        <h2 class="product-detail-description-title">
+            {{ descriptionTitle }}
+        </h2>
+    {% endif %}
+{% endblock %}
+
+{% block component_product_description_content_properties %}
+    {% if theme_config('zen-product-tabs-properties') is same as (false) %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block utilities_offcanvas_close_text %}
+    {{ 'detail.tabsDescription'|trans|sw_sanitize }}
+{% endblock %}

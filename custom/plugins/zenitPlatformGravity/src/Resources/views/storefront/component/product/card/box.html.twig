@@ -1,0 +1,153 @@
+{% sw_extends '@Storefront/storefront/component/product/card/box.html.twig' %}
+
+{% block component_product_box_include %}
+    {# Includes a custom product-box template defined by the layout variable.
+       The standard template is used if no custom layout is set. #}
+
+    {% if layout is empty %}
+        {% set layout = 'standard' %}
+    {% endif %}
+
+    {# set fallback image size for every viewport #}
+    {% set sizes = {
+        xs: '500px',
+        sm: '315px',
+        md: '390px',
+        lg: '350px',
+        xl: '280px'
+    } %}
+
+    {% if layout == 'image' %}
+        {% set sizes = {
+            xs: '500px',
+            sm: '500px',
+            md: '390px',
+            lg: '350px',
+            xl: '280px'
+        } %}
+    {% endif %}
+
+    {# set custom image size for every viewport #}
+    {% if theme_config('zen-product-listing-card-img-sizes-custom') is same as true %}
+        {% set sizes = {
+            xs: "#{theme_config('zen-product-listing-card-img-size-xs')}px",
+            sm: "#{theme_config('zen-product-listing-card-img-size-sm')}px",
+            md: "#{theme_config('zen-product-listing-card-img-size-md')}px",
+            lg: "#{theme_config('zen-product-listing-card-img-size-lg')}px",
+            xl: "#{theme_config('zen-product-listing-card-img-size-xl')}px",
+        } %}
+    {% elseif element.type is same as ('product-box') %}
+        {% set sizes = {
+            xs: '500px',
+            sm: '315px',
+            md: '390px',
+            lg: '350px',
+            xl: '401px'
+        } %}
+    {% else %}
+        {# ... @zenit - calculating the block margins #}
+        {% if block.marginLeft is empty or block.marginLeft is same as ('auto') %}
+            {% set blockMarginsMobile = (theme_config('zen-layout-container-spacing-left') * 0.5 + theme_config('zen-layout-container-spacing-right') * 0.5) > 40 ?: 40 %}
+            {% set blockMargins = theme_config('zen-layout-container-spacing-left') + theme_config('zen-layout-container-spacing-right') %}
+        {% else %}
+            {% set blockMarginsMobile = block.marginLeft|number_format + block.MarginRight|number_format %}
+            {% set blockMargins = blockMarginsMobile %}
+        {% endif %}
+
+        {# ... @zenit - set the biggest possible container width
+            before next breakpoint e.g. 576 - 1 Pixel #}
+        {% set breakpointDownXS = (theme_config('breakpoint.sm') - 1) %}
+        {% set breakpointDownSM = (theme_config('breakpoint.md') - 1) %}
+        {% set breakpointDownMD = (theme_config('breakpoint.lg') - 1) %}
+        {% set breakpointDownLG = (theme_config('breakpoint.xl') - 1) %}
+        {% set breakpointDownXL = theme_config("zen-layout-container-width")|default(1400) %}
+
+        {# ... @zenit - sidebar sections #}
+        {% if section.type is same as ('sidebar') %}
+            {% set breakpointDownLG = breakpointDownLG * 0.666666666667 %}
+            {% set breakpointDownXL = breakpointDownXL * 0.75 %}
+        {% endif %}
+
+        {# ... @zenit - calculate the available content widths from
+            breakpointDowns, blockMargins and layout paddings #}
+        {% set widthXS = breakpointDownXS - blockMarginsMobile - (theme_config('zen-layout-padding-left-mobile') * 0.25) - (theme_config('zen-layout-padding-right-mobile') * 0.25) %}
+        {% set widthSM = breakpointDownSM - blockMarginsMobile - (theme_config('zen-layout-padding-left-mobile') * 0.5) - (theme_config('zen-layout-padding-right-mobile') * 0.5) %}
+        {% set widthMD = breakpointDownMD - blockMarginsMobile - theme_config('zen-layout-padding-left-mobile') - theme_config('zen-layout-padding-right-mobile') %}
+        {% set widthLG = breakpointDownLG - blockMargins - (theme_config('zen-layout-padding-left') * 0.5) - (theme_config('zen-layout-padding-right') * 0.5) %}
+        {% set widthXL = breakpointDownXL - blockMargins %}
+        {% set gutter = theme_config('zen-product-listing-card-padding') %}
+
+        {# ... @zenit - extra calculation for product sliders,
+            calculatings the cols for next calculation #}
+        {% if element.type is same as ('product-slider') and sliderConfig.elMinWidth.value %}
+            {% set colsXS = widthXS / (sliderConfig.elMinWidth.value|number_format + gutter) %}
+            {% set colsSM = widthSM / (sliderConfig.elMinWidth.value|number_format + gutter) %}
+            {% set colsMD = widthMD / (sliderConfig.elMinWidth.value|number_format + gutter) %}
+            {% set colsLG = widthLG / (sliderConfig.elMinWidth.value|number_format + gutter) %}
+            {% set colsXL = widthXL / (sliderConfig.elMinWidth.value|number_format + gutter) %}
+        {% endif %}
+
+        {# prevent warning division by zero, if sliderConfig.elMinwidth is higher than width #}
+        {% set colsXS = (colsXS >= 1) ? colsXS : 1 %}
+        {% set colsSM = (colsSM >= 1) ? colsSM : 1 %}
+        {% set colsMD = (colsMD >= 1) ? colsMD : 1 %}
+        {% set colsLG = (colsLG >= 1) ? colsLG : 1 %}
+        {% set colsXL = (colsXL >= 1) ? colsXL : 1 %}
+
+        {# Calculates sizes by configurated product listing columns or product slider min width.
+            Columns are set in cms-element-product-listing.html.twig or calculated above #}
+        {% if colsXS and colsSM and colsMD and colsLG and colsXL and gutter is not null %}
+            {% set sizeXS = widthXS / colsXS|round(0,'floor') - (gutter * (colsXS - 1) / colsXS) %}
+            {% set sizeSM = widthSM / colsSM|round(0,'floor') - (gutter * (colsSM - 1) / colsSM) %}
+            {% set sizeMD = widthMD / colsMD|round(0,'floor') - (gutter * (colsMD - 1) / colsMD) %}
+            {% set sizeLG = widthLG / colsLG|round(0,'floor') - (gutter * (colsLG - 1) / colsLG) %}
+            {% set sizeXL = widthXL / colsXL|round(0,'floor') - (gutter * (colsXL - 1) / colsXL) %}
+
+            {# Consider portrait images, because the width of the thumbnail is less than the
+                calculated thumbnail specification #}
+            {% set imageAspectRatio = theme_config('zen-product-listing-card-img-padding') / 100 %}
+            {% set imageHeight = theme_config('zen-product-listing-card-img-height')|intval %}
+            {% set imageWidth = theme_config('zen-product-listing-card-img-width')|intval %}
+
+            {% if imageHeight > 0 and imageWidth > 0 %}
+                {% set imageAspectRatio = imageHeight / imageWidth %}
+            {% endif %}
+
+            {% if imageAspectRatio > 1 %}
+                {% set sizeXS = sizeXS * imageAspectRatio %}
+                {% set sizeSM = sizeSM * imageAspectRatio %}
+                {% set sizeMD = sizeMD * imageAspectRatio %}
+                {% set sizeLG = sizeLG * imageAspectRatio %}
+                {% set sizeXL = sizeXL * imageAspectRatio %}
+            {% endif %}
+
+            {% set sizes = {
+                xs: "#{sizeXS}px",
+                sm: "#{sizeSM}px",
+                md: "#{sizeMD}px",
+                lg: "#{sizeLG}px",
+            } %}
+
+            {# ... @zenit - set image size for largest viewport depending on the cms block sizing mode (boxed or full-width) #}
+            {% if section.sizingMode is same as ('full_width') %}
+                {% set container = 100 %}
+                {% set sizes = sizes|merge({ xl: (container / colsXL)|round(0, 'ceil') ~'vw'}) %}
+            {% else %}
+                {% set sizes = sizes|merge({ xl: "#{sizeXL}px"}) %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+    {% if layout == 'standard' %}
+        {% sw_include '@Storefront/storefront/component/product/card/box-standard.html.twig' %}
+    {% elseif layout == 'image' %}
+        {% sw_include '@Storefront/storefront/component/product/card/box-image.html.twig' %}
+    {% elseif layout == 'minimal' %}
+        {% sw_include '@Storefront/storefront/component/product/card/box-minimal.html.twig' %}
+    {% elseif layout == 'wishlist' %}
+        {% sw_include '@Storefront/storefront/component/product/card/box-wishlist.html.twig' %}
+    {% else %}
+        {% set template = "@Storefront/storefront/component/product/card/box-" ~ layout ~ '.html.twig' %}
+        {% sw_include template ignore missing %}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,21 @@
+{% sw_extends '@Storefront/storefront/layout/navigation/offcanvas/item-link.html.twig' %}
+
+{% block layout_navigation_offcanvas_navigation_categories_list_category_item_link_text %}
+    <span itemprop="name">
+        {{ name }}
+
+        {# ... @zenit - add badge #}
+        {% sw_include '@zenitPlatformGravity/storefront/layout/navigation/zen-navigation-badge.html.twig' with {
+            category: item.category,
+        } only %}
+    </span>
+
+    {% if hasChildren %}
+        {% block layout_navigation_offcanvas_navigation_categories_list_category_item_link_icon %}
+            <span
+                class="navigation-offcanvas-link-icon js-navigation-offcanvas-loading-icon">
+                {% sw_icon 'arrow-medium-right' style { pack: 'solid', size: 'sm' } %}
+            </span>
+        {% endblock %}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,137 @@
+{% sw_extends '@Storefront/storefront/layout/meta.html.twig' %}
+
+{% block layout_head_meta_tags_theme %}
+    {% if theme_config('zen-meta-theme-color') %}
+        <meta name="theme-color"
+              content="{{ theme_config('zen-meta-theme-color') }}">
+    {% endif %}
+{% endblock %}
+
+{% block layout_head_stylesheet %}
+    {{ parent() }}
+
+    {% block zen_layout_head_styles %}
+        {% if theme_config('zen-layout-bg-img') %}
+            <style data-plugin="zenitGravity">{% apply spaceless %}
+                body {
+                    background-image: url("{{ theme_config('zen-layout-bg-img') }}");
+                }
+            {% endapply %}</style>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_layout_head_custom_css_files %}
+        {% if config('zenitPlatformGravity.config.customCssFilesActive') %}
+            {{ config('zenitPlatformGravity.config.customCssFiles')|raw }}
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_layout_head_custom_css_styles %}
+        {% if config('zenitPlatformGravity.config.customCssActive') %}
+            <style data-plugin="zenitGravityCustomCss">{% apply spaceless %}
+                {{ config('zenitPlatformGravity.config.customCss')|replace({'<style>': '','</style>': ''})|raw }}
+                {% endapply %}</style>
+        {% endif %}
+    {% endblock %}
+{% endblock %}
+
+{% block layout_head_javascript_tracking %}
+    {{ parent() }}
+
+    {% block zen_layout_head_theme_js_files %}
+        {% if config('zenitPlatformGravity.config.customHeadJsFilesActive') %}
+            {{ config('zenitPlatformGravity.config.customHeadJsFiles')|raw }}
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_layout_head_theme_js_custom %}
+        {% if config('zenitPlatformGravity.config.customHeadJsActive') %}
+            <script data-plugin="zenitGravityCustomHeadJs">
+                {{ config('zenitPlatformGravity.config.customHeadJs')|replace({'<script>': '','</script>': ''})|raw }}
+            </script>
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_base_webfont %}
+        {# Fonts implementation checks if has custom fonts to load #}
+        {% set hasCustomBaseFont = theme_config('zen-font-family-base-default') is null or theme_config('zen-font-family-base-default') is same as ('custom') %}
+        {% set hasCustomHeadlineFont = theme_config('zen-font-family-headline-default') is null or theme_config('zen-font-family-headline-default') is same as ('custom') %}
+
+        {% if theme_config('sw-font-family-base') and hasCustomBaseFont %}
+            {% set fontFamilyBase = theme_config('sw-font-family-base')|replace({'"':'', '\'':'', ' ':'+'})|split(',')[0] ~ ':' ~ theme_config('zen-font-family-base-weight')|join(',') %}
+        {% endif %}
+
+        {% if theme_config('sw-font-family-headline') and hasCustomHeadlineFont %}
+            {% set fontFamilyHeadline = theme_config('sw-font-family-headline')|replace({'"':'', '\'':'', ' ':'+'})|split(',')[0] ~ ':' ~ theme_config('zen-font-family-headline-weight')|join(',') %}
+        {% endif %}
+
+        {# Avoid double implementation when base and headline fonts are the same #}
+        {% if theme_config('sw-font-family-base') is same as (theme_config('sw-font-family-headline')) %}
+            {% if hasCustomBaseFont %}
+                {% set fontFamilyHeadline = '' %}
+            {% elseif hasCustomHeadlineFont %}
+                {% set fontFamilyBase = '' %}
+            {% endif %}
+
+            {% for weight in theme_config('zen-font-family-headline-weight') %}
+                {% if weight not in theme_config('zen-font-family-base-weight') %}
+                    {% set fontFamilyBase = fontFamilyBase ~ ',' ~ weight %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {# Google Webfont Loader #}
+        {% block zen_base_webfont_loader %}
+            {% if theme_config('zen-font-family-import') and (hasCustomBaseFont or hasCustomHeadlineFont) %}
+                {# ... @zenit - check if it is app environment or not #}
+                {% if context.context.extensions['zenitPlatformGravity'].system is not defined %}
+                    {% set loader = asset('/assets/font/webfont.js', 'theme') %}
+                {% else %}
+                    {% set loader = asset('bundles/zenitplatformgravity/storefront/assets/font/webfont.js') %}
+                {% endif %}
+
+                {# ... @zenit - theme script options #}
+                {% set googleFontsOptions = {
+                    checkCookie: config('zenitPlatformGravity.config.googleFontsCookie'),
+                    webfontLoaderUrl: loader,
+                    zenthemeFontFamilyBase: fontFamilyBase,
+                    zenthemeFontFamilyHeadline: fontFamilyHeadline
+                } %}
+
+                {% if config('zenitPlatformGravity.config.googleFontsCookie') %}
+                    <template data-zen-google-fonts="true" data-zen-google-fonts-options="{{ googleFontsOptions|json_encode }}"></template>
+                {% else %}
+                    <script data-plugin="zenitGravityFonts">
+                        var zenthemeFonts = [],
+                            zenthemeFontFamilyBase = '{{ fontFamilyBase }}',
+                            zenthemeFontFamilyHeadline = '{{ fontFamilyHeadline }}';
+                        fontDisplay = '&display=swap';
+
+                        zenthemeFontFamilyBase ? zenthemeFonts.push( zenthemeFontFamilyBase.replace('&amp;','&') ) : '';
+                        zenthemeFontFamilyHeadline ? zenthemeFonts.push( zenthemeFontFamilyHeadline.replace('&amp;','&') ) : '';
+                        zenthemeFonts.push( fontDisplay.replace('&amp;','&') );
+
+                        WebFontConfig = {
+                            google: {
+                                families: zenthemeFonts,
+                                timeout: 2000,
+                            },
+                            active: function () {
+                                let event = new Event('webfontsloaded');
+                                document.dispatchEvent(event);
+                            },
+                        };
+
+                        (function(d) {
+                            const wf = d.createElement('script'), s = d.scripts[0];
+                            wf.src = '{{ loader }}';
+                            wf.async = true;
+                            s.parentNode.insertBefore(wf, s);
+                        })(document);
+                    </script>
+                {% endif %}
+            {% endif %}
+        {% endblock %}
+    {% endblock %}
+
+{% endblock %}

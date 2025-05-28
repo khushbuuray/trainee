@@ -1,0 +1,117 @@
+{% sw_extends '@Storefront/storefront/page/content/index.html.twig' %}
+
+{% block base_main_inner %}
+    <div class="container-main">
+        {% block page_content %}
+            {% set cmsPageSections = page.landingPage ? page.landingPage.cmsPage.sections : page.cmsPage.sections %}
+
+            {# ... @zenit - checks if custom zen-breadcrumb is in use #}
+            {% set defaultBreadcrumbs = true %}
+            {% for section in cmsPageSections %}
+                {% for block in section.blocks %}
+                    {% if block.type is same as ('zen-breadcrumb') %}
+                        {% set defaultBreadcrumbs = false %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+
+            {% if theme_config("zen-category-header-position") is same as ('absolute')
+                or (theme_config("zen-category-header-position") is same as ('relative') and zenCustomFields.category.zenit_gravity_category_header_position is same as ('absolute')) %}
+                {% set sectionCategoryOverlay = true %}
+            {% endif %}
+
+            {% if theme_config("zen-category-image") is same as (true) and zenCustomFields.category.zenit_gravity_category_image is not same as ('hide')
+                or ( theme_config("zen-category-image") is same as (false) and (zenCustomFields.category.zenit_gravity_category_image is same as ('display')) ) %}
+                {% set allowHeroSection = true %}
+            {% endif %}
+
+            {# ... @zenit - checks if there is either a category image or a
+            section image to prevent unwanted hero-sections #}
+            {% set hasHeroImage = false %}
+            {% if allowHeroSection %}
+                {% set categoryMedia = page.header.navigation.active.media %}
+
+                {% if categoryMedia %}
+                    {% set hasHeroImage = true %}
+                {% else %}
+                    {# ... @zenit - there is no category media, so we have to check if there exists any fallback #}
+                    {% for section in cmsPageSections %}
+                        {% if loop.index is same as (1) %}
+                            {% set sectionBgImg = section.backgroundMedia|sw_encode_media_url %}
+
+                            {% if sectionBgImg %}
+                                {% set hasHeroImage = true %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+
+            {% set hasHeroColor = false %}
+            {% if allowHeroSection %}
+                {% set categoryColor = zenCustomFields.category.zenit_gravity_category_image_color is not empty %}
+
+                {% if categoryColor %}
+                    {% set hasHeroColor = true %}
+                {% else %}
+                    {# ... @zenit - there is no category color, so we have to check if there exists any fallback #}
+                    {% for section in cmsPageSections %}
+                        {% if loop.index is same as (1) %}
+                            {% set sectionBgColor = section.backgroundColor %}
+
+                            {% if sectionBgColor %}
+                                {% set hasHeroColor = true %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+
+            {% if hasHeroColor is same as (true) or hasHeroImage is same as (true) %}
+                {% set isHeroSection = true %}
+            {% endif %}
+
+            {# ... @zenit - if not a hero section #}
+            {% if isHeroSection is not same as (true) and defaultBreadcrumbs %}
+                {# ... @zenit - check if there is any breadcrumb to show #}
+                {% if sw_breadcrumb_full(page.header.navigation.active, context.context) %}
+                    {% block zen_cms_breadcrumb_container %}
+                        <div class="breadcrumb-container">
+                            <div class="container">
+                                <div class="breadcrumb-wrap cms-breadcrumb justify-content-{{ theme_config('zen-breadcrumbs-align')|replace({'flex-': ''}) }}">
+                                    {% block cms_breadcrumb %}
+                                        {% sw_include '@Storefront/storefront/layout/breadcrumb.html.twig' with {
+                                            context: context,
+                                            themeIconConfig: themeIconConfig,
+                                            category: page.header.navigation.active
+                                        } only %}
+                                    {% endblock %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endblock %}
+                {% endif %}
+            {% endif %}
+
+            {% block cms_content %}
+                {% set cmsPage = page.landingPage ? page.landingPage.cmsPage : page.cmsPage %}
+                {% set cmsPageClasses = ('cms-page ' ~ cmsPage.cssClass|striptags)|trim %}
+                {% set landingPage = page.landingPage ? page.landingPage : {} %}
+
+                <div class="{{ cmsPageClasses }}">
+                    {% block page_content_blocks %}
+                        {% sw_include '@Storefront/storefront/page/content/detail.html.twig' with {
+                            cmsPage: cmsPage,
+                            landingPage: landingPage,
+                            defaultBreadcrumbs: defaultBreadcrumbs,
+                            sectionCategoryOverlay: sectionCategoryOverlay,
+                            hasHeroImage: hasHeroImage,
+                            hasHeroColor: hasHeroColor,
+                            isHeroSection: isHeroSection
+                        } %}
+                    {% endblock %}
+                </div>
+            {% endblock %}
+        {% endblock %}
+    </div>
+{% endblock %}

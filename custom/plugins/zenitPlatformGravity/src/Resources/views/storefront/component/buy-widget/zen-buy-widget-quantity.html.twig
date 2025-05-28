@@ -1,0 +1,71 @@
+{% block zen_buy_widget_quantity %}
+    {% if product.translated.packUnit and product.translated.packUnitPlural %}
+        {% set quantityInputPackunitOptions = {
+            packUnit: product.translated.packUnit,
+            packUnitPlural: product.translated.packUnitPlural
+        } %}
+    {% endif %}
+
+    <div class="input-group quantity-input-group {{ quantityGroupClasses }}"
+         data-quantity-selector="true"
+         data-zen-quantity-input-packunit="true"
+         data-zen-quantity-input-packunit-options="{{ quantityInputPackunitOptions|json_encode }}">
+
+        {% block zen_buy_widget_quantity_btn_minus %}
+            <span class="input-group-btn">
+                <button
+                    class="btn btn-minus btn-icon-only js-btn-minus"
+                    type="button"
+                    aria-label="{{ 'zentheme.general.minusLabel'|trans|sw_sanitize }}"
+                    {% if isDigital %}disabled="disabled"{% endif %}
+                >
+                    {% block zen_buy_widget_quantity_btn_minus_icon %}
+                        {% sw_icon 'minus' %}
+                    {% endblock %}
+                </button>
+            </span>
+        {% endblock %}
+        {% block zen_buy_widget_quantity_input %}
+            <input
+                type="number"
+                class="form-control form-number quantity-input js-quantity-selector{% if product.translated.packUnit %} has-pack-unit{% endif %} {{ quantityClasses }}"
+                value="{% if value %}{{ value }}{% else %}{{ minPurchase }}{% endif %}"
+                min="{{ minPurchase }}"
+                max="{{ maxPurchase }}"
+                step="{{ step }}"
+                name="{{ name }}"
+                data-product-id="{{ id }}"
+                aria-label="{{ 'component.product.quantitySelect.label'|trans|striptags }}"
+                {% if autoChange %}data-zen-auto-change="{{ autoChange }}"{% endif %}
+                {% if isDigital %}disabled="disabled"{% endif %}
+            >
+        {% endblock %}
+        {% block zen_buy_widget_quantity_input_unit %}
+            {% if product.translated.packUnit %}
+                <span class="input-group-text quantity-input-pack-unit">
+                    <span class="input-group-text-inner">
+                        {% if product.minPurchase > 1 and product.translated.packUnitPlural %}
+                            {{ product.translated.packUnitPlural }}
+                        {% elseif product.translated.packUnit %}
+                            {{ product.translated.packUnit }}
+                        {% endif %}
+                    </span>
+                </span>
+            {% endif %}
+        {% endblock %}
+        {% block zen_buy_widget_quantity_btn_plus %}
+            <span class="input-group-btn">
+                <button
+                    class="btn btn-plus btn-icon-only js-btn-plus"
+                    type="button"
+                    aria-label="{{ 'zentheme.general.plusLabel'|trans|sw_sanitize }}"
+                    {% if isDigital %}disabled="disabled"{% endif %}
+                >
+                    {% block zen_buy_widget_quantity_btn_plus_icon %}
+                        {% sw_icon 'plus' %}
+                    {% endblock %}
+                </button>
+            </span>
+        {% endblock %}
+    </div>
+{% endblock %}

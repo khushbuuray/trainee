@@ -1,0 +1,209 @@
+/*
+Top bar
+==================================================
+Contains styles for the top bar located at the top of the page.
+The top bar contains the language switcher, the currency switcher and the service menu.
+*/
+
+// top bar
+.top-bar {
+    position: relative;
+    background: $zen-top-bar-bg;
+    color: $zen-top-bar-color;
+    @include font-size(px($zen-top-bar-font-size));
+    font-weight: $zen-top-bar-font-weight;
+
+    @if $zen-top-bar-border-bottom == 1 and $zen-top-bar-border-bottom-full-width == 1 {
+        border-bottom: px($zen-top-bar-border-bottom-width) solid $zen-top-bar-border-bottom-color;
+    }
+
+    .top-bar-nav {
+        min-height: px($zen-top-bar-height);
+        align-items: center;
+
+        @if $zen-top-bar-border-bottom == 1 and $zen-top-bar-border-bottom-full-width == 0 {
+            border-bottom: px($zen-top-bar-border-bottom-width) solid $zen-top-bar-border-bottom-color;
+        }
+    }
+
+    .service-menu {
+        .dropdown-menu {
+            z-index: 1030; //make sure that dropdown-menu overlaps other elements
+        }
+    }
+}
+
+.top-bar-navigation-group {
+    justify-content: end;
+
+    .top-bar-nav-item {
+        flex: 0;
+    }
+}
+
+.top-bar-nav-item {
+    margin-right: $spacer-xs;
+    flex: 1;
+
+    @if $zen-header-style != "multi-line" {
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    &.d-none {
+        display: none;
+    }
+
+    &.d-lg-flex {
+        @include media-breakpoint-up(lg) {
+            display: flex;
+        }
+    }
+}
+
+.top-bar-nav-btn {
+    display: flex;
+    align-items: center;
+
+    &.btn {
+        --#{$prefix}btn-color: #{$zen-top-bar-color};
+        --#{$prefix}btn-bg: #{$zen-top-bar-bg};
+        --#{$prefix}btn-border-color: #{$zen-top-bar-bg};
+        --#{$prefix}btn-font-weight: #{$zen-top-bar-font-weight};
+        @include button-size($zen-btn-top-bar-padding-y-sm, $btn-padding-x-sm, px($zen-top-bar-font-size), $btn-border-radius-sm);
+        color: var(--#{$prefix}btn-color); // needed because shopware skin
+        border: var(--#{$prefix}btn-border-width) solid var(--#{$prefix}btn-border-color); // needed because shopware skin
+        padding: var(--#{$prefix}btn-padding-y) var(--#{$prefix}btn-padding-x);
+
+        .icon {
+            color: $zen-top-bar-color;
+
+            > svg {
+                top: auto;
+            }
+        }
+
+        &:hover {
+            --#{$prefix}btn-hover-color: #{$zen-top-bar-hover-color};
+            --#{$prefix}btn-hover-bg: #{$zen-top-bar-hover-bg};
+            --#{$prefix}btn-hover-border-color: #{$zen-top-bar-hover-bg};
+            color: var(--#{$prefix}btn-hover-color); // needed because shopware skin
+            border-color: var(--#{$prefix}btn-hover-border-color); // needed because shopware skin
+
+            .icon {
+                color: $zen-top-bar-hover-color;
+            }
+        }
+    }
+
+    &.btn-close-top-bar {
+        margin-left: $spacer;
+        margin-right: $spacer-xs;
+        aspect-ratio: 1;
+        height: calc(#{($zen-btn-top-bar-padding-y-sm * 2)} + #{px($zen-top-bar-font-size * $btn-line-height)} );
+        display: flex;
+        justify-content: center;
+        padding: 0;
+
+        @if $zen-layout-style == "full-width-boxed" {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+        }
+    }
+}
+
+.dropdown.show {
+    .top-bar-nav-btn {
+        background: $zen-top-bar-hover-bg;
+
+        &,
+        .icon {
+            color: $zen-top-bar-hover-color;
+        }
+    }
+}
+
+.top-bar-list-item {
+    color: var(--#{$prefix}dropdown-link-color)
+}
+
+.top-bar-nav-text {
+    margin: 0 $spacer-xs;
+}
+
+// Marketing Text Slider
+.top-bar-marketing {
+    text-align: center;
+    flex: 2;
+    justify-content: center;
+
+    .text-slider {
+        margin: 0 $spacer;
+    }
+
+    .text-slider-item {
+        position: absolute;
+    }
+
+    .text-slider-button {
+        .btn-outline {
+            $btn-marketing-text-slider-padding-y-sm: calc(#{$zen-btn-top-bar-padding-y-sm - $btn-border-width});
+            color: $zen-top-bar-color;
+            border-color: $zen-top-bar-color;
+            @include button-size($btn-marketing-text-slider-padding-y-sm, $btn-padding-x-sm, px($zen-top-bar-font-size), $btn-border-radius-sm);
+
+            &:hover {
+                color: $zen-top-bar-bg;
+                background: $zen-top-bar-color;
+                border-color: $zen-top-bar-color;
+            }
+        }
+    }
+}
+
+// login register
+.top-bar-login-register {
+    color: $zen-top-bar-color;
+    margin-right: auto;
+
+    .top-bar-login-item,
+    .top-bar-register-item,
+    .top-bar-logout-item {
+        color: $zen-top-bar-color;
+        padding: 0 $spacer-xs;
+
+        .icon {
+            margin-right: $spacer-xs;
+
+            > svg {
+                color: $zen-top-bar-color;
+            }
+        }
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.top-bar-language {
+    .top-bar-list-icon {
+        margin-right: 5px;
+    }
+
+    @if $zen-top-bar-language-widget-text == "isoCodeShortCountry" {
+        .top-bar-nav-text,
+        .top-bar-list-label {
+            text-transform: uppercase;
+        }
+    }
+
+    @if $zen-top-bar-language-widget-text != "standard" {
+        .top-bar-list {
+            min-width: 0;
+        }
+    }
+}

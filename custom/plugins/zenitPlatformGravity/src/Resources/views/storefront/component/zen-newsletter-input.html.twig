@@ -1,0 +1,18 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-form/form-components/cms-element-form-input.html.twig' %}
+
+{% block cms_element_form_input_input %}
+    <div class="input-group">
+        {{ parent() }}
+
+        {% block cms_form_newsletter_icon %}
+            {% sw_icon 'envelope' style { class: 'newsletter-input', size: 'sm' }%}
+        {% endblock %}
+
+        {% block cms_form_newsletter_submit %}
+            <button type="submit" class="btn btn-primary"
+                    aria-label="{{ 'general.formSubmit'|trans|striptags }}">
+                {% sw_icon 'arrow-head-right' %}
+            </button>
+        {% endblock %}
+    </div>
+{% endblock %}

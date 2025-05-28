@@ -1,0 +1,100 @@
+// SwagCmsExtensions
+.product-action {
+    .swag-cms-extensions-quickview-listing-button-detail {
+        width: 100%;
+    }
+}
+
+[data-swag-cms-extensions-quickview-box]{
+    height: 100%; // needed for equal height product-box
+}
+
+// Buhl Hinsche / Module Factory - SwpAreaCalcSix
+.js-label-floating {
+    .area-calc-width-length {
+        label {
+            @if $zen-layout-forms-style == "underlined" {
+                left: calc(#{$input-padding-x} + (#{$grid-gutter-width} / 2));
+                right: calc(#{$input-padding-x} + (#{$grid-gutter-width} / 2));
+            } @else {
+                left: calc(#{$input-padding-x} + (#{$grid-gutter-width} / 2) + 1px);
+                right: calc(#{$input-padding-x} + (#{$grid-gutter-width} / 2) + 1px);
+            }
+        }
+    }
+}
+
+// LoyxxSW6ConversionCheckout / Conversion Checkout for Shopware 6
+.show-conversion-checkout {
+    &.is-act-checkoutregisterpage {
+        .checkout {
+            .checkout-aside {
+                padding: 0;
+            }
+        }
+    }
+}
+
+// PremsOnePageCheckout6 - One Page Checkout - Premsoft
+@if $zen-checkout-layout == "two-column" {
+    #one-page-checkout {
+        .checkout-container {
+            @extend .row;
+        }
+
+        .checkout-main {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .checkout-aside {
+            border-left: none;
+            padding-top: 0;
+            padding-bottom: 0;
+
+            &::after {
+                display: none;
+            }
+        }
+    }
+}
+
+// SolidProductVideos - Add videos to product gallery in Shopware 6 easily
+.product-detail-media,
+.quickview-minimal-image {
+    .gallery-slider-col {
+        .gallery-slider-item,
+        .gallery-slider-single-image {
+            &.is-cover,
+            &.is-contain,
+            &.is-standard {
+                > div { // ... added a more general selector to place embedded videos in a correct manner
+                    &:first-child:not(.magnifier-overlay) {
+                        object-fit: cover;
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        bottom: 0;
+                        left: 0;
+                        margin: 0 auto;
+                    }
+                }
+
+                &.is-cover,
+                &.is-contain,
+                &.is-standard {
+                    &.is-video[style*='min-height'] {
+                        height: auto;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// TrustedShopsEasyIntegrationS6 - Hide trustbadge when a modal is open
+.modal-open {
+    [id*="trustbadge-container"] {
+        display: none;
+    }
+}

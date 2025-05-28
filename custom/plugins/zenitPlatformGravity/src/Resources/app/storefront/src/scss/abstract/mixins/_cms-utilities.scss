@@ -1,0 +1,13 @@
+@mixin zen-cms-section-offsets($offset) {
+    --#{$zen-prefix}offset: #{$offset};
+    transform: translateY(var(--#{$zen-prefix}offset));
+    position: relative;
+    z-index: 1;
+}
+
+@mixin zen-cms-section-negative-offsets($offset) {
+    --#{$zen-prefix}offset: #{$offset * -1};
+    transform: translateY(var(--#{$zen-prefix}offset));
+    position: relative;
+    z-index: 1;
+}

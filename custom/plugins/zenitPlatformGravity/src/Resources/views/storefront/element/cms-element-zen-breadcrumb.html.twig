@@ -1,0 +1,12 @@
+{% block zen_element_breadcrumb %}
+    {% set config = element.fieldConfig.elements %}
+    {% set horizontalAlign = config.horizontalAlign.value %}
+
+    <div class="breadcrumb-wrap zenit-cms-breadcrumb{% if horizontalAlign == "center" %} justify-content-center{% elseif horizontalAlign == "flex-end" %} justify-content-end{% else %} justify-content-start{% endif %}">
+        {% set category = page.product.seoCategory ? page.product.seoCategory : page.header.navigation.active %}
+        {% sw_include '@Storefront/storefront/layout/breadcrumb.html.twig' with {
+            context: context,
+            category: category
+        } only %}
+    </div>
+{% endblock %}

@@ -1,0 +1,31 @@
+.modal-content {
+    @include border-radius($zen-layout-element-radius * 1px);
+
+    @if $zen-container-bg == transparent {
+        background: $body-bg;
+    } @else {
+        background: $zen-container-bg;
+    }
+}
+
+.modal-header {
+    @include border-top-radius($zen-layout-element-radius * 1px);
+
+    .icon {
+        @include text-color-contrast;
+    }
+}
+
+@if $zen-container-bg == transparent {
+    @if (contrast-ratio($body-bg, $black) < $min-contrast-ratio) {
+        .btn-close {
+            background: transparent escape-svg($zen-light-close-bg) center / $btn-close-width auto no-repeat; // include transparent for button elements
+        }
+    }
+} @else {
+    @if (contrast-ratio($zen-container-bg, $black) < $min-contrast-ratio) {
+        .btn-close {
+            background: transparent escape-svg($zen-light-close-bg) center / $btn-close-width auto no-repeat; // include transparent for button elements
+        }
+    }
+}

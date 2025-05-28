@@ -1,0 +1,46 @@
+/*
+Loader
+==============================================
+Defines the loader icon
+*/
+
+.loader {
+    // improves loader in btn - e.g. checkout button
+    .btn & {
+        color: var(--#{$prefix}btn-hover-color);
+        width: var(--#{$prefix}btn-font-size);
+        height: var(--#{$prefix}btn-font-size);
+    }
+}
+
+.has-element-loader .cms-element-product-listing {
+    .product-image-wrapper,
+    .product-rating,
+    .product-name,
+    .product-variant-characteristics,
+    .product-description,
+    .product-price-unit,
+    .product-cheapest-price-price,
+    .product-price {
+        @if $zen-product-listing-card-bg != transparent {
+            @if (contrast-ratio($zen-product-listing-card-bg, $black) < $min-contrast-ratio) {
+                background: linear-gradient(to right, $gray-700 8%, $gray-900 18%, $gray-700 28%);
+                background-size: 800px 100px;
+            }
+        }
+    }
+}
+
+.element-loader-backdrop {
+    @if $zen-container-bg == transparent {
+        @if (contrast-ratio($body-bg, $black) < $min-contrast-ratio) {
+            background-color: $zen-element-backdrop-bg-dark;
+            box-shadow: 0 0 11px 7px $zen-element-backdrop-bg-dark;
+        }
+    } @else {
+        @if (contrast-ratio($zen-container-bg, $black) < $min-contrast-ratio) {
+            background-color: $zen-element-backdrop-bg-dark;
+            box-shadow: 0 0 11px 7px $zen-element-backdrop-bg-dark;
+        }
+    }
+}

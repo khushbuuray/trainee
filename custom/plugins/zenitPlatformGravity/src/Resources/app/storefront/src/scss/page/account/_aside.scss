@@ -1,0 +1,150 @@
+.account-aside-header {
+    @include headline-color-contrast;
+}
+
+.account-aside-list-group {
+    padding-top: $spacer;
+    padding-bottom: $spacer;
+}
+
+.account-content-aside {
+    @if $zen-sidebar-navigation-border == 1 {
+        .card-header {
+            + .list-group {
+                .list-group-item:first-child {
+                    border-top: 1px solid $zen-sidebar-navigation-border-color;
+                }
+            }
+        }
+    }
+
+    .account-aside-item {
+        display: flex;
+        background: $zen-sidebar-navigation-bg;
+        color: $zen-sidebar-navigation-color;
+        font-weight: $zen-sidebar-navigation-font-weight;
+        line-height: 24px;
+        padding-top: px($zen-sidebar-navigation-pv);
+        padding-bottom: px($zen-sidebar-navigation-pv);
+        margin-bottom: px($zen-sidebar-navigation-mb);
+        text-transform: $zen-sidebar-navigation-text-transform;
+        overflow: hidden;
+
+        @if $zen-sidebar-navigation-mb == 0 {
+            &:first-child {
+                @if $zen-layout-button-radius == 100 {
+                    @include border-top-radius(25px);
+                } @else {
+                    @include border-top-radius($zen-layout-button-radius * 1px);
+                }
+            }
+
+            &:last-child {
+                @if $zen-layout-button-radius == 100 {
+                    @include border-bottom-radius(25px);
+                } @else {
+                    @include border-bottom-radius($zen-layout-button-radius * 1px);
+                }
+            }
+        } @else {
+            @if $zen-layout-button-radius == 100 {
+                @include border-radius(25px);
+            } @else {
+                @include border-radius($zen-layout-button-radius * 1px);
+            }
+        }
+
+        @if $zen-sidebar-navigation-border == 1 {
+            &,
+            &:last-child {
+                border: 1px solid $zen-sidebar-navigation-border-color;
+            }
+
+            @if $zen-sidebar-navigation-mb == 0 {
+                &:not(:first-child) {
+                    border-top: none;
+                }
+            }
+        }
+
+        &.is-active {
+            background: $zen-sidebar-navigation-hover-bg;
+            color: $zen-sidebar-navigation-hover-color;
+            font-weight: $zen-sidebar-navigation-font-weight-hover;
+
+            @if $zen-sidebar-navigation-border == 1 {
+                &,
+                &:last-child {
+                    border: 1px solid $zen-sidebar-navigation-border-hover-color;
+                }
+
+                @if $zen-sidebar-navigation-mb == 0 {
+                    &:not(:first-child) {
+                        border-top: none;
+                    }
+                }
+            }
+        }
+
+        &:hover {
+            background: $zen-sidebar-navigation-hover-bg;
+            color: $zen-sidebar-navigation-hover-color;
+
+            @if $zen-sidebar-navigation-border == 1 {
+                &,
+                &:last-child {
+                    border: 1px solid $zen-sidebar-navigation-border-hover-color;
+                }
+
+                @if $zen-sidebar-navigation-mb == 0 {
+                    &:not(:first-child) {
+                        border-top: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.account-aside-btn {
+    .icon {
+        @include sw-icon-size(16px);
+        color: inherit;
+        margin-right: $spacer-xs;
+    }
+}
+
+// underlined navigation link
+@if $zen-sidebar-navigation-hover-animation == "underlined" {
+    // display navigation border only, if $zen-sidebar-navigation-bg is same as background color
+    $contrastBackground: if($zen-container-bg != transparent, $zen-container-bg, $body-bg);
+
+    @if ($zen-sidebar-navigation-bg == transparent or $zen-sidebar-navigation-bg == $contrastBackground)
+        and ($zen-sidebar-navigation-hover-bg == transparent or $zen-sidebar-navigation-hover-bg == $contrastBackground) {
+        .account-content-aside {
+            .account-aside-item {
+                position: relative;
+                display: inline-block;
+
+                &::after {
+                    @include transition($transition-base);
+                    content: '';
+                    position: absolute;
+                    bottom: 1px;
+                    left: var(--#{$prefix}list-group-item-padding-y);
+                    right: var(--#{$prefix}list-group-item-padding-y);
+                    background: $zen-sidebar-navigation-hover-color;
+                    height: 1px;
+                    transform: scaleX(0);
+                }
+
+                &:hover,
+                &.is-active {
+                    &::after {
+                        transform: scaleX(1);
+                    }
+                }
+            }
+        }
+    }
+}

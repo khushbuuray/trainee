@@ -1,0 +1,430 @@
+$is-layout-color: light;
+@if (contrast-ratio(#000000, $zen-header-bg) < $min-contrast-ratio) {
+    $is-layout-color: dark;
+}
+
+.is-ctl-navigation {
+    .header-main {
+        &.is-inverted {
+            .header-logo-picture-inverted {
+                display: none;
+            }
+
+            &:not(.js-header-sticky) {
+                @include media-breakpoint-up(lg) {
+                    .header-logo-picture-inverted {
+                        display: block;
+
+                        ~ .header-logo-picture {
+                            display: none;
+                        }
+                    }
+
+                    .nav-header {
+                        background-color: $zen-header-color;
+                        color: $zen-header-bg;
+
+                        // transparent header classes
+                        $i: 0;
+                        @while $i < 100 {
+                            &.bg-opacity-#{$i} {
+                                background-color: rgba($zen-header-color, 0.01 * $i);
+                            }
+                            $i: $i + 5;
+                        }
+                    }
+
+                    // main navigation
+                    .nav-main {
+                        @if $zen-header-style == "single-line" {
+                            .main-navigation {
+                                background: $zen-main-navigation-color;
+                            }
+                        } @else {
+                            background: $zen-main-navigation-color;
+                        }
+
+                        // transparent header classes
+                        $i: 0;
+                        @while $i < 100 {
+                            &.bg-opacity-#{$i} {
+                                @if $zen-header-style == "single-line" {
+                                    .main-navigation {
+                                        background-color: rgba($zen-main-navigation-color, 0.01 * $i);
+                                    }
+                                } @else {
+                                    background-color: rgba($zen-main-navigation-color, 0.01 * $i);
+                                }
+                            }
+
+                            $i: $i + 5;
+                        }
+                    }
+
+                    .main-navigation {
+                        // navigation badge
+                        .main-navigation-link-text {
+                            > .navigation-badge {
+                                background: $zen-main-navigation-bg;
+                                color: $zen-main-navigation-color;
+                            }
+                        }
+                    }
+
+                    .main-navigation-link {
+                        color: $zen-main-navigation-bg;
+                        @include main-navigation-hover($zen-main-navigation-hover-animation, $zen-main-navigation-bg, $zen-main-navigation-color, $zen-main-navigation-hover-bg, $zen-main-navigation-hover-color);
+
+                        @if $zen-main-navigation-extern-link-icon  == 1 {
+                            &[target=_blank] {
+                                .main-navigation-link-name::after {
+                                    background-color: $zen-main-navigation-bg;
+                                }
+                            }
+                        }
+
+                        .icon {
+                            color: $zen-main-navigation-bg;
+                        }
+                    }
+
+                    .main-navigation-divider {
+                        color: $zen-main-navigation-bg;
+                    }
+
+                    // shop navigation
+                    .header-actions-btn:not(.header-cart-btn) {
+                        $conditional-bg: $zen-shop-navigation-color;
+                        $conditional-color: $zen-shop-navigation-bg;
+
+                        @if $zen-shop-navigation-bg == transparent {
+                            $conditional-bg: transparent;
+                            $conditional-color: color-contrast($zen-shop-navigation-color, $black, $white);
+                        }
+
+                        background: $conditional-bg;
+                        color: $conditional-color;
+
+                        @if $zen-shop-navigation-border == 1 {
+                            $conditional-border-color: $zen-shop-navigation-bg;
+
+                            @if $zen-shop-navigation-border-color == transparent {
+                                $conditional-border-color: transparent;
+                            }
+
+                            @if $zen-shop-navigation-border-color == $zen-shop-navigation-bg {
+                                $conditional-border-color: $conditional-bg;
+                            }
+
+                            border: 1px solid $conditional-border-color;
+
+                            @if ($zen-shop-navigation-border-hover-color == $zen-shop-navigation-hover-bg) {
+                                box-shadow: 0 0 0 0 $conditional-bg;
+                            }
+                        } @else {
+                            box-shadow: 0 0 0 0 $conditional-bg;
+                        }
+
+                        .icon {
+                            color: $conditional-color;
+                        }
+
+                        &:hover {
+                            $conditional-bg: $zen-shop-navigation-hover-color;
+                            $conditional-color: $zen-shop-navigation-hover-bg;
+
+                            @if $zen-shop-navigation-hover-bg == transparent {
+                                $conditional-bg: transparent;
+
+                                @if $is-layout-color == "dark" {
+                                    $conditional-color: tint-color($black, 20%);
+                                } @else {
+                                    $conditional-color: shade-color($white, 20%);
+                                }
+                            }
+
+                            background: $conditional-bg;
+                            color: $conditional-color;
+
+                            @if $zen-shop-navigation-border == 1 {
+                                $conditional-border-color: $zen-shop-navigation-hover-bg;
+
+                                @if $zen-shop-navigation-border-hover-color == transparent {
+                                    $conditional-border-color: transparent;
+                                }
+
+                                @if $zen-shop-navigation-border-hover-color == $zen-shop-navigation-hover-bg {
+                                    $conditional-border-color: $conditional-bg;
+                                }
+
+                                border-color: $conditional-border-color;
+
+                                @if ($zen-shop-navigation-border-hover-color == $zen-shop-navigation-hover-bg) {
+                                    box-shadow: 0 0 0 .2rem $conditional-bg;
+                                }
+                            } @else {
+                                box-shadow: 0 0 0 .2rem $conditional-bg;
+                            }
+
+                            .icon {
+                                color: $conditional-color;
+                            }
+                        }
+                    }
+
+                    .header-cart-btn {
+                        $conditional-bg: $zen-shop-navigation-cart-color;
+                        $conditional-color: $zen-shop-navigation-cart-bg;
+
+                        @if $zen-shop-navigation-cart-bg == transparent {
+                            $conditional-bg: transparent;
+                            $conditional-color: color-contrast($zen-shop-navigation-cart-color, $black, $white);
+                        }
+
+                        background: $conditional-bg;
+
+                        @if $zen-shop-navigation-cart-border == 1 {
+                            $conditional-border-color: $zen-shop-navigation-cart-bg;
+
+                            @if $zen-shop-navigation-cart-border-color == transparent {
+                                $conditional-border-color: transparent;
+                            }
+
+                            @if $zen-shop-navigation-cart-border-color == $zen-shop-navigation-cart-bg {
+                                $conditional-border-color: $conditional-bg;
+                            }
+
+                            border: 1px solid $conditional-border-color;
+
+                            @if ($zen-shop-navigation-cart-border-hover-color == $zen-shop-navigation-cart-hover-bg) {
+                                box-shadow: 0 0 0 0 $conditional-bg;
+                            }
+                        } @else {
+                            box-shadow: 0 0 0 0 $conditional-bg;
+                        }
+
+                        .icon {
+                            color: $conditional-color;
+                        }
+
+                        .header-cart-total {
+                            color: $conditional-color;
+                        }
+
+                        &:hover {
+                            $conditional-bg: $zen-shop-navigation-cart-hover-color;
+                            $conditional-color: $zen-shop-navigation-cart-hover-bg;
+
+                            @if $zen-shop-navigation-cart-hover-bg == transparent {
+                                $conditional-bg: transparent;
+
+                                @if $is-layout-color == "dark" {
+                                    $conditional-color: tint-color($black, 20%);
+
+                                } @else {
+                                    $conditional-color: shade-color($white, 20%);
+                                }
+                            }
+
+                            background: $conditional-bg;
+
+                            @if $zen-shop-navigation-cart-border == 1 {
+                                $conditional-border-color: $zen-shop-navigation-cart-hover-bg;
+
+                                @if $zen-shop-navigation-cart-border-hover-color == transparent {
+                                    $conditional-border-color: transparent;
+                                }
+
+                                @if $zen-shop-navigation-cart-border-hover-color == $zen-shop-navigation-cart-hover-bg {
+                                    $conditional-border-color: $conditional-bg;
+                                }
+
+                                border-color: $conditional-border-color;
+
+                                @if ($zen-shop-navigation-cart-border-hover-color == $zen-shop-navigation-cart-hover-bg) {
+                                    box-shadow: 0 0 0 .2rem $conditional-bg;
+                                }
+                            } @else {
+                                box-shadow: 0 0 0 .2rem $conditional-bg;
+                            }
+
+                            .icon,
+                            .header-cart-total {
+                                color: $conditional-color;
+                            }
+                        }
+                    }
+
+                    .js-nav-scroller-control {
+                        background: $zen-main-navigation-bg;
+                        color: $zen-main-navigation-color;
+
+                        .icon {
+                            > svg {
+                                color: $zen-main-navigation-color;
+                            }
+                        }
+                    }
+
+                    // @config - header-two-line - top bar navigation
+                    .header-top-bar-col {
+                        .top-bar-nav-btn {
+                            &.btn {
+                                background: $zen-shop-navigation-color;
+                                color: $zen-shop-navigation-bg;
+
+                                .icon {
+                                    color: $zen-shop-navigation-bg;
+                                }
+
+                                &:hover {
+                                    background: $zen-shop-navigation-hover-color;
+                                    color: $zen-shop-navigation-hover-bg;
+
+                                    .icon {
+                                        color: $zen-shop-navigation-hover-bg;
+                                    }
+                                }
+                            }
+                        }
+
+                        .dropdown.show {
+                            .top-bar-nav-btn {
+                                background: $zen-shop-navigation-hover-color;
+
+                                &,
+                                .icon {
+                                    color: $zen-shop-navigation-hover-bg;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // search
+    // if the background colors of the header and the search are already
+    // very similar, the search does not have to be inverted.
+    @if (contrast-ratio($zen-search-bg, $zen-header-bg) > $min-contrast-ratio) and $zen-layout-forms-style != "underlined"
+        or $zen-layout-forms-style == "underlined" {
+        &.is-srch-default {
+            .header-main {
+                &.is-inverted {
+                    &:not(.js-header-sticky) {
+                        @include media-breakpoint-up(lg) {
+                            .header-search-input {
+                                $conditional-border: transparent;
+                                $conditional-color: $zen-search-bg;
+                                $conditional-bg: $zen-search-color;
+
+                                @if $zen-search-border != $zen-search-bg {
+                                    $conditional-border: $zen-search-bg;
+                                }
+
+                                @if $zen-layout-forms-style == "underlined" {
+                                    $conditional-color: $zen-search-bg;
+                                    $conditional-bg: transparent;
+                                    $conditional-border: $zen-search-bg;
+                                }
+
+                                background: $conditional-bg;
+                                color: $conditional-color;
+                                border-color: $conditional-border;
+
+                                &::placeholder {
+                                    color: rgba($conditional-color, .75);
+                                }
+
+                                /* Workaround for missing placeholder color in chrome */
+                                /* stylelint-disable-next-line selector-no-vendor-prefix */
+                                &::-webkit-input-placeholder {
+                                    color: rgba($conditional-color, .75);
+                                }
+
+                                &:focus {
+                                    $conditional-border: transparent;
+                                    $conditional-color: $zen-search-focus-bg;
+                                    $conditional-bg: $zen-search-focus-color;
+
+                                    @if $zen-search-border != $zen-search-bg {
+                                        $conditional-border: $zen-search-focus-bg;
+                                    }
+
+                                    @if $zen-layout-forms-style == "underlined" {
+                                        $conditional-color: $zen-search-focus-bg;
+                                        $conditional-bg: transparent;
+                                        $conditional-border: $zen-search-focus-bg;
+                                    }
+
+                                    background: $conditional-bg;
+                                    color: $conditional-color;
+                                    border-color: $conditional-border;
+
+                                    &::placeholder {
+                                        color: rgba($conditional-color, .75);
+                                    }
+
+                                    /* Workaround for missing placeholder color in chrome */
+                                    /* stylelint-disable-next-line selector-no-vendor-prefix */
+                                    &::-webkit-input-placeholder {
+                                        color: rgba($conditional-color, .75);
+                                    }
+
+                                    ~ .header-search-btn {
+                                        $conditional-border: transparent;
+                                        $conditional-color: $zen-search-focus-bg;
+                                        $conditional-bg: $zen-search-focus-color;
+
+                                        @if $zen-search-border != $zen-search-bg {
+                                            $conditional-border: $zen-search-focus-bg;
+                                        }
+
+                                        @if $zen-layout-forms-style == "underlined" {
+                                            $conditional-color: $zen-search-focus-bg;
+                                            $conditional-bg: transparent;
+                                            $conditional-border: $zen-search-focus-bg;
+                                        }
+
+                                        background: $conditional-bg;
+                                        color: $conditional-color;
+                                        border-color: $conditional-border;
+
+                                        .icon {
+                                            color: $conditional-color;
+                                        }
+                                    }
+                                }
+                            }
+
+                            .header-search-btn {
+                                $conditional-border: transparent;
+                                $conditional-color: $zen-search-bg;
+                                $conditional-bg: $zen-search-color;
+
+                                @if $zen-search-border != $zen-search-bg {
+                                    $conditional-border: $zen-search-bg;
+                                }
+
+                                @if $zen-layout-forms-style == "underlined" {
+                                    $conditional-color: $zen-search-bg;
+                                    $conditional-bg: transparent;
+                                    $conditional-border: $zen-search-bg;
+                                }
+
+                                background: $conditional-bg;
+                                color: $conditional-color;
+                                border-color: $conditional-border;
+
+                                .icon {
+                                    color: $conditional-color;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

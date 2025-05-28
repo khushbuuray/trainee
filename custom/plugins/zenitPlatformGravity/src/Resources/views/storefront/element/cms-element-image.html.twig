@@ -1,0 +1,22 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-image.html.twig' %}
+
+{% block element_image_media %}
+    {% set attributes = {
+        class: 'cms-image',
+        alt: (element.data.media.translated.alt ?: ''),
+        title: (element.data.media.translated.title ?: '')
+    } %}
+
+    {% if element.translated.config.displayMode.value == 'cover' or element.translated.config.displayMode.value == 'contain' %}
+        {% set attributes = attributes|merge({ 'data-object-fit': element.translated.config.displayMode.value }) %}
+    {% endif %}
+
+    {# ... @zenit - enables lazy loading for images #}
+    {% if config('zenitPlatformGravity.config.lazyloading') %}
+        {% set attributes = attributes|merge({ loading: 'lazy' }) %}
+    {% endif %}
+
+    {% sw_thumbnails 'cms-image-thumbnails' with {
+        media: element.data.media
+    } %}
+{% endblock %}

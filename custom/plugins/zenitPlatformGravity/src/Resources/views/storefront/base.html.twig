@@ -1,0 +1,777 @@
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{# ... @zenit - custom fields #}
+{% set zenCustomFields = {
+    category: page.header.navigation.active.translated.customFields,
+    product: product.translated.customFields|default(page.product.translated.customFields)
+} %}
+
+{# ... @zenit - body classes #}
+{% set bodyClasses = [
+    'is-lo-' ~ theme_config('zen-layout-style'),
+    'is-tb-' ~ theme_config('zen-top-bar-style'),
+    'is-srch-' ~ theme_config('zen-search-style'),
+    'is-mn-' ~ theme_config('zen-main-navigation-style')
+] %}
+
+{% if page.cmsPage %}
+    {% set bodyClasses = ['is-cms']|merge(bodyClasses) %}
+{% else %}
+    {% set bodyClasses = ['is-not-cms']|merge(bodyClasses) %}
+{% endif %}
+
+{% if zenCustomFields.category.zenit_gravity_category_classes is not empty %}
+    {% set bodyClasses = [zenCustomFields.category.zenit_gravity_category_classes]|merge(bodyClasses) %}
+{% endif %}
+
+{% if theme_config('zen-flyout-navigation-full-width') %}
+    {% set bodyClasses = ['is-flyout-fullscreen']|merge(bodyClasses) %}
+{% endif %}
+
+{% if theme_config('zen-layout-forms-floating-labels') %}
+    {% set bodyClasses = ['has-lbl-floating']|merge(bodyClasses) %}
+{% endif %}
+
+{% if config('zenitPlatformGravity.config.marketingActive') %}
+    {% set bodyClasses = ['has-marketing-slider']|merge(bodyClasses) %}
+{% endif %}
+
+{% if theme_config('zen-product-listing-card-action-btn') or config('core.listing.allowBuyInListing') %}
+    {% set bodyClasses = ['has-product-actions']|merge(bodyClasses) %}
+{% endif %}
+
+{# ... @zenit - gallery slider mode #}
+{% if zenCustomFields.product.zenit_gravity_gallery_mode is empty or zenCustomFields.product.zenit_gravity_gallery_mode is same as ('inherit') %}
+    {% set galleryMode = theme_config("zen-product-gallery-mode") %}
+{% else %}
+    {% set galleryMode = zenCustomFields.product.zenit_gravity_gallery_mode %}
+{% endif %}
+
+{% block base_body_classes %}{{ parent() }} {{ bodyClasses|join(' ') }}{% endblock %}
+
+{% block base_body_inner %}
+
+    {{ block('base_noscript') }}
+
+    {% block zen_base_preloader %}
+        {% sw_include '@zenitPlatformGravity/storefront/layout/zen-preloader.html.twig' %}
+    {% endblock %}
+
+    <div class="page-wrapper">
+
+        {% block base_header %}
+            {# ... @zenit - single lined header #}
+            {% if theme_config('zen-header-style') is same as ('single-line') %}
+                {# logo left #}
+                {% if theme_config('zen-logo-position') is same as ('left') %}
+                    {# search default #}
+                    {% if theme_config('zen-search-style') is same as ('default')  %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1" %}
+                            {% set searchClasses =                      "col-12 col-sm order-4 order-sm-2 ms-auto" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationClasses =              "d-none d-lg-flex flex-grow-2 col-lg order-lg-2" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2 order-md-3" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1" %}
+                            {% set searchClasses =                      "col-12 col-sm order-4 order-sm-2 ms-auto" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationClasses =              "d-none d-xl-flex flex-grow-2 col-xl order-lg-2" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2 order-md-3" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1" %}
+                            {% set searchClasses =                      "col-12 col-sm order-4 order-sm-2 ms-auto" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationClasses =              "d-none" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2 order-md-3" %}
+                        {% endif %}
+                    {# search not default #}
+                    {% elseif theme_config('zen-search-style') is not same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto order-1" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationClasses =              "d-none d-lg-flex col-lg order-lg-2 " %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2 ms-sm-auto" %}
+
+                            {% if theme_config('zen-main-navigation-align') is same as ('center') %}
+                                {% set logoClasses =                    "col-12 col-sm-auto col-xl-3 order-1" %}
+                                {% set actionClasses =                  "col-auto col-xl-3 order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% endif %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto order-1" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationClasses =              "d-none d-xl-flex col-xl order-lg-2" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2 ms-sm-auto" %}
+
+                            {% if theme_config('zen-main-navigation-align') is same as ('center') %}
+                                {% set logoClasses =                    "col-12 col-sm-auto col-xl-3 order-1" %}
+                                {% set actionClasses =                  "col-auto col-xl-3 order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% endif %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto order-1" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationClasses =              "d-none" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2 ms-sm-auto" %}
+
+                            {% if theme_config('zen-main-navigation-align') is same as ('center') %}
+                                {% set logoClasses =                    "col-12 col-sm-auto col-xl-3 order-1" %}
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+
+                {# logo center #}
+                {% elseif theme_config('zen-logo-position') is same as ('center') %}
+                    {# search default #}
+                    {% if theme_config('zen-search-style') is same as ('default')  %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 pos-xl-center col-xl-2 order-1" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto order-4 order-sm-2 order-md-3 order-lg-2 ms-auto" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationClasses =              "d-none d-lg-flex col-lg col-xl-5 order-lg-2" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 pos-lg-center col-lg-2 order-1" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto order-4 order-sm-2 order-md-3 order-lg-2 ms-auto" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationClasses =              "d-none d-xl-flex col-xl-5 order-lg-2" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-lg-auto pos-lg-center order-1 order-lg-3" %} {# TODO: @zenit - pos-lg-center better solution? #}
+                            {% set searchClasses =                      "col-12 col-sm-auto order-4 order-sm-2 order-md-3 order-lg-2 ms-auto" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationClasses =              "d-none" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2 order-lg-1" %}
+                        {% endif %}
+                    {# search not default #}
+                    {% elseif theme_config('zen-search-style') is not same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-md-4 col-lg-12 col-xl-2 order-1 order-md-2 order-lg-1 order-xl-2" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 ms-auto" %}
+                            {% set mainNavigationClasses =              "d-none d-lg-flex col-lg col-xl-5 order-lg-2 order-xl-1" %}
+                            {% set mainNavigationToggleClasses =        "col-auto col-md-4 d-lg-none order-1" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-md-4 col-xl-2 order-1 order-md-2" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 ms-auto" %}
+                            {% set mainNavigationClasses =              "d-none d-xl-flex col-xl-5 order-xl-1" %}
+                            {% set mainNavigationToggleClasses =        "col-auto col-md-4 d-xl-none order-1" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-md-4 col-xl-2 order-1 order-md-2 order-xl-2" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 ms-auto" %}
+                            {% set mainNavigationClasses =              "d-none" %}
+                            {% set mainNavigationToggleClasses =        "col-auto col-md-4 col-xl-5 order-1" %}
+                        {% endif %}
+                    {% endif %}
+
+                {# logo right #}
+                {% elseif theme_config('zen-logo-position') is same as ('right') %}
+                    {# search default #}
+                    {% if theme_config('zen-search-style') is same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1 order-md-4 ms-md-auto" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto order-5 order-sm-3 order-lg-2 ms-auto ms-md-0" %}
+                            {% set actionClasses =                      "col-auto order-4 order-md-1 ms-auto ms-sm-0 reverse-md" %}
+                            {% set mainNavigationClasses =              "d-none d-lg-flex col-lg order-lg-3 justify-content-end" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1 order-md-4 ms-md-auto" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto order-5 order-sm-3 order-lg-2 ms-auto ms-md-0" %}
+                            {% set actionClasses =                      "col-auto order-4 order-md-1 ms-auto ms-sm-0 reverse-md" %}
+                            {% set mainNavigationClasses =              "d-none d-xl-flex col-lg order-lg-3 justify-content-end" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1 order-md-4 ms-md-auto" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto order-5 order-sm-3 order-lg-2 ms-auto ms-md-0" %}
+                            {% set actionClasses =                      "col-auto order-4 order-md-1 ms-auto ms-sm-0 reverse-md" %}
+                            {% set mainNavigationClasses =              "d-none" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2" %}
+                        {% endif %}
+                    {# search not default #}
+                    {% elseif theme_config('zen-search-style') is not same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto col-xl-3 order-1 order-sm-4 ms-sm-auto" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 order-sm-1 ms-auto ms-sm-0 reverse-sm" %}
+                            {% set mainNavigationClasses =              "d-none d-lg-flex col-lg order-lg-2 justify-content-end" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2" %}
+
+                            {% if theme_config('zen-main-navigation-align') is same as ('center') %}
+                                {% set actionClasses =                  "col-auto col-xl-3 order-3 order-sm-1 ms-auto ms-sm-0 reverse-sm" %}
+                            {% endif %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto col-xl-3 order-1 order-sm-4 ms-sm-auto" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 order-sm-1 ms-auto ms-sm-0 reverse-sm" %}
+                            {% set mainNavigationClasses =              "d-none d-xl-flex col-lg order-lg-2 justify-content-end" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2" %}
+
+                            {% if theme_config('zen-main-navigation-align') is same as ('center') %}
+                                {% set actionClasses =                      "col-auto col-xl-3 order-3 order-sm-1 ms-auto ms-sm-0 reverse-sm" %}
+                            {% endif %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto order-1 order-sm-4 ms-sm-auto" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 order-sm-1 ms-auto ms-sm-0 reverse-sm" %}
+                            {% set mainNavigationClasses =              "d-none" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2" %}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+
+            {# ... @zenit - multi lined header #}
+            {% elseif theme_config('zen-header-style') is same as ('multi-line') %}
+                {# logo left #}
+                {% if theme_config('zen-logo-position') is same as ('left') %}
+                    {# search default #}
+                    {% if theme_config('zen-search-style') is same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-md-auto col-lg-3 order-1" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto col-lg-6 order-4 order-sm-2 ms-auto ms-lg-0 me-lg-0" %}
+                            {% set actionClasses =                      "col-auto order-3 ms-auto ms-sm-0 ms-lg-auto" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2 order-md-3" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-md-auto col-xl-3 order-1" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto col-xl-6 order-4 order-sm-2 ms-auto ms-xl-0 me-xl-0" %}
+                            {% set actionClasses =                      "col-auto order-3 ms-auto ms-sm-0 ms-xl-auto" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2 order-md-3" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1" %}
+                            {% set searchClasses =                      "col-12 col-sm order-4 order-sm-2 ms-auto ms-sm-3" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0 ms-xl-auto" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2 order-md-3" %}
+                        {% endif %}
+                    {# search not default #}
+                    {% elseif theme_config('zen-search-style') is not same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto col-xl-3 order-1" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto col-xl-3 order-3 order-md-4 ms-auto ms-sm-0 ms-lg-auto" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2 ms-sm-auto" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto col-xl-3 order-1" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto col-xl-3 order-3 order-md-4 ms-auto ms-sm-0 ms-xl-auto" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2 ms-sm-auto" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto order-1" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2 ms-sm-auto" %}
+                        {% endif %}
+                    {% endif %}
+
+                {# logo center #}
+                {% elseif theme_config('zen-logo-position') is same as ('center') %}
+                    {# search default #}
+                    {% if theme_config('zen-search-style') is same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-lg-4 pos-lg-center order-1 order-lg-2" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto col-lg-3 order-4 order-sm-2 order-md-3 order-lg-1 ms-auto ms-lg-0" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0 ms-lg-auto" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-xl-4 pos-xl-center order-1 order-lg-2" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto col-lg-3 order-4 order-sm-2 order-md-3 order-xl-1 ms-auto ms-xl-0" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0 ms-xl-auto" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-lg-auto pos-lg-center order-1 order-lg-3" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto order-4 order-sm-3 order-lg-2 ms-auto ms-lg-0 me-lg-auto" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2 order-lg-3" %}
+                        {% endif %}
+                    {# search not default #}
+                    {% elseif theme_config('zen-search-style') is not same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-md-4 col-lg-4 pos-lg-center order-1 order-md-2 order-lg-1" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 ms-auto" %}
+                            {% set mainNavigationToggleClasses =        "col-auto col-md-4 d-lg-none order-1" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-md-4 pos-xl-center order-1 order-md-2" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 ms-auto" %}
+                            {% set mainNavigationToggleClasses =        "col-auto col-md-4 d-xl-none order-1" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-md-4 order-1 order-md-2 order-xl-2" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 ms-auto" %}
+                            {% set mainNavigationToggleClasses =        "col-auto col-md-4 col-xl-4 order-1" %}
+                        {% endif %}
+                    {% endif %}
+
+                {# logo right #}
+                {% elseif theme_config('zen-logo-position') is same as ('right') %}
+                    {# search default #}
+                    {% if theme_config('zen-search-style') is same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1 order-md-4 ms-md-auto" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto col-lg-6 order-5 order-sm-3 order-lg-2 ms-auto ms-md-0" %}
+                            {% set actionClasses =                      "col-auto col-lg-3 order-4 order-md-1 ms-auto ms-sm-0 reverse-md" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1 order-md-4 ms-md-auto" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto col-xl-6 order-5 order-sm-3 order-lg-2 ms-auto ms-md-0" %}
+                            {% set actionClasses =                      "col-auto col-xl-3 order-4 order-md-1 ms-auto ms-sm-0 reverse-md" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1 order-md-4 ms-md-3" %}
+                            {% set searchClasses =                      "col-12 col-sm order-5 order-sm-3 order-lg-2 ms-auto ms-md-0" %}
+                            {% set actionClasses =                      "col-auto order-4 order-md-1 ms-auto ms-sm-0 reverse-md" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2" %}
+                        {% endif %}
+                    {# search not default #}
+                    {% elseif theme_config('zen-search-style') is not same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto col-xl-3 order-1 order-sm-4 ms-sm-auto" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 order-sm-1 ms-auto ms-sm-0 reverse-sm" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto col-xl-3 order-1 order-sm-4 ms-sm-auto" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 order-sm-1 ms-auto ms-sm-0 reverse-sm" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto order-1 order-sm-4 ms-sm-auto" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set actionClasses =                      "col-auto order-3 order-sm-1 ms-auto ms-sm-0 reverse-sm" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2" %}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+
+            {# ... @zenit - Two lined header #}
+            {% elseif theme_config('zen-header-style') is same as ('two-line') %}
+
+                {# logo left #}
+                {% if theme_config('zen-logo-position') is same as ('left') %}
+                    {# search default #}
+                    {% if theme_config('zen-search-style') is same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto order-4 order-sm-2 ms-auto" %}
+                            {% set topBarClasses =                      "d-none d-lg-flex col-auto order-lg-3" %}
+                            {% set actionClasses =                      "col-auto order-3 ms-auto ms-sm-0" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2 order-md-3" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto order-4 order-sm-2 ms-auto" %}
+                            {% set topBarClasses =                      "d-none d-lg-flex col-auto order-lg-3" %}
+                            {% set actionClasses =                      "col-auto order-3 ms-auto ms-sm-0" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2 order-md-3" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-md-3 order-1" %}
+                            {% set searchClasses =                      "col-12 col-sm order-4 order-sm-2 col-md-6 ms-auto ms-sm-0" %}
+                            {% set topBarClasses =                      "d-none" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2 order-md-3 ms-md-auto" %}
+                        {% endif %}
+                    {# search not default #}
+                    {% elseif theme_config('zen-search-style') is not same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto col-xl-3 order-1" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set topBarClasses =                      "d-none d-lg-flex col-auto order-lg-3 ms-auto" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2 ms-sm-auto" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto col-xl-3 order-1" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set topBarClasses =                      "d-none d-xl-flex col-auto order-lg-3 ms-auto" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2 ms-sm-auto" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto order-1" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set topBarClasses =                      "d-none" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2 ms-sm-auto" %}
+                        {% endif %}
+                    {% endif %}
+
+                {# logo center #}
+                {% elseif theme_config('zen-logo-position') is same as ('center') %}
+                    {# search default #}
+                    {% if theme_config('zen-search-style') is same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-lg-4 pos-lg-center order-1 order-lg-2" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto col-lg-3 order-4 order-sm-2 order-md-3 order-lg-1 ms-auto ms-lg-0" %}
+                            {% set topBarClasses =                      "d-none d-lg-flex col-auto order-lg-3 ms-auto" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-xl-4 pos-xl-center order-1 order-lg-2" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto col-lg-3 order-4 order-sm-2 order-md-3 order-xl-1 ms-auto ms-xl-0" %}
+                            {% set topBarClasses =                      "d-none d-xl-flex col-auto order-xl-3 ms-auto" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-lg-auto pos-lg-center order-1 order-lg-2" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto order-4 order-sm-3 order-lg-2 ms-auto ms-lg-0 me-lg-auto" %}
+                            {% set topBarClasses =                      "d-none" %}
+                            {% set actionClasses =                      "col-auto order-3 order-md-4 ms-auto ms-sm-0" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2 order-lg-3" %}
+                        {% endif %}
+                    {# search not default #}
+                    {% elseif theme_config('zen-logo-position') is same as ('center') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-md-4 col-lg-4 pos-lg-center order-1 order-md-2 order-lg-2" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set topBarClasses =                      "d-none d-lg-flex col-auto order-lg-1" %}
+                            {% set actionClasses =                      "col-auto order-3 ms-auto" %}
+                            {% set mainNavigationToggleClasses =        "col-auto col-md-4 d-lg-none order-1" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-md-4 pos-xl-center order-1 order-md-2" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set topBarClasses =                      "d-none d-xl-flex col-auto order-xl-1" %}
+                            {% set actionClasses =                      "col-auto order-3 ms-auto" %}
+                            {% set mainNavigationToggleClasses =        "col-auto col-md-4 d-xl-none order-1" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-md-4 order-1 order-md-2 order-xl-2" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set topBarClasses =                      "d-none" %}
+                            {% set actionClasses =                      "col-auto order-3 ms-auto" %}
+                            {% set mainNavigationToggleClasses =        "col-auto col-md-4 col-xl-4 order-1" %}
+                        {% endif %}
+                    {% endif %}
+
+                {# logo right #}
+                {% elseif theme_config('zen-logo-position') is same as ('right') %}
+                    {# search default #}
+                    {% if theme_config('zen-search-style') is same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1 order-md-4 ms-md-auto" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto order-5 order-sm-3 order-lg-2 ms-auto ms-md-0" %}
+                            {% set topBarClasses =                      "d-none d-lg-flex col-auto order-lg-2" %}
+                            {% set actionClasses =                      "col-auto order-4 order-md-1 ms-auto ms-sm-0 reverse-md" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1 order-md-4 ms-md-auto" %}
+                            {% set searchClasses =                      "col-12 col-sm-auto order-5 order-sm-3 order-lg-2 ms-auto ms-md-0" %}
+                            {% set topBarClasses =                      "d-none d-xl-flex col-auto order-xl-2" %}
+                            {% set actionClasses =                      "col-auto order-4 order-md-1 ms-auto ms-sm-0 reverse-md" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-md-auto order-1 order-md-4 ms-md-auto" %}
+                            {% set searchClasses =                      "col-12 col-sm order-5 order-sm-3 order-lg-2 ms-auto ms-md-0" %}
+                            {% set topBarClasses =                      "d-none" %}
+                            {% set actionClasses =                      "col-auto order-4 order-md-1 ms-auto ms-sm-0 reverse-md" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2" %}
+                        {% endif %}
+                    {# search not default #}
+                    {% elseif theme_config('zen-search-style') is not same as ('default') %}
+                        {# offcanvas style #}
+                        {% if theme_config('zen-main-navigation-style') is same as ('offcanvas-md') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto col-xl-3 order-1 order-sm-4 ms-sm-auto" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set topBarClasses =                      "d-none d-lg-flex col-auto order-lg-2" %}
+                            {% set actionClasses =                      "col-auto order-3 order-sm-1 ms-auto ms-sm-0 reverse-sm" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-lg-none order-2" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-lg') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto col-xl-3 order-1 order-sm-4 ms-sm-auto" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set topBarClasses =                      "d-none d-xl-flex col-auto order-xl-2" %}
+                            {% set actionClasses =                      "col-auto order-3 order-sm-1 ms-auto ms-sm-0 reverse-sm" %}
+                            {% set mainNavigationToggleClasses =        "col-auto d-xl-none order-2 me-sm-auto me-xl-0" %}
+
+                        {% elseif theme_config('zen-main-navigation-style') is same as ('offcanvas-xl') %}
+                            {% set logoClasses =                        "col-12 col-sm-auto order-1 order-sm-4 ms-sm-auto" %}
+                            {% set searchClasses =                      "col-12 order-5" %}
+                            {% set topBarClasses =                      "d-none" %}
+                            {% set actionClasses =                      "col-auto order-3 order-sm-1 ms-auto ms-sm-0 reverse-sm" %}
+                            {% set mainNavigationToggleClasses =        "col-auto order-2" %}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+
+            {# ... @zenit - single lined mobile headers #}
+            {% if theme_config('zen-header-style-mobile') is same as ('single-line') %}
+                {# logo left, search default #}
+                {% if theme_config('zen-logo-position') is same as ('left') and theme_config('zen-search-style') is same as ('default') %}
+                    {% set logoClasses =                        logoClasses|replace({'col-12': 'col-auto'}) %}
+                    {% set actionClasses =                      actionClasses|replace({'ms-auto': ''}) %}
+                    {% set mainNavigationToggleClasses =        mainNavigationToggleClasses|replace({'col-auto': 'col-auto ms-auto ms-sm-0', 'order-2': 'order-3'}) %}
+
+                    {# logo left, search not default #}
+                {% elseif theme_config('zen-logo-position') is same as ('left') and theme_config('zen-search-style') is not same as ('default') %}
+                    {% set logoClasses =                        logoClasses|replace({'col-12': 'col-auto'}) %}
+                    {% set actionClasses =                      actionClasses|replace({'ms-auto': ''}) %}
+                    {% set mainNavigationToggleClasses =        mainNavigationToggleClasses|replace({'ms-sm-auto': 'ms-auto'}) %}
+
+                    {# logo center, search default #}
+                {% elseif theme_config('zen-logo-position') is same as ('center') and theme_config('zen-search-style') is same as ('default') %}
+                    {% set logoClasses =                        logoClasses|replace({'col-12': 'col-auto', 'pos-xl-center': 'pos-center', 'pos-lg-center': 'pos-center'}) %}
+                    {% set actionClasses =                      actionClasses|replace({'col-auto': 'col col-lg-auto'}) %}
+
+                    {% if theme_config('zen-header-style') is same as ('single-line') %}
+                        {% set searchClasses =                      searchClasses|replace({'col-sm-auto': 'col-sm-3 col-lg-auto', 'ms-auto': 'ms-xl-auto'}) %}
+                        {% set actionClasses =                      actionClasses|replace({'ms-sm-0': 'ms-xl-0'}) %}
+                        {% set mainNavigationClasses =              mainNavigationClasses|replace({'d-lg-flex': 'd-xl-flex'}) %} {# ... @zenit - have to move the main navigation as offcanvas breakpoint #}
+                        {% set mainNavigationToggleClasses =        mainNavigationToggleClasses|replace({'d-lg-none': 'd-xl-none'}) %} {# ... @zenit - have to move the main navigation as offcanvas breakpoint #}
+                    {% elseif theme_config('zen-header-style') is same as ('multi-line') %}
+                        {% set searchClasses =                      searchClasses|replace({'col-sm-auto': 'col-sm-3 col-lg-auto', 'ms-auto': ''}) %}
+                        {% set actionClasses =                      actionClasses|replace({'ms-sm-0': ''}) %}
+                    {% elseif theme_config('zen-header-style') is same as ('two-line') %}
+                        {% set searchClasses =                      searchClasses|replace({'col-sm-auto': 'col-sm-3 col-lg-auto', 'ms-auto': ''}) %}
+                        {% set actionClasses =                      actionClasses|replace({'ms-sm-0': 'ms-xl-0'}) %}
+                    {% endif %}
+
+                    {# logo center, search not default #}
+                {% elseif theme_config('zen-logo-position') is same as ('center') and theme_config('zen-search-style') is not same as ('default') %}
+                    {% set logoClasses =                        logoClasses|replace({'col-12': 'col-auto pos-center', 'col-lg-12': ''}) %}
+                    {% set actionClasses =                      actionClasses|replace({'col-auto': 'col col-lg-auto'}) %}
+
+                    {% if theme_config('zen-header-style') is same as ('single-line') %}
+                        {% set mainNavigationClasses =              mainNavigationClasses|replace({'d-lg-flex': 'd-xl-flex'}) %} {# ... @zenit - have to move the main navigation as offcanvas breakpoint #}
+                        {% set mainNavigationToggleClasses =        mainNavigationToggleClasses|replace({'col-md-4': '', 'd-lg-none': 'd-xl-none'}) %} {# ... @zenit - have to move the main navigation as offcanvas breakpoint #}
+                    {% else %}
+                        {% set mainNavigationToggleClasses =        mainNavigationToggleClasses|replace({'col-md-4': ''}) %}
+                    {% endif %}
+
+                    {# logo right, search default #}
+                {% elseif theme_config('zen-logo-position') is same as ('right') and theme_config('zen-search-style') is same as ('default') %}
+                    {% set logoClasses =                        logoClasses|replace({'col-12': 'col-auto', 'order-1 order-md-4': 'order-4', 'ms-md-auto': 'ms-auto', 'ms-md-3': 'ms-3' }) %}
+                    {% set searchClasses =                      searchClasses|replace({'ms-auto ms-md-0': ''}) %}
+                    {% set actionClasses =                      actionClasses|replace({'ms-auto ms-sm-0': '', 'order-4 order-md-1': 'order-1', 'reverse-sm': 'reverse', 'reverse-md': 'reverse'}) %}
+
+                    {# logo right, search not default #}
+                {% elseif theme_config('zen-logo-position') is same as ('right') and theme_config('zen-search-style') is not same as ('default') %}
+                    {% set logoClasses =                        logoClasses|replace({'col-12': 'col-auto', 'order-1 order-sm-4': 'order-4', 'ms-sm-auto': 'ms-auto'}) %}
+                    {% set actionClasses =                      actionClasses|replace({'ms-auto ms-sm-0': '', 'order-3 order-sm-1': 'order-1', 'reverse-sm': 'reverse', 'reverse-md': 'reverse'}) %}
+                {% endif %}
+            {% endif %}
+
+            {# ... @zenit - modify zen-sticky-header to include the new xxl viewport #}
+            {% set stickyHeaderViewports =                      theme_config('zen-sticky-header') %}
+
+            {% if 'XL' in stickyHeaderViewports %}
+                {% set stickyHeaderViewports =              ['XXL']|merge(stickyHeaderViewports) %}
+            {% endif %}
+
+            {# sticky header js options #}
+            {% set stickyHeaderOptions = {
+                viewports: stickyHeaderViewports,
+                scrollOffset: theme_config('zen-sticky-header-offset'),
+                autoHide: theme_config('zen-sticky-header-hide')
+            } %}
+            {% set stickyHeader = theme_config('zen-sticky-header') ? 'true' : 'false' %}
+            {% set headerOpacity = zenCustomFields.category.zenit_gravity_category_header_bg_opacity|replace({'%': ''}) %}
+            {% set navigationOpacity = zenCustomFields.category.zenit_gravity_category_nav_main_opacity|replace({'%': ''}) %}
+
+            {# header classes array #}
+            {% set headerClasses = ['header-' ~ theme_config('zen-header-style'), 'header-' ~ theme_config('zen-header-style-mobile') ~ '-mobile', 'header-logo-' ~ theme_config('zen-logo-position')]%}
+            {% if (controllerName|lower is same as ('navigation') or controllerName|lower is same as ('landingpage') or controllerName|lower is same as ('blog')) and zenCustomFields.category.zenit_gravity_category_header_position is empty or zenCustomFields.category.zenit_gravity_category_header_position is same as ('inherit') %}
+                {% set headerClasses = ['header-pos-' ~ theme_config('zen-category-header-position')]|merge(headerClasses) %}
+            {% elseif (controllerName|lower is same as ('navigation') or controllerName|lower is same as ('landingpage') or controllerName|lower is same as ('blog')) %}
+                {% set headerClasses = ['header-pos-' ~ zenCustomFields.category.zenit_gravity_category_header_position]|merge(headerClasses) %}
+            {% endif %}
+
+            {% if zenCustomFields.category.zenit_gravity_category_header_contrast is same as (true)
+                or theme_config("zen-category-header-inverted") is same as (true) and (theme_config("zen-category-header-inverted") is empty or zenCustomFields.category.zenit_gravity_category_header_contrast is same as (true)) %}
+                {% set headerClasses = ['is-dark']|merge(headerClasses) %}
+            {% endif %}
+
+            {% if zenCustomFields.category.zenit_gravity_category_header_contrast is same as ('light-header')
+                or theme_config("zen-category-header-contrast") is same as ('light-header') and (zenCustomFields.category.zenit_gravity_category_header_contrast is empty or zenCustomFields.category.zenit_gravity_category_header_contrast is same as ('inherit')) %}
+                {% set headerClasses = ['is-light']|merge(headerClasses) %}
+            {% endif %}
+
+            {% if zenCustomFields.category.zenit_gravity_category_header_contrast is same as ('dark-header')
+                or theme_config("zen-category-header-contrast") is same as ('dark-header') and (zenCustomFields.category.zenit_gravity_category_header_contrast is empty or zenCustomFields.category.zenit_gravity_category_header_contrast is same as ('inherit')) %}
+                {% set headerClasses = ['is-dark']|merge(headerClasses) %}
+            {% endif %}
+
+            {% if zenCustomFields.category.zenit_gravity_category_header_contrast is same as ('inverted-header')
+                or theme_config("zen-category-header-contrast") is same as ('inverted-header') and (zenCustomFields.category.zenit_gravity_category_header_contrast is empty or zenCustomFields.category.zenit_gravity_category_header_contrast is same as ('inherit')) %}
+                {% set headerClasses = ['is-inverted']|merge(headerClasses) %}
+            {% endif %}
+
+            {# ... @zenit - checks if header got any opacity settings #}
+            {% if (controllerName|lower is same as ('navigation') or controllerName|lower is same as ('landingpage') or controllerName|lower is same as ('blog')) %}
+                {% if ( headerOpacity is not empty and headerOpacity is not same as ('inherit') and headerOpacity is not same as ('100') )
+                    or ( navigationOpacity is not empty and navigationOpacity is not same as ('inherit') and navigationOpacity is not same as ('100') ) %}
+                    {% set headerClasses = ['has-bg-opacity']|merge(headerClasses) %}
+                {% elseif theme_config('zen-category-header-bg-opacity') is not same as ('100')
+                    or theme_config('zen-category-nav-main-opacity') is not same as ('100') %}
+                    {% set headerClasses = ['has-bg-opacity']|merge(headerClasses) %}
+                {% endif %}
+            {% endif %}
+
+            {# nav header classes array #}
+            {% set navHeaderClasses = [] %}
+            {% if (controllerName|lower is same as ('navigation') or controllerName|lower is same as ('landingpage') or controllerName|lower is same as ('blog')) and headerOpacity is empty or headerOpacity is same as ('inherit') %}
+                {% set navHeaderClasses = ['bg-opacity-' ~ theme_config('zen-category-header-bg-opacity')]|merge(navHeaderClasses)  %}
+            {% elseif (controllerName|lower is same as ('navigation') or controllerName|lower is same as ('landingpage') or controllerName|lower is same as ('blog')) %}
+                {% set navHeaderClasses = ['bg-opacity-' ~ headerOpacity]|merge(navHeaderClasses) %}
+            {% endif %}
+
+            {# nav main classes array #}
+            {% set navMainClasses = [] %}
+            {% if (controllerName|lower is same as ('navigation') or controllerName|lower is same as ('landingpage') or controllerName|lower is same as ('blog')) and navigationOpacity is empty or navigationOpacity is same as ('inherit') %}
+                {% set navMainClasses = ['bg-opacity-' ~ theme_config('zen-category-nav-main-opacity')]|merge(navMainClasses) %}
+            {% elseif (controllerName|lower is same as ('navigation') or controllerName|lower is same as ('landingpage') or controllerName|lower is same as ('blog')) %}
+                {% set navMainClasses = ['bg-opacity-' ~ navigationOpacity]|merge(navMainClasses) %}
+            {% endif %}
+            {% if theme_config('zen-main-navigation-scroll') %}
+                {% set navMainClasses = ['nav-main-scroller']|merge(navMainClasses) %}
+            {% endif %}
+
+            {# ... @zenit - theme script options #}
+            {% set headerTooltipOptions = {
+                tooltipPlacement: theme_config('zen-shop-navigation-tooltips-placement')
+            } %}
+
+            {% sw_include '@Storefront/storefront/utilities/staging-info.html.twig' ignore missing %}
+
+            <header
+                class="header-main {{ headerClasses|join(' ') }}"
+                data-zen-sticky-header="{{ stickyHeader }}"
+                data-zen-sticky-header-options="{{ stickyHeaderOptions|json_encode }}"
+                {% if theme_config('zen-shop-navigation-tooltips') %}
+                    data-zen-header-tooltips="true"
+                    data-zen-header-tooltips-options="{{ headerTooltipOptions|json_encode }}"
+                {% endif %}
+            >
+                <div class="header-inner">
+                    {% block base_header_inner %}
+                        {% sw_include '@Storefront/storefront/layout/header/header.html.twig' %}
+                    {% endblock %}
+
+                    {# ... @zenit - multi-line header navigation #}
+                    {% if theme_config('zen-header-style') is not same as ('single-line') %}
+                        {% block base_navigation %}
+                            {% if feature('v6.7.0.0') %}
+                                <div class="nav-main d-none d-lg-block {{ navMainClasses|join(' ') }}">
+                                    {% block base_navbar_inner %}
+                                        {% sw_include '@Storefront/storefront/layout/navbar/navbar.html.twig' ignore missing %}
+                                    {% endblock %}
+                                </div>
+                            {% else %}
+                                {# @deprecated tag:v6.7.0 - This template will be removed, use src/Storefront/Resources/views/storefront/layout/navbar/navbar.html.twig #}
+                                <div class="nav-main  {{ navMainClasses|join(' ') }}">
+                                    {% block base_navigation_inner %}
+                                        {% sw_include '@Storefront/storefront/layout/navigation/navigation.html.twig' %}
+                                    {% endblock %}
+                                </div>
+                            {% endif %}
+                        {% endblock %}
+                    {% endif %}
+                </div>
+            </header>
+        {% endblock %}
+
+        {{ block('base_offcanvas_navigation') }}
+
+        {{ block('base_main') }}
+
+        {{ block('base_footer') }}
+    </div>
+{% endblock %}
+
+{% block base_breadcrumb %}
+    {% set cmsPageSections = page.landingPage ? page.landingPage.cmsPage.sections : page.cmsPage.sections %}
+
+    {# ... @zenit - checks if custom zen-breadcrumb is in use #}
+    {% set defaultBreadcrumbs = true %}
+    {% for section in cmsPageSections %}
+        {% for block in section.blocks %}
+            {% if block.type is same as ('zen-breadcrumb') %}
+                {% set defaultBreadcrumbs = false %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+
+    {% if defaultBreadcrumbs %}
+        <div class="breadcrumb-wrap base-breadcrumb justify-content-{{ theme_config('zen-breadcrumbs-align')|replace({'flex-': ''}) }}">
+            {% sw_include '@Storefront/storefront/layout/breadcrumb.html.twig' with {
+                context: context,
+                themeIconConfig: themeIconConfig,
+                category: page.product.seoCategory
+            } only %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block base_body_script %}
+    {{ parent() }}
+
+    {% block zen_base_theme_js_files %}
+        {% if config('zenitPlatformGravity.config.customJsFilesActive') %}
+            {{ config('zenitPlatformGravity.config.customJsFiles')|raw }}
+        {% endif %}
+    {% endblock %}
+
+    {% block zen_base_theme_js_custom %}
+        {% if config('zenitPlatformGravity.config.customJsActive') %}
+            <script data-plugin="zenitGravityCustomJs">
+                {{ config('zenitPlatformGravity.config.customJs')|replace({'<script>': '','</script>': ''})|raw }}
+            </script>
+        {% endif %}
+    {% endblock %}
+
+    {# Cookie Banner #}
+    {% block zen_base_cookie_banner_config %}
+        <script data-plugin="zenitGravity">
+            window.zenCookieBannerStyle = '{{ theme_config('zen-cookie-banner-style') }}'
+        </script>
+    {% endblock %}
+{% endblock %}

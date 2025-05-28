@@ -1,0 +1,99 @@
+@if $zen-checkout-layout == "two-column" {
+    .is-ctl-checkout,
+    .is-act-editorder,
+    .is-act-checkoutregisterpage {
+        .checkout-container {
+            .checkout-aside {
+                position: relative;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    bottom: 0;
+                    right: auto;
+                    width: 100%;
+                    pointer-events: none;
+
+                    @if $zen-layout-style != "boxed" and $zen-layout-style != "full-width" {
+                        @media screen and (min-width: px($zen-layout-container-width + $zen-layout-padding-left + $zen-layout-padding-right)) {
+                            width: calc( 100% + (( 100vw - #{px($zen-layout-container-width)} - #{px($zen-layout-padding-left)} - #{px($zen-layout-padding-right)} ) * .5) - (var(--#{$zen-prefix}scrollbar-width) * .5) );
+                        }
+                    }
+
+                    @if $zen-container-bg == transparent {
+                        @if (contrast-ratio($body-bg, $black) < $min-contrast-ratio) {
+                            background-color: rgba(255,255,255,.025);
+                        } @else {
+                            background-color: rgba(0,0,0,.025);
+                        }
+                    } @else {
+                        @if (contrast-ratio($zen-container-bg, $black) < $min-contrast-ratio) {
+                            background-color: rgba(255,255,255,.025);
+                        } @else {
+                            background-color: rgba(0,0,0,.025);
+                        }
+                    }
+                }
+
+                .checkout-additional {
+                    @extend .col-sm-12;
+                    @extend .offset-lg-0;
+                    @extend .col-lg-12;
+                    padding: 0;
+                    margin-top: 0;
+                    margin-bottom: $spacer-xl;
+                }
+            }
+        }
+    }
+
+    .checkout-aside-summary {
+        background: none;
+        @include border-radius($zen-layout-element-radius * 1px);
+        @include text-color-contrast;
+        margin-bottom: $spacer-xl;
+
+        .checkout-aside-summary-header {
+            @include headline-color-contrast;
+        }
+
+        .checkout-aside-summary-list-container {
+            @include text-color-contrast;
+        }
+    }
+}
+
+@if $zen-checkout-layout != "two-column" {
+    .checkout-aside-summary {
+        @include border-radius($zen-layout-element-radius * 1px);
+
+        @if $zen-container-bg == transparent {
+            @if (contrast-ratio($body-bg, $black) < $min-contrast-ratio) {
+                background-color: rgba(255, 255, 255, .025);
+            } @else {
+                background-color: rgba(0, 0, 0, .025);
+            }
+        } @else {
+            @if (contrast-ratio($zen-container-bg, $black) < $min-contrast-ratio) {
+                background-color: rgba(255, 255, 255, .025);
+            } @else {
+                background-color: rgba(0, 0, 0, .025);
+            }
+        }
+    }
+}
+
+.checkout-aside-add-code {
+    &.input-group {
+        > .form-control {
+            // bugfix because of wrong placed label
+            &:not(:first-child) {
+                @if $zen-layout-forms-style != "underlined" {
+                    @include border-start-radius($zen-layout-input-radius * 1px);
+                }
+            }
+        }
+    }
+}
