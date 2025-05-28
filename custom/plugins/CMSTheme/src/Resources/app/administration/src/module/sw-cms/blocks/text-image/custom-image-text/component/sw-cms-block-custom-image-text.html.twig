@@ -1,0 +1,25 @@
+{% block sw_cms_block_custom_image_text %}
+     <div class="sw-cms-block-custom-image-text">
+        <div class="sw-cms-block-custom-image-text__left">
+            <slot name="left-image"></slot>
+            <slot name="left-text"></slot>
+            {# <slot name="left-button"></slot> #}
+        </div>
+        <div class="sw-cms-block-custom-image-text__center-left">
+            <slot name="center-left-image"></slot>
+            <slot name="center-left-text"></slot>
+            <slot name="center-left-button"></slot>
+        </div>
+        <div class="sw-cms-block-custom-image-text__center-right">
+            <slot name="center-right-image"></slot>
+            <slot name="center-right-text"></slot>
+            {# <slot name="center-right-button"></slot> #}
+        </div>
+        <div class="sw-cms-block-custom-image-text__right">
+            <slot name="right-image"></slot>
+            <slot name="right-text"></slot>
+            {# <slot name="right-button"></slot> #}
+        </div>
+    </div>
+{% endblock %}
+

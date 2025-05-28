@@ -1,14 +1,6 @@
 import './component';
 import './preview';
 
-// Shopware.service('cmsService').registerCmsBlock({
-//     name: 'my-image-text-reversed',
-//     label: 'sw-cms.blocks.my-image-text-reversed.label',
-//     category: 'text-image',
-//     component: 'sw-cms-block-my-image-text-reversed',
-  
-// });
-
 Shopware.Service('cmsService').registerCmsBlock({
     name: 'my-image-text-reversed',
     label: 'My Custom Block',
@@ -24,6 +16,6 @@ Shopware.Service('cmsService').registerCmsBlock({
     },
     slots: {
         left: 'Text',
-        right: 'Image'
+        right: 'my-image-text-reversed'
     }
 });

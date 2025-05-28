@@ -1,0 +1,37 @@
+
+{% block block_custom_section %}
+    {% block block_custom_section_left %}
+        <div class="col-md-4">
+            {% block block_custom_section_left_image %}
+                {% set element = block.slots.getSlot('left-image') %}
+                {% block block_custom_section_left_image_inner %}
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                {% endblock %}
+            {% endblock %}
+            
+            {% block block_custom_section_left_text %}
+                {% set element = block.slots.getSlot('left-text') %}
+                {% block block_custom_section_left_text_inner %}
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                {% endblock %}
+            {% endblock %}
+                      
+        </div>
+    {% endblock %}
+
+    {% block block_custom_section_right %}
+        <div class="col-md-8">
+            {% set element = block.slots.getSlot('right-image') %}
+            {% block block_custom_section_right_image_inner %}
+                {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+      {% block block_custom_section_right_text %}
+                {% set element = block.slots.getSlot('left-text') %}
+                {% block block_custom_section_right_text_inner %}
+                    {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing %}
+                {% endblock %}
+            {% endblock %}
+{% endblock %}

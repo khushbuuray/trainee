@@ -1,0 +1,12 @@
+{% block sw_cms_element_buy_button_config %}
+    <div class="sw-cms-el-config-buy-button">
+        {% block sw_cms_element_buy_button_config_product_select %}
+            <sw-text-field v-model:value="element.config.name.value"
+                           :label="Add to Cart"
+                           :placeholder="add to cart"
+                           name="name"
+                           validation="required" required
+                           @update:value="onChange" />
+        {% endblock %}
+    </div>
+{% endblock %}

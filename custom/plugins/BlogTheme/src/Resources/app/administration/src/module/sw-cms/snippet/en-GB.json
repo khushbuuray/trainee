@@ -1,0 +1,9 @@
+{
+  "sw-cms": {
+    "elements": {
+      "customDailymotionElement": {
+        "label": "Dailymotion video"
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "swag/theme-skeleton",
+  "description": "Theme skeleton plugin",
+  "type": "shopware-platform-plugin",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "CMSTheme\\": "src/"
+    }
+  },
+  "extra": {
+    "shopware-plugin-class": "CMSTheme\\CMSTheme",
+    "label": {
+      "de-DE": "Theme CMSTheme plugin",
+      "en-GB": "Theme CMSTheme plugin"
+    }
+  }
+}
