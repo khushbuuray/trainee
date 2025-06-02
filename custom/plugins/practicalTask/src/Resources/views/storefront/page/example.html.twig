@@ -1,0 +1,30 @@
+
+
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{% block base_main_inner %}
+    <div class="container-main">
+        {% block page_content %}
+            <sw-page>
+                {% block sw_blog_page_content %}
+                    <h5>Manufacturer</h5>
+                    <table>
+                        {% for menu in data %}
+                            <tr>
+                                <th>
+                                    <a href="{{ path('frontend.example.detail', { id: menu.id }) }}">{{ menu.name }}</a>
+                                </th>
+                                <th>
+                                    <img src="{{ menu.media.url }}" alt="{{ menu.media.name }}" style="height: 100px; width: 100px;" />
+                                </th>
+                                <th>
+                                    Products Count: {{ productCounts[menu.id]|default(0) }}
+                                </th>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endblock %}
+            </sw-page>
+        {% endblock %}
+    </div>
+{% endblock %}

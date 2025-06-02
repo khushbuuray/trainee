@@ -1,0 +1,42 @@
+{
+  "name": "ict/ictech-search-orderby-document-number",
+  "description": "Search Orders by Document Number",
+  "version": "2.0.0",
+  "type": "shopware-platform-plugin",
+  "license": "proprietary",
+  "autoload": {
+    "psr-4": {
+      "ICTECHSearchOrderbyDocument\\": "src/"
+    }
+  },
+    "authors": [
+        {
+            "name" : "iCreateivetechnologies"
+        }
+    ],
+    "require": {
+        "shopware/core": "^6.6",
+        "shopware/storefront": "^6.6",
+        "shopware/administration": "^6.6"
+    },
+    "extra": {
+    "shopware-plugin-class": "ICTECHSearchOrderbyDocument\\ICTECHSearchOrderbyDocument",
+    "plugin-icon": "searchorder.png",
+      "label": {
+      "de-DE": "Suchen Sie Bestellungen nach Dokumentnummer",
+      "en-GB": "Search Orders by Document Number"
+    },
+    "description": {
+        "de-DE": "Der Administrator die Bestellungen nach Belegnummer wie Rechnung, Gutschrift und Lieferscheinnummer durchsuchen.",
+        "en-GB": "The admin can search the Orders by Document number such as invoice, credit note, and delivery note number."
+    },
+    "manufacturerLink": {
+        "de-DE": "https://www.icreativetechnologies.com",
+        "en-GB": "https://www.icreativetechnologies.com"
+    },
+    "supportLink": {
+        "de-DE": "https://support.icreativetechnologies.com/",
+        "en-GB": "https://support.icreativetechnologies.com/"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+
+{% block base_content %}
+
+<h2>Manufacturer Detail Page</h2>
+{% for item in DetailByID %}
+ <label>Name:</label><br>
+  <input type="text" id="name" name="name" value="{{item.name}}" disabled><br>
+  <label>Image : </label><br>
+  <img src="{{ item.media.url }}" alt="{{ item.media.name }}" style="height: 100px;width:100px" /> <br>
+  <label>Website Link: </label><br>
+  <input type="text" id="link" name="link" value="{{item.link}}" disabled><br><br>
+    <label>Description: </label><br>
+      <textarea disabled>{{item.description}}</textarea><br>
+{% endfor %}
+ <a href="{{ path('frontend.example.example') }}"> Cancel</a>
+{% endblock %}

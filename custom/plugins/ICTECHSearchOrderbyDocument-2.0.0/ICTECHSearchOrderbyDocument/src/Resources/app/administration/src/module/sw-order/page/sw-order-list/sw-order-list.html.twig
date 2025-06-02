@@ -1,0 +1,15 @@
+{% block sw_order_list_smart_bar_header_title %}
+    {% parent %}
+    <!--search document number -->
+    {% block sw_order_module_toolbar_search_field %}
+
+        <sw-simple-search-field
+            v-model:value="searchTerm"
+            size="medium"
+            class="sw_order_ict_list_search"
+            :placeholder="$tc('sw-order.placeholderSearchField')"
+            variant="form"
+            @search-term-change="onSearchTermChange"/>
+
+    {% endblock %}
+{% endblock %}
