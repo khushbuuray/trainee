@@ -1,0 +1,118 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- Core Services -->
+        <service id="IctDataCleanerPro\Service\CleanupService">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="IctDataCleanerPro\Service\CleanupLoggerService"/>
+            <argument type="tagged" tag="ict.cleanup.handler"/>
+        </service>
+
+        <service id="IctDataCleanerPro\Service\CleanupLoggerService">
+            <argument type="service" id="ict_data_cleanup_log.repository"/>
+            <argument type="service" id="logger"/>
+        </service>
+
+        <!-- Cleanup Handlers -->
+        <service id="IctDataCleanerPro\Service\Cleanup\ProductCleanupHandler">
+            <argument type="service" id="product.repository"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="100"/>
+        </service>
+
+        <service id="IctDataCleanerPro\Service\Cleanup\CustomerCleanupHandler">
+            <argument type="service" id="customer.repository"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="90"/>
+        </service>
+
+        <service id="IctDataCleanerPro\Service\Cleanup\CartCleanupHandler">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="80"/>
+        </service>
+
+        <service id="IctDataCleanerPro\Service\Cleanup\OrderCleanupHandler">
+            <argument type="service" id="order.repository"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="70"/>
+        </service>
+
+        <service id="IctDataCleanerPro\Service\Cleanup\CategoryCleanupHandler">
+            <argument type="service" id="category.repository"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="60"/>
+        </service>
+
+        <service id="IctDataCleanerPro\Service\Cleanup\PromotionCleanupHandler">
+            <argument type="service" id="promotion.repository"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="55"/>
+        </service>
+
+        <service id="IctDataCleanerPro\Service\Cleanup\CmsCleanupHandler">
+            <argument type="service" id="cms_page.repository"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="45"/>
+        </service>
+
+        <service id="IctDataCleanerPro\Service\Cleanup\ReviewCleanupHandler">
+            <argument type="service" id="product_review.repository"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="40"/>
+        </service>
+
+        <service id="IctDataCleanerPro\Service\Cleanup\NewsletterCleanupHandler">
+            <argument type="service" id="newsletter_recipient.repository"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="35"/>
+        </service>
+
+        <service id="IctDataCleanerPro\Service\Cleanup\MediaCleanupHandler">
+            <argument type="service" id="media.repository"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="50"/>
+        </service>
+
+        <service id="IctDataCleanerPro\Service\Cleanup\LogCleanupHandler">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="10"/>
+        </service>
+
+        <!-- Scheduled Task -->
+        <service id="IctDataCleanerPro\ScheduledTask\CleanupTask">
+            <tag name="shopware.scheduled.task"/>
+        </service>
+
+        <service id="IctDataCleanerPro\ScheduledTask\CleanupTaskHandler">
+            <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <!-- CLI Command -->
+        <service id="IctDataCleanerPro\Command\CleanupCommand">
+            <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- API Controllers -->
+        <service id="IctDataCleanerPro\Controller\Api\CleanupController" public="true">
+            <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/>
+            <argument type="service" id="ict_data_cleanup_log.repository"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Entity Definition -->
+        <service id="IctDataCleanerPro\Core\Content\CleanupLog\CleanupLogDefinition">
+            <tag name="shopware.entity.definition"/>
+        </service>
+    </services>
+</container>

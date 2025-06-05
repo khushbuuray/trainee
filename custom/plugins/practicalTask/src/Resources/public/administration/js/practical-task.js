@@ -1,0 +1,1 @@
+!function(){"use strict";var s={};s.p="bundles/practicaltask/",window?.__sw__?.assetPath&&(s.p=window.__sw__.assetPath+"/bundles/practicaltask/")}();

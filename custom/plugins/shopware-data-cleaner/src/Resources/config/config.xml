@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+    
+    <card>
+        <title>General Settings</title>
+        <title lang="de-DE">Allgemeine Einstellungen</title>
+        
+        <input-field type="bool">
+            <name>dryRunMode</name>
+            <label>Dry Run Mode</label>
+            <label lang="de-DE">Testmodus</label>
+            <helpText>Enable to preview cleanup without deleting data</helpText>
+            <helpText lang="de-DE">Aktivieren für Vorschau ohne Datenlöschung</helpText>
+            <defaultValue>true</defaultValue>
+        </input-field>
+        
+        <input-field type="bool">
+            <name>enableLogging</name>
+            <label>Enable Logging</label>
+            <label lang="de-DE">Protokollierung aktivieren</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+        
+        <input-field type="bool">
+            <name>enableScheduler</name>
+            <label>Enable Scheduled Cleanup</label>
+            <label lang="de-DE">Geplante Bereinigung aktivieren</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
+        
+        <input-field type="single-select">
+            <name>scheduleFrequency</name>
+            <label>Schedule Frequency</label>
+            <label lang="de-DE">Zeitplan-Häufigkeit</label>
+            <options>
+                <option>
+                    <id>daily</id>
+                    <name>Daily</name>
+                    <name lang="de-DE">Täglich</name>
+                </option>
+                <option>
+                    <id>weekly</id>
+                    <name>Weekly</name>
+                    <name lang="de-DE">Wöchentlich</name>
+                </option>
+                <option>
+                    <id>monthly</id>
+                    <name>Monthly</name>
+                    <name lang="de-DE">Monatlich</name>
+                </option>
+            </options>
+            <defaultValue>weekly</defaultValue>
+        </input-field>
+        
+        <input-field type="text">
+            <name>notificationEmail</name>
+            <label>Notification Email</label>
+            <label lang="de-DE">Benachrichtigungs-E-Mail</label>
+            <placeholder>admin@example.com</placeholder>
+        </input-field>
+    </card>
+    
+    <card>
+        <title>Products &amp; Variants</title>
+        <title lang="de-DE">Produkte &amp; Varianten</title>
+        
+        <input-field type="int">
+            <name>productCleanupMonthsNotSold</name>
+            <label>Remove products not sold in months</label>
+            <label lang="de-DE">Produkte ohne Verkauf seit Monaten entfernen</label>
+            <defaultValue>6</defaultValue>
+            <min>1</min>
+            <max>120</max>
+        </input-field>
+        
+        <input-field type="bool">
+            <name>productCleanupDeleteNeverSold</name>
+            <label>Delete products never sold</label>
+            <label lang="de-DE">Nie verkaufte Produkte löschen</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+        
+        <input-field type="int">
+            <name>productCleanupMonthsDisabled</name>
+            <label>Remove inactive products older than months</label>
+            <label lang="de-DE">Inaktive Produkte älter als Monate entfernen</label>
+            <defaultValue>6</defaultValue>
+            <min>1</min>
+            <max>120</max>
+        </input-field>
+        
+        <input-field type="int">
+            <name>productVariantCleanupZeroStockMonths</name>
+            <label>Remove variants with zero stock and no sales in months</label>
+            <label lang="de-DE">Varianten mit null Bestand und ohne Verkäufe seit Monaten entfernen</label>
+            <defaultValue>6</defaultValue>
+            <min>1</min>
+            <max>120</max>
+        </input-field>
+    </card>
+    
+    <card>
+        <title>Customers &amp; Accounts</title>
+        <title lang="de-DE">Kunden &amp; Konten</title>
+        
+        <input-field type="int">
+            <name>customerCleanupGuestMonths</name>
+            <label>Remove guest accounts after months</label>
+            <label lang="de-DE">Gastkonten nach Monaten entfernen</label>
+            <defaultValue>12</defaultValue>
+            <min>1</min>
+            <max>120</max>
+        </input-field>
+        
+        <input-field type="int">
+            <name>customerCleanupInactiveMonths</name>
+            <label>Remove inactive customers after months</label>
+            <label lang="de-DE">Inaktive Kunden nach Monaten entfernen</label>
+            <defaultValue>12</defaultValue>
+            <min>1</min>
+            <max>120</max>
+        </input-field>
+    </card>
+    
+    <card>
+        <title>Orders, Carts &amp; Checkouts</title>
+        <title lang="de-DE">Bestellungen, Warenkörbe &amp; Checkouts</title>
+        
+        <input-field type="int">
+            <name>cartCleanupAbandonedDays</name>
+            <label>Remove abandoned carts after days</label>
+            <label lang="de-DE">Verlassene Warenkörbe nach Tagen entfernen</label>
+            <defaultValue>30</defaultValue>
+            <min>1</min>
+            <max>365</max>
+        </input-field>
+        
+        <input-field type="int">
+            <name>orderCleanupCancelledAgeMonths</name>
+            <label>Remove cancelled orders after months</label>
+            <label lang="de-DE">Stornierte Bestellungen nach Monaten entfernen</label>
+            <defaultValue>12</defaultValue>
+            <min>1</min>
+            <max>120</max>
+        </input-field>
+        
+        <input-field type="int">
+            <name>transactionCleanupAgeMonths</name>
+            <label>Remove old transactions after months</label>
+            <label lang="de-DE">Alte Transaktionen nach Monaten entfernen</label>
+            <defaultValue>12</defaultValue>
+            <min>1</min>
+            <max>120</max>
+        </input-field>
+    </card>
+    
+    <card>
+        <title>Categories &amp; Navigation</title>
+        <title lang="de-DE">Kategorien &amp; Navigation</title>
+        
+        <input-field type="bool">
+            <name>categoryCleanupEmptyCategories</name>
+            <label>Remove empty categories</label>
+            <label lang="de-DE">Leere Kategorien entfernen</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+        
+        <input-field type="int">
+            <name>categoryCleanupNoSalesMonths</name>
+            <label>Remove categories with no sales in months</label>
+            <label lang="de-DE">Kategorien ohne Verkäufe seit Monaten entfernen</label>
+            <defaultValue>6</defaultValue>
+            <min>1</min>
+            <max>120</max>
+        </input-field>
+    </card>
+    
+    <card>
+        <title>Promotions &amp; Discounts</title>
+        <title lang="de-DE">Aktionen &amp; Rabatte</title>
+        
+        <input-field type="int">
+            <name>promotionCleanupExpiredMonths</name>
+            <label>Remove expired promotions after months</label>
+            <label lang="de-DE">Abgelaufene Aktionen nach Monaten entfernen</label>
+            <defaultValue>6</defaultValue>
+            <min>1</min>
+            <max>120</max>
+        </input-field>
+        
+        <input-field type="int">
+            <name>promotionCleanupUnusedVoucherMonths</name>
+            <label>Remove unused vouchers after months</label>
+            <label lang="de-DE">Ungenutzte Gutscheine nach Monaten entfernen</label>
+            <defaultValue>6</defaultValue>
+            <min>1</min>
+            <max>120</max>
+        </input-field>
+        
+        <input-field type="bool">
+            <name>cartRuleCleanupOrphaned</name>
+            <label>Remove orphaned cart rules</label>
+            <label lang="de-DE">Verwaiste Warenkorb-Regeln entfernen</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+    </card>
+    
+    <card>
+        <title>CMS Content &amp; Pages</title>
+        <title lang="de-DE">CMS Inhalte &amp; Seiten</title>
+        
+        <input-field type="int">
+            <name>cmsPageCleanupNeverViewedMonths</name>
+            <label>Remove CMS pages never viewed in months</label>
+            <label lang="de-DE">CMS-Seiten ohne Aufrufe seit Monaten entfernen</label>
+            <defaultValue>6</defaultValue>
+            <min>1</min>
+            <max>120</max>
+        </input-field>
+        
+        <input-field type="int">
+            <name>cmsPageCleanupUnpublishedDraftsMonths</name>
+            <label>Remove unpublished CMS drafts older than months</label>
+            <label lang="de-DE">Unveröffentlichte CMS-Entwürfe älter als Monate entfernen</label>
+            <defaultValue>6</defaultValue>
+            <min>1</min>
+            <max>120</max>
+        </input-field>
+    </card>
+    
+    <card>
+        <title>Reviews &amp; Ratings</title>
+        <title lang="de-DE">Bewertungen</title>
+        
+        <input-field type="int">
+            <name>reviewCleanupUnapprovedDays</name>
+            <label>Remove unapproved reviews older than days</label>
+            <label lang="de-DE">Nicht genehmigte Bewertungen älter als Tage entfernen</label>
+            <defaultValue>30</defaultValue>
+            <min>1</min>
+            <max>365</max>
+        </input-field>
+    </card>
+    
+    <card>
+        <title>Marketing Lists</title>
+        <title lang="de-DE">Marketing Listen</title>
+        
+        <input-field type="int">
+            <name>newsletterCleanupBouncedMonths</name>
+            <label>Remove bounced newsletter recipients after months</label>
+            <label lang="de-DE">Zurückgewiesene Newsletter-Empfänger nach Monaten entfernen</label>
+            <defaultValue>12</defaultValue>
+            <min>1</min>
+            <max>120</max>
+        </input-field>
+    </card>
+    
+    <card>
+        <title>Media Management</title>
+        <title lang="de-DE">Medienverwaltung</title>
+        
+        <input-field type="int">
+            <name>mediaCleanupOrphanAgeDays</name>
+            <label>Remove orphaned media after days</label>
+            <label lang="de-DE">Verwaiste Medien nach Tagen entfernen</label>
+            <defaultValue>60</defaultValue>
+            <min>1</min>
+            <max>365</max>
+        </input-field>
+        
+        <input-field type="bool">
+            <name>mediaThumbnailCleanupDeleteThumbnails</name>
+            <label>Delete orphaned thumbnails</label>
+            <label lang="de-DE">Verwaiste Thumbnails löschen</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+    </card>
+    
+    <card>
+        <title>Logs, Cache &amp; Technical Data</title>
+        <title lang="de-DE">Protokolle, Cache &amp; Technische Daten</title>
+        
+        <input-field type="int">
+            <name>systemLogCleanupMonths</name>
+            <label>Remove system logs after months</label>
+            <label lang="de-DE">Systemprotokolle nach Monaten entfernen</label>
+            <defaultValue>6</defaultValue>
+            <min>1</min>
+            <max>24</max>
+        </input-field>
+        
+        <input-field type="bool">
+            <name>cacheCleanupFlush</name>
+            <label>Flush cache during cleanup</label>
+            <label lang="de-DE">Cache während Bereinigung leeren</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+        
+        <input-field type="bool">
+            <name>customFieldSetCleanupOrphaned</name>
+            <label>Remove orphaned custom field sets</label>
+            <label lang="de-DE">Verwaiste Zusatzfeld-Sets entfernen</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+    </card>
+</config>

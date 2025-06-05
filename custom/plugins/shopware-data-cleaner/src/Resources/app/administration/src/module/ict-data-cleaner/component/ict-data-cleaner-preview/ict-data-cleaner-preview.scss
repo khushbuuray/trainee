@@ -1,0 +1,45 @@
+.ict-data-cleaner-preview {
+    margin-top: 20px;
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    &__handler {
+        border: 1px solid #d1d9e0;
+        border-radius: 4px;
+    }
+
+    &__handler-header {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        cursor: pointer;
+        background-color: #f9fafb;
+        border-radius: 4px;
+
+        h4 {
+            margin: 0 0 0 8px;
+            flex-grow: 1;
+        }
+    }
+
+    &__handler-count {
+        font-weight: 600;
+        color: #52667a;
+    }
+
+    &__handler-details {
+        padding: 16px;
+    }
+
+    &__sample {
+        margin-bottom: 4px;
+        
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}

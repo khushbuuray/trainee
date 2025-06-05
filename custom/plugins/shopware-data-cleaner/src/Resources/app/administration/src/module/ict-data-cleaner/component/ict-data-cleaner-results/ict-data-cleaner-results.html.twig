@@ -1,0 +1,30 @@
+{% block ict_data_cleaner_results %}
+    <sw-card class="ict-data-cleaner-results" :title="$tc('ict-data-cleaner.results.title')">
+        <div class="ict-data-cleaner-results__summary">
+            <sw-alert variant="success">
+                {{ $tc('ict-data-cleaner.results.summary', 0, { count: totalItems }) }}
+            </sw-alert>
+        </div>
+
+        <sw-data-grid
+            :dataSource="handlers"
+            :columns="[
+                { property: 'name', label: $tc('ict-data-cleaner.results.handler') },
+                { property: 'items', label: $tc('ict-data-cleaner.results.itemsDeleted') }
+            ]"
+            :showSelection="false"
+            :showActions="false"
+            :allowInlineEdit="false"
+            :allowColumnEdit="false"
+        >
+            <template #column-items="{ item }">
+                <template v-if="item.items">
+                    {{ Object.values(item.items).reduce((total, current) => total + (current.count || 0), 0) }}
+                </template>
+                <template v-else>
+                    0
+                </template>
+            </template>
+        </sw-data-grid>
+    </sw-card>
+{% endblock %}

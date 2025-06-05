@@ -1,0 +1,33 @@
+.ict-data-cleaner-index {
+    .ict-data-cleaner-actions {
+        margin-top: 20px;
+        
+        &__buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 10px;
+        }
+    }
+}
+.sw-tabs-item[aria-selected="true"] {
+    color: #0d6efd; /* or Shopware primary blue */
+    border-bottom: 3px solid #0d6efd;
+    font-weight: bold;
+}
+.field-block {
+    margin-bottom: 24px;
+}
+
+.field-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.field-label {
+    font-weight: 600;
+    font-size: 14px;
+}
+

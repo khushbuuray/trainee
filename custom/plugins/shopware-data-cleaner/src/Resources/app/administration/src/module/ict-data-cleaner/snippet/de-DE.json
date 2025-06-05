@@ -1,0 +1,41 @@
+{
+  "ict-data-cleaner": {
+    "general": {
+      "title": "Data Cleanup Pro",
+      "description": "Umfassende Datenbereinigung für Ihren Shop",
+      "mainMenuItemGeneral": "Datenbereinigung",
+      "dryRunMode": "Testmodus",
+      "previewButton": "Bereinigung Vorschau",
+      "runButton": "Bereinigung Ausführen",
+      "logsTab": "Bereinigungsprotokolle",
+      "settingsTab": "Einstellungen",
+      "confirmTitle": "Bereinigung Bestätigen",
+      "confirmMessage": "Sind Sie sicher, dass Sie {count} Elemente löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "successTitle": "Bereinigung Abgeschlossen",
+      "successMessage": "Erfolgreich {count} Elemente bereinigt",
+      "errorTitle": "Bereinigung Fehlgeschlagen",
+      "errorMessage": "Bei der Bereinigung ist ein Fehler aufgetreten"
+    },
+    "logs": {
+      "columnDate": "Datum",
+      "columnTrigger": "Auslöser",
+      "columnMode": "Modus",
+      "columnResults": "Ergebnisse",
+      "noLogs": "Keine Bereinigungsprotokolle gefunden",
+      "items": "Elemente"
+    },
+    "preview": {
+      "title": "Bereinigungsvorschau",
+      "entity": "Entität",
+      "count": "Zu löschende Elemente",
+      "samples": "Beispielelemente",
+      "items": "Elemente"
+    },
+    "results": {
+      "title": "Bereinigungsergebnisse",
+      "summary": "Erfolgreich {count} Elemente verarbeitet",
+      "handler": "Handler",
+      "itemsDeleted": "Gelöschte Elemente"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{% block ict_data_cleaner_logs %}
+    <sw-page class="ict-data-cleaner-logs">
+        <template slot="smart-bar-header">
+            <h2>{{ $tc('ict-data-cleaner.general.title') }} - {{ $tc('ict-data-cleaner.general.logsTab') }}</h2>
+        </template>
+
+        <template slot="content">
+            <sw-card-view>
+                <sw-tabs position-identifier="ict-data-cleaner-tabs">
+                    <template slot="default">
+                        <sw-tabs-item :route="{ name: 'ict.data.cleaner.index' }" :title="$tc('ict-data-cleaner.general.settingsTab')">
+                            {{ $tc('ict-data-cleaner.general.settingsTab') }}
+                        </sw-tabs-item>
+                        <sw-tabs-item :route="{ name: 'ict.data.cleaner.logs' }" :title="$tc('ict-data-cleaner.general.logsTab')">
+                            {{ $tc('ict-data-cleaner.general.logsTab') }}
+                        </sw-tabs-item>
+                    </template>
+                </sw-tabs>
+
+                <sw-card class="ict-data-cleaner-logs-list" :isLoading="isLoading">
+                    <template v-if="logs.length > 0">
+                        <sw-data-grid
+                            :dataSource="logs"
+                            :columns="columns"
+                            :showSelection="false"
+                            :showActions="false"
+                            :allowInlineEdit="false"
+                            :allowColumnEdit="false"
+                            :isLoading="isLoading"
+                        >
+                            <template #column-runAt="{ item }">
+                                {{ item.runAt | date({hour: '2-digit', minute: '2-digit'}) }}
+                            </template>
+
+                            <template #column-trigger="{ item }">
+                                {{ item.trigger }}
+                            </template>
+
+                            <template #column-mode="{ item }">
+                                <sw-label v-if="item.mode === 'dry-run'" variant="info">
+                                    {{ item.mode }}
+                                </sw-label>
+                                <sw-label v-else variant="success">
+                                    {{ item.mode }}
+                                </sw-label>
+                            </template>
+
+                            <template #column-results="{ item }">
+                                {{ formatResults(item.results) }} {{ $tc('ict-data-cleaner.logs.items') }}
+                            </template>
+                        </sw-data-grid>
+
+                        <sw-pagination
+                            :total="total"
+                            :limit="limit"
+                            :page="page"
+                            @page-change="onPageChange"
+                        />
+                    </template>
+
+                    <sw-empty-state
+                        v-else
+                        :title="$tc('ict-data-cleaner.logs.noLogs')"
+                        icon="regular-cleaning"
+                    />
+                </sw-card>
+            </sw-card-view>
+        </template>
+    </sw-page>
+{% endblock %}

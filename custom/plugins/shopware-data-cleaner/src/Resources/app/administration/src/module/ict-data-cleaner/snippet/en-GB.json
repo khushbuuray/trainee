@@ -1,0 +1,46 @@
+{
+  "ict-data-cleaner": {
+    "general": {
+      "title": "Data Cleanup Pro",
+      "description": "Comprehensive data cleanup for your shop",
+      "mainMenuItemGeneral": "Data Cleaner",
+      "dryRunMode": "Dry Run Mode",
+      "previewButton": "Preview Cleanup",
+      "runButton": "Run Cleanup",
+      "logsTab": "Cleanup Logs",
+      "settingsTab": "Settings",
+      "confirmTitle": "Confirm Cleanup",
+      "confirmMessage": "Are you sure you want to delete {count} items? This action cannot be undone.",
+      "successTitle": "Cleanup Completed",
+      "successMessage": "Successfully cleaned up {count} items",
+      "errorTitle": "Cleanup Failed",
+      "errorMessage": "An error occurred during cleanup"
+    },
+     "tabs": {
+      "products": "Products",
+      "customers": "Customers & Accounts",
+      "carts": "Carts"
+    },
+    "logs": {
+      "columnDate": "Date",
+      "columnTrigger": "Trigger",
+      "columnMode": "Mode",
+      "columnResults": "Results",
+      "noLogs": "No cleanup logs found",
+      "items": "items"
+    },
+    "preview": {
+      "title": "Cleanup Preview",
+      "entity": "Entity",
+      "count": "Items to Delete",
+      "samples": "Sample Items",
+      "items": "items"
+    },
+    "results": {
+      "title": "Cleanup Results",
+      "summary": "Successfully processed {count} items",
+      "handler": "Handler",
+      "itemsDeleted": "Items Deleted"
+    }
+  }
+}

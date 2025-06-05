@@ -1,0 +1,49 @@
+{% block ict_data_cleaner_preview %}
+    <sw-card class="ict-data-cleaner-preview" :title="$tc('ict-data-cleaner.preview.title')">
+        <div class="ict-data-cleaner-preview__content">
+            <div v-for="handler in handlers" :key="handler.name" class="ict-data-cleaner-preview__handler">
+                <div class="ict-data-cleaner-preview__handler-header" @click="toggleHandler(handler.name)">
+                    <sw-icon 
+                        :name="isHandlerExpanded(handler.name) ? 'regular-chevron-down-xs' : 'regular-chevron-right-xs'" 
+                        size="16"
+                    />
+                    <h4>{{ handler.name }}</h4>
+                    <span class="ict-data-cleaner-preview__handler-count">
+                        {{ getTotalItemsForHandler(handler) }} {{ $tc('ict-data-cleaner.preview.items') }}
+                    </span>
+                </div>
+
+                <div v-if="isHandlerExpanded(handler.name)" class="ict-data-cleaner-preview__handler-details">
+                    <sw-data-grid
+                        v-if="handler.items"
+                        :dataSource="Object.entries(handler.items).map(([key, value]) => ({ key, ...value }))"
+                        :columns="[
+                            { property: 'key', label: $tc('ict-data-cleaner.preview.entity') },
+                            { property: 'count', label: $tc('ict-data-cleaner.preview.count') },
+                            { property: 'sample', label: $tc('ict-data-cleaner.preview.samples') }
+                        ]"
+                        :showSelection="false"
+                        :showActions="false"
+                        :allowInlineEdit="false"
+                        :allowColumnEdit="false"
+                    >
+                        <template #column-key="{ item }">
+                            {{ item.key.replace(/_/g, ' ') }}
+                        </template>
+
+                        <template #column-sample="{ item }">
+                            <template v-if="item.sample && item.sample.length > 0">
+                                <div v-for="(sample, index) in item.sample" :key="index" class="ict-data-cleaner-preview__sample">
+                                    {{ sample.name || sample.productNumber || sample.id || 'N/A' }}
+                                </div>
+                            </template>
+                            <template v-else>
+                                -
+                            </template>
+                        </template>
+                    </sw-data-grid>
+                </div>
+            </div>
+        </div>
+    </sw-card>
+{% endblock %}
