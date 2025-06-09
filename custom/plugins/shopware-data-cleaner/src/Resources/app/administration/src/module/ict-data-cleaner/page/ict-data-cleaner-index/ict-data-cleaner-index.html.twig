@@ -61,6 +61,7 @@
                                 type="number"
                                 :min="1"
                                 :max="120"
+                                :disabled="true"
                             />
                         </div>
 
@@ -78,6 +79,7 @@
                             </div>
                             <sw-switch-field
                                 v-model="productSettings['IctDataCleaner.config.productCleanup.deleteNeverSold']"
+                                
                             />
                         </div>
 
@@ -99,6 +101,7 @@
                                 type="number"
                                 :min="1"
                                 :max="120"
+                                :disabled="true"
                             />
                         </div>
 
@@ -120,6 +123,7 @@
                                 type="number"
                                 :min="1"
                                 :max="120"
+                                :disabled="true"
                             />
                         </div>
 
@@ -198,7 +202,7 @@
                          <sw-button
                             variant="primary"
                             size="small"
-                            
+                             @click="removeSelectedProducts"
                         >
                            Remove
                         </sw-button>

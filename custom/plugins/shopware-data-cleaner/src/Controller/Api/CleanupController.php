@@ -45,13 +45,47 @@ public function preview(Request $request, Context $context): JsonResponse
                 'data' => $results
             ]);
         } catch (\Throwable $e) {
-            dd($e);
             return new JsonResponse([
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ], 500);
         }
 }
+
+#[Route(path: '/products/remove', name: 'api.ict_data_cleaner.products_remove', methods: ['POST'])]
+public function remove(Request $request, Context $context): JsonResponse
+{
+    try {
+        $payload = json_decode($request->getContent(), true);
+        $productItems = $payload['productIds'] ?? [];
+
+        if (empty($productItems)) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'No product IDs provided.'
+            ], 400);
+        }
+         // Extract only the IDs
+        $deleteData = array_map(function ($item) {
+            return ['id' => $item['id']];
+        }, array_values($productItems));
+
+        $productRepository = $this->container->get('product.repository');
+        // $productRepository->delete($deleteData, $context);
+
+        return new JsonResponse([
+            'success' => true,
+            'deleted' => count($deleteData)
+        ]);
+    } catch (\Throwable $e) {
+        dd($e);
+        return new JsonResponse([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+}
+
 
 
     
