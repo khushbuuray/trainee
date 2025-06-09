@@ -101,14 +101,23 @@
         </service>
 
         <!-- API Controllers -->
-        <service id="IctDataCleanerPro\Controller\Api\CleanupController" public="true">
+        <!-- <service id="IctDataCleanerPro\Controller\Api\CleanupController" public="true">
             <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/>
             <argument type="service" id="ict_data_cleanup_log.repository"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
             <tag name="controller.service_arguments"/>
-        </service>
+        </service> -->
+      <service id="IctDataCleanerPro\Controller\Api\CleanupController" public="true">
+        <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/>
+        <argument type="service" id="ict_data_cleanup_log.repository"/>
+        <argument type="service" id="IctDataCleanerPro\Service\Cleanup\ProductCleanupHandler"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+      </service>
+
 
         <!-- Entity Definition -->
         <service id="IctDataCleanerPro\Core\Content\CleanupLog\CleanupLogDefinition">

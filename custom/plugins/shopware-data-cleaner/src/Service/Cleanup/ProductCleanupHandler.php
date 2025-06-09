@@ -30,7 +30,7 @@ class ProductCleanupHandler implements CleanupHandlerInterface
             'name' => $this->getName(),
             'items' => []
         ];
-
+     
         // Clean products not sold in X months
         if (isset($config['productCleanup.monthsNotSold'])) {
             $notSoldResults = $this->cleanupProductsNotSold(
@@ -42,7 +42,8 @@ class ProductCleanupHandler implements CleanupHandlerInterface
         }
 
         // Clean products never sold
-        if ($config['productCleanup.deleteNeverSold'] ?? false) {
+        // if ($config['productCleanup.deleteNeverSold'] ?? false) {
+        if ($config['productCleanup.deleteNeverSold'] == false) {
             $neverSoldResults = $this->cleanupProductsNeverSold($dryRun, $context);
             $results['items']['products_never_sold'] = $neverSoldResults;
         }
@@ -66,7 +67,6 @@ class ProductCleanupHandler implements CleanupHandlerInterface
             );
             $results['items']['zero_stock_variants'] = $variantResults;
         }
-
         return $results;
     }
 
@@ -112,7 +112,7 @@ SELECT p.id, p.product_number, pt.name
 FROM product p
 LEFT JOIN product_translation pt ON p.id = pt.product_id AND pt.language_id = :languageId
 LEFT JOIN order_line_item oli ON p.id = oli.product_id AND oli.type = 'product'
-WHERE oli.id IS NULL
+WHERE oli.id IS NULL AND pt.name IS NOT NULL
 LIMIT 1000
 SQL;
 
@@ -120,17 +120,28 @@ SQL;
             'languageId' => Uuid::fromHexToBytes($context->getLanguageId())
         ]);
 
+         // Convert binary UUIDs to hex for JSON safety
+        $products = array_map(function ($product) {
+           return [
+               'id' => Uuid::fromBytesToHex($product['id']),
+               'product_number' => $product['product_number'],
+               'name' => $product['name'],
+           ];
+        }, $products);
+
+
         if (!$dryRun && !empty($products)) {
             $ids = array_map(function ($product) {
-                return ['id' => $product['id']];
+                return ['id' => Uuid::fromHexToBytes($product['id'])];
             }, $products);
             
-            $this->productRepository->delete($ids, $context);
+            // $this->productRepository->delete($ids, $context);
         }
-
         return [
             'count' => count($products),
-            'sample' => array_slice($products, 0, 5)
+            // 'sample' => array_slice($products, 0, 10)
+            'sample' => $products
+
         ];
     }
 

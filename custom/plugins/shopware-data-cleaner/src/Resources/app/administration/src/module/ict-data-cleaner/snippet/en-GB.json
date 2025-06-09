@@ -19,7 +19,8 @@
      "tabs": {
       "products": "Products",
       "customers": "Customers & Accounts",
-      "carts": "Carts"
+      "carts": "Carts",
+      "previewTitle": "Cleanup Preview"
     },
     "logs": {
       "columnDate": "Date",
@@ -34,7 +35,8 @@
       "entity": "Entity",
       "count": "Items to Delete",
       "samples": "Sample Items",
-      "items": "items"
+      "items": "items",
+      "loading": "Loading preview..."
     },
     "results": {
       "title": "Cleanup Results",

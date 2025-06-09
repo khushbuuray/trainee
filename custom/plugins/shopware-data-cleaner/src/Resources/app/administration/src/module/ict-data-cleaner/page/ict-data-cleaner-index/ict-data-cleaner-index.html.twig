@@ -1,204 +1,3 @@
-{# {% block ict_data_cleaner_index %}
-    <sw-page class="ict-data-cleaner-index">
-
-        <template slot="smart-bar-header"> 
-     
-            <h2>{{ $tc('ict-data-cleaner.general.title') }}</h2>
-        </template>
-
-        <template slot="smart-bar-actions">
-            <sw-button-process
-                :isLoading="isLoading"
-                :processSuccess="isSaveSuccessful"
-                @process-finish="isSaveSuccessful = false"
-                @click="onSaveConfig"
-            >
-                {{ $tc('global.default.save') }}
-            </sw-button-process>
-        </template>
-        <template slot="content">
-            <sw-card-view>
-                <sw-tabs position-identifier="ict-data-cleaner-tabs">
-                    <template slot="default">
-                        <sw-tabs-item :route="{ name: 'ict.data.cleaner.index' }" :title="$tc('ict-data-cleaner.general.settingsTab')">
-                            {{ $tc('ict-data-cleaner.general.settingsTab') }}
-                        </sw-tabs-item>
-                        <sw-tabs-item :route="{ name: 'ict.data.cleaner.logs' }" :title="$tc('ict-data-cleaner.general.logsTab')">
-                            {{ $tc('ict-data-cleaner.general.logsTab') }}
-                        </sw-tabs-item>
-                    </template>
-                </sw-tabs>
-
-                <sw-card class="ict-data-cleaner-settings" :isLoading="isLoading">
-                    <sw-system-config
-                        v-if="config"
-                        ref="systemConfig"
-                        salesChannelSwitchable
-                        :salesChannelId="salesChannelId"
-                        :domain="configDomain"
-                        @config-changed="config = $event"
-                    />
-
-                    <sw-card class="ict-data-cleaner-actions" :isLoading="isLoading">
-                        <sw-switch-field
-                            :label="$tc('ict-data-cleaner.general.dryRunMode')"
-                            v-model="isDryRun"
-                        />
-
-                        <div class="ict-data-cleaner-actions__buttons">
-                            <sw-button @click="onPreviewCleanup">
-                                {{ $tc('ict-data-cleaner.general.previewButton') }}
-                            </sw-button>
-                            <sw-button variant="primary" @click="onRunCleanup">
-                                {{ $tc('ict-data-cleaner.general.runButton') }}
-                            </sw-button>
-                        </div>
-                    </sw-card>
-
-                     <ict-data-cleaner-preview
-                        v-if="showPreview && previewResults"
-                        :results="previewResults"
-                    />
-                </sw-card>
-            </sw-card-view>
-
-            <sw-modal
-                v-if="showConfirmModal"
-                :title="$tc('ict-data-cleaner.general.confirmTitle')"
-                @modal-close="showConfirmModal = false"
-            >
-                <p>{{ $tc('ict-data-cleaner.general.confirmMessage', 0, { count: totalItemsToDelete }) }}</p>
-
-                <template slot="modal-footer">
-                    <sw-button @click="showConfirmModal = false">
-                        {{ $tc('global.default.cancel') }}
-                    </sw-button>
-                    <sw-button variant="danger" @click="onConfirmCleanup">
-                        {{ $tc('global.default.confirm') }}
-                    </sw-button>
-                </template>
-            </sw-modal>
-        </template>
-    </sw-page>
-{% endblock %}
-#}
-{# 
- {% block ict_data_cleaner_index %}
-
-<template>
-    <sw-page class="ict-data-cleaner-index">
-    {% block sw_ict_data_cleaner_header %}
-        <template #smart-bar-header>
-            <h2>{{ $tc('ict-data-cleaner.general.title') }}</h2>
-        </template>
-    {% endblock %}
-      
-    {% block sw_ict_data_cleaner_content %}
-    <template #content>
-        <sw-card-view>
-    {% block sw_ict_data_cleaner_content_tabs %}
-
-        <sw-tabs>
-            <!-- General Settings Tab -->
-            <sw-tabs-item
-                :active="activeTab === 'products'"
-                @click="activeTab = 'products'"
-                :title="$tc('ict-data-cleaner.tabs.products')"
-            >
-                {{ $tc('ict-data-cleaner.tabs.products') }}
-            </sw-tabs-item>
-
-            <!-- Preview Tab -->
-            <sw-tabs-item
-                :active="activeTab === 'customers'"
-                @click="activeTab = 'customers'"
-                :title="$tc('ict-data-cleaner.tabs.customers')"
-            >
-                {{ $tc('ict-data-cleaner.tabs.customers') }}
-            </sw-tabs-item>
-
-              <!-- Carts Tab -->
-            <sw-tabs-item
-                :active="activeTab === 'carts'"
-                @click="activeTab = 'carts'"
-                :title="$tc('ict-data-cleaner.tabs.carts')"
-            >
-                {{ $tc('ict-data-cleaner.tabs.carts') }}
-            </sw-tabs-item>
-        </sw-tabs>
-    {% endblock %}   
-
-        <sw-card title="Products & Variants" :isLoading="isLoading">
-            <sw-container columns="1fr 1fr" gap="16px">
-
-                <sw-text-field
-                    label="Remove products not sold in months"
-                    v-model="productSettings['IctDataCleaner.config.productCleanupMonthsNotSold']"
-                    placeholder="6"
-                    type="number"
-                    :min="1"
-                    :max="120"
-                />
-
-                <sw-switch-field
-                    label="Delete products never sold"
-                    v-model="productSettings['IctDataCleaner.config.productCleanupDeleteNeverSold']"
-                />
-
-                <sw-text-field
-                    label="Remove inactive products older than months"
-                    v-model="productSettings['IctDataCleaner.config.productCleanupMonthsDisabled']"
-                    placeholder="6"
-                    type="number"
-                    :min="1"
-                    :max="120"
-                />
-
-                <sw-text-field
-                    label="Remove variants with zero stock and no sales in months"
-                    v-model="productSettings['IctDataCleaner.config.productVariantCleanupZeroStockMonths']"
-                    placeholder="6"
-                    type="number"
-                    :min="1"
-                    :max="120"
-                />
-            </sw-container>
-
-            <sw-button @click="previewAction" variant="primary" class="mt-4">
-                Preview Cleanup
-            </sw-button>
-        </sw-card> 
-        </sw-card-view>
-    </template>
-    {% endblock %}
-              <!-- Modal section -->
-
-    <sw-modal
-    title="Preview Cleanup"
-    :visible="true"
-    size="large"
-    @modal-close="closeModal"
->
-    <template #content>
-        <ul>
-            <li><strong>Remove products not sold in months:</strong> {{ config['IctDataCleaner.config.productCleanupMonthsNotSold'] }}</li>
-            <li><strong>Delete products never sold:</strong> {{ config['IctDataCleaner.config.productCleanupDeleteNeverSold'] ? 'Yes' : 'No' }}</li>
-            <li><strong>Remove inactive products older than months:</strong> {{ config['IctDataCleaner.config.productCleanupMonthsDisabled'] }}</li>
-            <li><strong>Remove variants with zero stock and no sales in months:</strong> {{ config['IctDataCleaner.config.productVariantCleanupZeroStockMonths'] }}</li>
-        </ul>
-    </template>
-
-    <template #footer>
-        <sw-button variant="ghost" @click="closeModal">Cancel</sw-button>
-        <sw-button variant="primary" @click="confirmCleanup">Run Cleanup</sw-button>
-    </template>
-</sw-modal>
-
-
-
-    </sw-page>
-</template>
-{% endblock %} #}
 {% block ict_data_cleaner_index %}
 <template>
     <sw-page class="ict-data-cleaner-index">
@@ -249,7 +48,7 @@
                             <div class="field-header">
                                 <label class="field-label">Remove products not sold in months</label>
                                 <sw-button
-                                    @click="previewAction('productCleanupMonthsNotSold')"
+                                    @click="previewAction('productCleanup.monthsNotSold')"
                                     size="small"
                                     variant="primary"
                                 >
@@ -257,7 +56,7 @@
                                 </sw-button>
                             </div>
                             <sw-text-field
-                                v-model="productSettings['IctDataCleaner.config.productCleanupMonthsNotSold']"
+                                v-model="productSettings['IctDataCleaner.config.productCleanup.monthsNotSold']"
                                 placeholder="6"
                                 type="number"
                                 :min="1"
@@ -270,7 +69,7 @@
                             <div class="field-header">
                                 <label class="field-label">Delete products never sold</label>
                                 <sw-button
-                                    @click="previewAction('productCleanupDeleteNeverSold')"
+                                    @click="previewAction('productCleanup.deleteNeverSold')"
                                     size="small"
                                     variant="primary"
                                 >
@@ -278,7 +77,7 @@
                                 </sw-button>
                             </div>
                             <sw-switch-field
-                                v-model="productSettings['IctDataCleaner.config.productCleanupDeleteNeverSold']"
+                                v-model="productSettings['IctDataCleaner.config.productCleanup.deleteNeverSold']"
                             />
                         </div>
 
@@ -287,7 +86,7 @@
                             <div class="field-header">
                                 <label class="field-label">Remove inactive products older than months</label>
                                 <sw-button
-                                    @click="previewAction('productCleanupMonthsDisabled')"
+                                    @click="previewAction('productCleanup.monthsDisabled')"
                                     size="small"
                                     variant="primary"
                                 >
@@ -295,7 +94,7 @@
                                 </sw-button>
                             </div>
                             <sw-text-field
-                                v-model="productSettings['IctDataCleaner.config.productCleanupMonthsDisabled']"
+                                v-model="productSettings['IctDataCleaner.config.productCleanup.monthsDisabled']"
                                 placeholder="6"
                                 type="number"
                                 :min="1"
@@ -326,6 +125,86 @@
 
                     </sw-container>
                 </sw-card>
+
+                {% block ict_data_cleaner_index_modal %}
+                <sw-modal
+                    v-if="showPreviewModal"
+                    class="ict-data-cleaner-preview-modal"
+                    size="large"
+                    :title="$tc('ict-data-cleaner.tabs.previewTitle')"
+                    @modal-close="showPreviewModal = false"
+                >
+                    <template v-if="showPreviewModal && paginatedProducts.length">
+                     
+<sw-data-grid
+  v-if="gridReady"
+  ref="previewGrid"
+  :key="gridKey"
+  :dataSource="paginatedProducts"
+  :columns="[
+    { property: 'name', label: 'Name', rawData: true },
+    { property: 'product_number', label: 'Product Number' }
+  ]"
+  :selectionMode="'multi'"                            
+  :selection="selectedPreviewProducts"                 
+  :showSelection="true"                                
+  @selection-change="onProductSelectionChange"
+>
+
+
+                            <template #name="{ item }">
+                                <router-link
+                                    :to="{ name: 'sw.product.detail', params: { id: item.id } }"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {{ item.name || 'N/A' }}
+                                </router-link>
+                            </template>
+
+                            <template #product_number="{ item }">
+                                <span>{{ item.product_number || 'N/A' }}</span>
+                            </template>
+                        </sw-data-grid>
+
+                        <div class="sw-grid__total-count">
+                            <strong>Total Products Never Sold: </strong> {{ previewData.items.products_never_sold.count }}
+                        </div>
+                    </template>
+
+                    <template v-else>
+                        <p>{{ $tc('ict-data-cleaner.preview.loading') }}</p>
+                    </template>
+
+                    <sw-pagination
+                        v-if="!isLoading"
+                        class="sw-cms-list__list-pagination"
+                        :page="currentPage"
+                        :limit="limit"
+                        :total="total"
+                        :steps="[9]"
+                        @page-change="onPageChange"
+                    />
+
+                    <template #modal-footer>
+                        <sw-button
+                            variant="primary"
+                            size="small"
+                            @click="showPreviewModal = false"
+                        >
+                            {{ $tc('global.default.close') }}
+                        </sw-button>
+
+                         <sw-button
+                            variant="primary"
+                            size="small"
+                            
+                        >
+                           Remove
+                        </sw-button>
+                    </template>
+                </sw-modal>
+                {% endblock %}
 
             </sw-card-view>
         </template>
