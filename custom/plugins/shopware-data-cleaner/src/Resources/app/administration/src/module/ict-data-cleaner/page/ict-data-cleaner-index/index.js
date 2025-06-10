@@ -38,6 +38,7 @@ Component.register("ict-data-cleaner-index", {
         "IctDataCleaner.config.productCleanup.deleteNeverSold": false,
         "IctDataCleaner.config.productCleanup.monthsDisabled": 6,
         "IctDataCleaner.config.productVariantCleanupZeroStockMonths": 6,
+        "IctDataCleaner.config.enableScheduler": false
       },
     };
   },
@@ -57,7 +58,6 @@ Component.register("ict-data-cleaner-index", {
 
   methods: {
     previewAction(field) {
-
       this.gridReady = false;
        this.activePreviewKey = field;
 
@@ -80,9 +80,13 @@ Component.register("ict-data-cleaner-index", {
         })
         .then((response) => {
           this.previewData = response.data.data;
-      this.currentPage = 1; // ADD THIS
+          console.log("Preview data:", this.previewData);
+          
+          this.currentPage = 1; // ADD THIS
 
+          // this.total = this.previewData?.items?.products_never_sold?.count || 0;
           this.total = this.previewData?.items?.products_never_sold?.count || 0;
+
 
           this.gridKey += 1;
 
@@ -120,22 +124,6 @@ Component.register("ict-data-cleaner-index", {
       this.selectedPreviewProducts = selectedIds;
       console.log("Selected product IDs:", this.selectedPreviewProducts);
     },
-
-    // onPageChange(page) {
-    //   this.currentPage = page;
-    //   this.gridKey += 1;
-
-    //   this.$nextTick(() => {
-    //     this.selectedPreviewProducts = this.paginatedProducts
-    //       .filter((p) => p?.id)
-    //       .map((p) => p.id);
-
-    //     console.log(
-    //       "Page changed, reselected product IDs:",
-    //       this.selectedPreviewProducts
-    //     );
-    //   });
-    // },
 
     onPageChange({ page, limit }) {
       this.currentPage = page;

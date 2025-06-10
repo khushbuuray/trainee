@@ -6,14 +6,14 @@
         <title>General Settings</title>
         <title lang="de-DE">Allgemeine Einstellungen</title>
         
-        <input-field type="bool">
+        <!-- <input-field type="bool">
             <name>dryRunMode</name>
             <label>Dry Run Mode</label>
             <label lang="de-DE">Testmodus</label>
             <helpText>Enable to preview cleanup without deleting data</helpText>
             <helpText lang="de-DE">Aktivieren für Vorschau ohne Datenlöschung</helpText>
             <defaultValue>true</defaultValue>
-        </input-field>
+        </input-field> -->
         
         <input-field type="bool">
             <name>enableLogging</name>
@@ -22,23 +22,23 @@
             <defaultValue>true</defaultValue>
         </input-field>
         
-        <input-field type="bool">
+        <!-- <input-field type="bool">
             <name>enableScheduler</name>
             <label>Enable Scheduled Cleanup</label>
             <label lang="de-DE">Geplante Bereinigung aktivieren</label>
             <defaultValue>false</defaultValue>
-        </input-field>
+        </input-field> -->
         
         <input-field type="single-select">
             <name>scheduleFrequency</name>
             <label>Schedule Frequency</label>
             <label lang="de-DE">Zeitplan-Häufigkeit</label>
             <options>
-                <option>
+                <!-- <option>
                     <id>daily</id>
                     <name>Daily</name>
                     <name lang="de-DE">Täglich</name>
-                </option>
+                </option> -->
                 <option>
                     <id>weekly</id>
                     <name>Weekly</name>
@@ -98,6 +98,13 @@
             <min>1</min>
             <max>120</max>
         </input-field>
+
+        <input-field type="bool">
+            <name>enableScheduler</name>
+            <label>Enable Scheduled Cleanup</label>
+            <label lang="de-DE">Geplante Bereinigung aktivieren</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
     </card>
     
     <card>
@@ -120,6 +127,13 @@
             <defaultValue>12</defaultValue>
             <min>1</min>
             <max>120</max>
+        </input-field>
+
+        <input-field type="bool">
+            <name>enableSchedulerOfCustomer</name>
+            <label>Enable Scheduled Cleanup</label>
+            <label lang="de-DE">Geplante Bereinigung aktivieren</label>
+            <defaultValue>false</defaultValue>
         </input-field>
     </card>
     
@@ -153,6 +167,13 @@
             <min>1</min>
             <max>120</max>
         </input-field>
+
+        <input-field type="bool">
+            <name>enableSchedulerOfOrders</name>
+            <label>Enable Scheduled Cleanup</label>
+            <label lang="de-DE">Geplante Bereinigung aktivieren</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
     </card>
     
     <card>
@@ -173,6 +194,13 @@
             <defaultValue>6</defaultValue>
             <min>1</min>
             <max>120</max>
+        </input-field>
+
+        <input-field type="bool">
+            <name>enableSchedulerOfCategories</name>
+            <label>Enable Scheduled Cleanup</label>
+            <label lang="de-DE">Geplante Bereinigung aktivieren</label>
+            <defaultValue>false</defaultValue>
         </input-field>
     </card>
     
@@ -204,6 +232,13 @@
             <label lang="de-DE">Verwaiste Warenkorb-Regeln entfernen</label>
             <defaultValue>true</defaultValue>
         </input-field>
+
+        <input-field type="bool">
+            <name>enableSchedulerOfPromotions</name>
+            <label>Enable Scheduled Cleanup</label>
+            <label lang="de-DE">Geplante Bereinigung aktivieren</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
     </card>
     
     <card>
@@ -227,6 +262,13 @@
             <min>1</min>
             <max>120</max>
         </input-field>
+
+        <input-field type="bool">
+            <name>enableSchedulerOfCms</name>
+            <label>Enable Scheduled Cleanup</label>
+            <label lang="de-DE">Geplante Bereinigung aktivieren</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
     </card>
     
     <card>
@@ -241,6 +283,13 @@
             <min>1</min>
             <max>365</max>
         </input-field>
+
+        <input-field type="bool">
+            <name>enableSchedulerOfReviews</name>
+            <label>Enable Scheduled Cleanup</label>
+            <label lang="de-DE">Geplante Bereinigung aktivieren</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
     </card>
     
     <card>
@@ -254,6 +303,13 @@
             <defaultValue>12</defaultValue>
             <min>1</min>
             <max>120</max>
+        </input-field>
+
+        <input-field type="bool">
+            <name>enableSchedulerOfNewsletter</name>
+            <label>Enable Scheduled Cleanup</label>
+            <label lang="de-DE">Geplante Bereinigung aktivieren</label>
+            <defaultValue>false</defaultValue>
         </input-field>
     </card>
     
@@ -275,6 +331,13 @@
             <label>Delete orphaned thumbnails</label>
             <label lang="de-DE">Verwaiste Thumbnails löschen</label>
             <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>enableSchedulerOfMedia</name>
+            <label>Enable Scheduled Cleanup</label>
+            <label lang="de-DE">Geplante Bereinigung aktivieren</label>
+            <defaultValue>false</defaultValue>
         </input-field>
     </card>
     

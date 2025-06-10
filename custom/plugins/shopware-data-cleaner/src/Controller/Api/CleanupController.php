@@ -40,7 +40,7 @@ public function preview(Request $request, Context $context): JsonResponse
     try {
         $config = json_decode($request->getContent(), true);
         $results = $this->productCleanupHandler->cleanup($config, false, $context);
-            return new JsonResponse([
+        return new JsonResponse([
                 'success' => true,
                 'data' => $results
             ]);
