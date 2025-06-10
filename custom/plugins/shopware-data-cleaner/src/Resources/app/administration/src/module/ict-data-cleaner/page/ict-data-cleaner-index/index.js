@@ -50,12 +50,14 @@ Component.register("ict-data-cleaner-index", {
     paginatedProducts() {
       const all = this.previewData?.items?.products_never_sold?.sample || [];
       const start = (this.currentPage - 1) * this.limit;
-      return all.slice(start, start + this.limit);
+       const end = start + this.limit;
+       return all.slice(start, end);
     },
   },
 
   methods: {
     previewAction(field) {
+
       this.gridReady = false;
        this.activePreviewKey = field;
 
@@ -78,6 +80,8 @@ Component.register("ict-data-cleaner-index", {
         })
         .then((response) => {
           this.previewData = response.data.data;
+      this.currentPage = 1; // ADD THIS
+
           this.total = this.previewData?.items?.products_never_sold?.count || 0;
 
           this.gridKey += 1;
@@ -117,22 +121,60 @@ Component.register("ict-data-cleaner-index", {
       console.log("Selected product IDs:", this.selectedPreviewProducts);
     },
 
-    onPageChange(page) {
+    // onPageChange(page) {
+    //   this.currentPage = page;
+    //   this.gridKey += 1;
+
+    //   this.$nextTick(() => {
+    //     this.selectedPreviewProducts = this.paginatedProducts
+    //       .filter((p) => p?.id)
+    //       .map((p) => p.id);
+
+    //     console.log(
+    //       "Page changed, reselected product IDs:",
+    //       this.selectedPreviewProducts
+    //     );
+    //   });
+    // },
+
+    onPageChange({ page, limit }) {
       this.currentPage = page;
-      this.gridKey += 1;
+      this.limit = limit;
+      this.gridReady = false;
 
       this.$nextTick(() => {
-        this.selectedPreviewProducts = this.paginatedProducts
-          .filter((p) => p?.id)
-          .map((p) => p.id);
+        this.gridKey += 1;
 
-        console.log(
-          "Page changed, reselected product IDs:",
-          this.selectedPreviewProducts
-        );
+        this.$nextTick(() => {
+          this.gridReady = true;
+
+          setTimeout(() => {
+            const currentPageItems = this.paginatedProducts
+              .filter(p => p?.id)
+              .map(p => p.id);
+
+            const currentSelected = Array.isArray(this.selectedPreviewProducts)
+              ? this.selectedPreviewProducts
+              : [];
+
+            this.selectedPreviewProducts = [
+              ...new Set([
+                ...currentSelected.filter(id => !currentPageItems.includes(id)),
+                ...currentPageItems,
+              ])
+            ];
+
+            const gridRef = this.$refs.previewGrid;
+            if (gridRef?.selectAll) {
+              gridRef.selectAll(true);
+            }
+
+            // ✅ Ensure internal tracking reflects current page selection
+            this.onProductSelectionChange(this.selectedPreviewProducts);
+          }, 50);
+        });
       });
     },
-
     openModal() {
       this.showPreviewModal = true;
       this.selectedPreviewProducts = this.paginatedProducts
@@ -192,7 +234,7 @@ Component.register("ict-data-cleaner-index", {
           title: "Deleted",
           message: `${
             response.data.deleted
-          } products were deleted`,
+          } products deleted successful`,
         });
 
         // Clear selection and optionally refresh table

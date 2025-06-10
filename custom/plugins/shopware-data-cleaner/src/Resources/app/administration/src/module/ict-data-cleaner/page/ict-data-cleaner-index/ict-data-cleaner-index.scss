@@ -40,5 +40,26 @@
         font-weight: bold;
     }
 }
+.ict-data-cleaner-preview-modal {
+    .sw-modal__body {
+        max-height: 60vh;
+        overflow-y: auto;
+        padding-bottom: 1rem;
+    }
+
+    .sw-modal__footer {
+        position: sticky;
+        bottom: 0;
+        background-color: #fff;
+        padding-top: 1rem;
+        border-top: 1px solid #d1d9e0;
+        z-index: 1;
+    }
+
+    .sw-cms-list__list-pagination {
+        margin-bottom: 1rem;
+    }
+}
+
 
 

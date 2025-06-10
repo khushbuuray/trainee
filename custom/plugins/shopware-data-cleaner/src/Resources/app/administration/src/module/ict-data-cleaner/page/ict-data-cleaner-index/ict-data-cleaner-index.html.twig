@@ -79,7 +79,6 @@
                             </div>
                             <sw-switch-field
                                 v-model="productSettings['IctDataCleaner.config.productCleanup.deleteNeverSold']"
-                                
                             />
                         </div>
 
@@ -138,24 +137,21 @@
                     :title="$tc('ict-data-cleaner.tabs.previewTitle')"
                     @modal-close="showPreviewModal = false"
                 >
-                    <template v-if="showPreviewModal && paginatedProducts.length">
-                     
-<sw-data-grid
-  v-if="gridReady"
-  ref="previewGrid"
-  :key="gridKey"
-  :dataSource="paginatedProducts"
-  :columns="[
-    { property: 'name', label: 'Name', rawData: true },
-    { property: 'product_number', label: 'Product Number' }
-  ]"
-  :selectionMode="'multi'"                            
-  :selection="selectedPreviewProducts"                 
-  :showSelection="true"                                
-  @selection-change="onProductSelectionChange"
->
-
-
+                    <template v-if="gridReady && paginatedProducts && paginatedProducts.length">
+                        <sw-data-grid
+                            v-if="gridReady"
+                            ref="previewGrid"
+                            :key="gridKey"
+                            :dataSource="paginatedProducts"
+                            :columns="[
+                                { property: 'name', label: 'Name', rawData: true },
+                                { property: 'product_number', label: 'Product Number' }
+                            ]"
+                            :selectionMode="'multi'"
+                            :selection="selectedPreviewProducts"
+                            :showSelection="true"
+                            @selection-change="onProductSelectionChange"
+                        >
                             <template #name="{ item }">
                                 <router-link
                                     :to="{ name: 'sw.product.detail', params: { id: item.id } }"
@@ -172,7 +168,8 @@
                         </sw-data-grid>
 
                         <div class="sw-grid__total-count">
-                            <strong>Total Products Never Sold: </strong> {{ previewData.items.products_never_sold.count }}
+                            <strong>Total Products Never Sold: </strong>
+                            {{ previewData.items.products_never_sold.count }}
                         </div>
                     </template>
 
@@ -199,12 +196,12 @@
                             {{ $tc('global.default.close') }}
                         </sw-button>
 
-                         <sw-button
+                        <sw-button
                             variant="primary"
                             size="small"
-                             @click="removeSelectedProducts"
+                            @click="removeSelectedProducts"
                         >
-                           Remove
+                            Remove
                         </sw-button>
                     </template>
                 </sw-modal>

@@ -112,7 +112,7 @@ SELECT p.id, p.product_number, pt.name
 FROM product p
 LEFT JOIN product_translation pt ON p.id = pt.product_id AND pt.language_id = :languageId
 LEFT JOIN order_line_item oli ON p.id = oli.product_id AND oli.type = 'product'
-WHERE oli.id IS NULL AND pt.name IS NOT NULL
+WHERE oli.id IS NULL 
 LIMIT 1000
 -- SELECT p.id, p.product_number, pt.name
 -- FROM product p
