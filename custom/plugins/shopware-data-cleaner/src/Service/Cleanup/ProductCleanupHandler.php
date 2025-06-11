@@ -120,7 +120,7 @@ SELECT p.id, p.product_number, pt.name
 FROM product p
 LEFT JOIN product_translation pt ON p.id = pt.product_id AND pt.language_id = :languageId
 LEFT JOIN order_line_item oli ON p.id = oli.product_id AND oli.type = 'product'
-WHERE oli.id IS NULL AND pt.name IS NOT NULL
+WHERE oli.id IS NULL 
 LIMIT 1000
 -- SELECT p.id, p.product_number, pt.name
 -- FROM product p
@@ -176,24 +176,23 @@ SQL;
         $criteria->setLimit(1000);
 
         $products = $this->productRepository->search($criteria, $context);
-
         if (!$dryRun && $products->count() > 0) {
             $ids = array_map(function ($product) {
                 return ['id' => $product->getId()];
             }, $products->getElements());
             
-            $this->productRepository->delete($ids, $context);
+            // $this->productRepository->delete($ids, $context);
         }
 
         $sample = [];
-        foreach (array_slice($products->getElements(), 0, 5) as $product) {
+        foreach
+        ($products->getElements() as $product) {
             $sample[] = [
                 'id' => $product->getId(),
-                'productNumber' => $product->getProductNumber(),
+                'product_number' => $product->getProductNumber(),
                 'name' => $product->getTranslated()['name'] ?? 'N/A'
             ];
         }
-
         return [
             'count' => $products->count(),
             'sample' => $sample

@@ -58,18 +58,17 @@ public function remove(Request $request, Context $context): JsonResponse
     try {
         $payload = json_decode($request->getContent(), true);
         $productItems = $payload['productIds'] ?? [];
-
         if (empty($productItems)) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'No product IDs provided.'
             ], 400);
         }
+         $flatItems = array_values($productItems[0]);
          // Extract only the IDs
-        $deleteData = array_map(function ($item) {
-            return ['id' => $item['id']];
-        }, array_values($productItems));
-
+         $deleteData = array_map(function ($item) {
+          return ['id' => $item['id']];
+        }, array_values($flatItems));
         $productRepository = $this->container->get('product.repository');
         // $productRepository->delete($deleteData, $context);
 

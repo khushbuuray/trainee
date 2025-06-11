@@ -1,3 +1,231 @@
+// import template from "./ict-data-cleaner-index.html.twig";
+// import "./ict-data-cleaner-index.scss";
+
+// const { Component, Mixin } = Shopware;
+// const { Criteria } = Shopware.Data;
+
+// Component.register("ict-data-cleaner-index", {
+//   template,
+
+//   inject: [
+//     "repositoryFactory",
+//     "systemConfigApiService",
+//     "ictDataCleanerService",
+//   ],
+
+//   mixins: [Mixin.getByName("notification")],
+
+//   data() {
+//     return {
+//       currentPage: 1,
+//       limit: 10,
+//       total: 0,
+//       isLoading: false,
+//       isSaveSuccessful: false,
+//       isDryRun: true,
+//       previewResults: null,
+//       showPreviewModal: false,
+//       showConfirmModal: false,
+//       totalItemsToDelete: 0,
+//       salesChannelId: null,
+//       config: null,
+//       previewData: null,
+//       selectedPreviewProducts: {}, // per group
+//       gridKey: 0,
+//       gridReady: false,
+//       productSettings: {
+//         "IctDataCleaner.config.productCleanup.monthsNotSold": 6,
+//         "IctDataCleaner.config.productCleanup.deleteNeverSold": false,
+//         "IctDataCleaner.config.productCleanup.monthsDisabled": 6,
+//         "IctDataCleaner.config.productVariantCleanupZeroStockMonths": 6,
+//         "IctDataCleaner.config.enableScheduler": false
+//       },
+//     };
+//   },
+
+//   computed: {
+//     configDomain() {
+//       return "IctDataCleanerPro.config";
+//     },
+//   },
+
+//   methods: {
+//     previewAction(field) {
+//       this.gridReady = false;
+//       this.activePreviewKey = field;
+
+//       const httpClient = Shopware.Application.getContainer("init").httpClient;
+//       const loginService = Shopware.Service("loginService");
+//       const token = loginService.getToken();
+
+//       if (!token) {
+//         console.error("Auth token not found.");
+//         return;
+//       }
+
+//       const config = {
+//         [field]: this.productSettings[`IctDataCleaner.config.${field}`],
+//       };
+
+//       httpClient
+//         .post("/ict-data-cleaner/preview", config, {
+//           headers: { Authorization: `Bearer ${token}` },
+//         })
+//         .then((response) => {
+//           this.previewData = response.data.data;
+//           this.selectedPreviewProducts = {};
+
+//           Object.entries(this.previewData.items).forEach(([groupKey, group]) => {
+//             const ids = (group.sample || []).map(p => p.id);
+//             this.$set(this.selectedPreviewProducts, groupKey, ids);
+//           });
+
+//           this.currentPage = 1;
+//           this.total = this.previewData?.items?.[field]?.count || 0;
+//           this.gridKey += 1;
+
+//           this.$nextTick(() => {
+//             this.gridReady = true;
+//             this.showPreviewModal = true;
+
+//             this.$nextTick(() => {
+//               requestAnimationFrame(() => {
+//                 const previewGrids = this.$refs.previewGrid || {};
+
+//                 // Vue 2: $refs.previewGrid is an array if multiple elements have the same ref
+//                 if (Array.isArray(previewGrids)) {
+//                   previewGrids.forEach((gridRef, index) => {
+//                     if (gridRef?.selectAll) {
+//                       gridRef.selectAll(true);
+//                       console.log(`✅ Auto-selected all rows in grid ${index}`);
+//                     }
+//                   });
+//                 } else {
+//                   Object.keys(this.previewData.items).forEach((key) => {
+//                     const gridRef = previewGrids[key];
+//                     if (gridRef?.selectAll) {
+//                       gridRef.selectAll(true);
+//                       console.log(`✅ Auto-selected all rows in grid: ${key}`);
+//                     } else {
+//                       console.warn(`⚠️ Grid ref not found for: ${key}`, previewGrids);
+//                     }
+//                   });
+//                 }
+//               });
+//             });
+//           });
+//         })
+//         .catch((error) => {
+//           console.error(
+//             "Preview request failed:",
+//             error.response?.data?.errors ?? error.message
+//           );
+//         });
+//     },
+
+//     onProductSelectionChange(groupKey, selectedIds) {
+//       this.$set(this.selectedPreviewProducts, groupKey, selectedIds);
+//       console.log(`Selected IDs for ${groupKey}:`, selectedIds);
+//     },
+
+//     onPageChange({ page, limit }, groupKey) {
+//       this.currentPage = page;
+//       this.limit = limit;
+//       this.gridReady = false;
+
+//       this.$nextTick(() => {
+//         this.gridKey += 1;
+
+//         this.$nextTick(() => {
+//           this.gridReady = true;
+
+//           setTimeout(() => {
+//             const group = this.previewData?.items?.[groupKey];
+//             if (!group) return;
+
+//             const currentPageItems = (group.sample || [])
+//               .slice((page - 1) * limit, page * limit)
+//               .map(p => p.id);
+
+//             const currentSelected = Array.isArray(this.selectedPreviewProducts[groupKey])
+//               ? this.selectedPreviewProducts[groupKey]
+//               : [];
+
+//             const updatedSelection = [
+//               ...new Set([
+//                 ...currentSelected.filter(id => !currentPageItems.includes(id)),
+//                 ...currentPageItems,
+//               ])
+//             ];
+
+//             this.$set(this.selectedPreviewProducts, groupKey, updatedSelection);
+
+//             const gridRefs = this.$refs.previewGrid;
+//             const gridRef = Array.isArray(gridRefs) ? gridRefs.find(g => g.$attrs["ref-key"] === groupKey) : gridRefs?.[groupKey];
+
+//             if (gridRef?.selectAll) {
+//               gridRef.selectAll(true);
+//             }
+
+//             this.onProductSelectionChange(groupKey, updatedSelection);
+//           }, 50);
+//         });
+//       });
+//     },
+
+//     async removeSelectedProducts() {
+//       const allSelectedIds = Object.values(this.selectedPreviewProducts).flat();
+
+//       if (!allSelectedIds.length) {
+//         this.createNotificationWarning({
+//           title: "No Selection",
+//           message: "Please select at least one product.",
+//         });
+//         return;
+//       }
+
+//       const httpClient = Shopware.Application.getContainer("init").httpClient;
+//       const loginService = Shopware.Service("loginService");
+//       const token = loginService.getToken();
+
+//       if (!token) {
+//         this.createNotificationError({
+//           title: "Auth Error",
+//           message: "Authorization token is missing.",
+//         });
+//         return;
+//       }
+
+//       const payload = {
+//         productIds: allSelectedIds,
+//       };
+
+//       try {
+//         const response = await httpClient.post(
+//           "/ict-data-cleaner/products/remove",
+//           payload,
+//           {
+//             headers: { Authorization: `Bearer ${token}` },
+//           }
+//         );
+
+//         this.createNotificationSuccess({
+//           title: "Deleted",
+//           message: `${response.data.deleted} products deleted successfully`,
+//         });
+
+//         this.selectedPreviewProducts = {};
+//         this.showPreviewModal = false;
+//         await this.previewAction(this.activePreviewKey); // refresh
+//       } catch (error) {
+//         this.createNotificationError({
+//           title: "Delete Failed",
+//           message: error?.response?.data?.error || "Could not delete products.",
+//         });
+//       }
+//     },
+//   },
+// });
 import template from "./ict-data-cleaner-index.html.twig";
 import "./ict-data-cleaner-index.scss";
 
@@ -17,9 +245,6 @@ Component.register("ict-data-cleaner-index", {
 
   data() {
     return {
-      currentPage: 1,
-      limit: 10,
-      total: 0,
       isLoading: false,
       isSaveSuccessful: false,
       isDryRun: true,
@@ -30,15 +255,15 @@ Component.register("ict-data-cleaner-index", {
       salesChannelId: null,
       config: null,
       previewData: null,
-      selectedPreviewProducts: [],
+      selectedPreviewProducts: {},
       gridKey: 0,
       gridReady: false,
+      pagination: {},
       productSettings: {
         "IctDataCleaner.config.productCleanup.monthsNotSold": 6,
         "IctDataCleaner.config.productCleanup.deleteNeverSold": false,
         "IctDataCleaner.config.productCleanup.monthsDisabled": 6,
-        "IctDataCleaner.config.productVariantCleanupZeroStockMonths": 6,
-        "IctDataCleaner.config.enableScheduler": false
+        "IctDataCleaner.config.productVariantCleanup.zeroStockMonths": 6,
       },
     };
   },
@@ -48,18 +273,24 @@ Component.register("ict-data-cleaner-index", {
       return "IctDataCleanerPro.config";
     },
 
-    paginatedProducts() {
-      const all = this.previewData?.items?.products_never_sold?.sample || [];
-      const start = (this.currentPage - 1) * this.limit;
-       const end = start + this.limit;
-       return all.slice(start, end);
-    },
+    paginatedRows() {
+    const result = {};
+    if (!this.previewData?.items) return result;
+
+    for (const [key, group] of Object.entries(this.previewData.items)) {
+      const page = this.pagination?.[key]?.page || 1;
+      const limit = this.pagination?.[key]?.limit || 10;
+      result[key] = (group.sample || []).slice((page - 1) * limit, page * limit);
+    }
+
+    return result;
+  }
   },
 
   methods: {
     previewAction(field) {
       this.gridReady = false;
-       this.activePreviewKey = field;
+      this.activePreviewKey = field;
 
       const httpClient = Shopware.Application.getContainer("init").httpClient;
       const loginService = Shopware.Service("loginService");
@@ -80,13 +311,18 @@ Component.register("ict-data-cleaner-index", {
         })
         .then((response) => {
           this.previewData = response.data.data;
-          console.log("Preview data:", this.previewData);
-          
-          this.currentPage = 1; // ADD THIS
+          this.selectedPreviewProducts = {};
+          this.pagination = {};
 
-          // this.total = this.previewData?.items?.products_never_sold?.count || 0;
-          this.total = this.previewData?.items?.products_never_sold?.count || 0;
-
+          Object.entries(this.previewData.items).forEach(([groupKey, group]) => {
+            const ids = (group.sample || []).map(p => p.id);
+            this.$set(this.selectedPreviewProducts, groupKey, ids);
+            this.$set(this.pagination, groupKey, {
+              page: 1,
+              limit: 10,
+              total: group.count || 0
+            });
+          });
 
           this.gridKey += 1;
 
@@ -94,21 +330,29 @@ Component.register("ict-data-cleaner-index", {
             this.gridReady = true;
             this.showPreviewModal = true;
 
-            // Auto-select all products on the first page
-            this.selectedPreviewProducts = this.paginatedProducts
-              .filter((p) => p?.id)
-              .map((p) => p.id);
-
             this.$nextTick(() => {
-              setTimeout(() => {
-                const gridRef = this.$refs.previewGrid;
-                if (gridRef && typeof gridRef.selectAll === "function") {
-                  gridRef.selectAll(true);
-                  console.log(
-                    "Programmatically selected all rows after render."
-                  );
+              requestAnimationFrame(() => {
+                const previewGrids = this.$refs.previewGrid || {};
+
+                if (Array.isArray(previewGrids)) {
+                  previewGrids.forEach((gridRef, index) => {
+                    if (gridRef?.selectAll) {
+                      gridRef.selectAll(true);
+                      console.log(`✅ Auto-selected all rows in grid ${index}`);
+                    }
+                  });
+                } else {
+                  Object.keys(this.previewData.items).forEach((key) => {
+                    const gridRef = previewGrids[key];
+                    if (gridRef?.selectAll) {
+                      gridRef.selectAll(true);
+                      console.log(`✅ Auto-selected all rows in grid: ${key}`);
+                    } else {
+                      console.warn(`⚠️ Grid ref not found for: ${key}`, previewGrids);
+                    }
+                  });
                 }
-              }, 50);
+              });
             });
           });
         })
@@ -120,72 +364,75 @@ Component.register("ict-data-cleaner-index", {
         });
     },
 
-    onProductSelectionChange(selectedIds) {
-      this.selectedPreviewProducts = selectedIds;
-      console.log("Selected product IDs:", this.selectedPreviewProducts);
+    onProductSelectionChange(groupKey, selectedIds) {
+      this.$set(this.selectedPreviewProducts, groupKey, selectedIds);
+      console.log(`Selected IDs for ${groupKey}:`, selectedIds);
     },
 
-    onPageChange({ page, limit }) {
-      this.currentPage = page;
-      this.limit = limit;
-      this.gridReady = false;
+   onPageChange({ page, limit }, groupKey) {
+  // Update pagination state
+  if (!this.pagination) this.pagination = {};
+  this.$set(this.pagination, groupKey, {
+    page,
+    limit,
+    total: this.previewData?.items?.[groupKey]?.sample?.length || 0,
+  });
+
+  this.gridReady = false;
+
+  this.$nextTick(() => {
+    this.gridKey += 1;
+
+    this.$nextTick(() => {
+      this.gridReady = true;
 
       this.$nextTick(() => {
-        this.gridKey += 1;
+        // Make sure this group exists
+        const group = this.previewData?.items?.[groupKey];
+        if (!group) return;
 
-        this.$nextTick(() => {
-          this.gridReady = true;
+        // Slice current page sample
+        const currentPageItems = (group.sample || [])
+          .slice((page - 1) * limit, page * limit)
+          .map(p => p.id);
 
-          setTimeout(() => {
-            const currentPageItems = this.paginatedProducts
-              .filter(p => p?.id)
-              .map(p => p.id);
+        // Existing selection for this group
+        const currentSelected = Array.isArray(this.selectedPreviewProducts[groupKey])
+          ? this.selectedPreviewProducts[groupKey]
+          : [];
 
-            const currentSelected = Array.isArray(this.selectedPreviewProducts)
-              ? this.selectedPreviewProducts
-              : [];
+        // Merge old selection + new page items (prevent duplicates)
+        const updatedSelection = [
+          ...new Set([
+            ...currentSelected,
+            ...currentPageItems,
+          ]),
+        ];
 
-            this.selectedPreviewProducts = [
-              ...new Set([
-                ...currentSelected.filter(id => !currentPageItems.includes(id)),
-                ...currentPageItems,
-              ])
-            ];
+        this.$set(this.selectedPreviewProducts, groupKey, updatedSelection);
 
-            const gridRef = this.$refs.previewGrid;
-            if (gridRef?.selectAll) {
-              gridRef.selectAll(true);
-            }
+        // Select all visible rows in the current page
+        const gridRefs = this.$refs.previewGrid;
+        const gridRef = Array.isArray(gridRefs)
+          ? gridRefs.find(g => g.$attrs["ref-key"] === groupKey)
+          : gridRefs?.[groupKey];
 
-            // ✅ Ensure internal tracking reflects current page selection
-            this.onProductSelectionChange(this.selectedPreviewProducts);
-          }, 50);
-        });
+        if (gridRef?.selectAll) {
+          gridRef.selectAll(true);
+          console.log(`✅ Auto-selected page rows for: ${groupKey}`);
+        }
+
+        this.onProductSelectionChange(groupKey, updatedSelection);
       });
-    },
-    openModal() {
-      this.showPreviewModal = true;
-      this.selectedPreviewProducts = this.paginatedProducts
-        .filter((p) => p?.id)
-        .map((p) => p.id);
-    },
+    });
+  });
+},
 
-    selectAllProducts() {
-      this.selectedPreviewProducts = this.paginatedProducts
-        .filter((p) => p?.id)
-        .map((p) => p.id);
-
-      console.log(
-        "Manually selected all products on page:",
-        this.selectedPreviewProducts
-      );
-    },
 
     async removeSelectedProducts() {
-      if (
-        !this.selectedPreviewProducts ||
-        this.selectedPreviewProducts.length === 0
-      ) {
+      const allSelectedIds = Object.values(this.selectedPreviewProducts).flat();
+
+      if (!allSelectedIds.length) {
         this.createNotificationWarning({
           title: "No Selection",
           message: "Please select at least one product.",
@@ -206,7 +453,7 @@ Component.register("ict-data-cleaner-index", {
       }
 
       const payload = {
-        productIds: this.selectedPreviewProducts,
+        productIds: allSelectedIds,
       };
 
       try {
@@ -220,15 +467,12 @@ Component.register("ict-data-cleaner-index", {
 
         this.createNotificationSuccess({
           title: "Deleted",
-          message: `${
-            response.data.deleted
-          } products deleted successful`,
+          message: `${response.data.deleted} products deleted successfully`,
         });
 
-        // Clear selection and optionally refresh table
-        this.selectedPreviewProducts = [];
-      this.showPreviewModal = false; // hide
-      await this.previewAction(this.activePreviewKey); // re-show & reload
+        this.selectedPreviewProducts = {};
+        this.showPreviewModal = false;
+        await this.previewAction(this.activePreviewKey);
       } catch (error) {
         this.createNotificationError({
           title: "Delete Failed",
@@ -238,3 +482,4 @@ Component.register("ict-data-cleaner-index", {
     },
   },
 });
+
