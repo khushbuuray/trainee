@@ -19,7 +19,13 @@
      "tabs": {
       "products": "Products",
       "customers": "Customers & Accounts",
-      "carts": "Carts",
+      "carts": "Orders, Carts & Checkouts",
+      "categories": "Categories & Navigation",
+      "promotions": "Promotions & Discounts",
+      "cmsPages": "CMS Content & Pages",
+      "reviews": "Reviews & Ratings",
+      "marketingLists": "Marketing Lists",
+      "logs": "Logs, Cache & Technical Data",
       "previewTitle": "Data Cleanup Preview"
     },
     "logs": {

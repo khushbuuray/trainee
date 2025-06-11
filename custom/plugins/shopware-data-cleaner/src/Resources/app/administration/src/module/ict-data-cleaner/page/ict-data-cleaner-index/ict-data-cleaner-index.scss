@@ -59,6 +59,15 @@
     .sw-cms-list__list-pagination {
         margin-bottom: 1rem;
     }
+.inline-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 24px; // Adjust this to increase space
+  margin-top: 12px;
+}
+
+
+
 }
 
 

@@ -14,118 +14,91 @@
 
                 {% block sw_ict_data_cleaner_content_tabs %}
                 <sw-tabs>
-                    <sw-tabs-item
-                        :active="activeTab === 'products'"
-                        @click="activeTab = 'products'"
-                        :title="$tc('ict-data-cleaner.tabs.products')"
-                    >
+                    <sw-tabs-item :active="activeTab === 'products'" @click="setActiveTab('products')" :title="$tc('ict-data-cleaner.tabs.products')">
                         {{ $tc('ict-data-cleaner.tabs.products') }}
                     </sw-tabs-item>
 
-                    <sw-tabs-item
-                        :active="activeTab === 'customers'"
-                        @click="activeTab = 'customers'"
-                        :title="$tc('ict-data-cleaner.tabs.customers')"
-                    >
+                    <sw-tabs-item :active="activeTab === 'customers'" @click="setActiveTab('customers')" :title="$tc('ict-data-cleaner.tabs.customers')">
                         {{ $tc('ict-data-cleaner.tabs.customers') }}
                     </sw-tabs-item>
 
-                    <sw-tabs-item
-                        :active="activeTab === 'carts'"
-                        @click="activeTab = 'carts'"
-                        :title="$tc('ict-data-cleaner.tabs.carts')"
-                    >
+                    <sw-tabs-item :active="activeTab === 'carts'" @click="activeTab = 'carts'" :title="$tc('ict-data-cleaner.tabs.carts')">
                         {{ $tc('ict-data-cleaner.tabs.carts') }}
+                    </sw-tabs-item>
+
+                    <sw-tabs-item :active="activeTab === 'categories'" @click="activeTab = 'categories'" :title="$tc('ict-data-cleaner.tabs.categories')">
+                        {{ $tc('ict-data-cleaner.tabs.categories') }}
+                    </sw-tabs-item>
+
+                    <sw-tabs-item :active="activeTab === 'promotions'" @click="activeTab = 'promotions'" :title="$tc('ict-data-cleaner.tabs.promotions')">
+                        {{ $tc('ict-data-cleaner.tabs.promotions') }}
+                    </sw-tabs-item>
+
+                    <sw-tabs-item :active="activeTab === 'cmsPages'" @click="activeTab = 'cmsPages'" :title="$tc('ict-data-cleaner.tabs.cmsPages')">
+                        {{ $tc('ict-data-cleaner.tabs.cmsPages') }}
+                    </sw-tabs-item>
+
+                    <sw-tabs-item :active="activeTab === 'reviews'" @click="activeTab = 'reviews'" :title="$tc('ict-data-cleaner.tabs.reviews')">
+                        {{ $tc('ict-data-cleaner.tabs.reviews') }}
+                    </sw-tabs-item>
+
+                    <sw-tabs-item :active="activeTab === 'marketingLists'" @click="activeTab = 'marketingLists'" :title="$tc('ict-data-cleaner.tabs.marketingLists')">
+                        {{ $tc('ict-data-cleaner.tabs.marketingLists') }}
+                    </sw-tabs-item>
+
+                    <sw-tabs-item :active="activeTab === 'logs'" @click="activeTab = 'logs'" :title="$tc('ict-data-cleaner.tabs.logs')">
+                        {{ $tc('ict-data-cleaner.tabs.logs') }}
                     </sw-tabs-item>
                 </sw-tabs>
                 {% endblock %}
 
-                <sw-card title="Products & Variants" :isLoading="isLoading">
+                <sw-card v-if="activeTab === 'products'" title="Products & Variants" :isLoading="isLoading">
                     <sw-container gap="10px">
 
-                        <!-- Remove products not sold in months -->
-                        <div class="field-block">
-                            <div class="field-header">
-                                <label class="field-label">Remove products not sold in months</label>
-                                <sw-button
-                                    @click="previewAction('productCleanup.monthsNotSold')"
-                                    size="small"
-                                    variant="primary"
-                                >
-                                    Preview
-                                </sw-button>
-                            </div>
-                            <sw-text-field
-                                v-model="productSettings['IctDataCleaner.config.productCleanup.monthsNotSold']"
-                                placeholder="6"
-                                type="number"
-                                :min="1"
-                                :max="120"
-                                :disabled="true"
-                            />
+                        <div class="field-header">
+                            <span class="label">
+                                <strong>Products not sold in months:</strong>
+                                {{ productSettings['IctDataCleaner.config.productCleanup.monthsNotSold'] }}
+                            </span>
+                            <sw-button @click="previewAction('productCleanup.monthsNotSold')" size="small" variant="primary">Preview</sw-button>
                         </div>
 
-                        <!-- Delete products never sold -->
-                        <div class="field-block">
-                            <div class="field-header">
-                                <label class="field-label">Delete products never sold</label>
-                                <sw-button
-                                    @click="previewAction('productCleanup.deleteNeverSold')"
-                                    size="small"
-                                    variant="primary"
-                                >
-                                    Preview
-                                </sw-button>
-                            </div>
-                            <sw-switch-field
-                                v-model="productSettings['IctDataCleaner.config.productCleanup.deleteNeverSold']"
-                            />
+                        <div class="field-header">
+                            <span class="label">
+                                <strong>Products never sold:</strong>
+                                {{ productSettings['IctDataCleaner.config.productCleanup.deleteNeverSold'] ? 'Yes' : 'No' }}
+                            </span>
+                            <sw-button @click="previewAction('productCleanup.deleteNeverSold')" size="small" variant="primary">Preview</sw-button>
                         </div>
 
-                        <!-- Remove inactive products older than months -->
-                        <div class="field-block">
-                            <div class="field-header">
-                                <label class="field-label">Remove inactive products older than months</label>
-                                <sw-button
-                                    @click="previewAction('productCleanup.monthsDisabled')"
-                                    size="small"
-                                    variant="primary"
-                                >
-                                    Preview
-                                </sw-button>
-                            </div>
-                            <sw-text-field
-                                v-model="productSettings['IctDataCleaner.config.productCleanup.monthsDisabled']"
-                                placeholder="6"
-                                type="number"
-                                :min="1"
-                                :max="120"
-                                :disabled="true"
-                            />
+                        <div class="field-header">
+                            <span class="label">
+                                <strong>Inactive products older than months:</strong>
+                                {{ productSettings['IctDataCleaner.config.productCleanup.monthsDisabled'] }}
+                            </span>
+                            <sw-button @click="previewAction('productCleanup.monthsDisabled')" size="small" variant="primary">Preview</sw-button>
                         </div>
 
-                        <!-- Remove variants with zero stock and no sales in months -->
-                        <div class="field-block">
-                            <div class="field-header">
-                                <label class="field-label">Remove variants with zero stock and no sales in months</label>
-                                <sw-button
-                                    @click="previewAction('productVariantCleanup.zeroStockMonths')"
-                                    size="small"
-                                    variant="primary"
-                                >
-                                    Preview
-                                </sw-button>
-                            </div>
-                            <sw-text-field
-                                v-model="productSettings['IctDataCleaner.config.productVariantCleanup.zeroStockMonths']"
-                                placeholder="6"
-                                type="number"
-                                :min="1"
-                                :max="120"
-                                :disabled="true"
-                            />
+                    </sw-container>
+                </sw-card>
+
+                <sw-card v-if="activeTab === 'customers'" title="Customers & Accounts" :isLoading="isLoading">
+                    <sw-container gap="10px">
+                        <div class="field-header">
+                            <span class="label">
+                                <strong>Remove guest accounts after months:</strong>
+                                {{ customerSettings['IctDataCleaner.config.customerCleanupGuestMonths'] }}
+                            </span>
+                            <sw-button @click="previewAction('customerCleanupGuestMonths')" size="small" variant="primary">Preview</sw-button>
                         </div>
 
+                        <div class="field-header">
+                            <span class="label">
+                                <strong>Remove inactive customers after months:</strong>
+                                {{ customerSettings['IctDataCleaner.config.customerCleanupInactiveMonths'] }}
+                            </span>
+                            <sw-button @click="previewAction('customerCleanupInactiveMonths')" size="small" variant="primary">Preview</sw-button>
+                        </div>
                     </sw-container>
                 </sw-card>
 
@@ -137,87 +110,64 @@
                     :title="$tc('ict-data-cleaner.tabs.previewTitle')"
                     @modal-close="showPreviewModal = false"
                 >
+                    <template v-if="gridReady && previewData?.items && Object.keys(previewData.items).length">
+                        <div v-for="(dataGroup, key) in previewData.items" :key="key" class="preview-group">
+                            <h3>{{ key }}</h3>
 
-<template v-if="gridReady && previewData?.items && Object.keys(previewData.items).length">
-  <div v-for="(dataGroup, key) in previewData.items" :key="key" class="preview-group">
-    <h3>{{ key }}</h3>
+                            <sw-data-grid
+                                v-if="paginatedRows[key]?.length"
+                                :dataSource="paginatedRows[key]"
+                                :columns="[
+                                    { property: 'name', label: 'Name', rawData: true },
+                                    { property: 'product_number', label: 'Product Number' }
+                                ]"
+                                :selectionMode="'multi'"
+                                :selection="selectedPreviewProducts[key] || []"
+                                :showSelection="true"
+                                ref="previewGrid"
+                                :ref-key="key"
+                                @selection-change="onProductSelectionChange(key, $event)"
+                            >
+                                <template #name="{ item }">
+                                    <router-link
+                                        :to="{ name: 'sw.product.detail', params: { id: item.id } }"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {{ item.name || 'N/A' }}
+                                    </router-link>
+                                </template>
+                                <template #product_number="{ item }">
+                                    <span>{{ item.product_number || 'N/A' }}</span>
+                                </template>
+                            </sw-data-grid>
 
-    <sw-data-grid
-      v-if="paginatedRows[key]?.length"
-      :dataSource="paginatedRows[key]"
-      :columns="[
-        { property: 'name', label: 'Name', rawData: true },
-        { property: 'product_number', label: 'Product Number' }
-      ]"
-      :selectionMode="'multi'"
-      :selection="selectedPreviewProducts[key] || []"
-      :showSelection="true"
-      ref="previewGrid"
-      :ref-key="key"
-      @selection-change="onProductSelectionChange(key, $event)"
-    >
-      <template #name="{ item }">
-        <router-link
-          :to="{ name: 'sw.product.detail', params: { id: item.id } }"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {{ item.name || 'N/A' }}
-        </router-link>
-      </template>
+                            <sw-pagination
+                                class="sw-cms-list__list-pagination"
+                                :page="pagination[key]?.page || 1"
+                                :limit="pagination[key]?.limit || 10"
+                                :total="pagination[key]?.total || 0"
+                                :steps="[9]"
+                                @page-change="({ page, limit }) => onPageChange({ page, limit }, key)"
+                            />
 
-      <template #product_number="{ item }">
-        <span>{{ item.product_number || 'N/A' }}</span>
-      </template>
-    </sw-data-grid>
-
-    <sw-pagination
-      class="sw-cms-list__list-pagination"
-      :page="pagination[key]?.page || 1"
-      :limit="pagination[key]?.limit || 10"
-      :total="pagination[key]?.total || 0"
-      :steps="[9]"
-      @page-change="({ page, limit }) => onPageChange({ page, limit }, key)"
-    />
-
-    <div class="sw-grid__total-count">
-      <strong>Total {{ key }}: </strong>
-      {{ dataGroup.count }}
-    </div>
-  </div>
-</template>
-
-
-
+                            <div class="sw-grid__total-count">
+                                <strong>Total {{ key }}: </strong>
+                                {{ dataGroup.count }}
+                            </div>
+                        </div>
+                    </template>
 
                     <template v-else>
                         <p>{{ $tc('ict-data-cleaner.preview.loading') }}</p>
                     </template>
 
-                    <sw-pagination
-                        v-if="!isLoading"
-                        class="sw-cms-list__list-pagination"
-                        :page="currentPage"
-                        :limit="limit"
-                        :total="total"
-                        :steps="[9]"
-                        @page-change="onPageChange"
-                    />
-
                     <template #modal-footer>
-                        <sw-button
-                            variant="primary"
-                            size="small"
-                            @click="showPreviewModal = false"
-                        >
+                        <sw-button variant="primary" size="small" @click="showPreviewModal = false">
                             {{ $tc('global.default.close') }}
                         </sw-button>
 
-                        <sw-button
-                            variant="primary"
-                            size="small"
-                            @click="removeSelectedProducts"
-                        >
+                        <sw-button variant="primary" size="small" @click="removeSelectedProducts">
                             Remove
                         </sw-button>
                     </template>
