@@ -87,20 +87,51 @@
                         <div class="field-header">
                             <span class="label">
                                 <strong>Remove guest accounts after months:</strong>
-                                {{ customerSettings['IctDataCleaner.config.customerCleanupGuestMonths'] }}
+                                {{ customerSettings['IctDataCleaner.config.customerCleanup.guestMonths'] }}
                             </span>
-                            <sw-button @click="previewAction('customerCleanupGuestMonths')" size="small" variant="primary">Preview</sw-button>
+                            <sw-button @click="previewAction('customerCleanup.guestMonths')" size="small" variant="primary">Preview</sw-button>
                         </div>
 
                         <div class="field-header">
                             <span class="label">
                                 <strong>Remove inactive customers after months:</strong>
-                                {{ customerSettings['IctDataCleaner.config.customerCleanupInactiveMonths'] }}
+                                {{ customerSettings['IctDataCleaner.config.customerCleanup.inactiveMonths'] }}
                             </span>
-                            <sw-button @click="previewAction('customerCleanupInactiveMonths')" size="small" variant="primary">Preview</sw-button>
+                            <sw-button @click="previewAction('customerCleanup.inactiveMonths')" size="small" variant="primary">Preview</sw-button>
                         </div>
                     </sw-container>
                 </sw-card>
+
+                <sw-card v-if="activeTab === 'carts'" title="Orders, Carts & Checkouts" :isLoading="isLoading">
+  <sw-container gap="10px">
+
+    <div class="field-header">
+      <span class="label">
+        <strong>Remove abandoned carts after days:</strong>
+        {{ cartSettings['IctDataCleaner.config.cartCleanup.abandonedDays'] }}
+      </span>
+      <sw-button @click="previewAction('cartCleanup.abandonedDays')" size="small" variant="primary">Preview</sw-button>
+    </div>
+
+    <div class="field-header">
+      <span class="label">
+        <strong>Remove cancelled orders after months:</strong>
+        {{ cartSettings['IctDataCleaner.config.orderCleanup.cancelledAgeMonths'] }}
+      </span>
+      <sw-button @click="previewAction('orderCleanup.cancelledAgeMonths')" size="small" variant="primary">Preview</sw-button>
+    </div>
+
+    <div class="field-header">
+      <span class="label">
+        <strong>Remove old transactions after months:</strong>
+        {{ cartSettings['IctDataCleaner.config.orderCleanup.oldAgeMonths'] }}
+      </span>
+      <sw-button @click="previewAction('orderCleanup.oldAgeMonths')" size="small" variant="primary">Preview</sw-button>
+    </div>
+
+  </sw-container>
+</sw-card>
+
 
                 {% block ict_data_cleaner_index_modal %}
                 <sw-modal
@@ -116,11 +147,8 @@
 
                             <sw-data-grid
                                 v-if="paginatedRows[key]?.length"
-                                :dataSource="paginatedRows[key]"
-                                :columns="[
-                                    { property: 'name', label: 'Name', rawData: true },
-                                    { property: 'product_number', label: 'Product Number' }
-                                ]"
+                                :dataSource="paginatedRows[key]"                               
+                                :columns="getColumnsForGroup(key)"
                                 :selectionMode="'multi'"
                                 :selection="selectedPreviewProducts[key] || []"
                                 :showSelection="true"

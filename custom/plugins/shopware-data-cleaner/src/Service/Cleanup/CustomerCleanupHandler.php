@@ -54,32 +54,40 @@ class CustomerCleanupHandler implements CleanupHandlerInterface
     {
         $date = new \DateTime();
         $date->modify("-{$months} months");
-
         $sql = <<<SQL
 SELECT c.id, c.email, c.first_name, c.last_name
 FROM customer c
-LEFT JOIN `order` o ON c.id = o.order_customer_id
+LEFT JOIN `order_customer` oc ON c.id = oc.customer_id
 WHERE c.guest = 1 
 AND c.created_at < :date
-AND o.id IS NULL
+-- AND oc.id IS NULL
 LIMIT 1000
 SQL;
 
         $customers = $this->connection->fetchAllAssociative($sql, [
             'date' => $date->format('Y-m-d H:i:s')
         ]);
+  
+        $customers = array_map(function ($customer) {
+    return [
+        'id' => Uuid::fromBytesToHex($customer['id']),
+        'email' => $customer['email'],
+        'first_name' => $customer['first_name'],
+        'last_name' => $customer['last_name'],
+    ];
+}, $customers);
 
         if (!$dryRun && !empty($customers)) {
             $ids = array_map(function ($customer) {
-                return ['id' => $customer['id']];
+                return ['id' => Uuid::fromHexToBytes($customer['id'])];
             }, $customers);
             
-            $this->customerRepository->delete($ids, $context);
+            // $this->customerRepository->delete($ids, $context);
         }
 
         return [
             'count' => count($customers),
-            'sample' => array_slice($customers, 0, 5)
+            'sample' => $customers
         ];
     }
 
@@ -91,10 +99,10 @@ SQL;
         $sql = <<<SQL
 SELECT c.id, c.email, c.first_name, c.last_name
 FROM customer c
-LEFT JOIN `order` o ON c.id = o.order_customer_id AND o.created_at > :date
+LEFT JOIN `order_customer` o ON c.id = o.customer_id AND o.created_at > :date
 WHERE c.guest = 0 
 AND c.created_at < :date
-AND (c.last_login_at IS NULL OR c.last_login_at < :date)
+AND (c.last_login IS NULL OR c.last_login < :date)
 AND o.id IS NULL
 LIMIT 1000
 SQL;

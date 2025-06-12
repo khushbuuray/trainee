@@ -26,6 +26,7 @@ class ProductCleanupHandler implements CleanupHandlerInterface
 
     public function cleanup(array $config, bool $dryRun, Context $context): array
     {
+
         $results = [
             'name' => $this->getName(),
             'items' => []

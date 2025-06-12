@@ -113,6 +113,12 @@
         <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/>
         <argument type="service" id="ict_data_cleanup_log.repository"/>
         <argument type="service" id="IctDataCleanerPro\Service\Cleanup\ProductCleanupHandler"/>
+        <argument type="service" id="IctDataCleanerPro\Service\Cleanup\CustomerCleanupHandler"/>
+        <argument type="service" id="IctDataCleanerPro\Service\Cleanup\CartCleanupHandler"/>
+        <argument type="service" id="IctDataCleanerPro\Service\Cleanup\OrderCleanupHandler"/>
+
+
+
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>

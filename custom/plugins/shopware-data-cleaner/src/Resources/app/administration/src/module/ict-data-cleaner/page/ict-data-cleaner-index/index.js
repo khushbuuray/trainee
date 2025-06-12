@@ -18,7 +18,7 @@ Component.register("ict-data-cleaner-index", {
   data() {
     return {
       isLoading: false,
-      activeTab: 'products',
+      activeTab: "products",
       isSaveSuccessful: false,
       isDryRun: true,
       previewResults: null,
@@ -39,9 +39,13 @@ Component.register("ict-data-cleaner-index", {
         "IctDataCleaner.config.productVariantCleanup.zeroStockMonths": 6,
       },
       customerSettings: {
-        "IctDataCleaner.config.customerCleanupGuestMonths": 12,
-        "IctDataCleaner.config.customerCleanupInactiveMonths": 12,
-        "IctDataCleaner.config.enableSchedulerOfCustomer": false,
+        "IctDataCleaner.config.customerCleanup.guestMonths": 12,
+        "IctDataCleaner.config.customerCleanup.inactiveMonths": 12,
+      },
+      cartSettings: {
+        "IctDataCleaner.config.cartCleanup.abandonedDays": 30,
+        "IctDataCleaner.config.orderCleanup.cancelledAgeMonths": 12,
+        "IctDataCleaner.config.orderCleanup.oldAgeMonths": 12,
       },
     };
   },
@@ -69,11 +73,37 @@ Component.register("ict-data-cleaner-index", {
   },
 
   methods: {
-     setActiveTab(tabKey) {
-       this.activeTab = tabKey;
-        console.log('Switched tab to:', tabKey);
+    getColumnsForGroup(key) {
+      const sample = this.previewData?.items?.[key]?.sample;
+      console.log("Preview sample for", key, sample);
+
+      if (!Array.isArray(sample) || sample.length === 0) return [];
+
+      const firstRow = sample[0];
+      console.log("First row:", firstRow);
+
+      if (typeof firstRow !== "object" || firstRow === null) {
+        console.warn(`Invalid row data for preview group: ${key}`, firstRow);
+        return [];
+      }
+
+      return Object.keys(firstRow).map((field) => ({
+        property: field,
+        label: this.beautifyLabel(field),
+      }));
+    },
+    beautifyLabel(field) {
+      return field
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+    },
+    setActiveTab(tabKey) {
+      this.activeTab = tabKey;
+      console.log("Switched tab to:", tabKey);
     },
     previewAction(field) {
+      console.log("Preview action field:", field);
+
       this.gridReady = false;
       this.activePreviewKey = field;
 
@@ -86,10 +116,19 @@ Component.register("ict-data-cleaner-index", {
         return;
       }
 
-      const config = {
-        [field]: this.productSettings[`IctDataCleaner.config.${field}`],
-      };
+      // const config = {
+      //   [field]: this.productSettings[`IctDataCleaner.config.${field}`],
+      // };
+      const key = `IctDataCleaner.config.${field}`;
+      const value = this.allSettings()[key];
 
+      if (value === undefined) {
+        console.warn(` No setting found for: ${key}`);
+        return;
+      }
+      const config = { [key]: value };
+
+      console.log("Preview config:", config);
       httpClient
         .post("/ict-data-cleaner/preview", config, {
           headers: { Authorization: `Bearer ${token}` },
@@ -267,6 +306,16 @@ Component.register("ict-data-cleaner-index", {
           message: error?.response?.data?.error || "Could not delete products.",
         });
       }
+    },
+    allSettings() {
+      return {
+        ...this.productSettings,
+        ...this.customerSettings,
+        ...this.cartSettings,
+        ...this.promotionSettings,
+        ...this.cmsPageSettings,
+        ...this.reviewSettings,
+      };
     },
   },
 });

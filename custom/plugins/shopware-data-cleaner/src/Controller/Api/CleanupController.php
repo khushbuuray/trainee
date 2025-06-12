@@ -12,26 +12,38 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Context;
 use IctDataCleanerPro\Service\Cleanup\ProductCleanupHandler;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
-
+use IctDataCleanerPro\Service\Cleanup\CustomerCleanupHandler;
+use IctDataCleanerPro\Service\Cleanup\CartCleanupHandler;
+use IctDataCleanerPro\Service\Cleanup\OrderCleanupHandler;
+use Swag\PayPal\RestApi\V1\Api\Payment\Transaction\RelatedResource\Order;
 
 #[Route('/api/ict-data-cleaner', name: 'api.ict_data_cleaner', defaults: ['_routeScope' => ['api']])]
 
 class CleanupController extends AbstractController
 {
-    private CleanupService $cleanupService;
-    private EntityRepository $cleanupLogRepository;
-    private ProductCleanupHandler $productCleanupHandler;
-    private SerializerInterface  $serializer;
+    // private CleanupService $cleanupService;
+    // private EntityRepository $cleanupLogRepository;
+    // private ProductCleanupHandler $productCleanupHandler;
+    private array $handlers;
+
 
     public function __construct(
         CleanupService $cleanupService,
         EntityRepository $cleanupLogRepository,
         ProductCleanupHandler $productCleanupHandler,
+        CustomerCleanupHandler $customerCleanupHandler,
+        CartCleanupHandler $cartCleanupHandler,
+        OrderCleanupHandler $orderCleanupHandler
     ) {
-        $this->cleanupService = $cleanupService;
-        $this->cleanupLogRepository = $cleanupLogRepository;
-        $this->productCleanupHandler = $productCleanupHandler;
+        // $this->cleanupService = $cleanupService;
+        // $this->cleanupLogRepository = $cleanupLogRepository;
+        // $this->productCleanupHandler = $productCleanupHandler;
+          $this->handlers = [
+        'productCleanup' => $productCleanupHandler,
+        'customerCleanup' => $customerCleanupHandler,
+        'cartCleanup' => $cartCleanupHandler,
+        'orderCleanup' => $orderCleanupHandler
+    ];
     }
 
     #[Route(path: '/preview', name: 'api.ict_data_cleaner.preview', methods: ['POST'])]
@@ -39,12 +51,35 @@ public function preview(Request $request, Context $context): JsonResponse
 {
     try {
         $config = json_decode($request->getContent(), true);
-        $results = $this->productCleanupHandler->cleanup($config, false, $context);
-        return new JsonResponse([
+         if (empty($config) || !is_array($config)) {
+            return new JsonResponse(['error' => 'Invalid config payload'], 400);
+        }
+        $cleanedConfig = [];
+        foreach ($config as $key => $value) {
+            $strippedKey = str_replace('IctDataCleaner.config.', '', $key);
+            $cleanedConfig[$strippedKey] = $value;
+        }
+
+        $firstKey = array_key_first($cleanedConfig); 
+        $matchedHandler = null;
+        foreach ($this->handlers as $key => $handler) {
+            if (str_contains($firstKey, $key)) {
+                $matchedHandler = $handler;
+                break;
+            }
+        }
+
+        if (!$matchedHandler) {
+            return new JsonResponse(['error' => 'No handler matched for: ' . $firstKey], 400);
+        }
+
+        $result = $matchedHandler->cleanup($cleanedConfig, true, $context);
+                return new JsonResponse([
                 'success' => true,
-                'data' => $results
+                'data' => $result
             ]);
         } catch (\Throwable $e) {
+            dd($e);
             return new JsonResponse([
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
@@ -64,6 +99,7 @@ public function remove(Request $request, Context $context): JsonResponse
                 'message' => 'No product IDs provided.'
             ], 400);
         }
+
          $flatItems = array_values($productItems[0]);
          // Extract only the IDs
          $deleteData = array_map(function ($item) {

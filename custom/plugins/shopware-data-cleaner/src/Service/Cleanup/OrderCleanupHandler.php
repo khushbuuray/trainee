@@ -5,6 +5,8 @@ namespace IctDataCleanerPro\Service\Cleanup;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Uuid\Uuid;
+
 
 class OrderCleanupHandler implements CleanupHandlerInterface
 {
@@ -37,9 +39,9 @@ class OrderCleanupHandler implements CleanupHandlerInterface
         }
 
         // Clean old transactions
-        if (isset($config['transactionCleanup.ageMonths'])) {
+        if (isset($config['orderCleanup.oldAgeMonths'])) {
             $transactionResults = $this->cleanupOldTransactions(
-                (int) $config['transactionCleanup.ageMonths'],
+                (int) $config['orderCleanup.oldAgeMonths'],
                 $dryRun,
                 $context
             );
@@ -68,17 +70,25 @@ SQL;
             'date' => $date->format('Y-m-d H:i:s')
         ]);
 
-        if (!$dryRun && !empty($orders)) {
-            $ids = array_map(function ($order) {
-                return ['id' => $order['id']];
-            }, $orders);
-            
-            $this->orderRepository->delete($ids, $context);
-        }
+   $orders = array_map(function ($order) {
+    if (isset($order['id'])) {
+        $order['id'] = Uuid::fromBytesToHex($order['id']);
+    }
+
+    return $order;
+}, $orders);
+
+if (!$dryRun && !empty($orders)) {
+    $ids = array_map(function ($order) {
+        return ['id' => Uuid::fromHexToBytes($order['id'])];
+    }, $orders);
+    
+    // $this->orderRepository->delete($ids, $context);
+}
 
         return [
             'count' => count($orders),
-            'sample' => array_slice($orders, 0, 5)
+            'sample' => $orders
         ];
     }
 
@@ -86,7 +96,7 @@ SQL;
     {
         $date = new \DateTime();
         $date->modify("-{$months} months");
-
+        // dd($date);
         $countSql = <<<SQL
 SELECT COUNT(*) as count
 FROM order_transaction 
@@ -100,30 +110,70 @@ SQL;
         $count = (int) $countResult['count'];
 
         $sampleSql = <<<SQL
-SELECT id, created_at
-FROM order_transaction 
-WHERE created_at < :date
-LIMIT 5
+-- SELECT id, created_at
+-- FROM order_transaction 
+-- WHERE created_at < :date
+-- LIMIT 1000
+SELECT 
+    ot.id AS transaction_id,
+    ot.created_at AS transaction_created_at,
+    o.id AS order_id,
+    o.order_number,
+    oli.product_id,
+    oli.label AS product_name,
+    oli.quantity,
+    oli.total_price
+FROM order_transaction ot
+INNER JOIN `order` o ON ot.order_id = o.id
+INNER JOIN order_line_item oli ON oli.order_id = o.id
+WHERE ot.created_at < :date
+LIMIT 1000
 SQL;
 
-        $samples = $this->connection->fetchAllAssociative($sampleSql, [
+        $rawSamples = $this->connection->fetchAllAssociative($sampleSql, [
             'date' => $date->format('Y-m-d H:i:s')
         ]);
 
-        if (!$dryRun && $count > 0) {
-            $deleteSql = <<<SQL
-DELETE FROM order_transaction 
-WHERE created_at < :date
-SQL;
+//         if (!$dryRun && $count > 0) {
+//             $deleteSql = <<<SQL
+// DELETE FROM order_transaction 
+// WHERE created_at < :date
+// SQL;
             
-            $this->connection->executeStatement($deleteSql, [
-                'date' => $date->format('Y-m-d H:i:s')
-            ]);
-        }
+            // $this->connection->executeStatement($deleteSql, [
+            //     'date' => $date->format('Y-m-d H:i:s')
+            // ]);
+        // }
+    //       $samples = array_map(function ($row) {
+    //     return [
+    //         'id' => Uuid::fromBytesToHex($row['id']),
+    //         'created_at' => $row['created_at'],
+    //     ];
+    // }, $rawSamples);
 
+      // Optional deletion
+    // if (!$dryRun && $count > 0) {
+    //     $ids = array_map(function ($row) {
+    //         return ['id' => $row['id']];
+    //     }, $samples);
+
+    //     // $this->orderRepository->delete($ids, $context);
+    // }
+    $results = array_map(function ($row) {
+    return [
+        'transaction_id' => Uuid::fromBytesToHex($row['transaction_id']),
+        'transaction_created_at' => $row['transaction_created_at'],
+        'order_id' => Uuid::fromBytesToHex($row['order_id']),
+        'order_number' => $row['order_number'],
+        'product_id' => $row['product_id'] ? Uuid::fromBytesToHex($row['product_id']) : null,
+        'product_name' => $row['product_name'],
+        'quantity' => $row['quantity'],
+        'total_price' => $row['total_price'],
+    ];
+}, $rawSamples);
         return [
             'count' => $count,
-            'sample' => $samples
+            'sample' => $results
         ];
     }
 
