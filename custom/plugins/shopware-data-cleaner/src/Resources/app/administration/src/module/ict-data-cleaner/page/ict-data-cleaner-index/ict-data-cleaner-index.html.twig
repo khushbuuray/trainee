@@ -42,8 +42,12 @@
                         {{ $tc('ict-data-cleaner.tabs.reviews') }}
                     </sw-tabs-item>
 
-                    <sw-tabs-item :active="activeTab === 'marketingLists'" @click="activeTab = 'marketingLists'" :title="$tc('ict-data-cleaner.tabs.marketingLists')">
+                    <sw-tabs-item :active="activeTab === 'newsletter'" @click="activeTab = 'newsletter'" :title="$tc('ict-data-cleaner.tabs.newsletter')">
                         {{ $tc('ict-data-cleaner.tabs.marketingLists') }}
+                    </sw-tabs-item>
+
+                    <sw-tabs-item :active="activeTab === 'media'" @click="activeTab = 'media'" :title="$tc('ict-data-cleaner.tabs.mediaManagement')">
+                        {{ $tc('ict-data-cleaner.tabs.mediaManagement') }}
                     </sw-tabs-item>
 
                     <sw-tabs-item :active="activeTab === 'logs'" @click="activeTab = 'logs'" :title="$tc('ict-data-cleaner.tabs.logs')">
@@ -131,6 +135,148 @@
 
   </sw-container>
 </sw-card>
+
+<sw-card v-if="activeTab === 'categories'" title="Categories & Navigation" :isLoading="isLoading">
+  <sw-container gap="10px">
+
+    <div class="field-header">
+      <span class="label">
+        <strong>Remove empty categories:</strong>
+        {{ categorySettings['IctDataCleaner.config.categoryCleanup.emptyCategories'] ? 'Yes' : 'No' }}
+      </span>
+      <sw-button @click="previewAction('categoryCleanup.emptyCategories')" size="small" variant="primary">Preview</sw-button>
+    </div>
+
+    <div class="field-header">
+      <span class="label">
+        <strong>Remove categories with no sales in months:</strong>
+        {{ categorySettings['IctDataCleaner.config.categoryCleanup.noSalesMonths'] }}
+      </span>
+      <sw-button @click="previewAction('categoryCleanup.noSalesMonths')" size="small" variant="primary">Preview</sw-button>
+    </div>
+
+  </sw-container>
+</sw-card>
+
+<sw-card v-if="activeTab === 'promotions'" title="Promotions & Discounts" :isLoading="isLoading">
+    <sw-container gap="10px">
+        
+        <div class="field-header">
+            <span class="label">
+                <strong>Expired promotions older than (months):</strong>
+                {{ promotionSettings['IctDataCleaner.config.promotionCleanup.expiredMonths'] }}
+            </span>
+            <sw-button @click="previewAction('promotionCleanup.expiredMonths')" size="small" variant="primary">Preview</sw-button>
+        </div>
+
+        <div class="field-header">
+            <span class="label">
+                <strong>Unused vouchers older than (months): </strong>
+                {{ promotionSettings['IctDataCleaner.config.promotionCleanup.unusedVoucherMonths'] }}
+            </span>
+            <sw-button @click="previewAction('promotionCleanup.unusedVoucherMonths')" size="small" variant="primary">Preview</sw-button>
+        </div>
+
+        <div class="field-header">
+            <span class="label">
+                <strong>Orphaned cart rules (not linked to any promotion):</strong>
+                {{ promotionSettings['IctDataCleaner.config.promotionCleanup.orphaned'] ? 'Yes' : 'No' }}
+            </span>
+            <sw-button @click="previewAction('promotionCleanup.orphaned')" size="small" variant="primary">Preview</sw-button>
+        </div>
+
+    </sw-container>
+</sw-card>
+
+<sw-card v-if="activeTab === 'reviews'" title="Reviews & Ratings" :isLoading="isLoading">
+  <sw-container gap="10px">
+
+    <div class="field-header">
+      <span class="label">
+        <strong>Remove unapproved reviews older than days:</strong>
+        {{ reviewSettings['IctDataCleaner.config.reviewCleanup.unapprovedDays'] }}
+      </span>
+      <sw-button @click="previewAction('reviewCleanup.unapprovedDays')" size="small" variant="primary">
+        Preview
+      </sw-button>
+    </div>
+
+  </sw-container>
+</sw-card>
+
+<sw-card v-if="activeTab === 'cmsPages'" title="CMS Content & Pages" :isLoading="isLoading">
+  <sw-container gap="10px">
+
+    <div class="field-header">
+      <span class="label">
+        <strong>Remove CMS pages never viewed in months:</strong>
+        {{ cmsPageSettings['IctDataCleaner.config.cmsPageCleanup.neverViewedMonths'] }}
+      </span>
+      <sw-button @click="previewAction('cmsPageCleanup.neverViewedMonths')" size="small" variant="primary">
+        Preview
+      </sw-button>
+    </div>
+
+    <div class="field-header">
+      <span class="label">
+        <strong>Remove unpublished CMS drafts older than months:</strong>
+        {{ cmsPageSettings['IctDataCleaner.config.cmsPageCleanup.unpublishedDraftsMonths'] }}
+      </span>
+      <sw-button @click="previewAction('cmsPageCleanup.unpublishedDraftsMonths')" size="small" variant="primary">
+        Preview
+      </sw-button>
+    </div>
+  </sw-container>
+</sw-card>
+
+<sw-card v-if="activeTab === 'newsletter'" title="Marketing Lists" :isLoading="isLoading">
+  <sw-container gap="10px">
+
+    <div class="field-header">
+      <span class="label">
+        <strong>Remove bounced newsletter recipients after months:</strong>
+        {{ newsletterSettings['IctDataCleaner.config.newsletterCleanup.bouncedMonths'] }}
+      </span>
+      <sw-button @click="previewAction('newsletterCleanup.bouncedMonths')" size="small" variant="primary">
+        Preview
+      </sw-button>
+    </div>
+  </sw-container>
+</sw-card>
+
+<sw-card v-if="activeTab === 'media'" title="Media Management" :isLoading="isLoading">
+  <sw-container gap="10px">
+
+    <div class="field-header">
+      <span class="label">
+        <strong>Remove orphaned media after days:</strong>
+        {{ mediaSettings['IctDataCleaner.config.mediaCleanup.orphanAgeDays'] }}
+      </span>
+      <sw-button @click="previewAction('mediaCleanup.orphanAgeDays')" size="small" variant="primary">
+        Preview
+      </sw-button>
+    </div>
+
+    <div class="field-header">
+      <span class="label">
+        <strong>Delete orphaned thumbnails:</strong>
+        {{ mediaSettings['IctDataCleaner.config.mediaCleanup.deleteThumbnails'] ? 'Yes' : 'No' }}
+      </span>
+      <sw-button @click="previewAction('mediaCleanup.deleteThumbnails')" size="small" variant="primary">
+        Preview
+      </sw-button>
+    </div>
+
+
+
+  </sw-container>
+</sw-card>
+
+
+
+
+
+
 
 
                 {% block ict_data_cleaner_index_modal %}

@@ -15,8 +15,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use IctDataCleanerPro\Service\Cleanup\CustomerCleanupHandler;
 use IctDataCleanerPro\Service\Cleanup\CartCleanupHandler;
 use IctDataCleanerPro\Service\Cleanup\OrderCleanupHandler;
-use Swag\PayPal\RestApi\V1\Api\Payment\Transaction\RelatedResource\Order;
-
+use IctDataCleanerPro\Service\Cleanup\CategoryCleanupHandler;
+use IctDataCleanerPro\Service\Cleanup\PromotionCleanupHandler;
+use IctDataCleanerPro\Service\Cleanup\ReviewCleanupHandler;
+use IctDataCleanerPro\Service\Cleanup\CmsCleanupHandler;
+use IctDataCleanerPro\Service\Cleanup\NewsletterCleanupHandler;
+use IctDataCleanerPro\Service\Cleanup\MediaCleanupHandler;
 #[Route('/api/ict-data-cleaner', name: 'api.ict_data_cleaner', defaults: ['_routeScope' => ['api']])]
 
 class CleanupController extends AbstractController
@@ -33,7 +37,14 @@ class CleanupController extends AbstractController
         ProductCleanupHandler $productCleanupHandler,
         CustomerCleanupHandler $customerCleanupHandler,
         CartCleanupHandler $cartCleanupHandler,
-        OrderCleanupHandler $orderCleanupHandler
+        OrderCleanupHandler $orderCleanupHandler,
+        CategoryCleanupHandler $categoryCleanupHandler,
+        PromotionCleanupHandler $promotionCleanupHandler,
+        ReviewCleanupHandler $reviewCleanupHandler,
+        CmsCleanupHandler $cmsCleanupHandler,
+        NewsletterCleanupHandler $newsletterCleanupHandler,
+        MediaCleanupHandler $mediaCleanupHandler
+        
     ) {
         // $this->cleanupService = $cleanupService;
         // $this->cleanupLogRepository = $cleanupLogRepository;
@@ -42,7 +53,13 @@ class CleanupController extends AbstractController
         'productCleanup' => $productCleanupHandler,
         'customerCleanup' => $customerCleanupHandler,
         'cartCleanup' => $cartCleanupHandler,
-        'orderCleanup' => $orderCleanupHandler
+        'orderCleanup' => $orderCleanupHandler,
+        'categoryCleanup' => $categoryCleanupHandler,
+        'promotionCleanup' => $promotionCleanupHandler,
+        'reviewCleanup' => $reviewCleanupHandler,
+        'cmsPageCleanup' => $cmsCleanupHandler,
+        'newsletterCleanup' => $newsletterCleanupHandler,
+        'mediaCleanup' => $mediaCleanupHandler
     ];
     }
 

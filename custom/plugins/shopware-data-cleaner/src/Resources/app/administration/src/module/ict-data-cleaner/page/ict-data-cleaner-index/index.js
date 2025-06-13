@@ -47,6 +47,30 @@ Component.register("ict-data-cleaner-index", {
         "IctDataCleaner.config.orderCleanup.cancelledAgeMonths": 12,
         "IctDataCleaner.config.orderCleanup.oldAgeMonths": 12,
       },
+      categorySettings: {
+        "IctDataCleaner.config.categoryCleanup.emptyCategories": true,
+        "IctDataCleaner.config.categoryCleanup.noSalesMonths": 6,
+      },
+      promotionSettings: {
+        'IctDataCleaner.config.promotionCleanup.expiredMonths': 6,
+        'IctDataCleaner.config.promotionCleanup.unusedVoucherMonths': 6,
+        'IctDataCleaner.config.promotionCleanup.orphaned': true,
+      },
+      reviewSettings: {
+        "IctDataCleaner.config.reviewCleanup.unapprovedDays": 30,
+      },
+      cmsPageSettings: {
+        "IctDataCleaner.config.cmsPageCleanup.neverViewedMonths": true,
+        "IctDataCleaner.config.cmsPageCleanup.unpublishedDraftsMonths": 6,
+      },
+      newsletterSettings: {
+        "IctDataCleaner.config.newsletterCleanup.bouncedMonths": 6,
+      },
+      mediaSettings: {
+        "IctDataCleaner.config.mediaCleanup.orphanAgeDays": 60,
+        "IctDataCleaner.config.mediaCleanup.deleteThumbnails": true,
+      },
+
     };
   },
 
@@ -87,12 +111,23 @@ Component.register("ict-data-cleaner-index", {
         return [];
       }
 
-      return Object.keys(firstRow).map((field) => ({
-        property: field,
-        label: this.beautifyLabel(field),
-      }));
+      // return Object.keys(firstRow).map((field) => ({
+      //   property: field,
+      //   label: this.beautifyLabel(field),
+      // }));
+      return Object.keys(firstRow)
+  .filter(field => field !== 'id')
+  .map(field => ({
+    property: field,
+    label: this.beautifyLabel(field),
+  }));
     },
     beautifyLabel(field) {
+      console.log("Beautify label:", field);  
+  //       if (field === 'id') {
+  //   return null; // or return ''; or return undefined;
+  // }
+      
       return field
         .replace(/_/g, " ")
         .replace(/\b\w/g, (char) => char.toUpperCase());
@@ -312,9 +347,12 @@ Component.register("ict-data-cleaner-index", {
         ...this.productSettings,
         ...this.customerSettings,
         ...this.cartSettings,
+        ...this.categorySettings,
         ...this.promotionSettings,
         ...this.cmsPageSettings,
         ...this.reviewSettings,
+        ...this.newsletterSettings,
+        ...this.mediaSettings,
       };
     },
   },

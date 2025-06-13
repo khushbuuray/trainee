@@ -5,6 +5,7 @@ namespace IctDataCleanerPro\Service\Cleanup;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Uuid\Uuid;
 
 class PromotionCleanupHandler implements CleanupHandlerInterface
 {
@@ -25,7 +26,6 @@ class PromotionCleanupHandler implements CleanupHandlerInterface
             'name' => $this->getName(),
             'items' => []
         ];
-
         // Clean expired promotions
         if (isset($config['promotionCleanup.expiredMonths'])) {
             $expiredResults = $this->cleanupExpiredPromotions(
@@ -47,7 +47,7 @@ class PromotionCleanupHandler implements CleanupHandlerInterface
         }
 
         // Clean orphaned cart rules
-        if ($config['cartRuleCleanup.orphaned'] ?? false) {
+        if ($config['promotionCleanup.orphaned'] ?? false) {
             $cartRuleResults = $this->cleanupOrphanedCartRules($dryRun, $context);
             $results['items']['orphaned_cart_rules'] = $cartRuleResults;
         }
@@ -65,17 +65,20 @@ SELECT p.id, pt.name, p.valid_until
 FROM promotion p
 LEFT JOIN promotion_translation pt ON p.id = pt.promotion_id
 LEFT JOIN promotion_order_rule por ON p.id = por.promotion_id
-LEFT JOIN `order` o ON por.order_id = o.id
-WHERE p.valid_until < :expiredDate
-AND p.valid_until < :cleanupDate
-AND o.id IS NULL
-LIMIT 1000
+WHERE p.valid_until < '2024-12-12'
+  AND p.valid_until < '2024-12-12'
+    -- AND por.rule_id IS NULL
+
+LIMIT 1000;
 SQL;
 
         $promotions = $this->connection->fetchAllAssociative($sql, [
             'expiredDate' => (new \DateTime())->format('Y-m-d H:i:s'),
             'cleanupDate' => $date->format('Y-m-d H:i:s')
         ]);
+          foreach ($promotions as &$promotion) {
+        $promotion['id'] = Uuid::fromBytesToHex($promotion['id']);
+    }
 
         if (!$dryRun && !empty($promotions)) {
             $ids = array_map(function ($promotion) {
@@ -91,56 +94,67 @@ SQL;
         ];
     }
 
-    private function cleanupUnusedVouchers(int $months, bool $dryRun, Context $context): array
-    {
-        $date = new \DateTime();
-        $date->modify("-{$months} months");
+   private function cleanupUnusedVouchers(int $months, bool $dryRun, Context $context): array
+{
+    $date = new \DateTime();
+    $date->modify("-{$months} months");
 
-        $countSql = <<<SQL
-SELECT COUNT(*) as count
+    // 1. Count unused vouchers
+    $countSql = <<<SQL
+SELECT COUNT(*) AS count
 FROM promotion_individual_code pic
-LEFT JOIN promotion_order_rule por ON pic.promotion_id = por.promotion_id
+LEFT JOIN order_line_item oli 
+    ON oli.referenced_id = pic.id AND oli.type = 'promotion'
 WHERE pic.created_at < :date
-AND por.promotion_id IS NULL
+AND oli.id IS NULL
 SQL;
 
-        $countResult = $this->connection->fetchAssociative($countSql, [
-            'date' => $date->format('Y-m-d H:i:s')
-        ]);
+    $countResult = $this->connection->fetchAssociative($countSql, [
+        'date' => $date->format('Y-m-d H:i:s')
+    ]);
 
-        $count = (int) $countResult['count'];
+    $count = (int) $countResult['count'];
 
-        $sampleSql = <<<SQL
+    // 2. Sample of unused vouchers (same logic)
+    $sampleSql = <<<SQL
 SELECT pic.id, pic.code, pic.created_at
 FROM promotion_individual_code pic
-LEFT JOIN promotion_order_rule por ON pic.promotion_id = por.promotion_id
+LEFT JOIN order_line_item oli 
+    ON oli.referenced_id = pic.id AND oli.type = 'promotion'
 WHERE pic.created_at < :date
-AND por.promotion_id IS NULL
-LIMIT 5
+AND oli.id IS NULL
+LIMIT 1000
 SQL;
 
-        $samples = $this->connection->fetchAllAssociative($sampleSql, [
-            'date' => $date->format('Y-m-d H:i:s')
-        ]);
+    $samples = $this->connection->fetchAllAssociative($sampleSql, [
+        'date' => $date->format('Y-m-d H:i:s')
+    ]);
+    $samples = array_map(function ($promotion) {
+    $promotion['id'] = Uuid::fromBytesToHex($promotion['id']);
+    return $promotion;
+}, $samples);
 
-        if (!$dryRun && $count > 0) {
-            $deleteSql = <<<SQL
-DELETE pic FROM promotion_individual_code pic
-LEFT JOIN promotion_order_rule por ON pic.promotion_id = por.promotion_id
-WHERE pic.created_at < :date
-AND por.promotion_id IS NULL
-SQL;
-            
-            $this->connection->executeStatement($deleteSql, [
-                'date' => $date->format('Y-m-d H:i:s')
-            ]);
-        }
+    // 3. Optional deletion
+//     if (!$dryRun && $count > 0) {
+//         $deleteSql = <<<SQL
+// DELETE pic FROM promotion_individual_code pic
+// LEFT JOIN order_line_item oli 
+//     ON oli.referenced_id = pic.id AND oli.type = 'promotion'
+// WHERE pic.created_at < :date
+// AND oli.id IS NULL
+// SQL;
 
-        return [
-            'count' => $count,
-            'sample' => $samples
-        ];
-    }
+//         $this->connection->executeStatement($deleteSql, [
+//             'date' => $date->format('Y-m-d H:i:s')
+//         ]);
+//     }
+
+    return [
+        'count' => $count,
+        'sample' => $samples
+    ];
+}
+
 
     private function cleanupOrphanedCartRules(bool $dryRun, Context $context): array
     {
@@ -163,7 +177,7 @@ LEFT JOIN promotion_cart_rule pcr ON r.id = pcr.rule_id
 LEFT JOIN promotion p ON pcr.promotion_id = p.id
 WHERE r.created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)
 AND (p.id IS NULL OR p.active = 0)
-LIMIT 5
+LIMIT 100
 SQL;
 
         $samples = $this->connection->fetchAllAssociative($sampleSql);
@@ -180,6 +194,10 @@ SQL;
             $this->connection->executeStatement($deleteSql);
         }
 
+        $samples = array_map(function ($promotion) {
+            $promotion['id'] = Uuid::fromBytesToHex($promotion['id']);
+            return $promotion;
+        }, $samples);
         return [
             'count' => $count,
             'sample' => $samples

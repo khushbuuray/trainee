@@ -5,6 +5,7 @@ namespace IctDataCleanerPro\Service\Cleanup;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Uuid\Uuid;
 
 class ReviewCleanupHandler implements CleanupHandlerInterface
 {
@@ -43,9 +44,8 @@ class ReviewCleanupHandler implements CleanupHandlerInterface
     {
         $date = new \DateTime();
         $date->modify("-{$days} days");
-
         $sql = <<<SQL
-SELECT pr.id, pr.title, pr.created_at
+SELECT pr.id, pr.title,pr.status, pr.created_at
 FROM product_review pr
 WHERE pr.status = 0 -- 0 typically means unapproved
 AND pr.created_at < :date
@@ -64,9 +64,20 @@ SQL;
             $this->productReviewRepository->delete($ids, $context);
         }
 
+        // Format sample for preview
+    $sample = array_map(function ($review) {
+       return [
+        'id' => Uuid::fromBytesToHex($review['id']), // Optional: convert binary UUID
+        'title' => $review['title'],
+        'created_at' => $review['created_at'],
+        'status' => (int)$review['status'] === 0 ? 'Unapproved' : 'Approved',
+
+        ];
+    }, $reviews);
+
         return [
             'count' => count($reviews),
-            'sample' => array_slice($reviews, 0, 5)
+            'sample' => $sample
         ];
     }
 

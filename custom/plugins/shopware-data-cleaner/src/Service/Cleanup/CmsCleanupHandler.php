@@ -5,6 +5,8 @@ namespace IctDataCleanerPro\Service\Cleanup;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Uuid\Uuid;
+
 
 class CmsCleanupHandler implements CleanupHandlerInterface
 {
@@ -51,9 +53,40 @@ class CmsCleanupHandler implements CleanupHandlerInterface
 
     private function cleanupNeverViewedPages(int $months, bool $dryRun, Context $context): array
     {
-        // This is a placeholder - actual tracking of page views is complex
-        // and would require a separate tracking mechanism.
-        // For now, we'll assume no tracking and return 0.
+        $date = new \DateTime();
+        $date->modify("-{$months} months");
+     
+        $sql = <<<SQL
+        SELECT cp.id, cp.type, cp.created_at
+FROM cms_page cp
+LEFT JOIN category c ON c.cms_page_id = cp.id
+LEFT JOIN landing_page lp ON lp.cms_page_id = cp.id
+LEFT JOIN product p ON p.cms_page_id = cp.id
+-- LEFT JOIN cms_page_translation cpt ON cp.id = cpt.cms_page_id
+WHERE c.cms_page_id IS NULL
+  AND lp.cms_page_id IS NULL
+  AND p.cms_page_id IS NULL
+  AND cp.created_at < :date
+
+SQL;
+
+$cmsPages = $this->connection->fetchAllAssociative($sql, [
+    'date' => $date->format('Y-m-d H:i:s')
+]);
+$cmsPages = array_map(function ($page) {
+    $page['id'] = Uuid::fromBytesToHex($page['id']);
+    return $page;
+}, $cmsPages);
+
+if (!$dryRun && !empty($cmsPages)) {
+    $ids = array_map(fn($row) => ['id' => $row['id']], $cmsPages);
+    $this->cmsPageRepository->delete($ids, $context);
+}
+
+return [
+    'count' => count($cmsPages),
+    'sample' => $cmsPages
+];
         return [
             'count' => 0,
             'sample' => [],
@@ -61,41 +94,62 @@ class CmsCleanupHandler implements CleanupHandlerInterface
         ];
     }
 
-    private function cleanupUnpublishedDrafts(int $months, bool $dryRun, Context $context): array
-    {
-        $date = new \DateTime();
-        $date->modify("-{$months} months");
 
-        $sql = <<<SQL
+
+private function cleanupUnpublishedDrafts(int $months, bool $dryRun, Context $context): array
+{
+    $date = new \DateTime();
+    $date->modify("-{$months} months");
+
+    $sql = <<<SQL
 SELECT cp.id, cpt.name, cp.created_at
 FROM cms_page cp
 LEFT JOIN cms_page_translation cpt ON cp.id = cpt.cms_page_id
+    AND cpt.language_id = UNHEX(REPLACE(:languageId, '-', ''))
 WHERE cp.locked = 0 
-AND cp.type != 'product_list' -- Exclude category layout pages
-AND cp.created_at < :date
-AND NOT EXISTS (
-    SELECT 1 FROM category cat WHERE cat.cms_page_id = cp.id
-)
+  AND cp.type != 'product_list' -- Exclude category layout pages
+  AND cp.created_at < :date
+  AND NOT EXISTS (
+      SELECT 1 FROM category cat WHERE cat.cms_page_id = cp.id
+  )
 LIMIT 1000
 SQL;
 
-        $pages = $this->connection->fetchAllAssociative($sql, [
-            'date' => $date->format('Y-m-d H:i:s')
-        ]);
+    $pages = $this->connection->fetchAllAssociative($sql, [
+        'date' => $date->format('Y-m-d H:i:s'),
+        'languageId' => $context->getLanguageId()
+    ]);
 
-        if (!$dryRun && !empty($pages)) {
-            $ids = array_map(function ($page) {
-                return ['id' => $page['id']];
-            }, $pages);
-            
-            $this->cmsPageRepository->delete($ids, $context);
-        }
+    // Convert UUID to hex string
+    $pages = array_map(function ($page) {
+        $page['id'] = Uuid::fromBytesToHex($page['id']);
+        return $page;
+    }, $pages);
 
-        return [
-            'count' => count($pages),
-            'sample' => array_slice($pages, 0, 5)
-        ];
+    // If not dry run, delete the unpublished CMS pages
+    if (!$dryRun && !empty($pages)) {
+        $ids = array_map(function ($page) {
+            return ['id' => Uuid::fromHexToBytes($page['id'])];
+        }, $pages);
+
+        $this->cmsPageRepository->delete($ids, $context);
     }
+
+    // Prepare a clean preview without ID
+    $sample = array_map(function ($page) {
+        return [
+            'id' => $page['id'],
+            'name' => $page['name'],
+            'created_at' => $page['created_at'],
+        ];
+    },$pages);
+
+    return [
+        'count' => count($pages),
+        'sample' => $sample,
+    ];
+}
+
 
     public function getName(): string
     {

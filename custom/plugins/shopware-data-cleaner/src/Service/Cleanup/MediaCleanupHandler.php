@@ -5,6 +5,7 @@ namespace IctDataCleanerPro\Service\Cleanup;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Uuid\Uuid;
 
 class MediaCleanupHandler implements CleanupHandlerInterface
 {
@@ -37,7 +38,7 @@ class MediaCleanupHandler implements CleanupHandlerInterface
         }
 
         // Clean orphaned thumbnails
-        if ($config['mediaThumbnailCleanup.deleteThumbnails'] ?? false) {
+        if ($config['mediaCleanup.deleteThumbnails'] ?? false) {
             $thumbnailResults = $this->cleanupOrphanedThumbnails($dryRun, $context);
             $results['items']['orphaned_thumbnails'] = $thumbnailResults;
         }
@@ -67,6 +68,11 @@ SQL;
             'date' => $date->format('Y-m-d H:i:s')
         ]);
 
+        $media = array_map(function ($item) {
+    $item['id'] = Uuid::fromBytesToHex($item['id']); // ✅ Convert UUID properly
+    return $item;
+}, $media);
+
         if (!$dryRun && !empty($media)) {
             $ids = array_map(function ($item) {
                 return ['id' => $item['id']];
@@ -77,7 +83,7 @@ SQL;
 
         return [
             'count' => count($media),
-            'sample' => array_slice($media, 0, 5)
+            'sample' => $media
         ];
     }
 

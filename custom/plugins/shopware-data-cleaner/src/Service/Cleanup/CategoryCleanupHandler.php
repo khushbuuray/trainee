@@ -5,6 +5,8 @@ namespace IctDataCleanerPro\Service\Cleanup;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Uuid\Uuid;
+
 
 class CategoryCleanupHandler implements CleanupHandlerInterface
 {
@@ -25,7 +27,7 @@ class CategoryCleanupHandler implements CleanupHandlerInterface
             'name' => $this->getName(),
             'items' => []
         ];
-
+        // dd($config['categoryCleanup.emptyCategories']);
         // Clean empty categories
         if ($config['categoryCleanup.emptyCategories'] ?? false) {
             $emptyResults = $this->cleanupEmptyCategories($dryRun, $context);
@@ -47,6 +49,7 @@ class CategoryCleanupHandler implements CleanupHandlerInterface
 
     private function cleanupEmptyCategories(bool $dryRun, Context $context): array
     {
+
         $sql = <<<SQL
 SELECT c.id, ct.name
 FROM category c
@@ -59,17 +62,22 @@ SQL;
 
         $categories = $this->connection->fetchAllAssociative($sql);
 
-        if (!$dryRun && !empty($categories)) {
-            $ids = array_map(function ($category) {
-                return ['id' => $category['id']];
-            }, $categories);
+        // if (!$dryRun && !empty($categories)) {
+        //     $ids = array_map(function ($category) {
+        //         return ['id' => $category['id']];
+        //     }, $categories);
             
-            $this->categoryRepository->delete($ids, $context);
-        }
-
+        //     $this->categoryRepository->delete($ids, $context);
+        // }
+        $categories = array_map(function ($category) {
+    return [
+        'id' => Uuid::fromBytesToHex($category['id']),
+        'name' => $category['name'] ?? null, // include other fields if needed
+    ];
+}, $categories);
         return [
             'count' => count($categories),
-            'sample' => array_slice($categories, 0, 5)
+            'sample' => $categories
         ];
     }
 
@@ -95,18 +103,23 @@ SQL;
             'date' => $date->format('Y-m-d H:i:s')
         ]);
 
-        if (!$dryRun && !empty($categories)) {
-            $ids = array_map(function ($category) {
-                return ['id' => $category['id']];
-            }, $categories);
-            
-            $this->categoryRepository->delete($ids, $context);
-        }
+       if (!$dryRun && !empty($categories)) {
+    $ids = array_map(function ($category) {
+        return ['id' => \Shopware\Core\Framework\Uuid\Uuid::fromHexToBytes(
+            \Shopware\Core\Framework\Uuid\Uuid::fromBytesToHex($category['id'])
+        )];
+    }, $categories);
 
-        return [
-            'count' => count($categories),
-            'sample' => array_slice($categories, 0, 5)
-        ];
+    $this->categoryRepository->delete($ids, $context);
+}
+
+return [
+    'count' => count($categories),
+    'sample' => array_map(function ($category) {
+        $category['id'] = \Shopware\Core\Framework\Uuid\Uuid::fromBytesToHex($category['id']);
+        return $category;
+    }, $categories)
+];
     }
 
     public function getName(): string

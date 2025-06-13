@@ -116,7 +116,12 @@
         <argument type="service" id="IctDataCleanerPro\Service\Cleanup\CustomerCleanupHandler"/>
         <argument type="service" id="IctDataCleanerPro\Service\Cleanup\CartCleanupHandler"/>
         <argument type="service" id="IctDataCleanerPro\Service\Cleanup\OrderCleanupHandler"/>
-
+        <argument type="service" id="IctDataCleanerPro\Service\Cleanup\CategoryCleanupHandler"/>
+        <argument type="service" id="IctDataCleanerPro\Service\Cleanup\PromotionCleanupHandler"/>
+        <argument type="service" id="IctDataCleanerPro\Service\Cleanup\ReviewCleanupHandler"/>
+        <argument type="service" id="IctDataCleanerPro\Service\Cleanup\CmsCleanupHandler"/>
+        <argument type="service" id="IctDataCleanerPro\Service\Cleanup\NewsletterCleanupHandler"/>
+        <argument type="service" id="IctDataCleanerPro\Service\Cleanup\MediaCleanupHandler"/>
 
 
             <call method="setContainer">
