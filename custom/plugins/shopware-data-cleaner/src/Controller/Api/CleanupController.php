@@ -21,6 +21,7 @@ use IctDataCleanerPro\Service\Cleanup\ReviewCleanupHandler;
 use IctDataCleanerPro\Service\Cleanup\CmsCleanupHandler;
 use IctDataCleanerPro\Service\Cleanup\NewsletterCleanupHandler;
 use IctDataCleanerPro\Service\Cleanup\MediaCleanupHandler;
+use IctDataCleanerPro\Service\Cleanup\LogCleanupHandler;
 #[Route('/api/ict-data-cleaner', name: 'api.ict_data_cleaner', defaults: ['_routeScope' => ['api']])]
 
 class CleanupController extends AbstractController
@@ -43,7 +44,8 @@ class CleanupController extends AbstractController
         ReviewCleanupHandler $reviewCleanupHandler,
         CmsCleanupHandler $cmsCleanupHandler,
         NewsletterCleanupHandler $newsletterCleanupHandler,
-        MediaCleanupHandler $mediaCleanupHandler
+        MediaCleanupHandler $mediaCleanupHandler,
+        LogCleanupHandler $logCleanupHandler
         
     ) {
         // $this->cleanupService = $cleanupService;
@@ -59,7 +61,8 @@ class CleanupController extends AbstractController
         'reviewCleanup' => $reviewCleanupHandler,
         'cmsPageCleanup' => $cmsCleanupHandler,
         'newsletterCleanup' => $newsletterCleanupHandler,
-        'mediaCleanup' => $mediaCleanupHandler
+        'mediaCleanup' => $mediaCleanupHandler,
+        'logCleanup' => $logCleanupHandler,
     ];
     }
 

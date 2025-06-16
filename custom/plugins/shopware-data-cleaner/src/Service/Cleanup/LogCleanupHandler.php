@@ -20,7 +20,6 @@ class LogCleanupHandler implements CleanupHandlerInterface
             'name' => $this->getName(),
             'items' => []
         ];
-
         // Clean system logs
         if (isset($config['systemLogCleanup.months'])) {
             $logResults = $this->cleanupSystemLogs(
@@ -32,7 +31,7 @@ class LogCleanupHandler implements CleanupHandlerInterface
         }
 
         // Clean orphaned custom field sets
-        if ($config['customFieldSetCleanup.orphaned'] ?? false) {
+        if ($config['systemLogCleanup.orphaned'] ?? false) {
             $customFieldResults = $this->cleanupOrphanedCustomFieldSets($dryRun, $context);
             $results['items']['orphaned_custom_field_sets'] = $customFieldResults;
         }

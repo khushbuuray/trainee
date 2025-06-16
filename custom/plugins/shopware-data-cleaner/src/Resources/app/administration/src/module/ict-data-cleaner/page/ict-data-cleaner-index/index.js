@@ -70,6 +70,11 @@ Component.register("ict-data-cleaner-index", {
         "IctDataCleaner.config.mediaCleanup.orphanAgeDays": 60,
         "IctDataCleaner.config.mediaCleanup.deleteThumbnails": true,
       },
+      systemLogSettings: {
+        "IctDataCleaner.config.systemLogCleanup.months": 6,
+        // "IctDataCleaner.config.systemLogCleanup.cacheClear": true,
+        // "IctDataCleaner.config.systemLogCleanup.orphaned": true,
+      },
 
     };
   },

@@ -122,6 +122,7 @@
         <argument type="service" id="IctDataCleanerPro\Service\Cleanup\CmsCleanupHandler"/>
         <argument type="service" id="IctDataCleanerPro\Service\Cleanup\NewsletterCleanupHandler"/>
         <argument type="service" id="IctDataCleanerPro\Service\Cleanup\MediaCleanupHandler"/>
+        <argument type="service" id="IctDataCleanerPro\Service\Cleanup\LogCleanupHandler"/>
 
 
             <call method="setContainer">
