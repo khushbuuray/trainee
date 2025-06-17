@@ -8,334 +8,181 @@
         </template>
         {% endblock %}
 
-        {% block sw_ict_data_cleaner_content %}
-        <template #content>
-            <sw-card-view>
+{% block sw_ict_data_cleaner_content %}
+<template #content>
+    <sw-card-view>
+        <sw-tabs>
+            <sw-tabs-item
+                v-for="(tab, key) in tabConfigs"
+                :key="key"
+                :active="activeTab === key"
+                @click="setActiveTab(key)"
+                :title="tab.label"
+            >
+                {{ tab.label }}
+            </sw-tabs-item>
+        </sw-tabs>
 
-                {% block sw_ict_data_cleaner_content_tabs %}
-                <sw-tabs>
-                    <sw-tabs-item :active="activeTab === 'products'" @click="setActiveTab('products')" :title="$tc('ict-data-cleaner.tabs.products')">
-                        {{ $tc('ict-data-cleaner.tabs.products') }}
-                    </sw-tabs-item>
-
-                    <sw-tabs-item :active="activeTab === 'customers'" @click="setActiveTab('customers')" :title="$tc('ict-data-cleaner.tabs.customers')">
-                        {{ $tc('ict-data-cleaner.tabs.customers') }}
-                    </sw-tabs-item>
-
-                    <sw-tabs-item :active="activeTab === 'carts'" @click="activeTab = 'carts'" :title="$tc('ict-data-cleaner.tabs.carts')">
-                        {{ $tc('ict-data-cleaner.tabs.carts') }}
-                    </sw-tabs-item>
-
-                    <sw-tabs-item :active="activeTab === 'categories'" @click="activeTab = 'categories'" :title="$tc('ict-data-cleaner.tabs.categories')">
-                        {{ $tc('ict-data-cleaner.tabs.categories') }}
-                    </sw-tabs-item>
-
-                    <sw-tabs-item :active="activeTab === 'promotions'" @click="activeTab = 'promotions'" :title="$tc('ict-data-cleaner.tabs.promotions')">
-                        {{ $tc('ict-data-cleaner.tabs.promotions') }}
-                    </sw-tabs-item>
-
-                    <sw-tabs-item :active="activeTab === 'cmsPages'" @click="activeTab = 'cmsPages'" :title="$tc('ict-data-cleaner.tabs.cmsPages')">
-                        {{ $tc('ict-data-cleaner.tabs.cmsPages') }}
-                    </sw-tabs-item>
-
-                    <sw-tabs-item :active="activeTab === 'reviews'" @click="activeTab = 'reviews'" :title="$tc('ict-data-cleaner.tabs.reviews')">
-                        {{ $tc('ict-data-cleaner.tabs.reviews') }}
-                    </sw-tabs-item>
-
-                    <sw-tabs-item :active="activeTab === 'newsletter'" @click="activeTab = 'newsletter'" :title="$tc('ict-data-cleaner.tabs.newsletter')">
-                        {{ $tc('ict-data-cleaner.tabs.marketingLists') }}
-                    </sw-tabs-item>
-
-                    <sw-tabs-item :active="activeTab === 'media'" @click="activeTab = 'media'" :title="$tc('ict-data-cleaner.tabs.mediaManagement')">
-                        {{ $tc('ict-data-cleaner.tabs.mediaManagement') }}
-                    </sw-tabs-item>                   
-                </sw-tabs>
-                {% endblock %}
-
-                <sw-card v-if="activeTab === 'products'" title="Products & Variants" :isLoading="isLoading">
-                    <sw-container gap="10px">
-
-                        <div class="field-header">
-                            <span class="label">
-                                <strong>Products not sold in months:</strong>
-                                {{ productSettings['IctDataCleaner.config.productCleanup.monthsNotSold'] }}
-                            </span>
-                            <sw-button @click="previewAction('productCleanup.monthsNotSold')" size="small" variant="primary">Preview</sw-button>
-                        </div>
-
-                        <div class="field-header">
-                            <span class="label">
-                                <strong>Products never sold:</strong>
-                                {{ productSettings['IctDataCleaner.config.productCleanup.deleteNeverSold'] ? 'Yes' : 'No' }}
-                            </span>
-                            <sw-button @click="previewAction('productCleanup.deleteNeverSold')" size="small" variant="primary">Preview</sw-button>
-                        </div>
-
-                        <div class="field-header">
-                            <span class="label">
-                                <strong>Inactive products older than months:</strong>
-                                {{ productSettings['IctDataCleaner.config.productCleanup.monthsDisabled'] }}
-                            </span>
-                            <sw-button @click="previewAction('productCleanup.monthsDisabled')" size="small" variant="primary">Preview</sw-button>
-                        </div>
-
-                    </sw-container>
-                </sw-card>
-
-                <sw-card v-if="activeTab === 'customers'" title="Customers & Accounts" :isLoading="isLoading">
-                    <sw-container gap="10px">
-                        <div class="field-header">
-                            <span class="label">
-                                <strong>Guest accounts inactive for more than months:</strong>
-                                {{ customerSettings['IctDataCleaner.config.customerCleanup.guestMonths'] }}
-                            </span>
-                            <sw-button @click="previewAction('customerCleanup.guestMonths')" size="small" variant="primary">Preview</sw-button>
-                        </div>
-
-                        <div class="field-header">
-                            <span class="label">
-                                <strong>Inactive customers more than months:</strong>
-                                {{ customerSettings['IctDataCleaner.config.customerCleanup.inactiveMonths'] }}
-                            </span>
-                            <sw-button @click="previewAction('customerCleanup.inactiveMonths')" size="small" variant="primary">Preview</sw-button>
-                        </div>
-                    </sw-container>
-                </sw-card>
-
-                <sw-card v-if="activeTab === 'carts'" title="Orders, Carts & Checkouts" :isLoading="isLoading">
-  <sw-container gap="10px">
-
-    <div class="field-header">
-      <span class="label">
-        <strong>Abandoned carts older than days:</strong>
-        {{ cartSettings['IctDataCleaner.config.cartCleanup.abandonedDays'] }}
-      </span>
-      <sw-button @click="previewAction('cartCleanup.abandonedDays')" size="small" variant="primary">Preview</sw-button>
-    </div>
-
-    <div class="field-header">
-      <span class="label">
-        <strong>Cancelled orders older than months:</strong>
-        {{ cartSettings['IctDataCleaner.config.orderCleanup.cancelledAgeMonths'] }}
-      </span>
-      <sw-button @click="previewAction('orderCleanup.cancelledAgeMonths')" size="small" variant="primary">Preview</sw-button>
-    </div>
-
-    <div class="field-header">
-      <span class="label">
-        <strong>Old transactions  older than months:</strong>
-        {{ cartSettings['IctDataCleaner.config.orderCleanup.oldAgeMonths'] }}
-      </span>
-      <sw-button @click="previewAction('orderCleanup.oldAgeMonths')" size="small" variant="primary">Preview</sw-button>
-    </div>
-
-  </sw-container>
-</sw-card>
-
-<sw-card v-if="activeTab === 'categories'" title="Categories & Navigation" :isLoading="isLoading">
-  <sw-container gap="10px">
-
-    <div class="field-header">
-      <span class="label">
-        <strong>Empty categories:</strong>
-        {{ categorySettings['IctDataCleaner.config.categoryCleanup.emptyCategories'] ? 'Yes' : 'No' }}
-      </span>
-      <sw-button @click="previewAction('categoryCleanup.emptyCategories')" size="small" variant="primary">Preview</sw-button>
-    </div>
-
-    <div class="field-header">
-      <span class="label">
-        <strong>Categories with no sales in months:</strong>
-        {{ categorySettings['IctDataCleaner.config.categoryCleanup.noSalesMonths'] }}
-      </span>
-      <sw-button @click="previewAction('categoryCleanup.noSalesMonths')" size="small" variant="primary">Preview</sw-button>
-    </div>
-
-  </sw-container>
-</sw-card>
-
-<sw-card v-if="activeTab === 'promotions'" title="Promotions & Discounts" :isLoading="isLoading">
-    <sw-container gap="10px">
-        
-        <div class="field-header">
-            <span class="label">
-                <strong>Expired promotions older than (months):</strong>
-                {{ promotionSettings['IctDataCleaner.config.promotionCleanup.expiredMonths'] }}
-            </span>
-            <sw-button @click="previewAction('promotionCleanup.expiredMonths')" size="small" variant="primary">Preview</sw-button>
-        </div>
-
-        <div class="field-header">
-            <span class="label">
-                <strong>Unused vouchers older than (months): </strong>
-                {{ promotionSettings['IctDataCleaner.config.promotionCleanup.unusedVoucherMonths'] }}
-            </span>
-            <sw-button @click="previewAction('promotionCleanup.unusedVoucherMonths')" size="small" variant="primary">Preview</sw-button>
-        </div>
-
-        <div class="field-header">
-            <span class="label">
-                <strong>Orphaned cart rules (not linked to any promotion):</strong>
-                {{ promotionSettings['IctDataCleaner.config.promotionCleanup.orphaned'] ? 'Yes' : 'No' }}
-            </span>
-            <sw-button @click="previewAction('promotionCleanup.orphaned')" size="small" variant="primary">Preview</sw-button>
-        </div>
-
-    </sw-container>
-</sw-card>
-
-<sw-card v-if="activeTab === 'reviews'" title="Reviews & Ratings" :isLoading="isLoading">
-  <sw-container gap="10px">
-
-    <div class="field-header">
-      <span class="label">
-        <strong>Unapproved reviews older than days:</strong>
-        {{ reviewSettings['IctDataCleaner.config.reviewCleanup.unapprovedDays'] }}
-      </span>
-      <sw-button @click="previewAction('reviewCleanup.unapprovedDays')" size="small" variant="primary">
-        Preview
-      </sw-button>
-    </div>
-
-  </sw-container>
-</sw-card>
-
-<sw-card v-if="activeTab === 'cmsPages'" title="CMS Content & Pages" :isLoading="isLoading">
-  <sw-container gap="10px">
-
-    {# <div class="field-header">
-      <span class="label">
-        <strong>CMS pages never viewed in months:</strong>
-        {{ cmsPageSettings['IctDataCleaner.config.cmsPageCleanup.neverViewedMonths'] }}
-      </span>
-      <sw-button @click="previewAction('cmsPageCleanup.neverViewedMonths')" size="small" variant="primary">
-        Preview
-      </sw-button>
-    </div> #}
-
-    <div class="field-header">
-      <span class="label">
-        <strong>Unpublished CMS drafts older than months:</strong>
-        {{ cmsPageSettings['IctDataCleaner.config.cmsPageCleanup.unpublishedDraftsMonths'] }}
-      </span>
-      <sw-button @click="previewAction('cmsPageCleanup.unpublishedDraftsMonths')" size="small" variant="primary">
-        Preview
-      </sw-button>
-    </div>
-  </sw-container>
-</sw-card>
-
-<sw-card v-if="activeTab === 'newsletter'" title="Marketing Lists" :isLoading="isLoading">
-  <sw-container gap="10px">
-
-    <div class="field-header">
-      <span class="label">
-        <strong>Bounced newsletter recipients after months:</strong>
-        {{ newsletterSettings['IctDataCleaner.config.newsletterCleanup.bouncedMonths'] }}
-      </span>
-      <sw-button @click="previewAction('newsletterCleanup.bouncedMonths')" size="small" variant="primary">
-        Preview
-      </sw-button>
-    </div>
-  </sw-container>
-</sw-card>
-
-<sw-card v-if="activeTab === 'media'" title="Media Management" :isLoading="isLoading">
-  <sw-container gap="10px">
-
-    <div class="field-header">
-      <span class="label">
-        <strong>Orphaned media after days:</strong>
-        {{ mediaSettings['IctDataCleaner.config.mediaCleanup.orphanAgeDays'] }}
-      </span>
-      <sw-button @click="previewAction('mediaCleanup.orphanAgeDays')" size="small" variant="primary">
-        Preview
-      </sw-button>
-    </div>
-  </sw-container>
-</sw-card>
-                {% block ict_data_cleaner_index_modal %}
-                <sw-modal
-                    v-if="showPreviewModal"
-                    class="ict-data-cleaner-preview-modal"
-                    size="large"
-                    :title="$tc('ict-data-cleaner.tabs.previewTitle')"
-                    @modal-close="showPreviewModal = false"
+        <sw-card
+            v-if="tabConfigs[activeTab]"
+            :title="tabConfigs[activeTab].label"
+            :isLoading="isLoading"
+        >
+            <sw-container gap="10px">
+                <div
+                    v-for="field in tabConfigs[activeTab].fields"
+                    :key="field.key"
+                    class="field-header"
                 >
-                    <template v-if="gridReady && previewData?.items && Object.keys(previewData.items).length">
-                        <div v-for="(dataGroup, key) in previewData.items" :key="key" class="preview-group">
-                            <h3>{{ key }}</h3>
+                    <span class="label">
+                        <strong>{{ field.label }}:</strong>
+                        {{ getConfigValue(field.key, field.type) }}
+                    </span>
+                    <sw-button
+                        @click="previewAction(field.key)"
+                        size="small"
+                        variant="primary"
+                    >
+                        Preview
+                    </sw-button>
+                </div>
+            </sw-container>
+        </sw-card>
 
-                            <sw-data-grid
-                                v-if="paginatedRows[key]?.length"
-                                :dataSource="paginatedRows[key]"                               
-                                :columns="getColumnsForGroup(key)"
-                                :selectionMode="'multi'"
-                                :selection="selectedPreviewProducts[key] || []"
-                                :showSelection="true"
-                                ref="previewGrid"
-                                :ref-key="key"
-                                @selection-change="onProductSelectionChange(key, $event)"
-                            >
-                                <template #name="{ item }">
-                                    <router-link
-                                        :to="{ name: 'sw.product.detail', params: { id: item.id } }"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {{ item.name || 'N/A' }}
-                                    </router-link>
-                                </template>
-                                <template #product_number="{ item }">
-                                    <span>{{ item.product_number || 'N/A' }}</span>
-                                </template>
-                            </sw-data-grid>
+        {# {% block ict_data_cleaner_index_modal %}
+            <sw-modal
+                v-if="showPreviewModal"
+                class="ict-data-cleaner-preview-modal"
+                size="large"
+                title="Preview"
+                @modal-close="showPreviewModal = false"
+            >
+                <template v-if="gridReady && previewData?.items">
+                    <div
+                        v-for="(group, key) in previewData.items"
+                        :key="key"
+                        class="preview-group"
+                    >
+                        <h3>{{ key }}</h3>
 
-                            <sw-pagination
-                                class="sw-cms-list__list-pagination"
-                                :page="pagination[key]?.page || 1"
-                                :limit="pagination[key]?.limit || 10"
-                                :total="pagination[key]?.total || 0"
-                                :steps="[9]"
-                                @page-change="({ page, limit }) => onPageChange({ page, limit }, key)"
-                            />
+                        <sw-data-grid
+                            v-if="paginatedRows[key]?.length"
+                            :dataSource="paginatedRows[key]"
+                            :columns="getColumnsForGroup(key)"
+                            :selectionMode="'multi'"
+                            :selection="selectedPreviewProducts[key] || []"
+                            :showSelection="true"
+                            ref="previewGrid"
+                            :ref-key="key"
+                            @selection-change="onProductSelectionChange(key, $event)"
+                        />
 
-                            <div class="sw-grid__total-count">
-                                <strong>Total {{ key }}: </strong>
-                                {{ dataGroup.count }}
-                            </div>
+                        <sw-pagination
+                            :page="pagination[key]?.page || 1"
+                            :limit="pagination[key]?.limit || 10"
+                            :total="pagination[key]?.total || 0"
+                            @page-change="({ page, limit }) => onPageChange({ page, limit }, key)"
+                        />
+
+                        <div class="sw-grid__total-count">
+                            <strong>Total {{ key }}: </strong>
+                            {{ group.count }}
                         </div>
-                    </template>
+                    </div>
+                </template>
 
-                    <template v-else>
-                        <p>{{ $tc('ict-data-cleaner.preview.loading') }}</p>
-                    </template>
-
-                    <template #modal-footer>
-                        <sw-button variant="primary" size="small" @click="showPreviewModal = false">
-                            {{ $tc('global.default.close') }}
-                        </sw-button>
-
-                        {# <sw-button variant="primary" size="small" @click="removeSelectedProducts">
-                            Remove
-                        </sw-button> #}
-                      <sw-button
+                <template #modal-footer>
+                    <sw-button
+                        variant="primary"
+                        size="small"
+                        @click="showPreviewModal = false"
+                    >
+                        Close
+                    </sw-button>
+                    <sw-button
                         variant="primary"
                         size="small"
                         @click="removeSelectedItems(activePreviewKey)"
                         :disabled="!Object.values(selectedPreviewProducts).flat().length"
-                        
-                       >
-                       Remove 
-                      </sw-button>
-                    </template>
-                </sw-modal>
-                {% endblock %}
+                    >
+                        Remove
+                    </sw-button>
+                </template>
+            </sw-modal>
+        {% endblock %} #}
+{% block ict_data_cleaner_index_modal %}
+<sw-modal
+    v-if="showPreviewModal"
+    class="ict-data-cleaner-preview-modal"
+    size="large"
+    title="Preview"
+    @modal-close="showPreviewModal = false"
+>
+    <template>
+        <div v-if="gridReady && previewData?.items && Object.keys(previewData.items).length">
+            <div
+                v-for="(group, key) in previewData.items"
+                :key="key"
+                class="preview-group"
+            >
+                <h3>{{ key }}</h3>
 
-            </sw-card-view>
-        </template>
-        {% endblock %}
+                <sw-data-grid
+                    v-if="paginatedRows[key]?.length"
+                    :dataSource="paginatedRows[key]"
+                    :columns="getColumnsForGroup(key)"
+                    :selectionMode="'multi'"
+                    :selection="selectedPreviewProducts[key] || []"
+                    :showSelection="true"
+                    ref="previewGrid"
+                    :ref-key="key"
+                    @selection-change="onProductSelectionChange(key, $event)"
+                />
 
-    </sw-page>
+                <sw-pagination
+                    :page="pagination[key]?.page || 1"
+                    :limit="pagination[key]?.limit || 10"
+                    :total="pagination[key]?.total || 0"
+                    @page-change="({ page, limit }) => onPageChange({ page, limit }, key)"
+                />
+
+                <div class="sw-grid__total-count">
+                    <strong>Total {{ key }}: </strong>
+                    {{ group.count }}
+                </div>
+            </div>
+        </div>
+        <div v-else>
+            <sw-loader />
+            <p style="margin-top: 10px;">Loading preview data...</p>
+        </div>
+    </template>
+
+    <template #modal-footer>
+        <sw-button
+            variant="primary"
+            size="small"
+            @click="showPreviewModal = false"
+        >
+            Close
+        </sw-button>
+        <sw-button
+            variant="primary"
+            size="small"
+            @click="removeSelectedItems(activePreviewKey)"
+            :disabled="!Object.values(selectedPreviewProducts).flat().length"
+        >
+            Remove
+        </sw-button>
+    </template>
+</sw-modal>
+{% endblock %}
+
+
+    </sw-card-view>
 </template>
 {% endblock %}
+  </sw-page>
+</template>
+{% endblock %}
+

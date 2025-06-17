@@ -395,55 +395,83 @@ Component.register("ict-data-cleaner-index", {
       showConfirmModal: false,
       totalItemsToDelete: 0,
       salesChannelId: null,
-      config: null,
+      config: {},
       previewData: null,
       selectedPreviewProducts: {},
       gridKey: 0,
       gridReady: false,
       pagination: {},
-      productSettings: {
-        "IctDataCleaner.config.productCleanup.monthsNotSold": 6,
-        "IctDataCleaner.config.productCleanup.deleteNeverSold": false,
-        "IctDataCleaner.config.productCleanup.monthsDisabled": 6,
-        "IctDataCleaner.config.productVariantCleanup.zeroStockMonths": 6,
-      },
-      customerSettings: {
-        "IctDataCleaner.config.customerCleanup.guestMonths": 12,
-        "IctDataCleaner.config.customerCleanup.inactiveMonths": 12,
-      },
-      cartSettings: {
-        "IctDataCleaner.config.cartCleanup.abandonedDays": 30,
-        "IctDataCleaner.config.orderCleanup.cancelledAgeMonths": 12,
-        "IctDataCleaner.config.orderCleanup.oldAgeMonths": 12,
-      },
-      categorySettings: {
-        "IctDataCleaner.config.categoryCleanup.emptyCategories": true,
-        "IctDataCleaner.config.categoryCleanup.noSalesMonths": 6,
-      },
-      promotionSettings: {
-        'IctDataCleaner.config.promotionCleanup.expiredMonths': 6,
-        'IctDataCleaner.config.promotionCleanup.unusedVoucherMonths': 6,
-        'IctDataCleaner.config.promotionCleanup.orphaned': true,
-      },
-      reviewSettings: {
-        "IctDataCleaner.config.reviewCleanup.unapprovedDays": 30,
-      },
-      cmsPageSettings: {
-        "IctDataCleaner.config.cmsPageCleanup.neverViewedMonths": true,
-        "IctDataCleaner.config.cmsPageCleanup.unpublishedDraftsMonths": 6,
-      },
-      newsletterSettings: {
-        "IctDataCleaner.config.newsletterCleanup.bouncedMonths": 6,
-      },
-      mediaSettings: {
-        "IctDataCleaner.config.mediaCleanup.orphanAgeDays": 60,
-        "IctDataCleaner.config.mediaCleanup.deleteThumbnails": true,
-      },
-      systemLogSettings: {
-        "IctDataCleaner.config.systemLogCleanup.months": 6,
-      },
+      tabConfigs: {
+    products: {
+        label: "Products & Variants",
+        fields: [
+            { key: 'productCleanup.monthsNotSold', label: 'Products not sold in months', type: 'int' },
+            { key: 'productCleanup.deleteNeverSold', label: 'Products never sold', type: 'bool' },
+            { key: 'productCleanup.monthsDisabled', label: 'Inactive products older than months', type: 'int' },
+        ],
+    },
+    customers: {
+        label: "Customers & Accounts",
+        fields: [
+            { key: 'customerCleanup.guestMonths', label: 'Guest accounts inactive for months', type: 'int' },
+            { key: 'customerCleanup.inactiveMonths', label: 'Inactive customers for months', type: 'int' },
+        ],
+    },
+    carts: {
+        label: "Orders, Carts & Checkouts",
+        fields: [
+            { key: 'cartCleanup.abandonedDays', label: 'Abandoned carts older than days', type: 'int' },
+            { key: 'orderCleanup.cancelledAgeMonths', label: 'Cancelled orders older than months', type: 'int' },
+            { key: 'orderCleanup.oldAgeMonths', label: 'Old transactions older than months', type: 'int' },
+        ],
+    },
+    categories: {
+        label: "Categories & Navigation",
+        fields: [
+            { key: 'categoryCleanup.emptyCategories', label: 'Empty categories', type: 'bool' },
+            { key: 'categoryCleanup.noSalesMonths', label: 'Categories with no sales in months', type: 'int' },
+        ],
+    },
+    promotions: {
+        label: "Promotions & Discounts",
+        fields: [
+            { key: 'promotionCleanup.expiredMonths', label: 'Expired promotions older than months', type: 'int' },
+            { key: 'promotionCleanup.unusedVoucherMonths', label: 'Unused vouchers older than months', type: 'int' },
+            { key: 'promotionCleanup.orphaned', label: 'Orphaned cart rules', type: 'bool' },
+        ],
+    },
+    cmsPages: {
+        label: "CMS Content & Pages",
+        fields: [
+            { key: 'cmsPageCleanup.unpublishedDraftsMonths', label: 'Unpublished CMS drafts older than months', type: 'int' },
+        ],
+    },
+    reviews: {
+        label: "Reviews & Ratings",
+        fields: [
+            { key: 'reviewCleanup.unapprovedDays', label: 'Unapproved reviews older than days', type: 'int' },
+        ],
+    },
+    newsletter: {
+        label: "Marketing Lists",
+        fields: [
+            { key: 'newsletterCleanup.bouncedMonths', label: 'Bounced recipients older than months', type: 'int' },
+        ],
+    },
+    media: {
+        label: "Media Management",
+        fields: [
+            { key: 'mediaCleanup.orphanAgeDays', label: 'Orphaned media after days', type: 'int' },
+        ],
+    },
+},
+
     };
   },
+
+  created() {
+    this.loadSystemConfig();
+},
 
   computed: {
     configDomain() {
@@ -491,69 +519,157 @@ Component.register("ict-data-cleaner-index", {
       this.activeTab = tabKey;
     },
 
+    // previewAction(field) {
+    //   this.showPreviewModal = true;
+    //   this.gridReady = false;
+    //   this.activePreviewKey = field;
+
+    //   const httpClient = Shopware.Application.getContainer("init").httpClient;
+    //   const loginService = Shopware.Service("loginService");
+    //   const token = loginService.getToken();
+
+    //   const key = `IctDataCleaner.config.${field}`;
+    //   const value = this.allSettings()[key];
+    //   if (value === undefined) return;
+    //   const config = { [key]: value };
+
+    //   httpClient.post("/ict-data-cleaner/preview", config, {
+    //     headers: { Authorization: `Bearer ${token}` },
+    //   })
+    //     .then(response => {
+    //         console.log("✅ Preview API response:", response.data);
+
+    //       this.previewData = response.data.data;
+    //       this.selectedPreviewProducts = {};
+    //       this.pagination = {};
+
+    //       Object.entries(this.previewData.items).forEach(([groupKey, group]) => {
+    //         const ids = (group.sample || []).map(p => p.id);
+    //         this.$set(this.selectedPreviewProducts, groupKey, ids);
+    //         this.$set(this.pagination, groupKey, {
+    //           page: 1,
+    //           limit: 10,
+    //           total: group.count || 0,
+    //         });
+    //       });
+
+    //       this.gridKey++;
+
+    //       this.$nextTick(() => {
+    //         this.gridReady = true;
+    //           console.log("✅ gridReady set to true");
+
+    //         this.showPreviewModal = true;
+
+    //         this.$nextTick(() => {
+    //           requestAnimationFrame(() => {
+    //             const previewGrids = this.$refs.previewGrid || {};
+
+    //             if (Array.isArray(previewGrids)) {
+    //               previewGrids.forEach((gridRef, index) => {
+    //                 if (gridRef?.selectAll) {
+    //                   gridRef.selectAll(true);
+    //                 }
+    //               });
+    //             } else {
+    //               Object.keys(this.previewData.items).forEach((key) => {
+    //                 const gridRef = previewGrids[key];
+    //                 if (gridRef?.selectAll) {
+    //                   gridRef.selectAll(true);
+    //                 }
+    //               });
+    //             }
+    //           });
+    //         });
+    //       });
+    //     })
+    //     .catch(error => {
+    //       console.error("Preview request failed:", error);
+    //     });
+    // },
+
     previewAction(field) {
-      this.gridReady = false;
-      this.activePreviewKey = field;
+    console.log("⚡️ previewAction called with:", field);
+    this.showPreviewModal = true;
+    this.gridReady = false;
+    this.activePreviewKey = field;
 
-      const httpClient = Shopware.Application.getContainer("init").httpClient;
-      const loginService = Shopware.Service("loginService");
-      const token = loginService.getToken();
+    const httpClient = Shopware.Application.getContainer("init").httpClient;
+    const loginService = Shopware.Service("loginService");
+    const token = loginService.getToken();
 
-      const key = `IctDataCleaner.config.${field}`;
-      const value = this.allSettings()[key];
-      if (value === undefined) return;
-      const config = { [key]: value };
+    // ✅ Use cleaned config directly
+    const value = this.config[field];
 
-      httpClient.post("/ict-data-cleaner/preview", config, {
+    if (value === undefined) {
+        console.warn("❌ No config value for", field);
+        this.gridReady = false;
+        return;
+    }
+
+    const key = `IctDataCleaner.config.${field}`; // Backend still expects full key
+    const config = { [key]: value };
+
+    console.log("📦 Sending preview config:", config);
+
+    httpClient.post("/ict-data-cleaner/preview", config, {
         headers: { Authorization: `Bearer ${token}` },
-      })
-        .then(response => {
-          this.previewData = response.data.data;
-          this.selectedPreviewProducts = {};
-          this.pagination = {};
+    })
+    .then(response => {
+        const data = response.data?.data;
 
-          Object.entries(this.previewData.items).forEach(([groupKey, group]) => {
+        if (!data?.items || !Object.keys(data.items).length) {
+            this.gridReady = false;
+            this.createNotificationWarning({
+                title: "No Preview Data",
+                message: "There is nothing to preview based on the current config.",
+            });
+            return;
+        }
+
+        this.previewData = data;
+        this.selectedPreviewProducts = {};
+        this.pagination = {};
+
+        Object.entries(this.previewData.items).forEach(([groupKey, group]) => {
             const ids = (group.sample || []).map(p => p.id);
             this.$set(this.selectedPreviewProducts, groupKey, ids);
             this.$set(this.pagination, groupKey, {
-              page: 1,
-              limit: 10,
-              total: group.count || 0,
+                page: 1,
+                limit: 10,
+                total: group.count || 0,
             });
-          });
+        });
 
-          this.gridKey++;
+        this.gridKey++;
 
-          this.$nextTick(() => {
+        this.$nextTick(() => {
             this.gridReady = true;
-            this.showPreviewModal = true;
 
             this.$nextTick(() => {
-              requestAnimationFrame(() => {
-                const previewGrids = this.$refs.previewGrid || {};
+                requestAnimationFrame(() => {
+                    const previewGrids = this.$refs.previewGrid || {};
 
-                if (Array.isArray(previewGrids)) {
-                  previewGrids.forEach((gridRef, index) => {
-                    if (gridRef?.selectAll) {
-                      gridRef.selectAll(true);
+                    if (Array.isArray(previewGrids)) {
+                        previewGrids.forEach(gridRef => gridRef?.selectAll?.(true));
+                    } else {
+                        Object.keys(this.previewData.items).forEach(key => {
+                            const gridRef = previewGrids[key];
+                            gridRef?.selectAll?.(true);
+                        });
                     }
-                  });
-                } else {
-                  Object.keys(this.previewData.items).forEach((key) => {
-                    const gridRef = previewGrids[key];
-                    if (gridRef?.selectAll) {
-                      gridRef.selectAll(true);
-                    }
-                  });
-                }
-              });
+                });
             });
-          });
-        })
-        .catch(error => {
-          console.error("Preview request failed:", error);
         });
-    },
+    })
+    .catch(error => {
+        console.error("❌ Preview request failed:", error?.response || error);
+        this.createNotificationError({
+            title: "Preview Error",
+            message: error?.response?.data?.errors?.[0]?.detail || "Preview failed.",
+        });
+    });
+},
 
     async removeSelectedItems(entityKey) {
       const allSelectedIds = Object.values(this.selectedPreviewProducts).flat();
@@ -658,8 +774,55 @@ Component.register("ict-data-cleaner-index", {
         ...this.reviewSettings,
         ...this.newsletterSettings,
         ...this.mediaSettings,
+            ...this.systemLogSettings, // ✅ missing here
+
       };
     },
+ getConfigValue(key, type = 'int') {
+  const value = this.config[key]; // ✅ No more prefix
+
+  if (type === 'bool') {
+    return value ? 'Yes' : 'No';
+  }
+
+  return value;
+},
+loadSystemConfig() {
+    this.systemConfigApiService.getValues('IctDataCleanerPro.config').then(response => {
+        const formattedConfig = {};
+
+        for (const fullKey in response) {
+            const value = response[fullKey];
+
+            // Remove prefix
+            let key = fullKey.replace('IctDataCleanerPro.config.', '');
+
+            // Match group name and rest
+            const match = key.match(/^([a-zA-Z]+Cleanup|[a-zA-Z]+VariantCleanup|[a-zA-Z]+ThumbnailCleanup|cacheCleanup|customFieldSetCleanup|systemLogCleanup|reviewCleanup|newsletterCleanup|mediaCleanup|promotionCleanup|orderCleanup|transactionCleanup|cmsPageCleanup|categoryCleanup|productCleanup|customerCleanup|cartRuleCleanup|cartCleanup)(.+)$/);
+
+            if (match) {
+                const group = match[1]; // e.g. productCleanup
+                const rest = match[2];  // e.g. MonthsNotSold
+
+                // Lowercase the first letter after the dot
+                const restFormatted = rest.charAt(0).toLowerCase() + rest.slice(1);
+
+                const finalKey = `${group}.${restFormatted}`;
+                formattedConfig[finalKey] = value;
+            } else {
+                // fallback for keys like: dryRunMode → dry.run.mode
+                const fallbackKey = key.replace(/([a-z])([A-Z])/g, '$1.$2').toLowerCase();
+                formattedConfig[fallbackKey] = value;
+            }
+        }
+
+        this.config = formattedConfig;
+        console.log("✅ Final cleaned config:", this.config);
+    });
+}
+
+
+
   },
 });
 

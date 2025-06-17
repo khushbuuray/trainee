@@ -43,8 +43,8 @@ class ProductCleanupHandler implements CleanupHandlerInterface
         }
 
         // Clean products never sold
-        // if ($config['productCleanup.deleteNeverSold'] ?? false) {
-        if (isset($config['productCleanup.deleteNeverSold']) && $config['productCleanup.deleteNeverSold'] == false) {
+        if ($config['productCleanup.deleteNeverSold'] ?? false) {
+        // if (isset($config['productCleanup.deleteNeverSold']) && $config['productCleanup.deleteNeverSold'] == false) {
             $neverSoldResults = $this->cleanupProductsNeverSold($dryRun, $context);
             $results['items']['products_never_sold'] = $neverSoldResults;
         }

@@ -79,7 +79,6 @@ class CleanupService
     private function getConfig(): array
     {
         $config = $this->systemConfigService->getDomain('IctDataCleanerPro.config');
-        
         // Remove the prefix from keys
         $cleanConfig = [];
         foreach ($config as $key => $value) {

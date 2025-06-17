@@ -7,7 +7,7 @@
         <!-- Core Services -->
         <service id="IctDataCleanerPro\Service\CleanupService">
             <argument type="service" id="Doctrine\DBAL\Connection"/>
-            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="IctDataCleanerPro\Service\CleanupLoggerService"/>
             <argument type="tagged" tag="ict.cleanup.handler"/>
         </service>
