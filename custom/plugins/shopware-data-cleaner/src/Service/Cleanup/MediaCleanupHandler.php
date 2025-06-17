@@ -51,16 +51,35 @@ class MediaCleanupHandler implements CleanupHandlerInterface
         $date = new \DateTime();
         $date->modify("-{$days} days");
 
-        $sql = <<<SQL
-SELECT m.id, m.file_name
+//         $sql = <<<SQL
+// SELECT m.id, m.file_name
+// FROM media m
+// LEFT JOIN product_media pm ON m.id = pm.media_id
+// LEFT JOIN category c ON m.id = c.media_id
+// LEFT JOIN cms_page cp ON m.id = cp.preview_media_id
+// WHERE m.created_at < :date
+// AND pm.media_id IS NULL
+// AND c.media_id IS NULL
+// AND cp.preview_media_id IS NULL
+// LIMIT 1000
+// SQL;
+
+    $sql = <<<SQL
+SELECT LOWER(HEX(m.id)) AS id, m.file_name, m.created_at
 FROM media m
 LEFT JOIN product_media pm ON m.id = pm.media_id
+LEFT JOIN product p ON m.id = p.product_media_id
 LEFT JOIN category c ON m.id = c.media_id
 LEFT JOIN cms_page cp ON m.id = cp.preview_media_id
+LEFT JOIN cms_block cb ON m.id = cb.background_media_id
+LEFT JOIN product_manufacturer mf ON m.id = mf.media_id
 WHERE m.created_at < :date
-AND pm.media_id IS NULL
-AND c.media_id IS NULL
-AND cp.preview_media_id IS NULL
+  AND pm.media_id IS NULL
+  AND p.product_media_id IS NULL
+  AND c.media_id IS NULL
+  AND cp.preview_media_id IS NULL
+  AND cb.background_media_id IS NULL
+  AND mf.media_id IS NULL
 LIMIT 1000
 SQL;
 
@@ -68,10 +87,10 @@ SQL;
             'date' => $date->format('Y-m-d H:i:s')
         ]);
 
-        $media = array_map(function ($item) {
-    $item['id'] = Uuid::fromBytesToHex($item['id']); // ✅ Convert UUID properly
-    return $item;
-}, $media);
+//         $media = array_map(function ($item) {
+//     $item['id'] = $item['id']; // ✅ Convert UUID properly
+//     return $item;
+// }, $media);
 
         if (!$dryRun && !empty($media)) {
             $ids = array_map(function ($item) {

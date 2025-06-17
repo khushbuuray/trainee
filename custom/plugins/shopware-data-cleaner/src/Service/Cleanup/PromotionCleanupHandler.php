@@ -65,8 +65,8 @@ SELECT p.id, pt.name, p.valid_until
 FROM promotion p
 LEFT JOIN promotion_translation pt ON p.id = pt.promotion_id
 LEFT JOIN promotion_order_rule por ON p.id = por.promotion_id
-WHERE p.valid_until < '2024-12-12'
-  AND p.valid_until < '2024-12-12'
+WHERE p.valid_until < :expiredDate
+--   AND p.valid_until < '2024-12-12'
     -- AND por.rule_id IS NULL
 
 LIMIT 1000;
@@ -156,53 +156,57 @@ SQL;
 }
 
 
-    private function cleanupOrphanedCartRules(bool $dryRun, Context $context): array
-    {
-        $countSql = <<<SQL
-SELECT COUNT(*) as count
-FROM rule r
-LEFT JOIN promotion_cart_rule pcr ON r.id = pcr.rule_id
-LEFT JOIN promotion p ON pcr.promotion_id = p.id
-WHERE r.created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)
-AND (p.id IS NULL OR p.active = 0)
+ private function cleanupOrphanedCartRules(bool $dryRun, Context $context): array
+{
+    $where = <<<SQL
+r.created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)
+AND NOT EXISTS (
+    SELECT 1 FROM promotion_cart_rule pcr 
+    LEFT JOIN promotion p ON pcr.promotion_id = p.id
+    WHERE pcr.rule_id = r.id AND (p.active = 1 OR p.id IS NOT NULL)
+)
+AND NOT EXISTS (SELECT 1 FROM flow_sequence fs WHERE fs.rule_id = r.id)
+AND NOT EXISTS (SELECT 1 FROM product_price pp WHERE pp.rule_id = r.id)
+AND NOT EXISTS (SELECT 1 FROM shipping_method_price smp WHERE smp.rule_id = r.id)
+AND NOT EXISTS (SELECT 1 FROM shipping_method smr WHERE smr.availability_rule_id = r.id)
+AND NOT EXISTS (SELECT 1 FROM payment_method pmr WHERE pmr.availability_rule_id = r.id)
 SQL;
 
-        $countResult = $this->connection->fetchAssociative($countSql);
-        $count = (int) $countResult['count'];
+    // Count
+    $countResult = $this->connection->fetchAssociative("SELECT COUNT(*) as count FROM rule r WHERE $where");
+    $count = (int) $countResult['count'];
 
-        $sampleSql = <<<SQL
-SELECT r.id, r.name, r.created_at
-FROM rule r
-LEFT JOIN promotion_cart_rule pcr ON r.id = pcr.rule_id
-LEFT JOIN promotion p ON pcr.promotion_id = p.id
-WHERE r.created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)
-AND (p.id IS NULL OR p.active = 0)
-LIMIT 100
+    // Sample preview
+    $samples = $this->connection->fetchAllAssociative("SELECT r.id, r.name, r.created_at FROM rule r WHERE $where LIMIT 100");
+
+    // Delete if not dry run
+    if (!$dryRun && $count > 0) {
+        $deleteSql = <<<SQL
+DELETE FROM rule
+WHERE id IN (
+    SELECT rid FROM (
+        SELECT r.id as rid FROM rule r
+        WHERE $where
+        LIMIT 100
+    ) as deletable
+)
 SQL;
-
-        $samples = $this->connection->fetchAllAssociative($sampleSql);
-
-        if (!$dryRun && $count > 0) {
-            $deleteSql = <<<SQL
-DELETE r FROM rule r
-LEFT JOIN promotion_cart_rule pcr ON r.id = pcr.rule_id
-LEFT JOIN promotion p ON pcr.promotion_id = p.id
-WHERE r.created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)
-AND (p.id IS NULL OR p.active = 0)
-SQL;
-            
-            $this->connection->executeStatement($deleteSql);
-        }
-
-        $samples = array_map(function ($promotion) {
-            $promotion['id'] = Uuid::fromBytesToHex($promotion['id']);
-            return $promotion;
-        }, $samples);
-        return [
-            'count' => $count,
-            'sample' => $samples
-        ];
+        $this->connection->executeStatement($deleteSql);
     }
+
+    $samples = array_map(function ($rule) {
+        $rule['id'] = Uuid::fromBytesToHex($rule['id']);
+        return $rule;
+    }, $samples);
+
+    return [
+        'count' => $count,
+        'sample' => $samples
+    ];
+}
+
+
+
 
     public function getName(): string
     {

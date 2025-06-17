@@ -203,7 +203,7 @@
 <sw-card v-if="activeTab === 'cmsPages'" title="CMS Content & Pages" :isLoading="isLoading">
   <sw-container gap="10px">
 
-    <div class="field-header">
+    {# <div class="field-header">
       <span class="label">
         <strong>CMS pages never viewed in months:</strong>
         {{ cmsPageSettings['IctDataCleaner.config.cmsPageCleanup.neverViewedMonths'] }}
@@ -211,7 +211,7 @@
       <sw-button @click="previewAction('cmsPageCleanup.neverViewedMonths')" size="small" variant="primary">
         Preview
       </sw-button>
-    </div>
+    </div> #}
 
     <div class="field-header">
       <span class="label">
@@ -316,9 +316,18 @@
                             {{ $tc('global.default.close') }}
                         </sw-button>
 
-                        <sw-button variant="primary" size="small" @click="removeSelectedProducts">
+                        {# <sw-button variant="primary" size="small" @click="removeSelectedProducts">
                             Remove
-                        </sw-button>
+                        </sw-button> #}
+                      <sw-button
+                        variant="primary"
+                        size="small"
+                        @click="removeSelectedItems(activePreviewKey)"
+                        :disabled="!Object.values(selectedPreviewProducts).flat().length"
+                        
+                       >
+                       Remove 
+                      </sw-button>
                     </template>
                 </sw-modal>
                 {% endblock %}

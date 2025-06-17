@@ -161,6 +161,7 @@ SQL;
     // }
     $results = array_map(function ($row) {
     return [
+        'id' => Uuid::fromBytesToHex($row['transaction_id']),
         'transaction_id' => Uuid::fromBytesToHex($row['transaction_id']),
         'transaction_created_at' => $row['transaction_created_at'],
         'order_id' => Uuid::fromBytesToHex($row['order_id']),

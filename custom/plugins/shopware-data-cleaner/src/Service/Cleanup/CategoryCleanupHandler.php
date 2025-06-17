@@ -55,26 +55,37 @@ SELECT c.id, ct.name
 FROM category c
 LEFT JOIN category_translation ct ON c.id = ct.category_id
 LEFT JOIN product_category pc ON c.id = pc.category_id
-WHERE pc.category_id IS NULL
+WHERE
+    c.cms_page_id IS NULL
+    AND pc.category_id IS NULL
+    AND c.type = 'page'
+    AND c.id NOT IN (
+        SELECT navigation_category_id FROM sales_channel
+        UNION
+        SELECT footer_category_id FROM sales_channel
+        UNION
+        SELECT service_category_id FROM sales_channel)
 AND c.type = 'page'
 LIMIT 1000
 SQL;
 
         $categories = $this->connection->fetchAllAssociative($sql);
 
-        // if (!$dryRun && !empty($categories)) {
-        //     $ids = array_map(function ($category) {
-        //         return ['id' => $category['id']];
-        //     }, $categories);
-            
-        //     $this->categoryRepository->delete($ids, $context);
-        // }
+      
         $categories = array_map(function ($category) {
     return [
         'id' => Uuid::fromBytesToHex($category['id']),
         'name' => $category['name'] ?? null, // include other fields if needed
     ];
 }, $categories);
+
+        if (!$dryRun && !empty($categories)) {
+            $ids = array_map(function ($category) {
+                return ['id' => $category['id']];
+            }, $categories);
+            
+            $this->categoryRepository->delete($ids, $context);
+        }
         return [
             'count' => count($categories),
             'sample' => $categories

@@ -18,6 +18,7 @@ class CartCleanupHandler implements CleanupHandlerInterface
 
     public function cleanup(array $config, bool $dryRun, Context $context): array
     {
+    
         $results = [
             'name' => $this->getName(),
             'items' => []
@@ -36,91 +37,6 @@ class CartCleanupHandler implements CleanupHandlerInterface
         return $results;
     }
 
-//     private function cleanupAbandonedCarts(int $days, bool $dryRun, Context $context): array
-//     {
-//         $date = new \DateTime();
-//         $date->modify("-{$days} days");
-
-//         // Get cart count first
-// //         $countSql = <<<SQL
-// // SELECT COUNT(*) as count
-// // FROM cart 
-// // WHERE created_at < :date
-// // SQL;
-
-// //         $countResult = $this->connection->fetchAssociative($countSql, [
-// //             'date' => $date->format('Y-m-d H:i:s')
-// //         ]);
-
-//         // $count = (int) $countResult['count'];
-//         // dd($count);
-
-//         // Get sample data
-//        $sql = <<<SQL
-// SELECT token, created_at, payload
-// FROM cart
-// WHERE created_at < :date
-// LIMIT 10
-// SQL;
-
-//  $carts = $this->connection->fetchAllAssociative($sql, [
-//         'date' => $date->format('Y-m-d H:i:s'),
-//     ]);
-
-//     $products = [];
-
-//     foreach ($carts as $cart) {
-//     dd($cart);
-
-//         $payload = json_decode($cart['payload'], true);
-
-//         if (!is_array($payload)) {
-//             continue;
-//         }
-
-//         $lineItems = $payload['lineItems'] ?? [];
-
-//         foreach ($lineItems as $item) {
-//             if (($item['type'] ?? '') !== 'product') {
-//                 continue;
-//             }
-
-//             $products[] = [
-//                 'cart_token' => $cart['token'],
-//                 'product_id' => $item['id'] ?? '',
-//                 'product_number' => $item['payload']['productNumber'] ?? '',
-//                 'product_name' => $item['label'] ?? '',
-//                 'quantity' => $item['quantity'] ?? 1,
-//                 'added_at' => $cart['created_at'],
-//             ];
-//         }
-//     }
-
-//     return [
-//         'count' => count($products),
-//         'sample' => $products,
-//     ];
-
-// //         $samples = $this->connection->fetchAllAssociative($sampleSql, [
-// //             'date' => $date->format('Y-m-d H:i:s')
-// //         ]);
-
-// //         if (!$dryRun && $count > 0) {
-// //             $deleteSql = <<<SQL
-// // DELETE FROM cart 
-// // WHERE created_at < :date
-// // SQL;
-            
-// //             $this->connection->executeStatement($deleteSql, [
-// //                 'date' => $date->format('Y-m-d H:i:s')
-// //             ]);
-// //         }
-
-// //         return [
-// //             'count' => $count,
-// //             'sample' => $samples
-// //         ];
-//     }
 
 private function cleanupAbandonedCarts(int $days, bool $dryRun, Context $context): array
 {

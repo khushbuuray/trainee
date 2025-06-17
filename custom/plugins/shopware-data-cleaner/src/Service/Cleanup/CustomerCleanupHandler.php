@@ -26,7 +26,6 @@ class CustomerCleanupHandler implements CleanupHandlerInterface
             'name' => $this->getName(),
             'items' => []
         ];
-
         // Clean guest customers
         if (isset($config['customerCleanup.guestMonths'])) {
             $guestResults = $this->cleanupGuestCustomers(
@@ -79,11 +78,27 @@ SQL;
 
         if (!$dryRun && !empty($customers)) {
             $ids = array_map(function ($customer) {
-                return ['id' => Uuid::fromHexToBytes($customer['id'])];
+                return ['id' => $customer['id']];
             }, $customers);
             
-            // $this->customerRepository->delete($ids, $context);
+            $this->customerRepository->delete($ids, $context);
         }
+// $customers = array_map(function ($customer) {
+//     // Only convert if it's not already a valid hex UUID
+//     $customer['id'] = Uuid::isValid($customer['id'])
+//         ? $customer['id']
+//         : Uuid::fromBytesToHex($customer['id']);
+//     return $customer;
+// }, $customers);
+
+// // Convert to bytes for deletion
+// if (!$dryRun && !empty($customers)) {
+//     $ids = array_map(function ($customer) {
+//         return ['id' => Uuid::fromHexToBytes($customer['id'])];
+//     }, $customers);
+
+//     $this->customerRepository->delete($ids, $context);
+// }
 
         return [
             'count' => count($customers),

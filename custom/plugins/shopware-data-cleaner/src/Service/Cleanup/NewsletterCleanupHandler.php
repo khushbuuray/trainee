@@ -5,6 +5,7 @@ namespace IctDataCleanerPro\Service\Cleanup;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Uuid\Uuid;
 
 class NewsletterCleanupHandler implements CleanupHandlerInterface
 {
@@ -58,16 +59,24 @@ SQL;
 
         if (!$dryRun && !empty($recipients)) {
             $ids = array_map(function ($recipient) {
-                return ['id' => $recipient['id']];
+            return ['id' => Uuid::fromHexToBytes($recipient['id'])];
             }, $recipients);
             
             $this->newsletterRecipientRepository->delete($ids, $context);
         }
 
+          $recipients = array_map(function ($recipient) {
+    return [
+        'id' => Uuid::fromBytesToHex($recipient['id']),
+        'email' => $recipient['email'],
+        'created_at' => $recipient['created_at']
+    ];
+}, $recipients);
+
         return [
             'count' => count($recipients),
-            'sample' => array_slice($recipients, 0, 5)
-        ];
+            'sample' => $recipients
+            ];
     }
 
     public function getName(): string
