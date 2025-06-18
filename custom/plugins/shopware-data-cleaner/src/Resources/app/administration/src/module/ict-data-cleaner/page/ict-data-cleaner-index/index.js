@@ -481,8 +481,8 @@ computed: {
             type: 'int'
           },
           {
-            key: 'orderCleanup.oldAgeMonths',
-            label: 'ict-data-cleaner.config.orderCleanup.oldAgeMonths',
+            key: 'transactionCleanup.ageMonths',
+            label: 'ict-data-cleaner.config.transactionCleanup.ageMonths',
             type: 'int'
           }
         ]

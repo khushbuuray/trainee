@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+    <card>
+        <title>Wishlist Reminder Email</title>
+        <title lang="de-DE">Erinnerungs-E-Mail zur Wunschliste</title>
+        <input-field type="bool">
+            <name>ActiveInactive</name>
+            <label lang="de-DE">Aktiv</label>
+            <label>Active</label>
+        </input-field>
+
+        <input-field type="bool">
+            <name>WishlistReminder</name>
+            <label lang="de-DE">WunschlisteErinnerung</label>
+            <label>Wishlist Reminder</label>
+
+        </input-field>
+        <input-field type="bool">
+            <name>CartReminder</name>
+            <label lang="de-DE">Warenkorb-Erinnerung</label>
+            <label>Cart Reminder</label>
+        </input-field>
+
+        <input-field type="bool">
+            <name>RestockReminder</name>
+            <label lang="de-DE">RestockHerinnering</label>
+            <label>Restock Reminder</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>WishlistDays</name>
+            <label>Wishlist Days</label>
+            <label lang="de-DE">Wunschzettel Tage</label>
+            <options>
+                <option>
+                    <id>1</id>
+                    <name>1 day</name>
+                </option>
+                <option>
+                    <id>5</id>
+                    <name>5 days</name>
+                </option>
+                <option>
+                    <id>10</id>
+                    <name>10 days</name>
+                </option>
+                <option>
+                    <id>15</id>
+                    <name>15 days</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>CartDays</name>
+            <label>Cart Days</label>
+            <label lang="de-DE">Wagen Tage</label>
+            <options>
+                <option>
+                    <id>1</id>
+                    <name>1 day</name>
+                </option>
+                <option>
+                    <id>5</id>
+                    <name>5 days</name>
+                </option>
+                <option>
+                    <id>10</id>
+                    <name>10 days</name>
+                </option>
+                <option>
+                    <id>15</id>
+                    <name>15 days</name>
+                </option>
+            </options>
+        </input-field>
+    </card>
+</config>

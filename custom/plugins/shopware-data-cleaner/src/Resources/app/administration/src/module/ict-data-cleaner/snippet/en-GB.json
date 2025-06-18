@@ -70,8 +70,10 @@
         "abandonedDays": "Abandoned carts older than days"
       },
       "orderCleanup": {
-        "cancelledAgeMonths": "Cancelled orders older than months",
-        "oldAgeMonths": "Old transactions older than months"
+        "cancelledAgeMonths": "Cancelled orders older than months"
+      },
+      "transactionCleanup": {
+        "ageMonths": "Transactions older than months"
       },
       "categoryCleanup": {
         "emptyCategories": "Empty categories",
@@ -105,7 +107,7 @@
  
   "abandoned_carts": "Abandoned carts older than days",
   "cancelled_orders": "Cancelled orders older than months",
-  "old_orders_months": "Old transactions older than months",
+  "old_transactions": "Old transactions older than months",
 
   "empty_categories": "Empty categories",
   "no_sales_categories": "Categories with no sales in months",

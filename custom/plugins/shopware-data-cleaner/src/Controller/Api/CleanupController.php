@@ -64,6 +64,7 @@ class CleanupController extends AbstractController
         'newsletterCleanup' => $newsletterCleanupHandler,
         'mediaCleanup' => $mediaCleanupHandler,
         'logCleanup' => $logCleanupHandler,
+        'transactionCleanup' => $orderCleanupHandler
     ];
     }
 
@@ -80,7 +81,6 @@ public function preview(Request $request, Context $context): JsonResponse
             $strippedKey = str_replace('IctDataCleaner.config.', '', $key);
             $cleanedConfig[$strippedKey] = $value;
         }
-
         $firstKey = array_key_first($cleanedConfig); 
         $matchedHandler = null;
         foreach ($this->handlers as $key => $handler) {
@@ -160,6 +160,7 @@ public function remove(Request $request, Context $context): JsonResponse
             'mediaCleanup'       => 'media',
             'systemLogCleanup'   => 'log_entry',
             'orderCleanup'       => 'order',
+            'transactionCleanup' => 'order',
         ];
 
         $entityKey = preg_replace('/Ids$/', '', $matchedKey);     // e.g. "productCleanup.deleteNeverSold"

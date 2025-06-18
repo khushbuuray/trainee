@@ -39,9 +39,9 @@ class OrderCleanupHandler implements CleanupHandlerInterface
         }
 
         // Clean old transactions
-        if (isset($config['orderCleanup.oldAgeMonths'])) {
+        if (isset($config['transactionCleanup.ageMonths'])) {
             $transactionResults = $this->cleanupOldTransactions(
-                (int) $config['orderCleanup.oldAgeMonths'],
+                (int) $config['transactionCleanup.ageMonths'],
                 $dryRun,
                 $context
             );

@@ -1,0 +1,161 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="ICTECH_ReminderEmailWishlist\Core\Content\ICTEmail\ReminderEmailCart\ICTEmailCartDefinition">
+            <tag name="shopware.entity.definition" entity="cart_email_reminder"/>
+        </service>
+
+        <service
+            id="ICTECH_ReminderEmailWishlist\Core\Content\ICTEmail\ReminderEmailWishlist\ICTEmailWishlistDefinition">
+            <tag name="shopware.entity.definition" entity="wishlist_email_reminder"/>
+        </service>
+
+        <service id="ICTECH_ReminderEmailWishlist\Core\Content\ICTEmail\ReminderEmailRestock\ICTEmailRestockDefinition">
+            <tag name="shopware.entity.definition" entity="restock_email_reminder"/>
+        </service>
+
+        <service id="ICTECH_ReminderEmailWishlist\Core\Content\Extension\CustomerWishlistExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+
+        <service id="ICTECH_ReminderEmailWishlist\Core\Content\Extension\ProductExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+
+        <service id="ICTECH_ReminderEmailWishlist\Core\Content\Extension\SalesChannelExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+
+        <service id="ICTECH_ReminderEmailWishlist\Core\Content\Extension\CustomerExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+        <service id="ICTECH_ReminderEmailWishlist\Core\Content\Extension\CurrencyExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+
+        <!--        wishlist controller-->
+        <service id="ICTECH_ReminderEmailWishlist\Storefront\Controller\CustomWishlistEmailController" public="true">
+            <argument type="service" id="currency.repository"/>
+            <argument type="service" id="customer.repository"/>
+            <argument type="service" id="wishlist_email_reminder.repository"/>
+            <argument type="service" id="ICTECH_ReminderEmailWishlist\Service\EmailService"/>
+            <argument type="service" id="customer_wishlist.repository"/>
+            <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory"/>
+            <argument type="service" id="product.repository"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <!-- Cart controller-->
+        <service id="ICTECH_ReminderEmailWishlist\Storefront\Controller\CustomCartEmailController" public="true">
+            <argument type="service" id="currency.repository"/>
+            <argument type="service" id="cart_email_reminder.repository"/>
+            <argument type="service" id="product.repository"/>
+            <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory"/>
+            <argument type="service" id="ICTECH_ReminderEmailWishlist\Service\EmailService"/>
+            <argument type="service" id="customer.repository"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <!--         Restock controller   -->
+        <service id="ICTECH_ReminderEmailWishlist\Storefront\Controller\CustomRestockEmailController" public="true">
+            <argument type="service" id="currency.repository"/>
+            <argument type="service" id="customer.repository"/>
+            <argument type="service" id="restock_email_reminder.repository"/>
+            <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory"/>
+            <argument type="service" id="ICTECH_ReminderEmailWishlist\Service\EmailService"/>
+            <argument type="service" id="product.repository"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <!--         Wishlist subscriber services   -->
+        <service id="ICTECH_ReminderEmailWishlist\Subscriber\WishlistProductAddedSubscriber" public="true">
+            <argument id="customer_wishlist_product.repository" type="service"/>
+            <argument id="wishlist_email_reminder.repository" type="service"/>
+            <argument type="service" id="product.repository"/>
+            <argument id="restock_email_reminder.repository" type="service"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+        <!--         cart subscriber services   -->
+        <service id="ICTECH_ReminderEmailWishlist\Subscriber\CartProductAddedSubscriber" public="true">
+            <argument id="cart_email_reminder.repository" type="service"/>
+            <argument id="restock_email_reminder.repository" type="service"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="ICTECH_ReminderEmailWishlist\Subscriber\OrderPlacedSubscriber" public="true">
+            <argument id="cart_email_reminder.repository" type="service"/>
+            <argument id="restock_email_reminder.repository" type="service"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!--        cart Task and TaskHandler services-->
+        <service id="ICTECH_ReminderEmailWishlist\Service\ScheduledTask\CartEmailNotificationTask">
+            <tag name="shopware.scheduled.task"/>
+        </service>
+        <service id="ICTECH_ReminderEmailWishlist\Service\ScheduledTask\CartEmailNotificationTaskHandler">
+            <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="sales_channel.repository"/>
+            <argument type="service" id="ICTECH_ReminderEmailWishlist\Storefront\Controller\CustomCartEmailController"/>
+            <argument type="service" id="Symfony\Component\HttpFoundation\RequestStack"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <!--        wishlist Task and TaskHandler services-->
+        <service id="ICTECH_ReminderEmailWishlist\Service\ScheduledTask\WishlistEmailNotificationTask">
+            <tag name="shopware.scheduled.task"/>
+        </service>
+        <service id="ICTECH_ReminderEmailWishlist\Service\ScheduledTask\WishlistEmailNotificationTaskHandler">
+            <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="sales_channel.repository"/>
+            <argument type="service" id="ICTECH_ReminderEmailWishlist\Storefront\Controller\CustomWishlistEmailController"/>
+            <argument type="service" id="Symfony\Component\HttpFoundation\RequestStack"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <!--        Restock Task and TaskHandler services-->
+        <service id="ICTECH_ReminderEmailWishlist\Service\ScheduledTask\RestockEmailNotificationTask">
+            <tag name="shopware.scheduled.task"/>
+        </service>
+        <service id="ICTECH_ReminderEmailWishlist\Service\ScheduledTask\RestockEmailNotificationTaskHandler">
+            <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="sales_channel.repository"/>
+            <argument type="service" id="ICTECH_ReminderEmailWishlist\Storefront\Controller\CustomRestockEmailController"/>
+            <argument type="service" id="Symfony\Component\HttpFoundation\RequestStack"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <!-- Start Email Service -->
+        <service id="ICTECH_ReminderEmailWishlist\Service\EmailService" public="true">
+            <argument type="service" id="Shopware\Core\Content\Mail\Service\MailService"/>
+            <argument type="service" id="mail_template.repository"/>
+            <argument type="service" id="cart_email_reminder.repository"/>
+            <argument type="service" id="wishlist_email_reminder.repository"/>
+            <argument type="service" id="restock_email_reminder.repository"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument id="product.repository" type="service"/>
+            <argument type="service" id="seo_url.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Seo\SeoUrlPlaceholderHandlerInterface" />
+            <argument type="service" id="Symfony\Component\HttpFoundation\RequestStack"/>
+        </service>
+        <!-- End Email Service -->
+
+    </services>
+</container>

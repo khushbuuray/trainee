@@ -100,7 +100,7 @@
 
   "abandoned_carts": "Achtergelaten winkelwagentjes ouder dan dagen",
   "cancelled_orders": "Geannuleerde bestellingen ouder dan maanden",
-  "old_orders_months": "Oude transacties ouder dan maanden",
+  "old_transactions": "Oude transacties ouder dan maanden",
 
   "empty_categories": "Lege categorieën",
   "no_sales_categories": "Categorieën zonder verkopen in maanden",

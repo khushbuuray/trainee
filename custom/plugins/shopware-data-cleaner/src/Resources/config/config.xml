@@ -29,16 +29,12 @@
             <defaultValue>false</defaultValue>
         </input-field> -->
         
-        <input-field type="single-select">
+        <!-- <input-field type="single-select">
             <name>scheduleFrequency</name>
             <label>Schedule Frequency</label>
             <label lang="de-DE">Zeitplan-Häufigkeit</label>
             <options>
-                <!-- <option>
-                    <id>daily</id>
-                    <name>Daily</name>
-                    <name lang="de-DE">Täglich</name>
-                </option> -->
+            
                 <option>
                     <id>weekly</id>
                     <name>Weekly</name>
@@ -51,7 +47,7 @@
                 </option>
             </options>
             <defaultValue>weekly</defaultValue>
-        </input-field>
+        </input-field> -->
         
         <input-field type="text">
             <name>notificationEmail</name>
@@ -99,8 +95,29 @@
             <max>120</max>
         </input-field>
 
+        <input-field type="single-select">
+            <name>scheduleFrequency</name>
+            <label>Schedule Frequency</label>
+            <label lang="de-DE">Zeitplan-Häufigkeit</label>
+            <options>
+            
+                <option>
+                    <id>weekly</id>
+                    <name>Weekly</name>
+                    <name lang="de-DE">Wöchentlich</name>
+                </option>
+                <option>
+                    <id>monthly</id>
+                    <name>Monthly</name>
+                    <name lang="de-DE">Monatlich</name>
+                </option>
+            </options>
+            <defaultValue>weekly</defaultValue>
+        </input-field> 
+        
+
         <input-field type="bool">
-            <name>enableScheduler</name>
+            <name>enableSchedulerOfProducts</name>
             <label>Enable Scheduled Cleanup</label>
             <label lang="de-DE">Geplante Bereinigung aktivieren</label>
             <defaultValue>false</defaultValue>
@@ -127,6 +144,25 @@
             <defaultValue>12</defaultValue>
             <min>1</min>
             <max>120</max>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>customerCleanupScheduleFrequency</name>
+            <label lang="en-GB">Schedule Frequency</label>
+            <label lang="de-DE">Zeitplan-Häufigkeit</label>
+            <options>
+                <option>
+                    <id>weekly</id>
+                    <name lang="en-GB">Weekly</name>
+                    <name lang="de-DE">Wöchentlich</name>
+                </option>
+                <option>
+                    <id>monthly</id>
+                    <name lang="en-GB">Monthly</name>
+                    <name lang="de-DE">Monatlich</name>
+                </option>
+            </options>
+            <defaultValue>weekly</defaultValue>
         </input-field>
 
         <input-field type="bool">
@@ -168,6 +204,25 @@
             <max>120</max>
         </input-field>
 
+        <input-field type="single-select">
+            <name>orderCleanupScheduleFrequency</name>
+            <label lang="en-GB">Schedule Frequency</label>
+            <label lang="de-DE">Zeitplan-Häufigkeit</label>
+            <options>
+                <option>
+                    <id>weekly</id>
+                    <name lang="en-GB">Weekly</name>
+                    <name lang="de-DE">Wöchentlich</name>
+                </option>
+                <option>
+                    <id>monthly</id>
+                    <name lang="en-GB">Monthly</name>
+                    <name lang="de-DE">Monatlich</name>
+                </option>
+            </options>
+            <defaultValue>weekly</defaultValue>
+        </input-field>
+
         <input-field type="bool">
             <name>enableSchedulerOfOrders</name>
             <label>Enable Scheduled Cleanup</label>
@@ -195,6 +250,26 @@
             <min>1</min>
             <max>120</max>
         </input-field>
+
+        <input-field type="single-select">
+            <name>categoryCleanupScheduleFrequency</name>
+            <label lang="en-GB">Schedule Frequency</label>
+            <label lang="de-DE">Zeitplan-Häufigkeit</label>
+            <options>
+                <option>
+                    <id>weekly</id>
+                    <name lang="en-GB">Weekly</name>
+                    <name lang="de-DE">Wöchentlich</name>
+                </option>
+                <option>
+                    <id>monthly</id>
+                    <name lang="en-GB">Monthly</name>
+                    <name lang="de-DE">Monatlich</name>
+                </option>
+            </options>
+            <defaultValue>weekly</defaultValue>
+        </input-field>
+
 
         <input-field type="bool">
             <name>enableSchedulerOfCategories</name>
@@ -233,6 +308,25 @@
             <defaultValue>true</defaultValue>
         </input-field>
 
+        <input-field type="single-select">
+            <name>promotionCleanupScheduleFrequency</name>
+            <label lang="en-GB">Schedule Frequency</label>
+            <label lang="de-DE">Zeitplan-Häufigkeit</label>
+            <options>
+                <option>
+                    <id>weekly</id>
+                    <name lang="en-GB">Weekly</name>
+                    <name lang="de-DE">Wöchentlich</name>
+                </option>
+                <option>
+                    <id>monthly</id>
+                    <name lang="en-GB">Monthly</name>
+                    <name lang="de-DE">Monatlich</name>
+                </option>
+            </options>
+            <defaultValue>weekly</defaultValue>
+        </input-field>
+
         <input-field type="bool">
             <name>enableSchedulerOfPromotions</name>
             <label>Enable Scheduled Cleanup</label>
@@ -263,6 +357,25 @@
             <max>120</max>
         </input-field>
 
+        <input-field type="single-select">
+            <name>cmsCleanupScheduleFrequency</name>
+            <label lang="en-GB">Schedule Frequency</label>
+            <label lang="de-DE">Zeitplan-Häufigkeit</label>
+            <options>
+                <option>
+                    <id>weekly</id>
+                    <name lang="en-GB">Weekly</name>
+                    <name lang="de-DE">Wöchentlich</name>
+                </option>
+                <option>
+                    <id>monthly</id>
+                    <name lang="en-GB">Monthly</name>
+                    <name lang="de-DE">Monatlich</name>
+                </option>
+            </options>
+            <defaultValue>weekly</defaultValue>
+        </input-field>
+
         <input-field type="bool">
             <name>enableSchedulerOfCms</name>
             <label>Enable Scheduled Cleanup</label>
@@ -284,6 +397,25 @@
             <max>365</max>
         </input-field>
 
+        <input-field type="single-select">
+            <name>reviewCleanupScheduleFrequency</name>
+            <label lang="en-GB">Schedule Frequency</label>
+            <label lang="de-DE">Zeitplan-Häufigkeit</label>
+            <options>
+                <option>
+                    <id>weekly</id>
+                    <name lang="en-GB">Weekly</name>
+                    <name lang="de-DE">Wöchentlich</name>
+                </option>
+                <option>
+                    <id>monthly</id>
+                    <name lang="en-GB">Monthly</name>
+                    <name lang="de-DE">Monatlich</name>
+                </option>
+            </options>
+            <defaultValue>weekly</defaultValue>
+        </input-field>
+
         <input-field type="bool">
             <name>enableSchedulerOfReviews</name>
             <label>Enable Scheduled Cleanup</label>
@@ -303,6 +435,25 @@
             <defaultValue>12</defaultValue>
             <min>1</min>
             <max>120</max>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>newsletterCleanupScheduleFrequency</name>
+            <label lang="en-GB">Schedule Frequency</label>
+            <label lang="de-DE">Zeitplan-Häufigkeit</label>
+            <options>
+                <option>
+                    <id>weekly</id>
+                    <name lang="en-GB">Weekly</name>
+                    <name lang="de-DE">Wöchentlich</name>
+                </option>
+                <option>
+                    <id>monthly</id>
+                    <name lang="en-GB">Monthly</name>
+                    <name lang="de-DE">Monatlich</name>
+                </option>
+            </options>
+            <defaultValue>weekly</defaultValue>
         </input-field>
 
         <input-field type="bool">
@@ -331,6 +482,25 @@
             <label>Delete orphaned thumbnails</label>
             <label lang="de-DE">Verwaiste Thumbnails löschen</label>
             <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>mediaCleanupScheduleFrequency</name>
+            <label lang="en-GB">Schedule Frequency</label>
+            <label lang="de-DE">Zeitplan-Häufigkeit</label>
+            <options>
+                <option>
+                    <id>weekly</id>
+                    <name lang="en-GB">Weekly</name>
+                    <name lang="de-DE">Wöchentlich</name>
+                </option>
+                <option>
+                    <id>monthly</id>
+                    <name lang="en-GB">Monthly</name>
+                    <name lang="de-DE">Monatlich</name>
+                </option>
+            </options>
+            <defaultValue>weekly</defaultValue>
         </input-field>
 
         <input-field type="bool">

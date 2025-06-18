@@ -1,0 +1,40 @@
+{
+  "name": "ict/ict-reminder-email-wishlist",
+  "description": "If the product is added to the wishlist and cart, you can send a reminder via email to the customer to purchase the product.",
+  "type": "shopware-platform-plugin",
+  "license": "proprietary",
+  "version": "2.0.0",
+  "authors": [
+    {
+      "name": "iCreateivetechnologies"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "ICTECH_ReminderEmailWishlist\\": "src/"
+    }
+  },
+  "require": {
+    "shopware/core": "6.5.* || 6.6.*"
+  },
+  "extra": {
+    "shopware-plugin-class": "ICTECH_ReminderEmailWishlist\\ICTECH_ReminderEmailWishlist",
+    "plugin-icon": "ict.png",
+    "label": {
+      "de-DE": "Erinnerungs-E-Mail",
+      "en-GB": "Reminder Email"
+    },
+    "description": {
+      "de-DE": "Als het product is toegevoegd aan het verlanglijstje en de winkelwagen, kun je de klant via e-mail een herinnering sturen om het product te kopen.",
+      "en-GB": "If the product is added to the wishlist and cart, you can send a reminder via email to the customer to purchase the product."
+    },
+    "manufacturerLink": {
+      "de-DE": "https://www.icreativetechnologies.com/",
+      "en-GB": "https://www.icreativetechnologies.com/"
+    },
+    "supportLink": {
+      "de-DE": "https://support.icreativetechnologies.com/",
+      "en-GB": "https://support.icreativetechnologies.com/"
+    }
+  }
+}
