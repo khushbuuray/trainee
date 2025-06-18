@@ -14,7 +14,21 @@
       "successTitle": "Bereinigung Abgeschlossen",
       "successMessage": "Erfolgreich {count} Elemente bereinigt",
       "errorTitle": "Bereinigung Fehlgeschlagen",
-      "errorMessage": "Bei der Bereinigung ist ein Fehler aufgetreten"
+      "errorMessage": "Bei der Bereinigung ist ein Fehler aufgetreten",
+      "previewTitle": "Vorschau der Datenbereinigung"
+    },
+    "tabs": {
+      "products": "Produkte",
+      "customers": "Kunden & Konten",
+      "carts": "Bestellungen, Warenkörbe & Checkouts",
+      "categories": "Kategorien & Navigation",
+      "promotions": "Aktionen & Rabatte",
+      "cmsPages": "CMS-Inhalte & Seiten",
+      "reviews": "Bewertungen & Rezensionen",
+      "newsletter": "Marketinglisten",
+      "media": "Medienverwaltung",
+      "logs": "Protokolle, Cache & Technische Daten",
+      "previewTitle": "Datenbereinigungsvorschau"
     },
     "logs": {
       "columnDate": "Datum",
@@ -36,6 +50,77 @@
       "summary": "Erfolgreich {count} Elemente verarbeitet",
       "handler": "Handler",
       "itemsDeleted": "Gelöschte Elemente"
-    }
+    },
+    "config": {
+      "productCleanup": {
+        "monthsNotSold": "Produkte, die seit Monaten nicht verkauft wurden",
+        "deleteNeverSold": "Produkte, die nie verkauft wurden",
+        "monthsDisabled": "Inaktive Produkte älter als Monate"
+      },
+      "customerCleanup": {
+        "guestMonths": "Gastkonten inaktiv seit Monaten",
+        "inactiveMonths": "Inaktive Kunden seit Monaten"
+      },
+      "cartCleanup": {
+        "abandonedDays": "Verlassene Warenkörbe älter als Tage"
+      },
+      "orderCleanup": {
+        "cancelledAgeMonths": "Stornierte Bestellungen älter als Monate",
+        "oldAgeMonths": "Alte Transaktionen älter als Monate"
+      },
+      "categoryCleanup": {
+        "emptyCategories": "Leere Kategorien",
+        "noSalesMonths": "Kategorien ohne Verkäufe seit Monaten"
+      },
+      "promotionCleanup": {
+        "expiredMonths": "Abgelaufene Aktionen älter als Monate",
+        "unusedVoucherMonths": "Unbenutzte Gutscheine älter als Monate",
+        "orphaned": "Verwaiste Warenkorbregeln"
+      },
+      "cmsPageCleanup": {
+        "unpublishedDraftsMonths": "Unveröffentlichte CMS-Entwürfe älter als Monate"
+      },
+      "reviewCleanup": {
+        "unapprovedDays": "Nicht freigegebene Bewertungen älter als Tage"
+      },
+      "newsletterCleanup": {
+        "bouncedMonths": "Unzustellbare Empfänger älter als Monate"
+      },
+      "mediaCleanup": {
+        "orphanAgeDays": "Verwaiste Medien nach Tagen"
+      }
+    },
+    "previewGroups": {
+  "products_not_sold_months": "Producten die al maanden niet zijn verkocht",
+  "products_never_sold": "Producten die nooit zijn verkocht",
+  "inactive_products": "Inactieve producten ouder dan maanden",
+
+  "guest_customers": "Gastaccounts die al maanden inactief zijn",
+  "inactive_customers": "Inactieve klanten voor maanden",
+
+  "abandoned_carts": "Achtergelaten winkelwagentjes ouder dan dagen",
+  "cancelled_orders": "Geannuleerde bestellingen ouder dan maanden",
+  "old_orders_months": "Oude transacties ouder dan maanden",
+
+  "empty_categories": "Lege categorieën",
+  "no_sales_categories": "Categorieën zonder verkopen in maanden",
+
+  "expired_promotions": "Verlopen promoties ouder dan maanden",
+  "unused_vouchers": "Ongebruikte vouchers ouder dan maanden",
+  "orphaned_cart_rules": "Verweesde winkelwagenregels",
+
+  "unpublished_drafts": "Niet-gepubliceerde CMS-concepten ouder dan maanden",
+
+  "unapproved_reviews": "Niet-goedgekeurde beoordelingen ouder dan dagen",
+
+  "bounced_recipients": "Geblokkeerde nieuwsbriefontvangers ouder dan maanden",
+  "orphaned_media": "Verweesde media na dagen"
+},
+"modals": {
+  "closeButton": "Sluiten",
+  "removeButton": "Verwijderen"
+}
+
+
   }
 }

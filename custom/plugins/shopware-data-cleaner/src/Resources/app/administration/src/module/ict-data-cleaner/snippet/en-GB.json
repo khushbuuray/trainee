@@ -14,8 +14,13 @@
       "successTitle": "Cleanup Completed",
       "successMessage": "Successfully cleaned up {count} items",
       "errorTitle": "Cleanup Failed",
-      "errorMessage": "An error occurred during cleanup"
+      "errorMessage": "An error occurred during cleanup",
+      "previewTitle": "Data Cleanup Preview"      
     },
+    "modals": {
+  "closeButton": "Close",
+  "removeButton": "Remove"
+},
      "tabs": {
       "products": "Products",
       "customers": "Customers & Accounts",
@@ -24,8 +29,8 @@
       "promotions": "Promotions & Discounts",
       "cmsPages": "CMS Content & Pages",
       "reviews": "Reviews & Ratings",
-      "marketingLists": "Marketing Lists",
-      "mediaManagement": "Media Management",
+      "newsletter": "Marketing Lists",
+      "media": "Media Management",
       "logs": "Logs, Cache & Technical Data",
       "previewTitle": "Data Cleanup Preview"
     },
@@ -50,6 +55,74 @@
       "summary": "Successfully processed {count} items",
       "handler": "Handler",
       "itemsDeleted": "Items Deleted"
-    }
+    },
+       "config": {
+      "productCleanup": {
+        "monthsNotSold": "Products not sold in months",
+        "deleteNeverSold": "Products never sold",
+        "monthsDisabled": "Inactive products older than months"
+      },
+       "customerCleanup": {
+        "guestMonths": "Guest accounts inactive for months",
+        "inactiveMonths": "Inactive customers for months"
+      },
+      "cartCleanup": {
+        "abandonedDays": "Abandoned carts older than days"
+      },
+      "orderCleanup": {
+        "cancelledAgeMonths": "Cancelled orders older than months",
+        "oldAgeMonths": "Old transactions older than months"
+      },
+      "categoryCleanup": {
+        "emptyCategories": "Empty categories",
+        "noSalesMonths": "Categories with no sales in months"
+      },
+      "promotionCleanup": {
+        "expiredMonths": "Expired promotions older than months",
+        "unusedVoucherMonths": "Unused vouchers older than months",
+        "orphaned": "Orphaned cart rules"
+      },
+      "cmsPageCleanup": {
+        "unpublishedDraftsMonths": "Unpublished CMS drafts older than months"
+      },
+      "reviewCleanup": {
+        "unapprovedDays": "Unapproved reviews older than days"
+      },
+      "newsletterCleanup": {
+        "bouncedMonths": "Bounced recipients older than months"
+      },
+      "mediaCleanup": {
+        "orphanAgeDays": "Orphaned media after days"
+      }
+    },
+    "previewGroups": {
+  "products_not_sold_months": "Products not sold in months",
+  "products_never_sold": "Products never sold",
+  "inactive_products": "Inactive products older than months",
+
+  "guest_customers": "Guest accounts inactive for months",
+  "inactive_customers": "Inactive customers for months",
+ 
+  "abandoned_carts": "Abandoned carts older than days",
+  "cancelled_orders": "Cancelled orders older than months",
+  "old_orders_months": "Old transactions older than months",
+
+  "empty_categories": "Empty categories",
+  "no_sales_categories": "Categories with no sales in months",
+
+  "expired_promotions": "Expired promotions older than months",
+  "unused_vouchers": "Unused vouchers older than months",
+  "orphaned_cart_rules": "Orphaned cart rules",
+
+  "unpublished_drafts": "Unpublished CMS drafts older than months",
+
+  "unapproved_reviews": "Unapproved reviews older than days",
+
+  "bounced_recipients": "Bounced recipients older than months",
+  "orphaned_media": "Orphaned media after days"
+}
+
+
+
   }
 }

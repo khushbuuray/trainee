@@ -401,70 +401,6 @@ Component.register("ict-data-cleaner-index", {
       gridKey: 0,
       gridReady: false,
       pagination: {},
-      tabConfigs: {
-    products: {
-        label: "Products & Variants",
-        fields: [
-            { key: 'productCleanup.monthsNotSold', label: 'Products not sold in months', type: 'int' },
-            { key: 'productCleanup.deleteNeverSold', label: 'Products never sold', type: 'bool' },
-            { key: 'productCleanup.monthsDisabled', label: 'Inactive products older than months', type: 'int' },
-        ],
-    },
-    customers: {
-        label: "Customers & Accounts",
-        fields: [
-            { key: 'customerCleanup.guestMonths', label: 'Guest accounts inactive for months', type: 'int' },
-            { key: 'customerCleanup.inactiveMonths', label: 'Inactive customers for months', type: 'int' },
-        ],
-    },
-    carts: {
-        label: "Orders, Carts & Checkouts",
-        fields: [
-            { key: 'cartCleanup.abandonedDays', label: 'Abandoned carts older than days', type: 'int' },
-            { key: 'orderCleanup.cancelledAgeMonths', label: 'Cancelled orders older than months', type: 'int' },
-            { key: 'orderCleanup.oldAgeMonths', label: 'Old transactions older than months', type: 'int' },
-        ],
-    },
-    categories: {
-        label: "Categories & Navigation",
-        fields: [
-            { key: 'categoryCleanup.emptyCategories', label: 'Empty categories', type: 'bool' },
-            { key: 'categoryCleanup.noSalesMonths', label: 'Categories with no sales in months', type: 'int' },
-        ],
-    },
-    promotions: {
-        label: "Promotions & Discounts",
-        fields: [
-            { key: 'promotionCleanup.expiredMonths', label: 'Expired promotions older than months', type: 'int' },
-            { key: 'promotionCleanup.unusedVoucherMonths', label: 'Unused vouchers older than months', type: 'int' },
-            { key: 'promotionCleanup.orphaned', label: 'Orphaned cart rules', type: 'bool' },
-        ],
-    },
-    cmsPages: {
-        label: "CMS Content & Pages",
-        fields: [
-            { key: 'cmsPageCleanup.unpublishedDraftsMonths', label: 'Unpublished CMS drafts older than months', type: 'int' },
-        ],
-    },
-    reviews: {
-        label: "Reviews & Ratings",
-        fields: [
-            { key: 'reviewCleanup.unapprovedDays', label: 'Unapproved reviews older than days', type: 'int' },
-        ],
-    },
-    newsletter: {
-        label: "Marketing Lists",
-        fields: [
-            { key: 'newsletterCleanup.bouncedMonths', label: 'Bounced recipients older than months', type: 'int' },
-        ],
-    },
-    media: {
-        label: "Media Management",
-        fields: [
-            { key: 'mediaCleanup.orphanAgeDays', label: 'Orphaned media after days', type: 'int' },
-        ],
-    },
-},
 
     };
   },
@@ -473,27 +409,167 @@ Component.register("ict-data-cleaner-index", {
     this.loadSystemConfig();
 },
 
-  computed: {
-    configDomain() {
-      return "IctDataCleanerPro.config";
-    },
-
-    paginatedRows() {
-      const result = {};
-      if (!this.previewData?.items) return result;
-
-      for (const [key, group] of Object.entries(this.previewData.items)) {
-        const page = this.pagination?.[key]?.page || 1;
-        const limit = this.pagination?.[key]?.limit || 10;
-        result[key] = (group.sample || []).slice(
-          (page - 1) * limit,
-          page * limit
-        );
-      }
-
-      return result;
-    },
+computed: {
+  configDomain() {
+    return "IctDataCleanerPro.config";
   },
+
+  paginatedRows() {
+    const result = {};
+    if (!this.previewData?.items) return result;
+
+    for (const [key, group] of Object.entries(this.previewData.items)) {
+      const page = this.pagination?.[key]?.page || 1;
+      const limit = this.pagination?.[key]?.limit || 10;
+      result[key] = (group.sample || []).slice(
+        (page - 1) * limit,
+        page * limit
+      );
+    }
+
+    return result;
+  },
+
+  tabConfigs() {
+    return {
+      products: {
+        label: 'ict-data-cleaner.tabs.products',
+        fields: [
+          {
+            key: 'productCleanup.monthsNotSold',
+            label:'ict-data-cleaner.config.productCleanup.monthsNotSold',
+            type: 'int'
+          },
+          {
+            key: 'productCleanup.deleteNeverSold',
+            label: 'ict-data-cleaner.config.productCleanup.deleteNeverSold',
+            type: 'bool'
+          },
+          {
+            key: 'productCleanup.monthsDisabled',
+            label: 'ict-data-cleaner.config.productCleanup.monthsDisabled',
+            type: 'int'
+          }
+        ]
+      },
+      customers: {
+        label: 'ict-data-cleaner.tabs.customers',
+        fields: [
+          {
+            key: 'customerCleanup.guestMonths',
+            label: 'ict-data-cleaner.config.customerCleanup.guestMonths',
+            type: 'int'
+          },
+          {
+            key: 'customerCleanup.inactiveMonths',
+            label: 'ict-data-cleaner.config.customerCleanup.inactiveMonths',
+            type: 'int'
+          }
+        ]
+      },
+      carts: {
+        label: 'ict-data-cleaner.tabs.carts',
+        fields: [
+          {
+            key: 'cartCleanup.abandonedDays',
+            label: 'ict-data-cleaner.config.cartCleanup.abandonedDays',
+            type: 'int'
+          },
+          {
+            key: 'orderCleanup.cancelledAgeMonths',
+            label:'ict-data-cleaner.config.orderCleanup.cancelledAgeMonths',
+            type: 'int'
+          },
+          {
+            key: 'orderCleanup.oldAgeMonths',
+            label: 'ict-data-cleaner.config.orderCleanup.oldAgeMonths',
+            type: 'int'
+          }
+        ]
+      },
+      categories: {
+        label: 'ict-data-cleaner.tabs.categories',
+        fields: [
+          {
+            key: 'categoryCleanup.emptyCategories',
+            label: 'ict-data-cleaner.config.categoryCleanup.emptyCategories',
+            type: 'bool'
+          },
+          {
+            key: 'categoryCleanup.noSalesMonths',
+            label: 'ict-data-cleaner.config.categoryCleanup.noSalesMonths',
+            type: 'int'
+          }
+        ]
+      },
+      promotions: {
+        label: 'ict-data-cleaner.tabs.promotions',
+        fields: [
+          {
+            key: 'promotionCleanup.expiredMonths',
+            label: 'ict-data-cleaner.config.promotionCleanup.expiredMonths',
+            type: 'int'
+          },
+          {
+            key: 'promotionCleanup.unusedVoucherMonths',
+            label:'ict-data-cleaner.config.promotionCleanup.unusedVoucherMonths',
+            type: 'int'
+          },
+          {
+            key: 'promotionCleanup.orphaned',
+            label:'ict-data-cleaner.config.promotionCleanup.orphaned',
+            type: 'bool'
+          }
+        ]
+      },
+      cmsPages: {
+        label: 'ict-data-cleaner.tabs.cmsPages',
+        fields: [
+          {
+            key: 'cmsPageCleanup.unpublishedDraftsMonths',
+            label: 'ict-data-cleaner.config.cmsPageCleanup.unpublishedDraftsMonths',
+            type: 'int'
+          }
+        ]
+      },
+      reviews: {
+        label:'ict-data-cleaner.tabs.reviews',
+        fields: [
+          {
+            key: 'reviewCleanup.unapprovedDays',
+            label: 'ict-data-cleaner.config.reviewCleanup.unapprovedDays',
+            type: 'int'
+          }
+        ]
+      },
+      newsletter: {
+        label:'ict-data-cleaner.tabs.newsletter',
+        fields: [
+          {
+            key: 'newsletterCleanup.bouncedMonths',
+            label: 'ict-data-cleaner.config.newsletterCleanup.bouncedMonths',
+            type: 'int'
+          }
+        ]
+      },
+      media: {
+        label: 'ict-data-cleaner.tabs.media',
+        fields: [
+          {
+            key: 'mediaCleanup.orphanAgeDays',
+            label:'ict-data-cleaner.config.mediaCleanup.orphanAgeDays',
+            type: 'int'
+          }
+        ]
+      }
+    };
+  },
+  currentTabConfig() {
+  return this.tabConfigs[this.activeTab] || { label: '', fields: [] };
+  }
+
+},
+
 
   methods: {
     getColumnsForGroup(key) {

@@ -8,181 +8,128 @@
         </template>
         {% endblock %}
 
-{% block sw_ict_data_cleaner_content %}
-<template #content>
-    <sw-card-view>
-        <sw-tabs>
-            <sw-tabs-item
-                v-for="(tab, key) in tabConfigs"
-                :key="key"
-                :active="activeTab === key"
-                @click="setActiveTab(key)"
-                :title="tab.label"
-            >
-                {{ tab.label }}
-            </sw-tabs-item>
-        </sw-tabs>
+        {% block sw_ict_data_cleaner_content %}
+        <template #content>
+            <sw-card-view>
 
-        <sw-card
-            v-if="tabConfigs[activeTab]"
-            :title="tabConfigs[activeTab].label"
-            :isLoading="isLoading"
-        >
-            <sw-container gap="10px">
-                <div
-                    v-for="field in tabConfigs[activeTab].fields"
-                    :key="field.key"
-                    class="field-header"
-                >
-                    <span class="label">
-                        <strong>{{ field.label }}:</strong>
-                        {{ getConfigValue(field.key, field.type) }}
-                    </span>
-                    <sw-button
-                        @click="previewAction(field.key)"
-                        size="small"
-                        variant="primary"
-                    >
-                        Preview
-                    </sw-button>
-                </div>
-            </sw-container>
-        </sw-card>
-
-        {# {% block ict_data_cleaner_index_modal %}
-            <sw-modal
-                v-if="showPreviewModal"
-                class="ict-data-cleaner-preview-modal"
-                size="large"
-                title="Preview"
-                @modal-close="showPreviewModal = false"
-            >
-                <template v-if="gridReady && previewData?.items">
-                    <div
-                        v-for="(group, key) in previewData.items"
+                {# ✅ Keep only the v-for section inside verbatim #}
+                {% verbatim %}
+                <sw-tabs>
+                    <sw-tabs-item
+                        v-for="(tab, key) in tabConfigs"
                         :key="key"
-                        class="preview-group"
+                        :active="activeTab === key"
+                        @click="setActiveTab(key)"
+                        :title="$tc(`ict-data-cleaner.tabs.${key}`)"
                     >
-                        <h3>{{ key }}</h3>
+                        {{ $tc(`ict-data-cleaner.tabs.${key}`) }}
+                    </sw-tabs-item>
+                </sw-tabs>
+                {% endverbatim %}
 
-                        <sw-data-grid
-                            v-if="paginatedRows[key]?.length"
-                            :dataSource="paginatedRows[key]"
-                            :columns="getColumnsForGroup(key)"
-                            :selectionMode="'multi'"
-                            :selection="selectedPreviewProducts[key] || []"
-                            :showSelection="true"
-                            ref="previewGrid"
-                            :ref-key="key"
-                            @selection-change="onProductSelectionChange(key, $event)"
-                        />
+                {# ✅ This part must be outside verbatim so Vue bindings work #}
+                <sw-card
+                    v-if="tabConfigs[activeTab]"
+                    :title="$tc(currentTabConfig.label)"
+                    :isLoading="isLoading"
+                >
 
-                        <sw-pagination
-                            :page="pagination[key]?.page || 1"
-                            :limit="pagination[key]?.limit || 10"
-                            :total="pagination[key]?.total || 0"
-                            @page-change="({ page, limit }) => onPageChange({ page, limit }, key)"
-                        />
-
-                        <div class="sw-grid__total-count">
-                            <strong>Total {{ key }}: </strong>
-                            {{ group.count }}
+                    {% verbatim %}
+                    <sw-container gap="10px">
+                        <div
+                            v-for="field in currentTabConfig.fields"
+                            :key="field.key"
+                            class="field-header"
+                        >
+                            <span class="label">
+                                <strong>{{ $tc(field.label) }}:</strong>
+                                {{ getConfigValue(field.key, field.type) }}
+                            </span>
+                            <sw-button
+                                @click="previewAction(field.key)"
+                                size="small"
+                                variant="primary"
+                            >
+                                {{ $tc('ict-data-cleaner.general.previewButton') }}
+                            </sw-button>
                         </div>
-                    </div>
-                </template>
+                    </sw-container>
+                    {% endverbatim %}
 
-                <template #modal-footer>
-                    <sw-button
-                        variant="primary"
-                        size="small"
-                        @click="showPreviewModal = false"
-                    >
-                        Close
-                    </sw-button>
-                    <sw-button
-                        variant="primary"
-                        size="small"
-                        @click="removeSelectedItems(activePreviewKey)"
-                        :disabled="!Object.values(selectedPreviewProducts).flat().length"
-                    >
-                        Remove
-                    </sw-button>
-                </template>
-            </sw-modal>
-        {% endblock %} #}
-{% block ict_data_cleaner_index_modal %}
-<sw-modal
-    v-if="showPreviewModal"
-    class="ict-data-cleaner-preview-modal"
-    size="large"
-    title="Preview"
-    @modal-close="showPreviewModal = false"
->
-    <template>
-        <div v-if="gridReady && previewData?.items && Object.keys(previewData.items).length">
-            <div
-                v-for="(group, key) in previewData.items"
-                :key="key"
-                class="preview-group"
-            >
-                <h3>{{ key }}</h3>
+                </sw-card>
 
-                <sw-data-grid
-                    v-if="paginatedRows[key]?.length"
-                    :dataSource="paginatedRows[key]"
-                    :columns="getColumnsForGroup(key)"
-                    :selectionMode="'multi'"
-                    :selection="selectedPreviewProducts[key] || []"
-                    :showSelection="true"
-                    ref="previewGrid"
-                    :ref-key="key"
-                    @selection-change="onProductSelectionChange(key, $event)"
-                />
+                {% block ict_data_cleaner_index_modal %}
+                <sw-modal
+                    v-if="showPreviewModal"
+                    class="ict-data-cleaner-preview-modal"
+                    size="large"
+                    :title="$tc(`ict-data-cleaner.general.previewTitle`)"
+                    @modal-close="showPreviewModal = false"
+                >
+                    <template>
+                        <div v-if="gridReady && previewData?.items && Object.keys(previewData.items).length">
+                            <div
+                                v-for="(group, key) in previewData.items"
+                                :key="key"
+                                class="preview-group"
+                            >
+                                <h3>{{ $tc(`ict-data-cleaner.previewGroups.${key}`) }}</h3>
 
-                <sw-pagination
-                    :page="pagination[key]?.page || 1"
-                    :limit="pagination[key]?.limit || 10"
-                    :total="pagination[key]?.total || 0"
-                    @page-change="({ page, limit }) => onPageChange({ page, limit }, key)"
-                />
+                                <sw-data-grid
+                                    v-if="paginatedRows[key]?.length"
+                                    :dataSource="paginatedRows[key]"
+                                    :columns="getColumnsForGroup(key)"
+                                    :selectionMode="'multi'"
+                                    :selection="selectedPreviewProducts[key] || []"
+                                    :showSelection="true"
+                                    ref="previewGrid"
+                                    :ref-key="key"
+                                    @selection-change="onProductSelectionChange(key, $event)"
+                                />
 
-                <div class="sw-grid__total-count">
-                    <strong>Total {{ key }}: </strong>
-                    {{ group.count }}
-                </div>
-            </div>
-        </div>
-        <div v-else>
-            <sw-loader />
-            <p style="margin-top: 10px;">Loading preview data...</p>
-        </div>
-    </template>
+                                <sw-pagination
+                                    :page="pagination[key]?.page || 1"
+                                    :limit="pagination[key]?.limit || 10"
+                                    :total="pagination[key]?.total || 0"
+                                    @page-change="({ page, limit }) => onPageChange({ page, limit }, key)"
+                                />
 
-    <template #modal-footer>
-        <sw-button
-            variant="primary"
-            size="small"
-            @click="showPreviewModal = false"
-        >
-            Close
-        </sw-button>
-        <sw-button
-            variant="primary"
-            size="small"
-            @click="removeSelectedItems(activePreviewKey)"
-            :disabled="!Object.values(selectedPreviewProducts).flat().length"
-        >
-            Remove
-        </sw-button>
-    </template>
-</sw-modal>
-{% endblock %}
+                                <div class="sw-grid__total-count">
+                                 <strong>Total {{ $tc(`ict-data-cleaner.previewGroups.${key}`) }}: </strong>
+                                    {{ group.count }}
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <sw-loader />
+                            <p style="margin-top: 10px;">Loading preview data...</p>
+                        </div>
+                    </template>
 
+                    <template #modal-footer>
+                        <sw-button
+                            variant="primary"
+                            size="small"
+                            @click="showPreviewModal = false"
+                        >
+                            {{ $tc('ict-data-cleaner.modals.closeButton') }}
+                        </sw-button>
+                        <sw-button
+                            variant="primary"
+                            size="small"
+                            @click="removeSelectedItems(activePreviewKey)"
+                            :disabled="!Object.values(selectedPreviewProducts).flat().length"
+                        >
+                            {{ $tc('ict-data-cleaner.modals.removeButton') }}
+                        </sw-button>
+                    </template>
+                </sw-modal>
+                {% endblock %}
 
-    </sw-card-view>
+            </sw-card-view>
+        </template>
+        {% endblock %}
+
+    </sw-page>
 </template>
 {% endblock %}
-  </sw-page>
-</template>
-{% endblock %}
-
