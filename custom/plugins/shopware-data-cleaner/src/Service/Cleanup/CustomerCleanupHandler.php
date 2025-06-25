@@ -2,22 +2,23 @@
 
 namespace IctDataCleanerPro\Service\Cleanup;
 
-use Doctrine\DBAL\Connection;
+use Shopware\Core\System\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 
 class CustomerCleanupHandler implements CleanupHandlerInterface
 {
     private EntityRepository $customerRepository;
-    private Connection $connection;
 
-    public function __construct(
-        EntityRepository $customerRepository,
-        Connection $connection
-    ) {
+    public function __construct(EntityRepository $customerRepository)
+    {
         $this->customerRepository = $customerRepository;
-        $this->connection = $connection;
     }
 
     public function cleanup(array $config, bool $dryRun, Context $context): array
@@ -26,119 +27,106 @@ class CustomerCleanupHandler implements CleanupHandlerInterface
             'name' => $this->getName(),
             'items' => []
         ];
-        // Clean guest customers
+
         if (isset($config['customerCleanup.guestMonths'])) {
-            $guestResults = $this->cleanupGuestCustomers(
-                (int) $config['customerCleanup.guestMonths'],
-                $dryRun,
-                $context
-            );
+            $guestResults = $this->cleanupGuestCustomers((int) $config['customerCleanup.guestMonths'], $dryRun, $context);
             $results['items']['guest_customers'] = $guestResults;
         }
 
-        // Clean inactive customers
         if (isset($config['customerCleanup.inactiveMonths'])) {
-            $inactiveResults = $this->cleanupInactiveCustomers(
-                (int) $config['customerCleanup.inactiveMonths'],
-                $dryRun,
-                $context
-            );
+            $inactiveResults = $this->cleanupInactiveCustomers((int) $config['customerCleanup.inactiveMonths'], $dryRun, $context);
             $results['items']['inactive_customers'] = $inactiveResults;
         }
 
         return $results;
     }
 
-    private function cleanupGuestCustomers(int $months, bool $dryRun, Context $context): array
+    public function cleanupGuestCustomers(int $months, bool $dryRun, Context $context): array
     {
-        $date = new \DateTime();
-        $date->modify("-{$months} months");
-        $sql = <<<SQL
-SELECT c.id, c.email, c.first_name, c.last_name
-FROM customer c
-LEFT JOIN `order_customer` oc ON c.id = oc.customer_id
-WHERE c.guest = 1 
-AND c.created_at < :date
--- AND oc.id IS NULL
-LIMIT 1000
-SQL;
+        $date = new \DateTimeImmutable("-{$months} months");
 
-        $customers = $this->connection->fetchAllAssociative($sql, [
-            'date' => $date->format('Y-m-d H:i:s')
-        ]);
-  
-        $customers = array_map(function ($customer) {
-    return [
-        'id' => Uuid::fromBytesToHex($customer['id']),
-        'email' => $customer['email'],
-        'first_name' => $customer['first_name'],
-        'last_name' => $customer['last_name'],
-    ];
-}, $customers);
+        $criteria = new Criteria();
+        $criteria->addFilter(
+            new MultiFilter(MultiFilter::CONNECTION_AND, [
+                new EqualsFilter('guest', true),
+                new EqualsFilter('active', false),
+                new RangeFilter('createdAt', ['lt' => $date->format(DATE_ATOM)])
+            ])
+        );
+        $criteria->addAssociation('orderCustomers');
+        $criteria->setLimit(1000);
+        $criteria->addSorting(new FieldSorting('createdAt'));
 
-        if (!$dryRun && !empty($customers)) {
-            $ids = array_map(function ($customer) {
-                return ['id' => $customer['id']];
-            }, $customers);
-            
-            $this->customerRepository->delete($ids, $context);
+        $result = $this->customerRepository->search($criteria, $context);
+
+        $customers = [];
+        /** @var CustomerEntity $customer */
+        foreach ($result->getEntities() as $customer) {
+            if ($customer->getOrderCustomers()->count() === 0) {
+                $customers[] = [
+                    'id' => $customer->getId(),
+                    'email' => $customer->getEmail(),
+                    'first_name' => $customer->getFirstName(),
+                    'last_name' => $customer->getLastName(),
+                ];
+            }
         }
-// $customers = array_map(function ($customer) {
-//     // Only convert if it's not already a valid hex UUID
-//     $customer['id'] = Uuid::isValid($customer['id'])
-//         ? $customer['id']
-//         : Uuid::fromBytesToHex($customer['id']);
-//     return $customer;
-// }, $customers);
-
-// // Convert to bytes for deletion
-// if (!$dryRun && !empty($customers)) {
-//     $ids = array_map(function ($customer) {
-//         return ['id' => Uuid::fromHexToBytes($customer['id'])];
-//     }, $customers);
-
-//     $this->customerRepository->delete($ids, $context);
-// }
-
-        return [
-            'count' => count($customers),
-            'sample' => $customers
-        ];
-    }
-
-    private function cleanupInactiveCustomers(int $months, bool $dryRun, Context $context): array
-    {
-        $date = new \DateTime();
-        $date->modify("-{$months} months");
-
-        $sql = <<<SQL
-SELECT c.id, c.email, c.first_name, c.last_name
-FROM customer c
-LEFT JOIN `order_customer` o ON c.id = o.customer_id AND o.created_at > :date
-WHERE c.guest = 0 
-AND c.created_at < :date
-AND (c.last_login IS NULL OR c.last_login < :date)
-AND o.id IS NULL
-LIMIT 1000
-SQL;
-
-        $customers = $this->connection->fetchAllAssociative($sql, [
-            'date' => $date->format('Y-m-d H:i:s')
-        ]);
 
         if (!$dryRun && !empty($customers)) {
-            $ids = array_map(function ($customer) {
-                return ['id' => $customer['id']];
-            }, $customers);
-            
+            $ids = array_map(fn($c) => ['id' => $c['id']], $customers);
             $this->customerRepository->delete($ids, $context);
         }
 
         return [
             'count' => count($customers),
-            'sample' => array_slice($customers, 0, 5)
+            'sample' => $customers,
         ];
     }
+
+    public function cleanupInactiveCustomers(int $months, bool $dryRun, Context $context): array
+    {
+        $date = new \DateTimeImmutable("-{$months} months");
+
+        $criteria = new Criteria();
+        $criteria->addFilter(
+            new MultiFilter(MultiFilter::CONNECTION_AND, [
+                new EqualsFilter('guest', false),
+                new RangeFilter('createdAt', ['lt' => $date->format(DATE_ATOM)]),
+                new MultiFilter(MultiFilter::CONNECTION_OR, [
+                    new RangeFilter('lastLogin', ['lt' => $date->format(DATE_ATOM)]),
+                    new EqualsFilter('lastLogin', null),
+                ]),
+            ])
+        );
+        $criteria->addAssociation('orderCustomers');
+        $criteria->setLimit(1000);
+
+        $result = $this->customerRepository->search($criteria, $context);
+
+        $customers = [];
+        /** @var CustomerEntity $customer */
+        foreach ($result->getEntities() as $customer) {
+            if ($customer->getOrderCustomers()->count() === 0) {
+                $customers[] = [
+                    'id' => $customer->getId(),
+                    'email' => $customer->getEmail(),
+                    'first_name' => $customer->getFirstName(),
+                    'last_name' => $customer->getLastName(),
+                ];
+            }
+        }
+
+        if (!$dryRun && !empty($customers)) {
+            $ids = array_map(fn($c) => ['id' => $c['id']], $customers);
+            $this->customerRepository->delete($ids, $context);
+        }
+
+        return [
+            'count' => count($customers),
+            'sample' => $customers,
+        ];
+    }
+
 
     public function getName(): string
     {

@@ -2,22 +2,20 @@
 
 namespace IctDataCleanerPro\Service\Cleanup;
 
-use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 
 class NewsletterCleanupHandler implements CleanupHandlerInterface
 {
     private EntityRepository $newsletterRecipientRepository;
-    private Connection $connection;
 
-    public function __construct(
-        EntityRepository $newsletterRecipientRepository,
-        Connection $connection
-    ) {
+    public function __construct(EntityRepository $newsletterRecipientRepository)
+    {
         $this->newsletterRecipientRepository = $newsletterRecipientRepository;
-        $this->connection = $connection;
     }
 
     public function cleanup(array $config, bool $dryRun, Context $context): array
@@ -29,6 +27,7 @@ class NewsletterCleanupHandler implements CleanupHandlerInterface
 
         // Clean bounced newsletter recipients
         if (isset($config['newsletterCleanup.bouncedMonths'])) {
+
             $bouncedResults = $this->cleanupBouncedRecipients(
                 (int) $config['newsletterCleanup.bouncedMonths'],
                 $dryRun,
@@ -42,41 +41,41 @@ class NewsletterCleanupHandler implements CleanupHandlerInterface
 
     private function cleanupBouncedRecipients(int $months, bool $dryRun, Context $context): array
     {
-        $date = new \DateTime();
-        $date->modify("-{$months} months");
+        $cutoffDate = (new \DateTime())->modify("-{$months} months");
 
-        $sql = <<<SQL
-SELECT nr.id, nr.email, nr.created_at
-FROM newsletter_recipient nr
-WHERE nr.status = 'rejected' -- Assuming 'rejected' means bounced
-AND nr.created_at < :date
-LIMIT 1000
-SQL;
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('status', 'rejected'));
+        $criteria->addFilter(new RangeFilter('createdAt', [RangeFilter::LT => $cutoffDate->format(\DATE_ATOM)]));
+        $criteria->setLimit(1000);
 
-        $recipients = $this->connection->fetchAllAssociative($sql, [
-            'date' => $date->format('Y-m-d H:i:s')
-        ]);
+        $recipients = $this->newsletterRecipientRepository->search($criteria, $context);
 
-        if (!$dryRun && !empty($recipients)) {
-            $ids = array_map(function ($recipient) {
-            return ['id' => Uuid::fromHexToBytes($recipient['id'])];
-            }, $recipients);
-            
-            $this->newsletterRecipientRepository->delete($ids, $context);
+        $sample = [];
+//        dd($recipients);
+        foreach ($recipients as $recipient) {
+            $sample[] = [
+                'id' => $recipient->getId(),
+                'email' => $recipient->getEmail(),
+                'created_at' => $recipient->getCreatedAt()?->format('Y-m-d H:i:s')
+            ];
         }
 
-          $recipients = array_map(function ($recipient) {
-    return [
-        'id' => Uuid::fromBytesToHex($recipient['id']),
-        'email' => $recipient['email'],
-        'created_at' => $recipient['created_at']
-    ];
-}, $recipients);
+        if (!$dryRun && $recipients->count() > 0) {
+            $ids = array_map(
+                fn($e) => ['id' => $e->getId()],
+                array_values($recipients->getElements())
+            );
+
+            if (!empty($ids)) {
+                $this->newsletterRecipientRepository->delete($ids, $context);
+            }
+        }
+
 
         return [
-            'count' => count($recipients),
-            'sample' => $recipients
-            ];
+            'count' => $recipients->count(),
+            'sample' => $sample
+        ];
     }
 
     public function getName(): string

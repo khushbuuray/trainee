@@ -5,7 +5,10 @@ namespace IctDataCleanerPro\Service\Cleanup;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 
 class MediaCleanupHandler implements CleanupHandlerInterface
 {
@@ -27,120 +30,69 @@ class MediaCleanupHandler implements CleanupHandlerInterface
             'items' => []
         ];
 
-        // Clean orphaned media
         if (isset($config['mediaCleanup.orphanAgeDays'])) {
-            $orphanResults = $this->cleanupOrphanedMedia(
-                (int) $config['mediaCleanup.orphanAgeDays'],
-                $dryRun,
-                $context
-            );
+            $orphanResults = $this->cleanupOrphanedMedia((int) $config['mediaCleanup.orphanAgeDays'], $dryRun, $context);
             $results['items']['orphaned_media'] = $orphanResults;
         }
 
-        // Clean orphaned thumbnails
-        if ($config['mediaCleanup.deleteThumbnails'] ?? false) {
-            $thumbnailResults = $this->cleanupOrphanedThumbnails($dryRun, $context);
-            $results['items']['orphaned_thumbnails'] = $thumbnailResults;
-        }
-
+    
         return $results;
     }
 
+
     private function cleanupOrphanedMedia(int $days, bool $dryRun, Context $context): array
     {
-        $date = new \DateTime();
-        $date->modify("-{$days} days");
+        $date = (new \DateTime())->modify("-{$days} days");
 
-//         $sql = <<<SQL
-// SELECT m.id, m.file_name
-// FROM media m
-// LEFT JOIN product_media pm ON m.id = pm.media_id
-// LEFT JOIN category c ON m.id = c.media_id
-// LEFT JOIN cms_page cp ON m.id = cp.preview_media_id
-// WHERE m.created_at < :date
-// AND pm.media_id IS NULL
-// AND c.media_id IS NULL
-// AND cp.preview_media_id IS NULL
-// LIMIT 1000
-// SQL;
-
-    $sql = <<<SQL
-SELECT LOWER(HEX(m.id)) AS id, m.file_name, m.created_at
-FROM media m
-LEFT JOIN product_media pm ON m.id = pm.media_id
-LEFT JOIN product p ON m.id = p.product_media_id
-LEFT JOIN category c ON m.id = c.media_id
-LEFT JOIN cms_page cp ON m.id = cp.preview_media_id
-LEFT JOIN cms_block cb ON m.id = cb.background_media_id
-LEFT JOIN product_manufacturer mf ON m.id = mf.media_id
-WHERE m.created_at < :date
-  AND pm.media_id IS NULL
-  AND p.product_media_id IS NULL
-  AND c.media_id IS NULL
-  AND cp.preview_media_id IS NULL
-  AND cb.background_media_id IS NULL
-  AND mf.media_id IS NULL
-LIMIT 1000
-SQL;
-
-        $media = $this->connection->fetchAllAssociative($sql, [
-            'date' => $date->format('Y-m-d H:i:s')
+        $criteria = new Criteria();
+        $criteria->addFilter(
+            new RangeFilter('createdAt', [RangeFilter::LT => $date->format(DATE_ATOM)])
+        );
+        $criteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_AND, [
+            new EqualsFilter('productMedia.id', null),
+            new EqualsFilter('categories.id', null),
+            new EqualsFilter('cmsPages.id', null),
+            new EqualsFilter('cmsBlocks.id', null),
+            new EqualsFilter('productManufacturers.id', null),
+            new EqualsFilter('documents.id', null),
+            new EqualsFilter('themes.id', null),
+        ]));
+        $criteria->addAssociations([
+            'productMedia',
+            'categories',
+            'cmsPages',
+            'cmsBlocks',
+            'productManufacturers',
+            'documents',
+            'themes',
         ]);
+        $criteria->setLimit(1000); // load all now; or use pagination if supported
 
-//         $media = array_map(function ($item) {
-//     $item['id'] = $item['id']; // ✅ Convert UUID properly
-//     return $item;
-// }, $media);
+        $result = $this->mediaRepository->search($criteria, $context);
+        $media = $result->getEntities();
 
-        if (!$dryRun && !empty($media)) {
-            $ids = array_map(function ($item) {
-                return ['id' => $item['id']];
-            }, $media);
-            
+        $sample = [];
+        foreach ($media as $mediaEntity) {
+            $sample[] = [
+                'id' => $mediaEntity->getId(),
+                'file_name' => $mediaEntity->getFileName(),
+                'created_at' => $mediaEntity->getCreatedAt()?->format('Y-m-d H:i:s'),
+            ];
+        }
+
+        // Delete only if not a dry run
+        if (!$dryRun && !empty($sample)) {
+            $ids = [];
+            foreach ($sample as $item) {
+                $ids[] = ['id' => $item['id']];
+            }
             $this->mediaRepository->delete($ids, $context);
         }
 
-        return [
-            'count' => count($media),
-            'sample' => $media
-        ];
-    }
-
-    private function cleanupOrphanedThumbnails(bool $dryRun, Context $context): array
-    {
-        $countSql = <<<SQL
-SELECT COUNT(*) as count
-FROM media_thumbnail mt
-LEFT JOIN media m ON mt.media_id = m.id
-WHERE m.id IS NULL
-SQL;
-
-        $countResult = $this->connection->fetchAssociative($countSql);
-        $count = (int) $countResult['count'];
-
-        $sampleSql = <<<SQL
-SELECT mt.id, mt.media_id
-FROM media_thumbnail mt
-LEFT JOIN media m ON mt.media_id = m.id
-WHERE m.id IS NULL
-LIMIT 5
-SQL;
-
-        $samples = $this->connection->fetchAllAssociative($sampleSql);
-
-        if (!$dryRun && $count > 0) {
-            $deleteSql = <<<SQL
-DELETE mt FROM media_thumbnail mt
-LEFT JOIN media m ON mt.media_id = m.id
-WHERE m.id IS NULL
-SQL;
-            
-            $this->connection->executeStatement($deleteSql);
-        }
 
         return [
-            'count' => $count,
-            'sample' => $samples
+            'count' => $media->count(),
+            'sample' => $sample, // return full sample here
         ];
     }
 

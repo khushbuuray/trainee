@@ -6,6 +6,11 @@ use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 
 
 class CategoryCleanupHandler implements CleanupHandlerInterface
@@ -27,7 +32,6 @@ class CategoryCleanupHandler implements CleanupHandlerInterface
             'name' => $this->getName(),
             'items' => []
         ];
-        // dd($config['categoryCleanup.emptyCategories']);
         // Clean empty categories
         if ($config['categoryCleanup.emptyCategories'] ?? false) {
             $emptyResults = $this->cleanupEmptyCategories($dryRun, $context);
@@ -47,91 +51,103 @@ class CategoryCleanupHandler implements CleanupHandlerInterface
         return $results;
     }
 
-    private function cleanupEmptyCategories(bool $dryRun, Context $context): array
-    {
+   private function cleanupEmptyCategories(bool $dryRun, Context $context): array
+{
+    $criteria = new Criteria();
+    $criteria->setLimit(100);
 
-        $sql = <<<SQL
-SELECT c.id, ct.name
-FROM category c
-LEFT JOIN category_translation ct ON c.id = ct.category_id
-LEFT JOIN product_category pc ON c.id = pc.category_id
-WHERE
-    c.cms_page_id IS NULL
-    AND pc.category_id IS NULL
-    AND c.type = 'page'
-    AND c.id NOT IN (
-        SELECT navigation_category_id FROM sales_channel
-        UNION
-        SELECT footer_category_id FROM sales_channel
-        UNION
-        SELECT service_category_id FROM sales_channel)
-AND c.type = 'page'
-LIMIT 1000
-SQL;
+     // Category is CMS page type, has no CMS layout assigned
+    $criteria->addFilter(new EqualsFilter('type', 'page'));
+    $criteria->addFilter(new EqualsFilter('cmsPageId', null));
 
-        $categories = $this->connection->fetchAllAssociative($sql);
+    // Not used in any sales channel
+    $criteria->addFilter(new EqualsFilter('navigationSalesChannels.id', null));
+    $criteria->addFilter(new EqualsFilter('footerSalesChannels.id', null));
+    $criteria->addFilter(new EqualsFilter('serviceSalesChannels.id', null));
 
-      
-        $categories = array_map(function ($category) {
-    return [
-        'id' => Uuid::fromBytesToHex($category['id']),
-        'name' => $category['name'] ?? null, // include other fields if needed
-    ];
-}, $categories);
+    // No products assigned to this category (via `products` association)
+    $criteria->addFilter(new EqualsFilter('products.id', null));
 
-        if (!$dryRun && !empty($categories)) {
-            $ids = array_map(function ($category) {
-                return ['id' => $category['id']];
-            }, $categories);
-            
-            $this->categoryRepository->delete($ids, $context);
-        }
-        return [
-            'count' => count($categories),
-            'sample' => $categories
+    // Include translations for name
+    $criteria->addAssociation('translations');
+
+    $categories = $this->categoryRepository->search($criteria, $context);
+
+    $sample = [];
+    foreach ($categories->getEntities() as $category) {
+        $sample[] = [
+            'id' => $category->getId(),
+            'name' => $category->getTranslated()['name'] ?? 'N/A',
         ];
     }
 
-    private function cleanupCategoriesWithNoSales(int $months, bool $dryRun, Context $context): array
-    {
-        $date = new \DateTime();
-        $date->modify("-{$months} months");
+    if (!$dryRun && !empty($sample)) {
+        $ids = array_map(fn($c) => ['id' => $c['id']], $sample);
+        $this->categoryRepository->delete($ids, $context);
+    }
 
-        $sql = <<<SQL
-SELECT DISTINCT c.id, ct.name
-FROM category c
-LEFT JOIN category_translation ct ON c.id = ct.category_id
-LEFT JOIN product_category pc ON c.id = pc.category_id
-LEFT JOIN product p ON pc.product_id = p.id
-LEFT JOIN order_line_item oli ON p.id = oli.product_id
-LEFT JOIN `order` o ON oli.order_id = o.id AND o.created_at > :date
-WHERE c.type = 'page'
-AND o.id IS NULL
-LIMIT 1000
-SQL;
-
-        $categories = $this->connection->fetchAllAssociative($sql, [
-            'date' => $date->format('Y-m-d H:i:s')
-        ]);
-
-       if (!$dryRun && !empty($categories)) {
-    $ids = array_map(function ($category) {
-        return ['id' => \Shopware\Core\Framework\Uuid\Uuid::fromHexToBytes(
-            \Shopware\Core\Framework\Uuid\Uuid::fromBytesToHex($category['id'])
-        )];
-    }, $categories);
-
-    $this->categoryRepository->delete($ids, $context);
+    return [
+        'count' => count($sample),
+        'sample' => $sample,
+    ];
 }
 
-return [
-    'count' => count($categories),
-    'sample' => array_map(function ($category) {
-        $category['id'] = \Shopware\Core\Framework\Uuid\Uuid::fromBytesToHex($category['id']);
-        return $category;
-    }, $categories)
-];
+private function cleanupCategoriesWithNoSales(int $months, bool $dryRun, Context $context): array
+{
+    $cutoffDate = new \DateTime();
+    $cutoffDate->modify("-{$months} months");
+
+    $criteria = new Criteria();
+    $criteria->setLimit(1000);
+
+    // Only CMS page-type categories
+    $criteria->addFilter(new EqualsFilter('type', 'page'));
+
+    // Not used in any sales channel
+    $criteria->addFilter(new EqualsFilter('navigationSalesChannels.id', null));
+    $criteria->addFilter(new EqualsFilter('footerSalesChannels.id', null));
+    $criteria->addFilter(new EqualsFilter('serviceSalesChannels.id', null));
+
+    // No recent orders for any of the products in this category
+    // Note: we assume that if the products exist, they have no orders or orders are old
+    $criteria->addAssociation('products.orderLineItems.order');
+
+    // Add post-filter logic in PHP because DAL can't do `LEFT JOIN ... WHERE o.created_at IS NULL OR o.created_at < :date`
+    $categories = $this->categoryRepository->search($criteria, $context);
+
+    $filtered = [];
+    foreach ($categories->getEntities() as $category) {
+        $hasRecentOrder = false;
+
+        foreach ($category->getProducts() as $product) {
+            foreach ($product->getOrderLineItems() as $lineItem) {
+                $order = $lineItem->getOrder();
+                if ($order?->getCreatedAt() >= $cutoffDate) {
+                    $hasRecentOrder = true;
+                    break 2;
+                }
+            }
+        }
+
+        if (!$hasRecentOrder) {
+            $filtered[] = [
+                'id' => $category->getId(),
+                'name' => $category->getTranslated()['name'] ?? 'N/A',
+            ];
+        }
     }
+
+    if (!$dryRun && !empty($filtered)) {
+        $ids = array_map(fn($cat) => ['id' => $cat['id']], $filtered);
+        $this->categoryRepository->delete($ids, $context);
+    }
+
+    return [
+        'count' => count($filtered),
+        'sample' => $filtered,
+    ];
+}
+
 
     public function getName(): string
     {

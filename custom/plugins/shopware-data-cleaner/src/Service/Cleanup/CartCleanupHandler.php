@@ -18,7 +18,6 @@ class CartCleanupHandler implements CleanupHandlerInterface
 
     public function cleanup(array $config, bool $dryRun, Context $context): array
     {
-    
         $results = [
             'name' => $this->getName(),
             'items' => []
@@ -81,13 +80,12 @@ private function cleanupAbandonedCarts(int $days, bool $dryRun, Context $context
             ];
         }
     }
-
-    // if (!$dryRun && !empty($results)) {
-    //     $this->connection->executeStatement(
-    //         'DELETE FROM cart WHERE created_at < :date',
-    //         ['date' => $date->format('Y-m-d H:i:s')]
-    //     );
-    // }
+    if (!$dryRun && !empty($results)) {
+        $this->connection->executeStatement(
+            'DELETE FROM cart WHERE created_at < :date',
+            ['date' => $date->format('Y-m-d H:i:s')]
+        );
+    }
 
     return [
         'count' => count($results),

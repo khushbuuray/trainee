@@ -88,23 +88,24 @@ class CleanupController extends AbstractController
     /**
      * @Route("/api/ict-data-cleaner/cleanup", name="api.ict_data_cleaner.cleanup", methods={"POST"})
      */
-    public function cleanup(Request $request, Context $context): JsonResponse
-    {
-        try {
-            $dryRun = $request->request->getBoolean('dryRun', false);
-            $results = $this->cleanupService->runCleanup($context, $dryRun, 'manual');
+    // public function cleanup(Request $request, string $module = null): JsonResponse
+    // {
+    //     try {
+    //         $context = Context::createDefaultContext();
+    //         $dryRun = $request->request->getBoolean('dryRun', false);
+    //         $results = $this->cleanupService->runCleanup($context, $dryRun, 'scheduled', $module);
 
-            return new JsonResponse([
-                'success' => true,
-                'data' => $results
-            ]);
-        } catch (\Exception $e) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
+    //         return new JsonResponse([
+    //             'success' => true,
+    //             'data' => $results
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return new JsonResponse([
+    //             'success' => false,
+    //             'message' => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
 
     /**
      * @Route("/api/ict-data-cleaner/logs", name="api.ict_data_cleaner.logs", methods={"GET"})

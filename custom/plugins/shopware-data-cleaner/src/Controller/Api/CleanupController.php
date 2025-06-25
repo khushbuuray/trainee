@@ -7,8 +7,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use IctDataCleanerPro\Service\CleanupService;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Context;
 use IctDataCleanerPro\Service\Cleanup\ProductCleanupHandler;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,6 +21,7 @@ use IctDataCleanerPro\Service\Cleanup\NewsletterCleanupHandler;
 use IctDataCleanerPro\Service\Cleanup\MediaCleanupHandler;
 use IctDataCleanerPro\Service\Cleanup\LogCleanupHandler;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 #[Route('/api/ict-data-cleaner', name: 'api.ict_data_cleaner', defaults: ['_routeScope' => ['api']])]
 
 class CleanupController extends AbstractController
@@ -31,10 +30,13 @@ class CleanupController extends AbstractController
     // private EntityRepository $cleanupLogRepository;
     // private ProductCleanupHandler $productCleanupHandler;
     private array $handlers;
+    private SystemConfigService $systemConfigService;
+
 
 
     public function __construct(
         CleanupService $cleanupService,
+        SystemConfigService $systemConfigService,
         EntityRepository $cleanupLogRepository,
         ProductCleanupHandler $productCleanupHandler,
         CustomerCleanupHandler $customerCleanupHandler,
@@ -49,7 +51,9 @@ class CleanupController extends AbstractController
         LogCleanupHandler $logCleanupHandler
         
     ) {
-        // $this->cleanupService = $cleanupService;
+        $this->cleanupService = $cleanupService;
+        $this->systemConfigService = $systemConfigService;
+
         // $this->cleanupLogRepository = $cleanupLogRepository;
         // $this->productCleanupHandler = $productCleanupHandler;
           $this->handlers = [
@@ -64,7 +68,8 @@ class CleanupController extends AbstractController
         'newsletterCleanup' => $newsletterCleanupHandler,
         'mediaCleanup' => $mediaCleanupHandler,
         'logCleanup' => $logCleanupHandler,
-        'transactionCleanup' => $orderCleanupHandler
+        'transactionCleanup' => $orderCleanupHandler,
+        'cartRuleCleanup' => $promotionCleanupHandler
     ];
     }
 
@@ -100,7 +105,6 @@ public function preview(Request $request, Context $context): JsonResponse
                 'data' => $result
             ]);
         } catch (\Throwable $e) {
-            dd($e);
             return new JsonResponse([
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
@@ -163,8 +167,8 @@ public function remove(Request $request, Context $context): JsonResponse
             'transactionCleanup' => 'order',
         ];
 
-        $entityKey = preg_replace('/Ids$/', '', $matchedKey);     // e.g. "productCleanup.deleteNeverSold"
-        $entityGroup = explode('.', $entityKey)[0];               // e.g. "productCleanup"
+        $entityKey = preg_replace('/Ids$/', '', $matchedKey);     
+        $entityGroup = explode('.', $entityKey)[0];              
 
         $entityName = $entityMap[$entityGroup] ?? null;
         if (!$entityName) {
@@ -203,26 +207,26 @@ public function remove(Request $request, Context $context): JsonResponse
     }
 }
 
-    // /**
-    //  * @Route("/api/ict-data-cleaner/cleanup", name="api.ict_data_cleaner.cleanup", methods={"POST"})
-    //  */
-    // public function cleanup(Request $request, Context $context): JsonResponse
-    // {
-    //     try {
-    //         $dryRun = $request->request->getBoolean('dryRun', false);
-    //         $results = $this->cleanupService->runCleanup($context, $dryRun, 'manual');
+#[Route(path: '/cleanup', name: 'api.ict_data_cleaner.cleanup', methods: ['POST'])]
 
-    //         return new JsonResponse([
-    //             'success' => true,
-    //             'data' => $results
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         return new JsonResponse([
-    //             'success' => false,
-    //             'message' => $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
+ public function cleanup(Context $context, string $module): JsonResponse
+    {
+        try {
+           $results = $this->cleanupService->runCleanup($context, false, 'scheduled', $module);
+        $key = "IctDataCleanerPro.config.{$module}LastRun";
+
+        $this->systemConfigService->set($key, (new \DateTime())->format(\DATE_ATOM));
+
+        return new JsonResponse([
+            'success' => true,
+            'module'  => $module,
+            'results' => $results,
+        ]);
+        } catch (\Exception $th) {
+           dd($th);
+        }
+        
+    }
 
     // /**
     //  * @Route("/api/ict-data-cleaner/logs", name="api.ict_data_cleaner.logs", methods={"GET"})

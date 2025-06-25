@@ -1,24 +1,24 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace IctDataCleanerPro\Service\Cleanup;
 
-use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\Uuid\Uuid;
-
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 
 class CmsCleanupHandler implements CleanupHandlerInterface
 {
     private EntityRepository $cmsPageRepository;
-    private Connection $connection;
 
-    public function __construct(
-        EntityRepository $cmsPageRepository,
-        Connection $connection
-    ) {
+    public function __construct(EntityRepository $cmsPageRepository)
+    {
         $this->cmsPageRepository = $cmsPageRepository;
-        $this->connection = $connection;
     }
 
     public function cleanup(array $config, bool $dryRun, Context $context): array
@@ -27,16 +27,6 @@ class CmsCleanupHandler implements CleanupHandlerInterface
             'name' => $this->getName(),
             'items' => []
         ];
-
-        // Clean CMS pages never viewed
-        if (isset($config['cmsPageCleanup.neverViewedMonths'])) {
-            $neverViewedResults = $this->cleanupNeverViewedPages(
-                (int) $config['cmsPageCleanup.neverViewedMonths'],
-                $dryRun,
-                $context
-            );
-            $results['items']['never_viewed_pages'] = $neverViewedResults;
-        }
 
         // Clean unpublished CMS drafts
         if (isset($config['cmsPageCleanup.unpublishedDraftsMonths'])) {
@@ -51,105 +41,81 @@ class CmsCleanupHandler implements CleanupHandlerInterface
         return $results;
     }
 
-    private function cleanupNeverViewedPages(int $months, bool $dryRun, Context $context): array
+    private function cleanupUnpublishedDrafts(int $months, bool $dryRun, Context $context): array
     {
-        $date = new \DateTime();
-        $date->modify("-{$months} months");
-     
-        $sql = <<<SQL
-        SELECT cp.id, cp.type, cp.created_at
-FROM cms_page cp
-LEFT JOIN category c ON c.cms_page_id = cp.id
-LEFT JOIN landing_page lp ON lp.cms_page_id = cp.id
-LEFT JOIN product p ON p.cms_page_id = cp.id
--- LEFT JOIN cms_page_translation cpt ON cp.id = cpt.cms_page_id
-WHERE c.cms_page_id IS NULL
-  AND lp.cms_page_id IS NULL
-  AND p.cms_page_id IS NULL
-  AND cp.created_at < :date
+        $cutoffDate = (new \DateTime())->modify("-{$months} months");
 
-SQL;
+        $criteria = new Criteria();
+        $criteria->addFilter(
+            new MultiFilter(MultiFilter::CONNECTION_AND, [
+                new EqualsFilter('locked', false),
+                new RangeFilter('createdAt', [RangeFilter::LT => $cutoffDate->format(DATE_ATOM)]),
+                new NotFilter(NotFilter::CONNECTION_OR, [
+                    new EqualsFilter('type', 'product_list'),
+                ])
+            ])
+        );
 
-$cmsPages = $this->connection->fetchAllAssociative($sql, [
-    'date' => $date->format('Y-m-d H:i:s')
-]);
-$cmsPages = array_map(function ($page) {
-    $page['id'] = Uuid::fromBytesToHex($page['id']);
-    return $page;
-}, $cmsPages);
+        $criteria->addAssociations([
+            'categories',
+            'landingPages',
+            'products',
+            'translations',
+            'sections.blocks.slots',
+        ]);
 
-if (!$dryRun && !empty($cmsPages)) {
-    $ids = array_map(fn($row) => ['id' => $row['id']], $cmsPages);
-    $this->cmsPageRepository->delete($ids, $context);
-}
+        $cmsPages = $this->cmsPageRepository->search($criteria, $context);
 
-return [
-    'count' => count($cmsPages),
-    'sample' => $cmsPages
-];
+        // Filter pages that are not used anywhere and have no locked blocks/slots
+        $filtered = $cmsPages->filter(function ($page) {
+            if (
+                $page->getCategories()->count() > 0 ||
+                $page->getLandingPages()->count() > 0 ||
+                $page->getProducts()->count() > 0
+            ) {
+                return false;
+            }
+
+            foreach ($page->getSections() as $section) {
+                foreach ($section->getBlocks() as $block) {
+                    if ($block->getLocked()) {
+                        return false;
+                    }
+                    foreach ($block->getSlots() as $slot) {
+                        if ($slot->getLocked()) {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        });
+
+        // Prepare a clean preview sample
+        $sample = [];
+        foreach ($filtered as $page) {
+            $sample[] = [
+                'id' => $page->getId(),
+                'name' => $page->getTranslated()['name'] ?? 'N/A',
+                'created_at' => $page->getCreatedAt()?->format('Y-m-d H:i:s'),
+            ];
+        }
+
+        // Delete if not a dry run
+        if (!$dryRun && $filtered->count() > 0) {
+            $ids = [];
+            foreach ($filtered->getEntities() as $entity) {
+                $ids[] = ['id' => $entity->getId()];
+            }
+            $this->cmsPageRepository->delete($ids, $context);
+        }
+
         return [
-            'count' => 0,
-            'sample' => [],
-            'note' => 'CMS page view tracking not implemented'
+            'count' => $filtered->count(),
+            'sample' => array_slice($sample, 0, 5),
         ];
     }
-
-
-
-private function cleanupUnpublishedDrafts(int $months, bool $dryRun, Context $context): array
-{
-    $date = new \DateTime();
-    $date->modify("-{$months} months");
-
-    $sql = <<<SQL
-SELECT cp.id, cpt.name, cp.created_at
-FROM cms_page cp
-LEFT JOIN cms_page_translation cpt ON cp.id = cpt.cms_page_id
-    AND cpt.language_id = UNHEX(REPLACE(:languageId, '-', ''))
-WHERE cp.locked = 0 
-  AND cp.type != 'product_list' -- Exclude category layout pages
-  AND cp.created_at < :date
-  AND NOT EXISTS (
-      SELECT 1 FROM category cat WHERE cat.cms_page_id = cp.id
-  )
-LIMIT 1000
-SQL;
-
-    $pages = $this->connection->fetchAllAssociative($sql, [
-        'date' => $date->format('Y-m-d H:i:s'),
-        'languageId' => $context->getLanguageId()
-    ]);
-
-    // Convert UUID to hex string
-    $pages = array_map(function ($page) {
-        $page['id'] = Uuid::fromBytesToHex($page['id']);
-        return $page;
-    }, $pages);
-
-    // If not dry run, delete the unpublished CMS pages
-    if (!$dryRun && !empty($pages)) {
-        $ids = array_map(function ($page) {
-            return ['id' => Uuid::fromHexToBytes($page['id'])];
-        }, $pages);
-
-        $this->cmsPageRepository->delete($ids, $context);
-    }
-
-    // Prepare a clean preview without ID
-    $sample = array_map(function ($page) {
-        return [
-            'id' => $page['id'],
-            'name' => $page['name'],
-            'created_at' => $page['created_at'],
-        ];
-    },$pages);
-
-    return [
-        'count' => count($pages),
-        'sample' => $sample,
-    ];
-}
-
 
     public function getName(): string
     {

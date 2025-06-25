@@ -4,15 +4,15 @@ namespace IctDataCleanerPro\ScheduledTask;
 
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTask;
 
-class CleanupTask extends ScheduledTask
+class CustomerCleanupTask extends ScheduledTask
 {
     public static function getTaskName(): string
     {
-        return 'ict_data_cleaner.cleanup_task';
+        return 'ict_data_cleaner.customer_cleanup_task';
     }
 
     public static function getDefaultInterval(): int
     {
-        return 86400; // 24 hours - will be overridden by config
+        return 300; // 5 minutes
     }
 }

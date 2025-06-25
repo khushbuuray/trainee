@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace IctDataCleanerPro\Service\Cleanup;
 
@@ -9,236 +11,245 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
-use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ProductCleanupHandler implements CleanupHandlerInterface
 {
     private EntityRepository $productRepository;
-    private Connection $connection;
 
-    public function __construct(
-        EntityRepository $productRepository,
-        Connection $connection
-    ) {
+    public function __construct(EntityRepository $productRepository)
+    {
         $this->productRepository = $productRepository;
-        $this->connection = $connection;
     }
 
     public function cleanup(array $config, bool $dryRun, Context $context): array
     {
-
         $results = [
             'name' => $this->getName(),
             'items' => []
         ];
 
-        // Clean products not sold in X months
         if (isset($config['productCleanup.monthsNotSold'])) {
-            $notSoldResults = $this->cleanupProductsNotSold(
+            $results['items']['products_not_sold_months'] = $this->cleanupProductsNotSold(
                 (int) $config['productCleanup.monthsNotSold'],
                 $dryRun,
                 $context
             );
-            $results['items']['products_not_sold_months'] = $notSoldResults;
         }
 
-        // Clean products never sold
-        if ($config['productCleanup.deleteNeverSold'] ?? false) {
-        // if (isset($config['productCleanup.deleteNeverSold']) && $config['productCleanup.deleteNeverSold'] == false) {
-            $neverSoldResults = $this->cleanupProductsNeverSold($dryRun, $context);
-            $results['items']['products_never_sold'] = $neverSoldResults;
+        if (isset($config['productCleanup.deleteNeverSold']) && $config['productCleanup.deleteNeverSold']) {
+            $results['items']['products_never_sold'] = $this->cleanupProductsNeverSold($dryRun, $context);
         }
 
-        // Clean inactive products
         if (isset($config['productCleanup.monthsDisabled'])) {
-            $inactiveResults = $this->cleanupInactiveProducts(
+            $results['items']['inactive_products'] = $this->cleanupInactiveProducts(
                 (int) $config['productCleanup.monthsDisabled'],
                 $dryRun,
                 $context
             );
-            $results['items']['inactive_products'] = $inactiveResults;
         }
 
-        // Clean product variants with zero stock
-        if (isset($config['productVariantCleanup.zeroStockMonths'])) {
-            $variantResults = $this->cleanupZeroStockVariants(
-                (int) $config['productVariantCleanup.zeroStockMonths'],
-                $dryRun,
-                $context
-            );
-            $results['items']['zero_stock_variants'] = $variantResults;
-        }
+        // if (isset($config['productVariantCleanup.zeroStockMonths'])) {
+        //     $results['items']['zero_stock_variants'] = $this->cleanupZeroStockVariants(
+        //         (int) $config['productVariantCleanup.zeroStockMonths'],
+        //         $dryRun,
+        //         $context
+        //     );
+        // }
+
         return $results;
     }
 
     private function cleanupProductsNotSold(int $months, bool $dryRun, Context $context): array
     {
-        $date = new \DateTime();
-        $date->modify("-{$months} months");
+        $date = (new \DateTime())->modify("-{$months} months");
 
-        $sql = <<<SQL
-SELECT DISTINCT p.id, p.product_number, pt.name
-FROM product p
-LEFT JOIN product_translation pt ON p.id = pt.product_id AND pt.language_id = :languageId
-LEFT JOIN order_line_item oli ON p.id = oli.product_id AND oli.type = 'product'
-LEFT JOIN `order` o ON oli.order_id = o.id AND o.created_at > :date
-WHERE o.id IS NULL
-AND p.created_at < :date
-LIMIT 1000
-SQL;
-        $products = $this->connection->fetchAllAssociative($sql, [
-            'date' => $date->format('Y-m-d H:i:s'),
-            'languageId' => Uuid::fromHexToBytes($context->getLanguageId())
-        ]);
+        $criteria = new Criteria();
+        $criteria->addFilter(new RangeFilter('createdAt', [RangeFilter::LTE => $date->format(DATE_ATOM)]));
+        $criteria->addFilter(new EqualsFilter('parentId', null)); // root products only
+        $criteria->addAssociation('orderLineItems.order');
+        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [
+            new RangeFilter('orderLineItems.order.createdAt', [
+                RangeFilter::GT => $date->format(DATE_ATOM)
+            ])
+        ]));
+        $criteria->setLimit(1000);
 
+        $products = $this->productRepository->search($criteria, $context);
 
-        $products = array_map(function ($product) {
-           return [
-               'id' => Uuid::fromBytesToHex($product['id']),
-               'product_number' => $product['product_number'],
-               'name' => $product['name'],
-           ];
-        }, $products);
-
-
-        if (!$dryRun && !empty($products)) {
-            $ids = array_map(function ($product) {
-                return ['id' => Uuid::fromHexToBytes($product['id'])];
-            }, $products);
-            
-            // $this->productRepository->delete($ids, $context);
+        $ids = [];
+        foreach ($products->getEntities() as $product) {
+            $ids[] = ['id' => $product->getId()];
         }
+
+        if (!$dryRun && !empty($ids)) {
+            $this->productRepository->delete($ids, $context);
+        }
+
+        $sample = [];
+        foreach ($products->getElements() as $product) {
+            $sample[] = [
+                'id' => $product->getId(),
+                'product_number' => $product->getProductNumber(),
+                'name' => $product->getTranslated()['name'] ?? 'N/A',
+            ];
+        }
+
         return [
-            'count' => count($products),
-            'sample' => $products
+            'count' => $products->count(),
+            'sample' => $sample,
         ];
     }
 
     private function cleanupProductsNeverSold(bool $dryRun, Context $context): array
     {
-        $sql = <<<SQL
-SELECT p.id, p.product_number, pt.name
-FROM product p
-LEFT JOIN product_translation pt ON p.id = pt.product_id AND pt.language_id = :languageId
-LEFT JOIN order_line_item oli ON p.id = oli.product_id AND oli.type = 'product'
-WHERE oli.id IS NULL 
-LIMIT 1000
--- SELECT p.id, p.product_number, pt.name
--- FROM product p
--- LEFT JOIN product_translation pt 
---     ON p.id = pt.product_id AND pt.language_id = :languageId
--- LEFT JOIN order_line_item oli 
---     ON p.id = oli.product_id AND oli.type = 'product'
--- WHERE p.parent_id IS NULL
---   AND oli.id IS NULL 
--- LIMIT 1000
+        $criteria = new Criteria();
+        $criteria->addAssociation('orderLineItems');
+        $criteria->addFilter(new EqualsFilter('orderLineItems.id', null));
+        $criteria->addFilter(new EqualsFilter('parentId', null));
+        $criteria->setLimit(1000);
 
-SQL;
+        $products = $this->productRepository->search($criteria, $context);
 
-        $products = $this->connection->fetchAllAssociative($sql, [
-            'languageId' => Uuid::fromHexToBytes($context->getLanguageId())
-        ]);
-
-         // Convert binary UUIDs to hex for JSON safety
-        $products = array_map(function ($product) {
-           return [
-               'id' => Uuid::fromBytesToHex($product['id']),
-               'product_number' => $product['product_number'],
-               'name' => $product['name'],
-           ];
-        }, $products);
-
-
-        if (!$dryRun && !empty($products)) {
-            $ids = array_map(function ($product) {
-                return ['id' => Uuid::fromHexToBytes($product['id'])];
-            }, $products);
-            
-            // $this->productRepository->delete($ids, $context);
+        $ids = [];
+        foreach ($products->getEntities() as $product) {
+            $ids[] = ['id' => $product->getId()];
         }
-        return [
-            'count' => count($products),
-            // 'sample' => array_slice($products, 0, 10)
-            'sample' => $products
 
+        if (!$dryRun && !empty($ids)) {
+            $this->productRepository->delete($ids, $context);
+        }
+
+
+        $sample = [];
+        foreach ($products->getElements() as $product) {
+            $sample[] = [
+                'id' => $product->getId(),
+                'product_number' => $product->getProductNumber(),
+                'name' => $product->getTranslated()['name'] ?? 'N/A',
+            ];
+        }
+
+        return [
+            'count' => $products->count(),
+            'sample' => $sample,
         ];
     }
 
     private function cleanupInactiveProducts(int $months, bool $dryRun, Context $context): array
     {
-        $date = new \DateTime();
-        $date->modify("-{$months} months");
+        $date = (new \DateTime())->modify("-{$months} months");
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('active', false));
-        $criteria->addFilter(new RangeFilter('updatedAt', [
-            RangeFilter::LTE => $date->format('Y-m-d H:i:s')
+        $criteria->addFilter(new OrFilter([
+            new RangeFilter('updatedAt', [RangeFilter::LTE => $date->format(DATE_ATOM)]),
+            new EqualsFilter('updatedAt', null)
         ]));
         $criteria->setLimit(1000);
 
         $products = $this->productRepository->search($criteria, $context);
-        if (!$dryRun && $products->count() > 0) {
-            $ids = array_map(function ($product) {
-                return ['id' => $product->getId()];
-            }, $products->getElements());
-            
-            // $this->productRepository->delete($ids, $context);
+
+        $ids = [];
+        foreach ($products->getEntities() as $product) {
+            $ids[] = ['id' => $product->getId()];
         }
 
-        $sample = [];
-        foreach
-        ($products->getElements() as $product) {
-            $sample[] = [
-                'id' => $product->getId(),
-                'product_number' => $product->getProductNumber(),
-                'name' => $product->getTranslated()['name'] ?? 'N/A'
-            ];
-        }
-        return [
-            'count' => $products->count(),
-            'sample' => $sample
-        ];
-    }
-
-    private function cleanupZeroStockVariants(int $months, bool $dryRun, Context $context): array
-    {
-        $date = new \DateTime();
-        $date->modify("-{$months} months");
-
-        $sql = <<<SQL
-SELECT DISTINCT p.id, p.product_number, pt.name, p.stock
-FROM product p
-LEFT JOIN product_translation pt ON p.id = pt.product_id AND pt.language_id = :languageId
-LEFT JOIN order_line_item oli ON p.id = oli.product_id AND oli.type = 'product'
-LEFT JOIN `order` o ON oli.order_id = o.id AND o.created_at > :date
-WHERE p.parent_id IS NOT NULL
-AND p.stock = 0
-AND p.created_at < :date
-AND o.id IS NULL
-LIMIT 1000
-SQL;
-
-        $variants = $this->connection->fetchAllAssociative($sql, [
-            'date' => $date->format('Y-m-d H:i:s'),
-            'languageId' => Uuid::fromHexToBytes($context->getLanguageId())
-        ]);
-
-        if (!$dryRun && !empty($variants)) {
-            $ids = array_map(function ($variant) {
-                return ['id' => $variant['id']];
-            }, $variants);
-            
+        if (!$dryRun && !empty($ids)) {
             $this->productRepository->delete($ids, $context);
         }
 
+        $sample = [];
+        foreach ($products->getElements() as $product) {
+            $sample[] = [
+                'id' => $product->getId(),
+                'product_number' => $product->getProductNumber(),
+                'name' => $product->getTranslated()['name'] ?? 'N/A',
+            ];
+        }
+
         return [
-            'count' => count($variants),
-            'sample' => array_slice($variants, 0, 5)
+            'count' => $products->count(),
+            'sample' => $sample,
         ];
     }
+
+    // private function cleanupZeroStockVariants(int $months, bool $dryRun, Context $context): array
+    // {
+    //     $date = (new \DateTime())->modify("-{$months} months");
+
+    //     $criteria = new Criteria();
+    //     $criteria->addFilter(new EqualsFilter('stock', 0));
+    //     $criteria->addFilter(new RangeFilter('createdAt', [RangeFilter::LTE => $date->format(DATE_ATOM)]));
+    //     $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [
+    //         new RangeFilter('orderLineItems.order.createdAt', [
+    //             RangeFilter::GT => $date->format(DATE_ATOM)
+    //         ])
+    //     ]));
+    //     $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [
+    //         new EqualsFilter('parentId', null)
+    //     ])); // Variants only (exclude parent)
+
+    //     $criteria->addAssociation('orderLineItems.order');
+    //     $criteria->setLimit(1000);
+
+    //     $products = $this->productRepository->search($criteria, $context);
+
+    //     if (!$dryRun && $products->count() > 0) {
+    //         $ids = array_map(fn($p) => ['id' => $p->getId()], $products->getElements());
+    //         $this->productRepository->delete($ids, $context);
+    //     }
+
+    //     $sample = [];
+    //     foreach ($products->getElements() as $product) {
+    //         $sample[] = [
+    //             'id' => $product->getId(),
+    //             'product_number' => $product->getProductNumber(),
+    //             'name' => $product->getTranslated()['name'] ?? 'N/A',
+    //             'stock' => $product->getStock(),
+    //         ];
+    //     }
+
+    //     return [
+    //         'count' => $products->count(),
+    //         'sample' => $sample,
+    //     ];
+    // }
 
     public function getName(): string
     {
         return 'Product Cleanup';
+    }
+
+    // Optional CLI Interface if needed
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $context = Context::createDefaultContext();
+        $dryRun = $input->getOption('dry-run');
+
+        if ($input->getOption('neversoldinmonths')) {
+            $months = (int) $input->getOption('neversoldinmonths');
+            $result = $this->cleanupProductsNotSold($months, $dryRun, $context);
+            $output->writeln("Not Sold in $months Months: " . json_encode($result, JSON_PRETTY_PRINT));
+        } elseif ($input->getOption('productneversold')) {
+            $result = $this->cleanupProductsNeverSold($dryRun, $context);
+            $output->writeln("Never Sold: " . json_encode($result, JSON_PRETTY_PRINT));
+        } elseif ($input->getOption('inactiveproductsolderthanmonths')) {
+            $months = (int) $input->getOption('inactiveproductsolderthanmonths');
+            $result = $this->cleanupInactiveProducts($months, $dryRun, $context);
+            $output->writeln("Inactive Products older than $months months: " . json_encode($result, JSON_PRETTY_PRINT));
+        } else {
+            $output->writeln("<error>No cleanup option provided. Use one of:</error>");
+            $output->writeln("  --neversoldinmonths=<months>");
+            $output->writeln("  --productneversold");
+            $output->writeln("  --inactiveproductsolderthanmonths=<months>");
+            return Command::INVALID;
+        }
+
+        return Command::SUCCESS;
     }
 }

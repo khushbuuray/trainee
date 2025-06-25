@@ -6,18 +6,24 @@ use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Uuid\Uuid;
-
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 
 class OrderCleanupHandler implements CleanupHandlerInterface
 {
     private EntityRepository $orderRepository;
+    private EntityRepository $transactionRepository;
     private Connection $connection;
 
     public function __construct(
         EntityRepository $orderRepository,
+        EntityRepository $transactionRepository,
         Connection $connection
     ) {
         $this->orderRepository = $orderRepository;
+        $this->transactionRepository = $transactionRepository;
         $this->connection = $connection;
     }
 
@@ -56,39 +62,33 @@ class OrderCleanupHandler implements CleanupHandlerInterface
         $date = new \DateTime();
         $date->modify("-{$months} months");
 
-        $sql = <<<SQL
-SELECT o.id, o.order_number, o.created_at
-FROM `order` o
-JOIN order_transaction ot ON o.id = ot.order_id
-JOIN state_machine_state sms ON ot.state_id = sms.id
-WHERE sms.technical_name IN ('cancelled', 'failed')
-AND o.created_at < :date
-LIMIT 1000
-SQL;
+        $criteria = new Criteria();
+        $criteria->addAssociation('stateMachineState');
+        $criteria->addFilter(new EqualsFilter('stateMachineState.technicalName', 'cancelled'));
+        $criteria->addFilter(new RangeFilter('createdAt', [
+            RangeFilter::LT => $date->format(\DATE_ATOM),
+        ]));
+        $criteria->setLimit(1000);
 
-        $orders = $this->connection->fetchAllAssociative($sql, [
-            'date' => $date->format('Y-m-d H:i:s')
-        ]);
+        $orders = $this->orderRepository->search($criteria, $context);
 
-   $orders = array_map(function ($order) {
-    if (isset($order['id'])) {
-        $order['id'] = Uuid::fromBytesToHex($order['id']);
-    }
+        $sample = [];
+        foreach ($orders->getEntities() as $order) {
+            $sample[] = [
+                'id' => $order->getId(),
+                'order_number' => $order->getOrderNumber(),
+                'created_at' => $order->getCreatedAt()?->format('Y-m-d H:i:s') ?? 'N/A',
+            ];
+        }
 
-    return $order;
-}, $orders);
-
-if (!$dryRun && !empty($orders)) {
-    $ids = array_map(function ($order) {
-        return ['id' => Uuid::fromHexToBytes($order['id'])];
-    }, $orders);
-    
-    // $this->orderRepository->delete($ids, $context);
-}
+        if (!$dryRun && $orders->count() > 0) {
+               $ids = array_map(fn($id) => ['id' => $id], array_keys($orders->getIds()));
+               $this->orderRepository->delete($ids, $context);
+        }
 
         return [
-            'count' => count($orders),
-            'sample' => $orders
+            'count' => $orders->count(),
+            'sample' => $sample,
         ];
     }
 
@@ -96,85 +96,36 @@ if (!$dryRun && !empty($orders)) {
     {
         $date = new \DateTime();
         $date->modify("-{$months} months");
-        // dd($date);
-        $countSql = <<<SQL
-SELECT COUNT(*) as count
-FROM order_transaction 
-WHERE created_at < :date
-SQL;
+        $criteria = new Criteria();
+        $criteria->addFilter(new RangeFilter('createdAt', [
+            RangeFilter::LT => $date->format(\DATE_ATOM)
+        ]));
+        $criteria->addAssociation('order');
+        $criteria->setLimit(1000);
 
-        $countResult = $this->connection->fetchAssociative($countSql, [
-            'date' => $date->format('Y-m-d H:i:s')
-        ]);
+        $transactions = $this->transactionRepository->search($criteria, $context);
 
-        $count = (int) $countResult['count'];
+        $sample = [];
+        foreach ($transactions->getEntities() as $transaction) {
+            $sample[] = [
+                'id' => $transaction->getId(),
+                'transaction_id' => $transaction->getId(),
+                'transaction_created_at' => $transaction->getCreatedAt()?->format('Y-m-d H:i:s') ?? 'N/A',
+                'order_id' => $transaction->getOrder()?->getId() ?? null,
+                'order_number' => $transaction->getOrder()?->getOrderNumber() ?? 'N/A',
+            ];
+        }
 
-        $sampleSql = <<<SQL
--- SELECT id, created_at
--- FROM order_transaction 
--- WHERE created_at < :date
--- LIMIT 1000
-SELECT 
-    ot.id AS transaction_id,
-    ot.created_at AS transaction_created_at,
-    o.id AS order_id,
-    o.order_number,
-    oli.product_id,
-    oli.label AS product_name,
-    oli.quantity,
-    oli.total_price
-FROM order_transaction ot
-INNER JOIN `order` o ON ot.order_id = o.id
-INNER JOIN order_line_item oli ON oli.order_id = o.id
-WHERE ot.created_at < :date
-LIMIT 1000
-SQL;
-
-        $rawSamples = $this->connection->fetchAllAssociative($sampleSql, [
-            'date' => $date->format('Y-m-d H:i:s')
-        ]);
-
-//         if (!$dryRun && $count > 0) {
-//             $deleteSql = <<<SQL
-// DELETE FROM order_transaction 
-// WHERE created_at < :date
-// SQL;
-            
-            // $this->connection->executeStatement($deleteSql, [
-            //     'date' => $date->format('Y-m-d H:i:s')
-            // ]);
-        // }
-    //       $samples = array_map(function ($row) {
-    //     return [
-    //         'id' => Uuid::fromBytesToHex($row['id']),
-    //         'created_at' => $row['created_at'],
-    //     ];
-    // }, $rawSamples);
-
-      // Optional deletion
-    // if (!$dryRun && $count > 0) {
-    //     $ids = array_map(function ($row) {
-    //         return ['id' => $row['id']];
-    //     }, $samples);
-
-    //     // $this->orderRepository->delete($ids, $context);
-    // }
-    $results = array_map(function ($row) {
-    return [
-        'id' => Uuid::fromBytesToHex($row['transaction_id']),
-        'transaction_id' => Uuid::fromBytesToHex($row['transaction_id']),
-        'transaction_created_at' => $row['transaction_created_at'],
-        'order_id' => Uuid::fromBytesToHex($row['order_id']),
-        'order_number' => $row['order_number'],
-        'product_id' => $row['product_id'] ? Uuid::fromBytesToHex($row['product_id']) : null,
-        'product_name' => $row['product_name'],
-        'quantity' => $row['quantity'],
-        'total_price' => $row['total_price'],
-    ];
-}, $rawSamples);
+        if (!$dryRun && $transactions->count() > 0) {
+    $ids = [];
+    foreach ($transactions->getEntities() as $transaction) {
+        $ids[] = ['id' => $transaction->getId()];
+    }
+    $this->transactionRepository->delete($ids, $context);
+}
         return [
-            'count' => $count,
-            'sample' => $results
+            'count' => $transactions->count(),
+            'sample' => $sample,
         ];
     }
 

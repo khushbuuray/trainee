@@ -516,8 +516,8 @@ computed: {
             type: 'int'
           },
           {
-            key: 'promotionCleanup.orphaned',
-            label:'ict-data-cleaner.config.promotionCleanup.orphaned',
+            key: 'cartRuleCleanup.orphaned',
+            label:'ict-data-cleaner.config.cartRuleCleanup.orphaned',
             type: 'bool'
           }
         ]

@@ -6,17 +6,25 @@ use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 
 class PromotionCleanupHandler implements CleanupHandlerInterface
 {
     private EntityRepository $promotionRepository;
+    private EntityRepository $ruleRepository;
     private Connection $connection;
 
     public function __construct(
         EntityRepository $promotionRepository,
+        EntityRepository $ruleRepository,
         Connection $connection
     ) {
         $this->promotionRepository = $promotionRepository;
+        $this->ruleRepository = $ruleRepository;
         $this->connection = $connection;
     }
 
@@ -47,7 +55,7 @@ class PromotionCleanupHandler implements CleanupHandlerInterface
         }
 
         // Clean orphaned cart rules
-        if ($config['promotionCleanup.orphaned'] ?? false) {
+        if ($config['cartRuleCleanup.orphaned'] ?? false) {
             $cartRuleResults = $this->cleanupOrphanedCartRules($dryRun, $context);
             $results['items']['orphaned_cart_rules'] = $cartRuleResults;
         }
@@ -56,155 +64,126 @@ class PromotionCleanupHandler implements CleanupHandlerInterface
     }
 
     private function cleanupExpiredPromotions(int $months, bool $dryRun, Context $context): array
-    {
-        $date = new \DateTime();
-        $date->modify("-{$months} months");
+{
+    $cutoffDate = (new \DateTime())->modify("-{$months} months");
 
-        $sql = <<<SQL
-SELECT p.id, pt.name, p.valid_until
-FROM promotion p
-LEFT JOIN promotion_translation pt ON p.id = pt.promotion_id
-LEFT JOIN promotion_order_rule por ON p.id = por.promotion_id
-WHERE p.valid_until < :expiredDate
---   AND p.valid_until < '2024-12-12'
-    -- AND por.rule_id IS NULL
+    $criteria = new Criteria();
+    $criteria->setLimit(1000);
 
-LIMIT 1000;
-SQL;
+    // Promotions that expired before now AND before the cutoff
+    $criteria->addFilter(new RangeFilter('validUntil', [
+        RangeFilter::LT => (new \DateTime())->format(\DATE_ATOM),  // expired
+    ]));
 
-        $promotions = $this->connection->fetchAllAssociative($sql, [
-            'expiredDate' => (new \DateTime())->format('Y-m-d H:i:s'),
-            'cleanupDate' => $date->format('Y-m-d H:i:s')
-        ]);
-          foreach ($promotions as &$promotion) {
-        $promotion['id'] = Uuid::fromBytesToHex($promotion['id']);
-    }
+    $criteria->addFilter(new RangeFilter('validUntil', [
+        RangeFilter::LT => $cutoffDate->format(\DATE_ATOM),        // expired X months ago
+    ]));
 
-        if (!$dryRun && !empty($promotions)) {
-            $ids = array_map(function ($promotion) {
-                return ['id' => $promotion['id']];
-            }, $promotions);
-            
-            $this->promotionRepository->delete($ids, $context);
-        }
 
-        return [
-            'count' => count($promotions),
-            'sample' => array_slice($promotions, 0, 5)
+    $criteria->addAssociation('translations');
+
+    $promotions = $this->promotionRepository->search($criteria, $context);
+
+    $sample = [];
+    foreach ($promotions as $promo) {
+        $sample[] = [
+            'id' => $promo->getId(),
+            'name' => $promo->getTranslated()['name'] ?? 'N/A',
+            'valid_until' => $promo->getValidUntil()?->format('Y-m-d H:i:s') ?? null,
         ];
     }
 
-   private function cleanupUnusedVouchers(int $months, bool $dryRun, Context $context): array
-{
-    $date = new \DateTime();
-    $date->modify("-{$months} months");
-
-    // 1. Count unused vouchers
-    $countSql = <<<SQL
-SELECT COUNT(*) AS count
-FROM promotion_individual_code pic
-LEFT JOIN order_line_item oli 
-    ON oli.referenced_id = pic.id AND oli.type = 'promotion'
-WHERE pic.created_at < :date
-AND oli.id IS NULL
-SQL;
-
-    $countResult = $this->connection->fetchAssociative($countSql, [
-        'date' => $date->format('Y-m-d H:i:s')
-    ]);
-
-    $count = (int) $countResult['count'];
-
-    // 2. Sample of unused vouchers (same logic)
-    $sampleSql = <<<SQL
-SELECT pic.id, pic.code, pic.created_at
-FROM promotion_individual_code pic
-LEFT JOIN order_line_item oli 
-    ON oli.referenced_id = pic.id AND oli.type = 'promotion'
-WHERE pic.created_at < :date
-AND oli.id IS NULL
-LIMIT 1000
-SQL;
-
-    $samples = $this->connection->fetchAllAssociative($sampleSql, [
-        'date' => $date->format('Y-m-d H:i:s')
-    ]);
-    $samples = array_map(function ($promotion) {
-    $promotion['id'] = Uuid::fromBytesToHex($promotion['id']);
-    return $promotion;
-}, $samples);
-
-    // 3. Optional deletion
-//     if (!$dryRun && $count > 0) {
-//         $deleteSql = <<<SQL
-// DELETE pic FROM promotion_individual_code pic
-// LEFT JOIN order_line_item oli 
-//     ON oli.referenced_id = pic.id AND oli.type = 'promotion'
-// WHERE pic.created_at < :date
-// AND oli.id IS NULL
-// SQL;
-
-//         $this->connection->executeStatement($deleteSql, [
-//             'date' => $date->format('Y-m-d H:i:s')
-//         ]);
-//     }
+    if (!$dryRun && !empty($sample)) {
+        $ids = array_map(fn($p) => ['id' => $p['id']], $sample);
+        $this->promotionRepository->delete($ids, $context);
+    }
 
     return [
-        'count' => $count,
-        'sample' => $samples
+        'count' => count($sample),
+        'sample' => array_slice($sample, 0, 5),
     ];
 }
 
+   private function cleanupUnusedVouchers(int $months, bool $dryRun, Context $context): array
+{
+
+    $cutoffDate = (new \DateTime())->modify("-{$months} months");
+
+    $criteria = new Criteria();
+    $criteria->setLimit(1000);
+
+    $criteria->addFilter(new RangeFilter('createdAt', [
+        RangeFilter::LT => $cutoffDate->format(\DATE_ATOM),
+    ]));
+    $criteria->addFilter(new EqualsFilter('orderLineItems.id', null)); // uses mapped association
+    $criteria->addAssociation('orderLineItems');
+
+    $voucherCodes = $this->promotionRepository->search($criteria, $context); // use injected EntityRepository
+
+    $sample = [];
+    foreach ($voucherCodes->getEntities() as $code) {
+        $sample[] = [
+            'id' => $code->getId(),
+            'code' => $code->getCode(),
+            'name' => $code->getName(),
+            'created_at' => $code->getCreatedAt()?->format('Y-m-d H:i:s'),
+        ];
+    }
+    
+    // Perform deletion only if not dryRun and we have something to delete
+    if (!$dryRun && !empty($sample)) {
+        $ids = array_map(fn($p) => ['id' => $p['id']], $sample);
+        $this->promotionRepository->delete($ids, $context);
+    }
+
+    return [
+        'count' => $voucherCodes->count(),
+        'sample' => $sample,
+    ];
+}
 
  private function cleanupOrphanedCartRules(bool $dryRun, Context $context): array
 {
-    $where = <<<SQL
-r.created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)
-AND NOT EXISTS (
-    SELECT 1 FROM promotion_cart_rule pcr 
-    LEFT JOIN promotion p ON pcr.promotion_id = p.id
-    WHERE pcr.rule_id = r.id AND (p.active = 1 OR p.id IS NOT NULL)
-)
-AND NOT EXISTS (SELECT 1 FROM flow_sequence fs WHERE fs.rule_id = r.id)
-AND NOT EXISTS (SELECT 1 FROM product_price pp WHERE pp.rule_id = r.id)
-AND NOT EXISTS (SELECT 1 FROM shipping_method_price smp WHERE smp.rule_id = r.id)
-AND NOT EXISTS (SELECT 1 FROM shipping_method smr WHERE smr.availability_rule_id = r.id)
-AND NOT EXISTS (SELECT 1 FROM payment_method pmr WHERE pmr.availability_rule_id = r.id)
-SQL;
+    $cutoff = (new \DateTime())->modify('-30 days');
 
-    // Count
-    $countResult = $this->connection->fetchAssociative("SELECT COUNT(*) as count FROM rule r WHERE $where");
-    $count = (int) $countResult['count'];
 
-    // Sample preview
-    $samples = $this->connection->fetchAllAssociative("SELECT r.id, r.name, r.created_at FROM rule r WHERE $where LIMIT 100");
+    $criteria = new Criteria();
+    $criteria->setLimit(100);
 
-    // Delete if not dry run
-    if (!$dryRun && $count > 0) {
-        $deleteSql = <<<SQL
-DELETE FROM rule
-WHERE id IN (
-    SELECT rid FROM (
-        SELECT r.id as rid FROM rule r
-        WHERE $where
-        LIMIT 100
-    ) as deletable
-)
-SQL;
-        $this->connection->executeStatement($deleteSql);
+    $criteria->addFilter(new RangeFilter('createdAt', [
+        RangeFilter::LT => $cutoff->format(\DATE_ATOM),
+    ]));
+$criteria->addFilter(new MultiFilter('AND', [
+    new EqualsFilter('flowSequences.id', null),
+    new EqualsFilter('productPrices.id', null),
+    new EqualsFilter('shippingMethodPrices.id', null),
+    new EqualsFilter('shippingMethods.id', null),
+    new EqualsFilter('paymentMethods.id', null),
+]));
+
+    $rules = $this->ruleRepository->search($criteria, $context);
+
+    $sample = [];
+    foreach ($rules->getEntities() as $rule) {
+        $sample[] = [
+            'id' => $rule->getId(),
+            'name' => $rule->getName(),
+            'created_at' => $rule->getCreatedAt()?->format('Y-m-d H:i:s'),
+        ];
     }
 
-    $samples = array_map(function ($rule) {
-        $rule['id'] = Uuid::fromBytesToHex($rule['id']);
-        return $rule;
-    }, $samples);
-
+  if (!$dryRun && $rules->count() > 0) {
+    $ids = [];
+    foreach ($rules->getEntities() as $entity) {
+        $ids[] = ['id' => $entity->getId()];
+    }
+    $this->ruleRepository->delete($ids, $context);
+}
     return [
-        'count' => $count,
-        'sample' => $samples
+        'count' => $rules->count(),
+        'sample' => $sample
     ];
 }
-
 
 
 

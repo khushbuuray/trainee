@@ -25,51 +25,49 @@ class CleanupService
         $this->loggerService = $loggerService;
         $this->cleanupHandlers = $cleanupHandlers;
     }
+    public function runCleanup(Context $context, bool $dryRun = null, string $trigger = 'manual', ?string $module = null): array
+{
+    $config = $this->getConfig();
+    $isDryRun = $dryRun ?? $config['dryRunMode'];
+    $formattedConfig = $this->formatConfig($config);
+    $results = [];
 
-    public function runCleanup(Context $context, bool $dryRun = null, string $trigger = 'manual'): array
-    {
-        $config = $this->getConfig();
-        $isDryRun = $dryRun ?? $config['dryRunMode'];
-        
-        // Convert config to the format expected by handlers
-        $formattedConfig = $this->formatConfig($config);
-        
-        $results = [];
-        
-        $this->connection->beginTransaction();
-        
-        try {
-            foreach ($this->cleanupHandlers as $handler) {
-                if (!$handler instanceof CleanupHandlerInterface) {
-                    continue;
-                }
-                
-                $handlerResults = $handler->cleanup($formattedConfig, $isDryRun, $context);
-                $results[get_class($handler)] = $handlerResults;
+    $this->connection->beginTransaction();
+    try {
+        foreach ($this->cleanupHandlers as $handler) {
+            if (!$handler instanceof CleanupHandlerInterface) {
+                continue;
             }
-            
-            if ($isDryRun) {
-                $this->connection->rollBack();
-            } else {
-                $this->connection->commit();
+
+            // Skip if a specific module is requested
+            if ($module !== null && strpos(get_class($handler), ucfirst($module)) === false) {
+                continue;
             }
-            
-            // Log the cleanup run
-            $this->loggerService->logCleanupRun(
-                $trigger,
-                $isDryRun ? 'dry-run' : 'real',
-                $config,
-                $results,
-                $context
-            );
-            
-        } catch (\Exception $e) {
-            $this->connection->rollBack();
-            throw $e;
+            $handlerResults = $handler->cleanup($formattedConfig, $isDryRun, $context);
+            $results[get_class($handler)] = $handlerResults;
         }
-        
-        return $results;
+
+        if ($isDryRun) {
+            $this->connection->rollBack();
+        } else {
+            $this->connection->commit();
+        }
+
+        $this->loggerService->logCleanupRun(
+            $trigger,
+            $isDryRun ? 'dry-run' : 'real',
+            $config,
+            $results,
+            $context
+        );
+    } catch (\Exception $e) {
+        $this->connection->rollBack();
+        throw $e;
     }
+
+    return $results;
+}
+
 
     public function previewCleanup(Context $context): array
     {

@@ -84,6 +84,9 @@
         "unusedVoucherMonths": "Unused vouchers older than months",
         "orphaned": "Orphaned cart rules"
       },
+      "cartRuleCleanup": {
+        "orphaned": "Orphaned cart rules"
+      },
       "cmsPageCleanup": {
         "unpublishedDraftsMonths": "Unpublished CMS drafts older than months"
       },
