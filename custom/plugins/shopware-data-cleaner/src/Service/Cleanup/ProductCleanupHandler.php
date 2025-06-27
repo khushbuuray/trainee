@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace IctDataCleanerPro\Service\Cleanup;
 
-use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -12,22 +11,26 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use IctDataCleanerPro\Service\CleanupLoggerService;
+
 
 class ProductCleanupHandler implements CleanupHandlerInterface
 {
     private EntityRepository $productRepository;
+    private CleanupLoggerService $logger;
 
-    public function __construct(EntityRepository $productRepository)
-    {
+
+    public function __construct(
+        EntityRepository $productRepository,
+        CleanupLoggerService $logger
+    ) {
         $this->productRepository = $productRepository;
+        $this->logger = $logger;
     }
 
     public function cleanup(array $config, bool $dryRun, Context $context): array
     {
+
         $results = [
             'name' => $this->getName(),
             'items' => []
@@ -86,8 +89,21 @@ class ProductCleanupHandler implements CleanupHandlerInterface
             $ids[] = ['id' => $product->getId()];
         }
 
-        if (!$dryRun && !empty($ids)) {
-            $this->productRepository->delete($ids, $context);
+        try {
+            if (!$dryRun && !empty($ids)) {
+                $this->productRepository->delete($ids, $context);
+
+                $this->logger->logSuccess('product', [
+                    'action' => 'products_not_sold_months',
+                    'deleted_ids' => array_column($ids, 'id'),
+                    'count' => count($ids),
+                ]);
+            }
+        } catch (\Exception $e) {
+            $this->logger->logError('product', $e, [
+                'action' => 'products_not_sold_months',
+                'attempted_ids' => array_column($ids, 'id'),
+            ]);
         }
 
         $sample = [];
@@ -121,7 +137,22 @@ class ProductCleanupHandler implements CleanupHandlerInterface
         }
 
         if (!$dryRun && !empty($ids)) {
-            $this->productRepository->delete($ids, $context);
+            try {
+                $this->productRepository->delete($ids, $context);
+
+                // Log success
+                $this->logger->logSuccess('product', [
+                    'action' => 'delete',
+                    'count' => count($ids),
+                    'ids' => array_column($ids, 'id'),
+                ]);
+            } catch (\Exception $e) {
+                // Log error
+                $this->logger->logError('product', $e, [
+                    'action' => 'delete',
+                    'ids' => array_column($ids, 'id'),
+                ]);
+            }
         }
 
 
@@ -159,8 +190,24 @@ class ProductCleanupHandler implements CleanupHandlerInterface
             $ids[] = ['id' => $product->getId()];
         }
 
+
         if (!$dryRun && !empty($ids)) {
-            $this->productRepository->delete($ids, $context);
+            try {
+                $this->productRepository->delete($ids, $context);
+
+                // Log success
+                $this->logger->logSuccess('product', [
+                    'action' => 'delete',
+                    'count' => count($ids),
+                    'ids' => array_column($ids, 'id'),
+                ]);
+            } catch (\Exception $e) {
+                // Log error
+                $this->logger->logError('product', $e, [
+                    'action' => 'delete',
+                    'ids' => array_column($ids, 'id'),
+                ]);
+            }
         }
 
         $sample = [];
@@ -226,30 +273,30 @@ class ProductCleanupHandler implements CleanupHandlerInterface
     }
 
     // Optional CLI Interface if needed
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $context = Context::createDefaultContext();
-        $dryRun = $input->getOption('dry-run');
+    // protected function execute(InputInterface $input, OutputInterface $output): int
+    // {
+    //     $context = Context::createDefaultContext();
+    //     $dryRun = $input->getOption('dry-run');
 
-        if ($input->getOption('neversoldinmonths')) {
-            $months = (int) $input->getOption('neversoldinmonths');
-            $result = $this->cleanupProductsNotSold($months, $dryRun, $context);
-            $output->writeln("Not Sold in $months Months: " . json_encode($result, JSON_PRETTY_PRINT));
-        } elseif ($input->getOption('productneversold')) {
-            $result = $this->cleanupProductsNeverSold($dryRun, $context);
-            $output->writeln("Never Sold: " . json_encode($result, JSON_PRETTY_PRINT));
-        } elseif ($input->getOption('inactiveproductsolderthanmonths')) {
-            $months = (int) $input->getOption('inactiveproductsolderthanmonths');
-            $result = $this->cleanupInactiveProducts($months, $dryRun, $context);
-            $output->writeln("Inactive Products older than $months months: " . json_encode($result, JSON_PRETTY_PRINT));
-        } else {
-            $output->writeln("<error>No cleanup option provided. Use one of:</error>");
-            $output->writeln("  --neversoldinmonths=<months>");
-            $output->writeln("  --productneversold");
-            $output->writeln("  --inactiveproductsolderthanmonths=<months>");
-            return Command::INVALID;
-        }
+    //     if ($input->getOption('neversoldinmonths')) {
+    //         $months = (int) $input->getOption('neversoldinmonths');
+    //         $result = $this->cleanupProductsNotSold($months, $dryRun, $context);
+    //         $output->writeln("Not Sold in $months Months: " . json_encode($result, JSON_PRETTY_PRINT));
+    //     } elseif ($input->getOption('productneversold')) {
+    //         $result = $this->cleanupProductsNeverSold($dryRun, $context);
+    //         $output->writeln("Never Sold: " . json_encode($result, JSON_PRETTY_PRINT));
+    //     } elseif ($input->getOption('inactiveproductsolderthanmonths')) {
+    //         $months = (int) $input->getOption('inactiveproductsolderthanmonths');
+    //         $result = $this->cleanupInactiveProducts($months, $dryRun, $context);
+    //         $output->writeln("Inactive Products older than $months months: " . json_encode($result, JSON_PRETTY_PRINT));
+    //     } else {
+    //         $output->writeln("<error>No cleanup option provided. Use one of:</error>");
+    //         $output->writeln("  --neversoldinmonths=<months>");
+    //         $output->writeln("  --productneversold");
+    //         $output->writeln("  --inactiveproductsolderthanmonths=<months>");
+    //         return Command::INVALID;
+    //     }
 
-        return Command::SUCCESS;
-    }
+    //     return Command::SUCCESS;
+    // }
 }

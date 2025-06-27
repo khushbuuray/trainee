@@ -223,7 +223,6 @@ public function remove(Request $request, Context $context): JsonResponse
             'results' => $results,
         ]);
         } catch (\Exception $th) {
-           dd($th);
         }
         
     }

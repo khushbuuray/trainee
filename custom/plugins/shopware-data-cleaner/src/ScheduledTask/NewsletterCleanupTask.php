@@ -13,6 +13,6 @@ class NewsletterCleanupTask extends ScheduledTask
 
     public static function getDefaultInterval(): int
     {
-        return 86400; // Run daily
+        return 300; // Run daily
     }
 }

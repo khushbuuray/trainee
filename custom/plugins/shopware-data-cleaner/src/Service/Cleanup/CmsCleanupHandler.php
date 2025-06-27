@@ -11,14 +11,17 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use IctDataCleanerPro\Service\CleanupLoggerService;
 
 class CmsCleanupHandler implements CleanupHandlerInterface
 {
     private EntityRepository $cmsPageRepository;
+    private CleanupLoggerService $logger;
 
-    public function __construct(EntityRepository $cmsPageRepository)
+    public function __construct(EntityRepository $cmsPageRepository, CleanupLoggerService $logger)
     {
         $this->cmsPageRepository = $cmsPageRepository;
+        $this->logger = $logger;
     }
 
     public function cleanup(array $config, bool $dryRun, Context $context): array
@@ -28,7 +31,6 @@ class CmsCleanupHandler implements CleanupHandlerInterface
             'items' => []
         ];
 
-        // Clean unpublished CMS drafts
         if (isset($config['cmsPageCleanup.unpublishedDraftsMonths'])) {
             $draftResults = $this->cleanupUnpublishedDrafts(
                 (int) $config['cmsPageCleanup.unpublishedDraftsMonths'],
@@ -66,7 +68,6 @@ class CmsCleanupHandler implements CleanupHandlerInterface
 
         $cmsPages = $this->cmsPageRepository->search($criteria, $context);
 
-        // Filter pages that are not used anywhere and have no locked blocks/slots
         $filtered = $cmsPages->filter(function ($page) {
             if (
                 $page->getCategories()->count() > 0 ||
@@ -92,7 +93,6 @@ class CmsCleanupHandler implements CleanupHandlerInterface
             return true;
         });
 
-        // Prepare a clean preview sample
         $sample = [];
         foreach ($filtered as $page) {
             $sample[] = [
@@ -102,13 +102,30 @@ class CmsCleanupHandler implements CleanupHandlerInterface
             ];
         }
 
-        // Delete if not a dry run
+        $this->logger->logToFile('cms', 'info', [
+            'function' => 'cleanupUnpublishedDrafts',
+            'cutoff' => $cutoffDate->format(DATE_ATOM),
+            'count' => $filtered->count(),
+        ]);
+
         if (!$dryRun && $filtered->count() > 0) {
             $ids = [];
-            foreach ($filtered->getEntities() as $entity) {
+            foreach ($filtered as $entity) {
                 $ids[] = ['id' => $entity->getId()];
             }
-            $this->cmsPageRepository->delete($ids, $context);
+            try {
+                $this->cmsPageRepository->delete($ids, $context);
+                $this->logger->logSuccess('cms', [
+                    'action' => 'delete_unpublished_drafts',
+                    'count' => count($ids),
+                    'ids' => array_column($ids, 'id'),
+                ]);
+            } catch (\Exception $e) {
+                $this->logger->logError('cms', $e, [
+                    'action' => 'delete_unpublished_drafts',
+                    'ids' => array_column($ids, 'id'),
+                ]);
+            }
         }
 
         return [

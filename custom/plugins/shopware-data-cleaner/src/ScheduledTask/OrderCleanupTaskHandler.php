@@ -36,7 +36,9 @@ class OrderCleanupTaskHandler extends ScheduledTaskHandler
         if (!$enabled || !$this->shouldRunNow('orderCleanup', $frequency)) {
             return;
         }
+        $this->cleanupController->cleanup(Context::createDefaultContext(), 'cartCleanup');
         $this->cleanupController->cleanup(Context::createDefaultContext(), 'orderCleanup');
+
     }
 
        private function shouldRunNow(string $moduleKey, string $frequency): bool

@@ -36,7 +36,6 @@ class CustomerCleanupTaskHandler extends ScheduledTaskHandler
         $config = $this->systemConfigService->getDomain('IctDataCleanerPro.config');
         $enabled = $config['IctDataCleanerPro.config.enableSchedulerOfCustomer'] ?? false;
         $frequency = $config['IctDataCleanerPro.config.customerCleanupScheduleFrequency'] ?? 'weekly';
-        
         if (!$enabled || !$this->shouldRunNow('customerCleanup', $frequency)) {
             return;
         }

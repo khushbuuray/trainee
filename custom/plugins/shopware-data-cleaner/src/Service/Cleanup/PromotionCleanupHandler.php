@@ -11,21 +11,27 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use IctDataCleanerPro\Service\CleanupLoggerService;
 
 class PromotionCleanupHandler implements CleanupHandlerInterface
 {
     private EntityRepository $promotionRepository;
     private EntityRepository $ruleRepository;
+    private CleanupLoggerService $logger;
     private Connection $connection;
+
 
     public function __construct(
         EntityRepository $promotionRepository,
         EntityRepository $ruleRepository,
+        CleanupLoggerService $logger,
         Connection $connection
     ) {
         $this->promotionRepository = $promotionRepository;
         $this->ruleRepository = $ruleRepository;
+        $this->logger = $logger;
         $this->connection = $connection;
+
     }
 
     public function cleanup(array $config, bool $dryRun, Context $context): array
@@ -34,7 +40,7 @@ class PromotionCleanupHandler implements CleanupHandlerInterface
             'name' => $this->getName(),
             'items' => []
         ];
-        // Clean expired promotions
+
         if (isset($config['promotionCleanup.expiredMonths'])) {
             $expiredResults = $this->cleanupExpiredPromotions(
                 (int) $config['promotionCleanup.expiredMonths'],
@@ -44,7 +50,6 @@ class PromotionCleanupHandler implements CleanupHandlerInterface
             $results['items']['expired_promotions'] = $expiredResults;
         }
 
-        // Clean unused vouchers
         if (isset($config['promotionCleanup.unusedVoucherMonths'])) {
             $voucherResults = $this->cleanupUnusedVouchers(
                 (int) $config['promotionCleanup.unusedVoucherMonths'],
@@ -54,7 +59,6 @@ class PromotionCleanupHandler implements CleanupHandlerInterface
             $results['items']['unused_vouchers'] = $voucherResults;
         }
 
-        // Clean orphaned cart rules
         if ($config['cartRuleCleanup.orphaned'] ?? false) {
             $cartRuleResults = $this->cleanupOrphanedCartRules($dryRun, $context);
             $results['items']['orphaned_cart_rules'] = $cartRuleResults;
@@ -64,128 +68,159 @@ class PromotionCleanupHandler implements CleanupHandlerInterface
     }
 
     private function cleanupExpiredPromotions(int $months, bool $dryRun, Context $context): array
-{
-    $cutoffDate = (new \DateTime())->modify("-{$months} months");
+    {
+        $cutoffDate = (new \DateTime())->modify("-{$months} months");
 
-    $criteria = new Criteria();
-    $criteria->setLimit(1000);
+        $criteria = new Criteria();
+        $criteria->setLimit(1000);
+        $criteria->addFilter(new RangeFilter('validUntil', [RangeFilter::LT => $cutoffDate->format(\DATE_ATOM)]));
+        $criteria->addAssociation('translations');
 
-    // Promotions that expired before now AND before the cutoff
-    $criteria->addFilter(new RangeFilter('validUntil', [
-        RangeFilter::LT => (new \DateTime())->format(\DATE_ATOM),  // expired
-    ]));
+        $promotions = $this->promotionRepository->search($criteria, $context);
 
-    $criteria->addFilter(new RangeFilter('validUntil', [
-        RangeFilter::LT => $cutoffDate->format(\DATE_ATOM),        // expired X months ago
-    ]));
+        $sample = [];
+        foreach ($promotions as $promo) {
+            $sample[] = [
+                'id' => $promo->getId(),
+                'name' => $promo->getTranslated()['name'] ?? 'N/A',
+                'valid_until' => $promo->getValidUntil()?->format('Y-m-d H:i:s') ?? null,
+            ];
+        }
 
+        $this->logger->logToFile('promotions', 'info', [
+            'function' => 'cleanupExpiredPromotions',
+            'count' => count($sample),
+            'cutoff' => $cutoffDate->format(DATE_ATOM),
+        ]);
 
-    $criteria->addAssociation('translations');
+        if (!$dryRun && !empty($sample)) {
+            $ids = array_map(fn($p) => ['id' => $p['id']], $sample);
+            try {
+                $this->promotionRepository->delete($ids, $context);
+                $this->logger->logSuccess('promotions', [
+                    'action' => 'delete_expired',
+                    'count' => count($ids),
+                    'ids' => array_column($ids, 'id'),
+                ]);
+            } catch (\Exception $e) {
+                $this->logger->logError('promotions', $e, [
+                    'action' => 'delete_expired',
+                    'ids' => array_column($ids, 'id'),
+                ]);
+            }
+        }
 
-    $promotions = $this->promotionRepository->search($criteria, $context);
-
-    $sample = [];
-    foreach ($promotions as $promo) {
-        $sample[] = [
-            'id' => $promo->getId(),
-            'name' => $promo->getTranslated()['name'] ?? 'N/A',
-            'valid_until' => $promo->getValidUntil()?->format('Y-m-d H:i:s') ?? null,
+        return [
+            'count' => count($sample),
+            'sample' => array_slice($sample, 0, 5),
         ];
     }
 
-    if (!$dryRun && !empty($sample)) {
-        $ids = array_map(fn($p) => ['id' => $p['id']], $sample);
-        $this->promotionRepository->delete($ids, $context);
-    }
+    private function cleanupUnusedVouchers(int $months, bool $dryRun, Context $context): array
+    {
+        $cutoffDate = (new \DateTime())->modify("-{$months} months");
 
-    return [
-        'count' => count($sample),
-        'sample' => array_slice($sample, 0, 5),
-    ];
-}
+        $criteria = new Criteria();
+        $criteria->setLimit(1000);
+        $criteria->addFilter(new RangeFilter('createdAt', [RangeFilter::LT => $cutoffDate->format(\DATE_ATOM)]));
+        $criteria->addFilter(new EqualsFilter('orderLineItems.id', null));
+        $criteria->addAssociation('orderLineItems');
 
-   private function cleanupUnusedVouchers(int $months, bool $dryRun, Context $context): array
-{
+        $voucherCodes = $this->promotionRepository->search($criteria, $context);
 
-    $cutoffDate = (new \DateTime())->modify("-{$months} months");
+        $sample = [];
+        foreach ($voucherCodes as $code) {
+            $sample[] = [
+                'id' => $code->getId(),
+                'code' => $code->getCode(),
+                'name' => $code->getName(),
+                'created_at' => $code->getCreatedAt()?->format('Y-m-d H:i:s'),
+            ];
+        }
 
-    $criteria = new Criteria();
-    $criteria->setLimit(1000);
+        $this->logger->logToFile('promotions', 'info', [
+            'function' => 'cleanupUnusedVouchers',
+            'count' => count($sample),
+            'cutoff' => $cutoffDate->format(DATE_ATOM),
+        ]);
 
-    $criteria->addFilter(new RangeFilter('createdAt', [
-        RangeFilter::LT => $cutoffDate->format(\DATE_ATOM),
-    ]));
-    $criteria->addFilter(new EqualsFilter('orderLineItems.id', null)); // uses mapped association
-    $criteria->addAssociation('orderLineItems');
+        if (!$dryRun && !empty($sample)) {
+            $ids = array_map(fn($p) => ['id' => $p['id']], $sample);
+            try {
+                $this->promotionRepository->delete($ids, $context);
+                $this->logger->logSuccess('promotions', [
+                    'action' => 'delete_unused_vouchers',
+                    'count' => count($ids),
+                    'ids' => array_column($ids, 'id'),
+                ]);
+            } catch (\Exception $e) {
+                $this->logger->logError('promotions', $e, [
+                    'action' => 'delete_unused_vouchers',
+                    'ids' => array_column($ids, 'id'),
+                ]);
+            }
+        }
 
-    $voucherCodes = $this->promotionRepository->search($criteria, $context); // use injected EntityRepository
-
-    $sample = [];
-    foreach ($voucherCodes->getEntities() as $code) {
-        $sample[] = [
-            'id' => $code->getId(),
-            'code' => $code->getCode(),
-            'name' => $code->getName(),
-            'created_at' => $code->getCreatedAt()?->format('Y-m-d H:i:s'),
-        ];
-    }
-    
-    // Perform deletion only if not dryRun and we have something to delete
-    if (!$dryRun && !empty($sample)) {
-        $ids = array_map(fn($p) => ['id' => $p['id']], $sample);
-        $this->promotionRepository->delete($ids, $context);
-    }
-
-    return [
-        'count' => $voucherCodes->count(),
-        'sample' => $sample,
-    ];
-}
-
- private function cleanupOrphanedCartRules(bool $dryRun, Context $context): array
-{
-    $cutoff = (new \DateTime())->modify('-30 days');
-
-
-    $criteria = new Criteria();
-    $criteria->setLimit(100);
-
-    $criteria->addFilter(new RangeFilter('createdAt', [
-        RangeFilter::LT => $cutoff->format(\DATE_ATOM),
-    ]));
-$criteria->addFilter(new MultiFilter('AND', [
-    new EqualsFilter('flowSequences.id', null),
-    new EqualsFilter('productPrices.id', null),
-    new EqualsFilter('shippingMethodPrices.id', null),
-    new EqualsFilter('shippingMethods.id', null),
-    new EqualsFilter('paymentMethods.id', null),
-]));
-
-    $rules = $this->ruleRepository->search($criteria, $context);
-
-    $sample = [];
-    foreach ($rules->getEntities() as $rule) {
-        $sample[] = [
-            'id' => $rule->getId(),
-            'name' => $rule->getName(),
-            'created_at' => $rule->getCreatedAt()?->format('Y-m-d H:i:s'),
+        return [
+            'count' => count($sample),
+            'sample' => $sample,
         ];
     }
 
-  if (!$dryRun && $rules->count() > 0) {
-    $ids = [];
-    foreach ($rules->getEntities() as $entity) {
-        $ids[] = ['id' => $entity->getId()];
+    private function cleanupOrphanedCartRules(bool $dryRun, Context $context): array
+    {
+        $cutoff = (new \DateTime())->modify('-30 days');
+
+        $criteria = new Criteria();
+        $criteria->setLimit(100);
+        $criteria->addFilter(new RangeFilter('createdAt', [RangeFilter::LT => $cutoff->format(\DATE_ATOM)]));
+        $criteria->addFilter(new MultiFilter('AND', [
+            new EqualsFilter('flowSequences.id', null),
+            new EqualsFilter('productPrices.id', null),
+            new EqualsFilter('shippingMethodPrices.id', null),
+            new EqualsFilter('shippingMethods.id', null),
+            new EqualsFilter('paymentMethods.id', null),
+        ]));
+
+        $rules = $this->ruleRepository->search($criteria, $context);
+
+        $sample = [];
+        foreach ($rules as $rule) {
+            $sample[] = [
+                'id' => $rule->getId(),
+                'name' => $rule->getName(),
+                'created_at' => $rule->getCreatedAt()?->format('Y-m-d H:i:s'),
+            ];
+        }
+
+        $this->logger->logToFile('promotions', 'info', [
+            'function' => 'cleanupOrphanedCartRules',
+            'count' => count($sample),
+            'cutoff' => $cutoff->format(DATE_ATOM),
+        ]);
+
+        if (!$dryRun && !empty($sample)) {
+            $ids = array_map(fn($r) => ['id' => $r['id']], $sample);
+            try {
+                $this->ruleRepository->delete($ids, $context);
+                $this->logger->logSuccess('promotions', [
+                    'action' => 'delete_orphaned_rules',
+                    'count' => count($ids),
+                    'ids' => array_column($ids, 'id'),
+                ]);
+            } catch (\Exception $e) {
+                $this->logger->logError('promotions', $e, [
+                    'action' => 'delete_orphaned_rules',
+                    'ids' => array_column($ids, 'id'),
+                ]);
+            }
+        }
+
+        return [
+            'count' => count($sample),
+            'sample' => $sample,
+        ];
     }
-    $this->ruleRepository->delete($ids, $context);
-}
-    return [
-        'count' => $rules->count(),
-        'sample' => $sample
-    ];
-}
-
-
 
     public function getName(): string
     {

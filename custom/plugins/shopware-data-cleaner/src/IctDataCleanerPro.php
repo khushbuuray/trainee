@@ -16,6 +16,14 @@ class IctDataCleanerPro extends Plugin
     public function install(InstallContext $installContext): void
     {
         parent::install($installContext);
+        $logDir = $this->container->getParameter('kernel.project_dir') . '/var/log/ict-data-cleaner';
+
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0775, true);
+        }
+            echo "Created log folder at: $logDir\n";
+
+
     }
 
     public function uninstall(UninstallContext $uninstallContext): void

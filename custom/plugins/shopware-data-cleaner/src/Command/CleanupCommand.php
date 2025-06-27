@@ -12,21 +12,20 @@ use Shopware\Core\Framework\Context;
 
 class CleanupCommand extends Command
 {
-    // The issue is here - we need to set the name as a property, not static
-    protected static $defaultName = 'ict:cleanup:run';
-    
+    /** @var string */
+    protected static string $defaultName = 'ict:cleanup:run';
+
     private CleanupService $cleanupService;
 
     public function __construct(CleanupService $cleanupService)
     {
-        parent::__construct('ict:cleanup:run'); // Add the command name here as well
+        parent::__construct(self::$defaultName);
         $this->cleanupService = $cleanupService;
     }
 
     protected function configure(): void
     {
         $this
-            ->setName('ict:cleanup:run') // Explicitly set the name here
             ->setDescription('Run data cleanup')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Run in dry-run mode')
             ->addOption('schedule', null, InputOption::VALUE_NONE, 'Run as scheduled task');
@@ -37,7 +36,7 @@ class CleanupCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->title('ICT Data Cleanup Pro');
 
-        $dryRun = $input->getOption('dry-run');
+        $dryRun = (bool) $input->getOption('dry-run'); // ✅ Cast to bool
         $trigger = $input->getOption('schedule') ? 'scheduled' : 'cli';
 
         $io->info(sprintf('Running cleanup in %s mode', $dryRun ? 'DRY-RUN' : 'REAL'));
@@ -60,11 +59,20 @@ class CleanupCommand extends Command
         }
     }
 
+    /**
+     * @param array<string, array{
+     *     name?: string,
+     *     items?: array<string, array{
+     *         count?: int,
+     *         sample?: array<int, array<string, string|null>>
+     *     }>
+     * }> $results
+     */
     private function displayResults(SymfonyStyle $io, array $results): void
     {
         foreach ($results as $handlerClass => $handlerResults) {
             $io->section($handlerResults['name'] ?? $handlerClass);
-            
+
             if (isset($handlerResults['items'])) {
                 foreach ($handlerResults['items'] as $itemType => $itemResults) {
                     $io->writeln(sprintf(
@@ -72,7 +80,7 @@ class CleanupCommand extends Command
                         str_replace('_', ' ', ucfirst($itemType)),
                         $itemResults['count'] ?? 0
                     ));
-                    
+
                     if (!empty($itemResults['sample'])) {
                         $io->writeln('  Sample items:');
                         foreach ($itemResults['sample'] as $sample) {
