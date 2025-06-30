@@ -91,7 +91,8 @@ class ProductCleanupHandler implements CleanupHandlerInterface
             /** @var ProductEntity $product */
             $sample[] = [
                 'id' => $product->getId(),
-                'name' => $product->getProductNumber(),
+                'productNumber' => $product->getProductNumber(),
+                'name' => $product->getName(),
             ];
         }
         if (!$dryRun && $products->count() > 0) {
@@ -118,7 +119,7 @@ class ProductCleanupHandler implements CleanupHandlerInterface
 
         return [
             'count' => $products->count(),
-            'sample' => array_slice($sample, 0, 5),
+            'sample' => $sample,
         ];
     }
 
@@ -141,7 +142,8 @@ class ProductCleanupHandler implements CleanupHandlerInterface
             /** @var ProductEntity $product */
             $sample[] = [
                 'id' => $product->getId(),
-                'name' => $product->getProductNumber(),
+                'productNumber' => $product->getProductNumber(),
+                'name' => $product->getName(),
             ];
         }
 
@@ -168,7 +170,7 @@ class ProductCleanupHandler implements CleanupHandlerInterface
 
         return [
             'count' => $products->count(),
-            'sample' => array_slice($sample, 0, 5),
+            'sample' => $sample,
         ];
     }
 
@@ -195,7 +197,8 @@ class ProductCleanupHandler implements CleanupHandlerInterface
             /** @var ProductEntity $product */
             $sample[] = [
                 'id' => $product->getId(),
-                'name' => $product->getProductNumber(),
+                'productNumber' => $product->getProductNumber(),
+                'name' => $product->getName(),
             ];
         }
 
@@ -218,7 +221,7 @@ class ProductCleanupHandler implements CleanupHandlerInterface
 
         return [
             'count' => $products->count(),
-            'sample' => array_slice($sample, 0, 5),
+            'sample' => $sample,
         ];
     }
 
@@ -226,4 +229,10 @@ class ProductCleanupHandler implements CleanupHandlerInterface
     {
         return 'Product Cleanup';
     }
+
+    public function getKey(): string
+    {
+        return 'productCleanup';
+    }
+
 }

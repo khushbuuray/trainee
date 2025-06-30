@@ -73,6 +73,7 @@ class ReviewCleanupHandler implements CleanupHandlerInterface
             $sample[] = [
                 'id' => $review->getId(),
                 'name' => (string) $review->getTitle(),
+                'content' => (string) $review->getContent(),
             ];
         }
 
@@ -114,12 +115,17 @@ class ReviewCleanupHandler implements CleanupHandlerInterface
 
         return [
             'count' => $reviews->count(),
-            'sample' => array_slice($sample, 0, 5),
+            'sample' => $sample,
         ];
     }
 
     public function getName(): string
     {
         return 'Review & Rating Cleanup';
+    }
+
+    public function getKey(): string
+    {
+        return 'reviewCleanup';
     }
 }

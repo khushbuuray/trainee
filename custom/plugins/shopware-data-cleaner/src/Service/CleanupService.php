@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace IctDataCleanerPro\Service;
 
@@ -20,9 +22,6 @@ class CleanupService
     /** @var iterable<CleanupHandlerInterface> */
     private iterable $cleanupHandlers;
 
-    /**
-     * @param iterable<CleanupHandlerInterface> $cleanupHandlers
-     */
     public function __construct(
         Connection $connection,
         SystemConfigService $systemConfigService,
@@ -41,8 +40,7 @@ class CleanupService
     public function runCleanup(Context $context, bool $dryRun = null, string $trigger = 'manual', ?string $module = null): array
     {
         $config = $this->getConfig();
-        $isDryRun = (bool) ($dryRun ?? $config['dryRunMode'] ?? true); // ✅ FIXED
-
+        $isDryRun = (bool) ($dryRun ?? $config['dryRunMode'] ?? true);
         $formattedConfig = $this->formatConfig($config);
 
         /** @var CleanupResult $results */
@@ -51,14 +49,19 @@ class CleanupService
         $this->connection->beginTransaction();
         try {
             foreach ($this->cleanupHandlers as $handler) {
-                // ✅ Removed redundant instanceof check
+                $handlerClass = get_class($handler);
+                $key = $handler->getKey();
 
-                if ($module !== null && strpos(get_class($handler), ucfirst($module)) === false) {
+                if ($module !== null && $module !== $handler->getKey()) {
                     continue;
                 }
 
+                echo "Running cleanup for handler: {$key}" . PHP_EOL;
+
                 $handlerResults = $handler->cleanup($formattedConfig, $isDryRun, $context);
-                $results[get_class($handler)] = $handlerResults;
+                $results[$key] = $handlerResults;
+
+                echo json_encode($handlerResults, JSON_PRETTY_PRINT) . PHP_EOL;
             }
 
             if ($isDryRun) {
@@ -81,7 +84,6 @@ class CleanupService
 
         return $results;
     }
-
 
     /**
      * @return CleanupResult
@@ -114,48 +116,35 @@ class CleanupService
      */
     private function formatConfig(array $config): array
     {
-        $formattedConfig = [];
-
-        $formattedConfig['productCleanup.monthsNotSold'] = $config['productCleanupMonthsNotSold'] ?? 6;
-        $formattedConfig['productCleanup.deleteNeverSold'] = $config['productCleanupDeleteNeverSold'] ?? true;
-        $formattedConfig['productCleanup.monthsDisabled'] = $config['productCleanupMonthsDisabled'] ?? 6;
-        $formattedConfig['productVariantCleanup.zeroStockMonths'] = $config['productVariantCleanupZeroStockMonths'] ?? 6;
-
-        $formattedConfig['customerCleanup.guestMonths'] = $config['customerCleanupGuestMonths'] ?? 12;
-        $formattedConfig['customerCleanup.inactiveMonths'] = $config['customerCleanupInactiveMonths'] ?? 12;
-
-        $formattedConfig['cartCleanup.abandonedDays'] = $config['cartCleanupAbandonedDays'] ?? 30;
-
-        $formattedConfig['orderCleanup.cancelledAgeMonths'] = $config['orderCleanupCancelledAgeMonths'] ?? 12;
-        $formattedConfig['transactionCleanup.ageMonths'] = $config['transactionCleanupAgeMonths'] ?? 12;
-
-        $formattedConfig['categoryCleanup.emptyCategories'] = $config['categoryCleanupEmptyCategories'] ?? true;
-        $formattedConfig['categoryCleanup.noSalesMonths'] = $config['categoryCleanupNoSalesMonths'] ?? 6;
-
-        $formattedConfig['promotionCleanup.expiredMonths'] = $config['promotionCleanupExpiredMonths'] ?? 6;
-        $formattedConfig['promotionCleanup.unusedVoucherMonths'] = $config['promotionCleanupUnusedVoucherMonths'] ?? 6;
-        $formattedConfig['cartRuleCleanup.orphaned'] = $config['cartRuleCleanupOrphaned'] ?? true;
-
-        $formattedConfig['cmsPageCleanup.neverViewedMonths'] = $config['cmsPageCleanupNeverViewedMonths'] ?? 6;
-        $formattedConfig['cmsPageCleanup.unpublishedDraftsMonths'] = $config['cmsPageCleanupUnpublishedDraftsMonths'] ?? 6;
-
-        $formattedConfig['reviewCleanup.unapprovedDays'] = $config['reviewCleanupUnapprovedDays'] ?? 30;
-
-        $formattedConfig['newsletterCleanup.bouncedMonths'] = $config['newsletterCleanupBouncedMonths'] ?? 12;
-
-        $formattedConfig['mediaCleanup.orphanAgeDays'] = $config['mediaCleanupOrphanAgeDays'] ?? 60;
-        $formattedConfig['mediaThumbnailCleanup.deleteThumbnails'] = $config['mediaThumbnailCleanupDeleteThumbnails'] ?? true;
-
-        $formattedConfig['systemLogCleanup.months'] = $config['systemLogCleanupMonths'] ?? 6;
-        $formattedConfig['cacheCleanup.flush'] = $config['cacheCleanupFlush'] ?? true;
-        $formattedConfig['customFieldSetCleanup.orphaned'] = $config['customFieldSetCleanupOrphaned'] ?? true;
-
-        $formattedConfig['dryRunMode'] = $config['dryRunMode'] ?? true;
-        $formattedConfig['enableLogging'] = $config['enableLogging'] ?? true;
-        $formattedConfig['enableScheduler'] = $config['enableScheduler'] ?? false;
-        $formattedConfig['scheduleFrequency'] = $config['scheduleFrequency'] ?? 'weekly';
-        $formattedConfig['notificationEmail'] = $config['notificationEmail'] ?? '';
-
-        return $formattedConfig;
+        return [
+            'productCleanup.monthsNotSold' => $config['productCleanupMonthsNotSold'] ?? 6,
+            'productCleanup.deleteNeverSold' => $config['productCleanupDeleteNeverSold'] ?? true,
+            'productCleanup.monthsDisabled' => $config['productCleanupMonthsDisabled'] ?? 6,
+            'productVariantCleanup.zeroStockMonths' => $config['productVariantCleanupZeroStockMonths'] ?? 6,
+            'customerCleanup.guestMonths' => $config['customerCleanupGuestMonths'] ?? 12,
+            'customerCleanup.inactiveMonths' => $config['customerCleanupInactiveMonths'] ?? 12,
+            'cartCleanup.abandonedDays' => $config['cartCleanupAbandonedDays'] ?? 30,
+            'orderCleanup.cancelledAgeMonths' => $config['orderCleanupCancelledAgeMonths'] ?? 12,
+            'transactionCleanup.ageMonths' => $config['transactionCleanupAgeMonths'] ?? 12,
+            'categoryCleanup.emptyCategories' => $config['categoryCleanupEmptyCategories'] ?? true,
+            'categoryCleanup.noSalesMonths' => $config['categoryCleanupNoSalesMonths'] ?? 6,
+            'promotionCleanup.expiredMonths' => $config['promotionCleanupExpiredMonths'] ?? 6,
+            'promotionCleanup.unusedVoucherMonths' => $config['promotionCleanupUnusedVoucherMonths'] ?? 6,
+            'cartRuleCleanup.orphaned' => $config['cartRuleCleanupOrphaned'] ?? true,
+            'cmsPageCleanup.neverViewedMonths' => $config['cmsPageCleanupNeverViewedMonths'] ?? 6,
+            'cmsPageCleanup.unpublishedDraftsMonths' => $config['cmsPageCleanupUnpublishedDraftsMonths'] ?? 6,
+            'reviewCleanup.unapprovedDays' => $config['reviewCleanupUnapprovedDays'] ?? 30,
+            'newsletterCleanup.bouncedMonths' => $config['newsletterCleanupBouncedMonths'] ?? 12,
+            'mediaCleanup.orphanAgeDays' => $config['mediaCleanupOrphanAgeDays'] ?? 60,
+            'mediaThumbnailCleanup.deleteThumbnails' => $config['mediaThumbnailCleanupDeleteThumbnails'] ?? true,
+            'systemLogCleanup.months' => $config['systemLogCleanupMonths'] ?? 6,
+            'cacheCleanup.flush' => $config['cacheCleanupFlush'] ?? true,
+            'customFieldSetCleanup.orphaned' => $config['customFieldSetCleanupOrphaned'] ?? true,
+            'dryRunMode' => $config['dryRunMode'] ?? true,
+            'enableLogging' => $config['enableLogging'] ?? true,
+            'enableScheduler' => $config['enableScheduler'] ?? false,
+            'scheduleFrequency' => $config['scheduleFrequency'] ?? 'weekly',
+            'notificationEmail' => $config['notificationEmail'] ?? '',
+        ];
     }
 }

@@ -13,6 +13,6 @@ class OrderCleanupTask extends ScheduledTask
 
       public static function getDefaultInterval(): int
     {
-        return 300; // 5 minutes
+        return 86400; //Run daily
     }
 }

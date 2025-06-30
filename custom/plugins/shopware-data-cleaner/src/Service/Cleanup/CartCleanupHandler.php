@@ -136,4 +136,9 @@ class CartCleanupHandler implements CleanupHandlerInterface
     {
         return 'Cart Cleanup';
     }
+
+       public function getKey(): string
+    {
+        return 'cartCleanup';
+    }
 }

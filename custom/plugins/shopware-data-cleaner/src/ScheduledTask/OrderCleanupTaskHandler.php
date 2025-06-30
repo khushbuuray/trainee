@@ -8,11 +8,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use IctDataCleanerPro\Controller\Api\CleanupController;
 use Shopware\Core\Framework\Context;
+use IctDataCleanerPro\Service\CleanupService;
+
 
 class OrderCleanupTaskHandler extends ScheduledTaskHandler
 {
     private SystemConfigService $systemConfigService;
-    private CleanupController $cleanupController;
+    private CleanupService $cleanupService;
 
     /**
      * @param EntityRepository<ScheduledTaskCollection> $scheduledTaskRepository
@@ -20,11 +22,11 @@ class OrderCleanupTaskHandler extends ScheduledTaskHandler
     public function __construct(
         EntityRepository $scheduledTaskRepository,
         SystemConfigService $systemConfigService,
-        CleanupController $cleanupController
+        CleanupService $cleanupService
     ) {
         parent::__construct($scheduledTaskRepository);
         $this->systemConfigService = $systemConfigService;
-        $this->cleanupController = $cleanupController;
+        $this->cleanupService = $cleanupService;
     }
 
     /**
@@ -46,9 +48,9 @@ class OrderCleanupTaskHandler extends ScheduledTaskHandler
         }
 
         $context = Context::createDefaultContext();
-        $this->cleanupController->cleanup($context, 'cartCleanup');
-        $this->cleanupController->cleanup($context, 'orderCleanup');
-    }
+        $this->cleanupService->runCleanup($context, false, 'scheduled', 'cartCleanup');
+        $this->cleanupService->runCleanup($context, false, 'scheduled', 'orderCleanup');
+   }
 
     private function shouldRunNow(string $moduleKey, string $frequency): bool
     {
@@ -62,8 +64,8 @@ class OrderCleanupTaskHandler extends ScheduledTaskHandler
         $last = new \DateTime($lastRun);
 
         return match ($frequency) {
-            // 'weekly' => $last->modify('+7 days') <= $now,
-            // 'monthly' => $last->modify('+1 month') <= $now,
+            'weekly' => $last->modify('+7 days') <= $now,
+            'monthly' => $last->modify('+1 month') <= $now,
             default => true,
         };
     }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace IctDataCleanerPro;
 
@@ -53,6 +55,17 @@ class IctDataCleanerPro extends Plugin
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
         $connection->executeStatement('DROP TABLE IF EXISTS `ict_data_cleanup_log`');
+
+        // Delete log folder
+        $projectDir = $this->container->getParameter('kernel.project_dir');
+        if (!is_string($projectDir)) {
+            throw new \RuntimeException('Expected kernel.project_dir to be a string.');
+        }
+
+        $logDir = $projectDir . '/var/log/ict-data-cleaner';
+        if (is_dir($logDir)) {
+            $this->deleteDirectoryRecursively($logDir);
+        }
     }
 
 
@@ -70,5 +83,18 @@ class IctDataCleanerPro extends Plugin
     private function registerScheduledTask(Context $context): void
     {
         // Scheduled task registration will be handled by the container
+    }
+    private function deleteDirectoryRecursively(string $dir): void
+    {
+        $files = array_diff(scandir($dir), ['.', '..']);
+        foreach ($files as $file) {
+            $path = $dir . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($path)) {
+                $this->deleteDirectoryRecursively($path);
+            } else {
+                unlink($path);
+            }
+        }
+        rmdir($dir);
     }
 }

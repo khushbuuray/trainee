@@ -108,12 +108,17 @@ class NewsletterCleanupHandler implements CleanupHandlerInterface
 
         return [
             'count' => $recipients->count(),
-            'sample' => array_slice($sample, 0, 5),
+            'sample' => $sample,
         ];
     }
 
     public function getName(): string
     {
         return 'Newsletter Recipient Cleanup';
+    }
+
+    public function getKey(): string
+    {
+        return 'newsletterCleanup';
     }
 }

@@ -13,4 +13,9 @@ interface CleanupHandlerInterface
     public function cleanup(array $config, bool $dryRun, Context $context): array;
 
     public function getName(): string;
+
+    /**
+     * Returns the unique module key for identifying this handler (e.g. "productCleanup", "cartCleanup").
+     */
+    public function getKey(): string;
 }

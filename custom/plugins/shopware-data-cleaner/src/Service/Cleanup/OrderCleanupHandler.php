@@ -327,7 +327,7 @@ class OrderCleanupHandler implements CleanupHandlerInterface
 
             'count' => count($orderIdsToDelete),
 
-            'sample' => array_slice($sample, 0, 5),
+            'sample' => $sample,
 
         ];
 
@@ -339,6 +339,14 @@ class OrderCleanupHandler implements CleanupHandlerInterface
     {
 
         return 'Order Cleanup';
+
+    }
+
+    public function getKey(): string
+
+    {
+
+        return 'orderCleanup';
 
     }
 

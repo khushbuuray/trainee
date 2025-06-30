@@ -8,11 +8,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Core\Framework\Context;
 use IctDataCleanerPro\Controller\Api\CleanupController;
+use IctDataCleanerPro\Service\CleanupService;
 
 class ProductCleanupTaskHandler extends ScheduledTaskHandler
 {
     private SystemConfigService $systemConfigService;
-    private CleanupController $cleanupController;
+    private CleanupService $cleanupService;
 
     /**
      * @param EntityRepository<ScheduledTaskCollection> $scheduledTaskRepository
@@ -20,11 +21,11 @@ class ProductCleanupTaskHandler extends ScheduledTaskHandler
     public function __construct(
         EntityRepository $scheduledTaskRepository,
         SystemConfigService $systemConfigService,
-        CleanupController $cleanupController
+        CleanupService $cleanupService
     ) {
         parent::__construct($scheduledTaskRepository);
         $this->systemConfigService = $systemConfigService;
-        $this->cleanupController = $cleanupController;
+        $this->cleanupService = $cleanupService;
     }
 
     /**
@@ -44,7 +45,7 @@ class ProductCleanupTaskHandler extends ScheduledTaskHandler
             return;
         }
 
-        $this->cleanupController->cleanup(Context::createDefaultContext(), 'productCleanup');
+$this->cleanupService->runCleanup(Context::createDefaultContext(), false, 'scheduled', 'productCleanup');
     }
 
     private function shouldRunNow(string $moduleKey, string $frequency): bool
@@ -59,8 +60,8 @@ class ProductCleanupTaskHandler extends ScheduledTaskHandler
         $last = new \DateTime($lastRun);
 
         return match ($frequency) {
-            // 'weekly' => $last->modify('+7 days') <= $now,
-            // 'monthly' => $last->modify('+1 month') <= $now,
+            'weekly' => $last->modify('+7 days') <= $now,
+            'monthly' => $last->modify('+1 month') <= $now,
             default => true,
         };
     }

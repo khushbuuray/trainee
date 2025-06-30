@@ -219,12 +219,17 @@ class PromotionCleanupHandler implements CleanupHandlerInterface
 
         return [
             'count' => count($sample),
-            'sample' => array_slice($sample, 0, 5),
+            'sample' => $sample,
         ];
     }
 
     public function getName(): string
     {
         return 'Promotion & Discount Cleanup';
+    }
+
+    public function getKey(): string
+    {
+        return 'promotionCleanup';
     }
 }

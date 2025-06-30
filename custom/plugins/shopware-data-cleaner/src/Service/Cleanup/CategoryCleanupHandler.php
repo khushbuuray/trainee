@@ -207,4 +207,9 @@ class CategoryCleanupHandler implements CleanupHandlerInterface
     {
         return 'Category Cleanup';
     }
+
+    public function getKey(): string
+    {
+        return 'categoryCleanup';
+    }
 }

@@ -13,6 +13,6 @@ class CategoryCleanupTask extends ScheduledTask
 
     public static function getDefaultInterval(): int
     {
-        return 300; // Every 5 minutes; actual control comes from config
+        return 86400; // Run daily
     }
 }

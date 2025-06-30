@@ -8,11 +8,14 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use IctDataCleanerPro\Controller\Api\CleanupController;
 use Shopware\Core\Framework\Context;
+use IctDataCleanerPro\Service\CleanupService;
+
 
 class NewsletterCleanupTaskHandler extends ScheduledTaskHandler
 {
     private SystemConfigService $systemConfigService;
-    private CleanupController $cleanupController;
+        private CleanupService $cleanupService;
+
 
     /**
      * @param EntityRepository<ScheduledTaskCollection> $scheduledTaskRepository
@@ -20,11 +23,11 @@ class NewsletterCleanupTaskHandler extends ScheduledTaskHandler
     public function __construct(
         EntityRepository $scheduledTaskRepository,
         SystemConfigService $systemConfigService,
-        CleanupController $cleanupController
-    ) {
+        CleanupService $cleanupService    ) 
+  {
         parent::__construct($scheduledTaskRepository);
         $this->systemConfigService = $systemConfigService;
-        $this->cleanupController = $cleanupController;
+        $this->cleanupService = $cleanupService;
     }
 
     /**
@@ -47,7 +50,7 @@ class NewsletterCleanupTaskHandler extends ScheduledTaskHandler
             return;
         }
 
-        $this->cleanupController->cleanup($context, 'newsletterCleanup');
+        $this->cleanupService->runCleanup($context, false, 'scheduled', 'newsletterCleanup');
 
         $this->systemConfigService->set(
             'IctDataCleanerPro.config.newsletterCleanupLastRun',
@@ -67,8 +70,8 @@ class NewsletterCleanupTaskHandler extends ScheduledTaskHandler
         $last = new \DateTime($lastRun);
 
         return match ($frequency) {
-            // 'weekly' => $last->modify('+7 days') <= $now,
-            // 'monthly' => $last->modify('+1 month') <= $now,
+            'weekly' => $last->modify('+7 days') <= $now,
+            'monthly' => $last->modify('+1 month') <= $now,
             default => true,
         };
     }

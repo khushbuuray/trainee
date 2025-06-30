@@ -103,8 +103,8 @@
         <service id="IctDataCleanerPro\ScheduledTask\ProductCleanupTaskHandler">
             <argument type="service" id="scheduled_task.repository"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
-            <argument type="service" id="IctDataCleanerPro\Controller\Api\CleanupController"/>
-            <tag name="messenger.message_handler"/>
+            <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/>    
+            <tag name="messenger.message_handler" handles="IctDataCleanerPro\ScheduledTask\ProductCleanupTask"/>       
         </service>
 
         <service id="IctDataCleanerPro\ScheduledTask\CustomerCleanupTask">
@@ -113,8 +113,8 @@
         <service id="IctDataCleanerPro\ScheduledTask\CustomerCleanupTaskHandler">
             <argument type="service" id="scheduled_task.repository"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
-            <argument type="service" id="IctDataCleanerPro\Controller\Api\CleanupController"/>
-            <tag name="messenger.message_handler" attributes="{ handles: 'IctDataCleanerPro\ScheduledTask\CustomerCleanupTask' }"/>
+            <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/>            
+            <tag name="messenger.message_handler" handles="IctDataCleanerPro\ScheduledTask\CustomerCleanupTask"/>
         </service>
 
         <service id="IctDataCleanerPro\ScheduledTask\OrderCleanupTask">
@@ -123,8 +123,8 @@
         <service id="IctDataCleanerPro\ScheduledTask\OrderCleanupTaskHandler">
             <argument type="service" id="scheduled_task.repository"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
-            <argument type="service" id="IctDataCleanerPro\Controller\Api\CleanupController"/>
-            <tag name="messenger.message_handler" attributes="{ handles: 'IctDataCleanerPro\ScheduledTask\OrderCleanupTask' }"/>
+            <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/>            
+            <tag name="messenger.message_handler" handles="IctDataCleanerPro\ScheduledTask\OrderCleanupTask"/>
         </service>
 
         <service id="IctDataCleanerPro\ScheduledTask\CategoryCleanupTask">
@@ -133,8 +133,8 @@
         <service id="IctDataCleanerPro\ScheduledTask\CategoryCleanupTaskHandler">
             <argument type="service" id="scheduled_task.repository"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
-            <argument type="service" id="IctDataCleanerPro\Controller\Api\CleanupController"/>
-            <tag name="messenger.message_handler"/>
+            <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/>          
+            <tag name="messenger.message_handler" handles="IctDataCleanerPro\ScheduledTask\CategoryCleanupTask"/>
         </service>
 
         <service id="IctDataCleanerPro\ScheduledTask\PromotionCleanupTask">
@@ -143,8 +143,8 @@
         <service id="IctDataCleanerPro\ScheduledTask\PromotionCleanupTaskHandler">
             <argument type="service" id="scheduled_task.repository"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
-            <argument type="service" id="IctDataCleanerPro\Controller\Api\CleanupController"/>
-            <tag name="messenger.message_handler"/>
+            <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/>           
+            <tag name="messenger.message_handler" handles="IctDataCleanerPro\ScheduledTask\PromotionCleanupTask"/>
         </service>
 
         <service id="IctDataCleanerPro\ScheduledTask\CmsCleanupTask">
@@ -153,8 +153,8 @@
         <service id="IctDataCleanerPro\ScheduledTask\CmsCleanupTaskHandler">
             <argument type="service" id="scheduled_task.repository"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
-            <argument type="service" id="IctDataCleanerPro\Controller\Api\CleanupController"/>
-            <tag name="messenger.message_handler"/>
+            <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/> 
+            <tag name="messenger.message_handler" handles="IctDataCleanerPro\ScheduledTask\CmsCleanupTask"/>
         </service>
 
         <service id="IctDataCleanerPro\ScheduledTask\MediaCleanupTask">
@@ -163,8 +163,8 @@
         <service id="IctDataCleanerPro\ScheduledTask\MediaCleanupTaskHandler" public="true">
             <argument type="service" id="scheduled_task.repository"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
-            <argument type="service" id="IctDataCleanerPro\Controller\Api\CleanupController"/>
-            <tag name="messenger.message_handler"/>
+            <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/>     
+            <tag name="messenger.message_handler" handles="IctDataCleanerPro\ScheduledTask\MediaCleanupTask"/>
         </service>
 
         <service id="IctDataCleanerPro\ScheduledTask\NewsletterCleanupTask">
@@ -173,8 +173,8 @@
         <service id="IctDataCleanerPro\ScheduledTask\NewsletterCleanupTaskHandler" public="true">
             <argument type="service" id="scheduled_task.repository"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
-            <argument type="service" id="IctDataCleanerPro\Controller\Api\CleanupController"/>
-            <tag name="messenger.message_handler"/>
+            <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/> 
+            <tag name="messenger.message_handler" handles="IctDataCleanerPro\ScheduledTask\NewsletterCleanupTask"/>
         </service>
 
         <service id="IctDataCleanerPro\ScheduledTask\ReviewCleanupTask">
@@ -183,8 +183,8 @@
         <service id="IctDataCleanerPro\ScheduledTask\ReviewCleanupTaskHandler" public="true">
             <argument type="service" id="scheduled_task.repository"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
-            <argument type="service" id="IctDataCleanerPro\Controller\Api\CleanupController"/>
-            <tag name="messenger.message_handler"/>
+            <argument type="service" id="IctDataCleanerPro\Service\CleanupService"/>
+            <tag name="messenger.message_handler" handles="IctDataCleanerPro\ScheduledTask\ReviewCleanupTask"/>
         </service>
 
         <!-- Console Commands -->

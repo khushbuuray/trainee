@@ -13,6 +13,6 @@ class ReviewCleanupTask extends ScheduledTask
 
     public static function getDefaultInterval(): int
     {
-        return 300; // Run daily
+        return 86400; // Run daily
     }
 }

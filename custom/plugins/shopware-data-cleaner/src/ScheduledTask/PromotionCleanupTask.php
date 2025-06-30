@@ -13,6 +13,6 @@ class PromotionCleanupTask extends ScheduledTask
 
     public static function getDefaultInterval(): int
     {
-        return 300; // Run every 5 minutes (adjust as needed)
+        return 86400; // Run daily
     }
 }

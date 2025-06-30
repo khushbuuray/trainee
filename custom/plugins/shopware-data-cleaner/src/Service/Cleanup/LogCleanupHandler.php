@@ -145,4 +145,9 @@ class LogCleanupHandler implements CleanupHandlerInterface
     {
         return 'System Log & Technical Data Cleanup';
     }
+
+    public function getKey(): string
+{
+    return 'logCleanup';
+}
 }

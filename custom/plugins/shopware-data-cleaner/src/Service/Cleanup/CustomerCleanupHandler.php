@@ -135,7 +135,7 @@ class CustomerCleanupHandler implements CleanupHandlerInterface
 
         return [
             'count' => count($customers),
-            'sample' => array_slice($customers, 0, 5),
+            'sample' => $customers,
         ];
     }
 
@@ -178,18 +178,7 @@ class CustomerCleanupHandler implements CleanupHandlerInterface
                 $customers
             );
             $addressIds = [];
-            // foreach ($customers as $c) {
-            //     if (empty($c['addressIds'])) {
-            //         foreach ($c['addressIds'] as $aid) {
-            //             $addressIds[] = ['id' => $aid];
-            //         }
-            //     }
-            // }
-
             try {
-                // if (!empty($addressIds)) {
-                //     $this->customerAddressRepository->delete($addressIds, $context);
-                // }
                $this->customerRepository->delete($customerIds, $context);
                 $this->logger->logSuccess('customers', [
                     'action' => 'delete_inactive_customers',
@@ -210,12 +199,17 @@ class CustomerCleanupHandler implements CleanupHandlerInterface
 
         return [
             'count' => count($customers),
-            'sample' => array_slice($sample, 0, 5),
+            'sample' => $sample,
         ];
     }
 
     public function getName(): string
     {
         return 'Customer Cleanup';
+    }
+
+    public function getKey(): string
+    {
+        return 'customerCleanup';
     }
 }

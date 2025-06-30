@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace IctDataCleanerPro\Service\Cleanup;
 
@@ -113,12 +115,17 @@ class MediaCleanupHandler implements CleanupHandlerInterface
         // Step 5: Query orphaned media
         $criteria = new Criteria();
         $criteria->addFilter(new RangeFilter('createdAt', [RangeFilter::LT => $cutoff->format(DATE_ATOM)]));
+        $filters = [];
 
-        if ($excludeMediaIds !== []) {
-            $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [
+        if (!empty($excludeMediaIds)) {
+            $filters[] = new NotFilter(MultiFilter::CONNECTION_AND, [
                 new EqualsAnyFilter('id', $excludeMediaIds),
-            ]));
+            ]);
         }
+        $filters[] = new EqualsAnyFilter('documents.id', []);
+        $criteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_AND, $filters));
+
+
 
         $criteria->addAssociations([
             'productMedia',
@@ -169,12 +176,17 @@ class MediaCleanupHandler implements CleanupHandlerInterface
 
         return [
             'count' => count($idsToDelete),
-            'sample' => array_slice($sample, 0, 5),
+            'sample' => $sample,
         ];
     }
 
     public function getName(): string
     {
         return 'Media Cleanup';
+    }
+
+    public function getKey(): string
+    {
+        return 'mediaCleanup';
     }
 }
