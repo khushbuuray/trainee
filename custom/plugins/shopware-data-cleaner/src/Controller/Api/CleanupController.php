@@ -5,11 +5,14 @@ namespace IctDataCleanerPro\Controller\Api;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use IctDataCleanerPro\Service\CleanupService;
+use Symfony\Component\Routing\Annotation\Route;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use IctDataCleanerPro\Service\CleanupService;
 use IctDataCleanerPro\Service\Cleanup\ProductCleanupHandler;
-use Symfony\Component\Routing\Annotation\Route;
 use IctDataCleanerPro\Service\Cleanup\CustomerCleanupHandler;
 use IctDataCleanerPro\Service\Cleanup\CartCleanupHandler;
 use IctDataCleanerPro\Service\Cleanup\OrderCleanupHandler;
@@ -20,24 +23,22 @@ use IctDataCleanerPro\Service\Cleanup\CmsCleanupHandler;
 use IctDataCleanerPro\Service\Cleanup\NewsletterCleanupHandler;
 use IctDataCleanerPro\Service\Cleanup\MediaCleanupHandler;
 use IctDataCleanerPro\Service\Cleanup\LogCleanupHandler;
-use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
-#[Route('/api/ict-data-cleaner', name: 'api.ict_data_cleaner', defaults: ['_routeScope' => ['api']])]
+use IctDataCleanerPro\Service\Cleanup\CleanupHandlerInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
+
+#[Route('/api/ict-data-cleaner', name: 'api.ict_data_cleaner', defaults: ['_routeScope' => ['api']])]
 class CleanupController extends AbstractController
 {
-    // private CleanupService $cleanupService;
-    // private EntityRepository $cleanupLogRepository;
-    // private ProductCleanupHandler $productCleanupHandler;
+    /** @var array<string, CleanupHandlerInterface> */
     private array $handlers;
+
     private SystemConfigService $systemConfigService;
-
-
+    private CleanupService $cleanupService;
 
     public function __construct(
         CleanupService $cleanupService,
         SystemConfigService $systemConfigService,
-        EntityRepository $cleanupLogRepository,
         ProductCleanupHandler $productCleanupHandler,
         CustomerCleanupHandler $customerCleanupHandler,
         CartCleanupHandler $cartCleanupHandler,
@@ -49,223 +50,179 @@ class CleanupController extends AbstractController
         NewsletterCleanupHandler $newsletterCleanupHandler,
         MediaCleanupHandler $mediaCleanupHandler,
         LogCleanupHandler $logCleanupHandler
-        
     ) {
         $this->cleanupService = $cleanupService;
         $this->systemConfigService = $systemConfigService;
 
-        // $this->cleanupLogRepository = $cleanupLogRepository;
-        // $this->productCleanupHandler = $productCleanupHandler;
-          $this->handlers = [
-        'productCleanup' => $productCleanupHandler,
-        'customerCleanup' => $customerCleanupHandler,
-        'cartCleanup' => $cartCleanupHandler,
-        'orderCleanup' => $orderCleanupHandler,
-        'categoryCleanup' => $categoryCleanupHandler,
-        'promotionCleanup' => $promotionCleanupHandler,
-        'reviewCleanup' => $reviewCleanupHandler,
-        'cmsPageCleanup' => $cmsCleanupHandler,
-        'newsletterCleanup' => $newsletterCleanupHandler,
-        'mediaCleanup' => $mediaCleanupHandler,
-        'logCleanup' => $logCleanupHandler,
-        'transactionCleanup' => $orderCleanupHandler,
-        'cartRuleCleanup' => $promotionCleanupHandler
-    ];
+        $this->handlers = [
+            'productCleanup'      => $productCleanupHandler,
+            'customerCleanup'     => $customerCleanupHandler,
+            'cartCleanup'         => $cartCleanupHandler,
+            'orderCleanup'        => $orderCleanupHandler,
+            'categoryCleanup'     => $categoryCleanupHandler,
+            'promotionCleanup'    => $promotionCleanupHandler,
+            'reviewCleanup'       => $reviewCleanupHandler,
+            'cmsPageCleanup'      => $cmsCleanupHandler,
+            'newsletterCleanup'   => $newsletterCleanupHandler,
+            'mediaCleanup'        => $mediaCleanupHandler,
+            'logCleanup'          => $logCleanupHandler,
+            'transactionCleanup'  => $orderCleanupHandler,
+            'cartRuleCleanup'     => $promotionCleanupHandler
+        ];
     }
 
     #[Route(path: '/preview', name: 'api.ict_data_cleaner.preview', methods: ['POST'])]
-public function preview(Request $request, Context $context): JsonResponse
-{
-    try {
-        $config = json_decode($request->getContent(), true);
-         if (empty($config) || !is_array($config)) {
-            return new JsonResponse(['error' => 'Invalid config payload'], 400);
-        }
-        $cleanedConfig = [];
-        foreach ($config as $key => $value) {
-            $strippedKey = str_replace('IctDataCleaner.config.', '', $key);
-            $cleanedConfig[$strippedKey] = $value;
-        }
-        $firstKey = array_key_first($cleanedConfig); 
-        $matchedHandler = null;
-        foreach ($this->handlers as $key => $handler) {
-            if (str_contains($firstKey, $key)) {
-                $matchedHandler = $handler;
-                break;
+    public function preview(Request $request, Context $context): JsonResponse
+    {
+        try {
+            $config = json_decode($request->getContent(), true);
+            if (!is_array($config)) {
+                return new JsonResponse(['error' => 'Invalid config payload'], 400);
             }
-        }
 
-        if (!$matchedHandler) {
-            return new JsonResponse(['error' => 'No handler matched for: ' . $firstKey], 400);
-        }
+            $cleanedConfig = [];
+            foreach ($config as $key => $value) {
+                $strippedKey = str_replace('IctDataCleaner.config.', '', (string)$key);
+                $cleanedConfig[$strippedKey] = $value;
+            }
 
-        $result = $matchedHandler->cleanup($cleanedConfig, true, $context);
-                return new JsonResponse([
+            $firstKey = array_key_first($cleanedConfig);
+            if (!is_string($firstKey)) {
+                return new JsonResponse(['error' => 'Invalid config key structure'], 400);
+            }
+
+            $matchedHandler = null;
+            foreach ($this->handlers as $key => $handler) {
+                if (str_contains($firstKey, $key)) {
+                    $matchedHandler = $handler;
+                    break;
+                }
+            }
+
+            if (!$matchedHandler) {
+                return new JsonResponse(['error' => 'No handler matched for: ' . $firstKey], 400);
+            }
+
+            $result = $matchedHandler->cleanup($cleanedConfig, true, $context);
+
+            return new JsonResponse([
                 'success' => true,
-                'data' => $result
+                'data'    => $result,
             ]);
         } catch (\Throwable $e) {
             return new JsonResponse([
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ], 500);
         }
-}
-#[Route(path: '/{entity}/remove', name: 'api.ict_data_cleaner.entity_remove', methods: ['POST'])]
-public function remove(Request $request, Context $context): JsonResponse
-{
-    try {
-        $payload = json_decode($request->getContent(), true);
-        // Step 1: Find the matched key
-        $matchedKey = null;
-        foreach ($payload as $key => $value) {
-            if (str_ends_with($key, 'Ids')) {
-                $matchedKey = $key;
-                break;
-            }
-        }
-
-        if (!$matchedKey) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'No valid ID key found in payload.',
-            ], 400);
-        }
-
-        // Step 2: Flatten grouped IDs
-        $rawItems = $payload[$matchedKey];
-        $ids = [];
-        foreach ($rawItems as $group) {
-            foreach ((array) $group as $item) {
-                if (is_array($item) && isset($item['id'])) {
-                    $ids[] = $item['id'];
-                } elseif (is_string($item)) {
-                    $ids[] = $item;
-                }
-            }
-        }
-        if (empty($ids)) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'No IDs provided for deletion.',
-            ], 400);
-        }
-
-        // Step 3: Entity name map
-        $entityMap = [
-            'productCleanup'     => 'product',
-            'customerCleanup'    => 'customer',
-            'cartCleanup'        => 'order',
-            'categoryCleanup'    => 'category',
-            'promotionCleanup'   => 'promotion',
-            'reviewCleanup'      => 'product_review',
-            'cmsPageCleanup'     => 'cms_page',
-            'newsletterCleanup'  => 'newsletter_recipient',
-            'mediaCleanup'       => 'media',
-            'systemLogCleanup'   => 'log_entry',
-            'orderCleanup'       => 'order',
-            'transactionCleanup' => 'order',
-        ];
-
-        $entityKey = preg_replace('/Ids$/', '', $matchedKey);     
-        $entityGroup = explode('.', $entityKey)[0];              
-
-        $entityName = $entityMap[$entityGroup] ?? null;
-        if (!$entityName) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => "Unknown entity group: {$entityGroup}",
-            ], 400);
-        }
-
-        // Step 4: Delete using repository
-        $deletePayload = array_filter(array_map(function ($id) {
-            if (Uuid::isValid($id)) {
-                return ['id' => $id];
-            }
-            return null;
-        }, $ids));
-
-        if (empty($deletePayload)) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'No valid IDS to delete.',
-            ], 400);
-        }
-        $repository = $this->container->get($entityName . '.repository');
-        $repository->delete($deletePayload, $context);
-        return new JsonResponse([
-            'success' => true,
-            'deleted' => count($deletePayload),
-        ]);
-
-    } catch (\Throwable $e) {
-        return new JsonResponse([
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
-        ], 500);
     }
-}
 
-#[Route(path: '/cleanup', name: 'api.ict_data_cleaner.cleanup', methods: ['POST'])]
-
- public function cleanup(Context $context, string $module): JsonResponse
+    #[Route(path: '/{entity}/remove', name: 'api.ict_data_cleaner.entity_remove', methods: ['POST'])]
+    public function remove(Request $request, Context $context): JsonResponse
     {
         try {
-           $results = $this->cleanupService->runCleanup($context, false, 'scheduled', $module);
-        $key = "IctDataCleanerPro.config.{$module}LastRun";
+            $payload = json_decode($request->getContent(), true);
+            if (!is_array($payload)) {
+                return new JsonResponse(['success' => false, 'message' => 'Invalid payload'], 400);
+            }
 
-        $this->systemConfigService->set($key, (new \DateTime())->format(\DATE_ATOM));
+            $matchedKey = null;
+            foreach ($payload as $key => $value) {
+                if (is_string($key) && str_ends_with($key, 'Ids')) {
+                    $matchedKey = $key;
+                    break;
+                }
+            }
 
-        return new JsonResponse([
-            'success' => true,
-            'module'  => $module,
-            'results' => $results,
-        ]);
-        } catch (\Exception $th) {
+            if (!$matchedKey || !isset($payload[$matchedKey])) {
+                return new JsonResponse(['success' => false, 'message' => 'No valid ID key found in payload.'], 400);
+            }
+
+            $rawItems = $payload[$matchedKey];
+            if (!is_iterable($rawItems)) {
+                return new JsonResponse(['success' => false, 'message' => 'IDs must be iterable.'], 400);
+            }
+
+            $ids = [];
+            foreach ($rawItems as $group) {
+                foreach ((array)$group as $item) {
+                    if (is_array($item) && isset($item['id']) && is_string($item['id'])) {
+                        $ids[] = $item['id'];
+                    } elseif (is_string($item)) {
+                        $ids[] = $item;
+                    }
+                }
+            }
+
+            if (empty($ids)) {
+                return new JsonResponse(['success' => false, 'message' => 'No valid IDs provided.'], 400);
+            }
+
+            $entityMap = [
+                'productCleanup'     => 'product',
+                'customerCleanup'    => 'customer',
+                'cartCleanup'        => 'order',
+                'categoryCleanup'    => 'category',
+                'promotionCleanup'   => 'promotion',
+                'reviewCleanup'      => 'product_review',
+                'cmsPageCleanup'     => 'cms_page',
+                'newsletterCleanup'  => 'newsletter_recipient',
+                'mediaCleanup'       => 'media',
+                'systemLogCleanup'   => 'log_entry',
+                'orderCleanup'       => 'order',
+                'transactionCleanup' => 'order',
+                'cartRuleCleanup'    => 'promotion', // ✅ ADD THIS LINE
+            ];
+
+
+            $entityKey = preg_replace('/Ids$/', '', $matchedKey);
+            $entityGroup = explode('.', (string)$entityKey)[0];
+            $entityName = $entityMap[$entityGroup] ?? null;
+
+            if (!$entityName) {
+                return new JsonResponse(['success' => false, 'message' => "Unknown entity group: {$entityGroup}"], 400);
+            }
+
+            $deletePayload = array_filter(array_map(function ($id) {
+                return Uuid::isValid($id) ? ['id' => $id] : null;
+            }, $ids));
+
+            if (empty($deletePayload)) {
+                return new JsonResponse(['success' => false, 'message' => 'No valid UUIDs to delete.'], 400);
+            }
+
+            /** @phpstan-var EntityRepository<EntityCollection<Entity>> $repository */
+            $repository = $this->container->get($entityName . '.repository');
+
+
+            $repository->delete($deletePayload, $context);
+
+            return new JsonResponse(['success' => true, 'deleted' => count($deletePayload)]);
+        } catch (\Throwable $e) {
+            return new JsonResponse(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
         }
-        
     }
 
-    // /**
-    //  * @Route("/api/ict-data-cleaner/logs", name="api.ict_data_cleaner.logs", methods={"GET"})
-    //  */
-    // public function logs(Request $request, Context $context): JsonResponse
-    // {
-    //     try {
-    //         $page = $request->query->getInt('page', 1);
-    //         $limit = $request->query->getInt('limit', 25);
+    #[Route(path: '/cleanup/{module}', name: 'api.ict_data_cleaner.cleanup', methods: ['POST'])]
+    public function cleanup(Context $context, string $module): JsonResponse
+    {
+        try {
+            $results = $this->cleanupService->runCleanup($context, false, 'scheduled', $module);
+            $key = "IctDataCleanerPro.config.{$module}LastRun";
 
-    //         $criteria = new Criteria();
-    //         $criteria->setLimit($limit);
-    //         $criteria->setOffset(($page - 1) * $limit);
-    //         $criteria->addSorting(new FieldSorting('runAt', FieldSorting::DESCENDING));
+            $this->systemConfigService->set($key, (new \DateTime())->format(\DATE_ATOM));
 
-    //         $logs = $this->cleanupLogRepository->search($criteria, $context);
-
-    //         $logData = [];
-    //         foreach ($logs->getElements() as $log) {
-    //             $logData[] = [
-    //                 'id' => $log->getId(),
-    //                 'runAt' => $log->getRunAt()->format('Y-m-d H:i:s'),
-    //                 'trigger' => $log->getTrigger(),
-    //                 'mode' => $log->getMode(),
-    //                 'results' => $log->getResults()
-    //             ];
-    //         }
-
-    //         return new JsonResponse([
-    //             'success' => true,
-    //             'data' => [
-    //                 'items' => $logData,
-    //                 'total' => $logs->getTotal()
-    //             ]
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         return new JsonResponse([
-    //             'success' => false,
-    //             'message' => $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
+            return new JsonResponse([
+                'success' => true,
+                'module'  => $module,
+                'results' => $results,
+            ]);
+        } catch (\Throwable $th) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $th->getMessage(),
+                'trace'   => $th->getTraceAsString(),
+            ], 500);
+        }
+    }
 }

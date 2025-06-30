@@ -3,6 +3,7 @@
 namespace IctDataCleanerPro\ScheduledTask;
 
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
+use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use IctDataCleanerPro\Controller\Api\CleanupController;
@@ -13,6 +14,9 @@ class NewsletterCleanupTaskHandler extends ScheduledTaskHandler
     private SystemConfigService $systemConfigService;
     private CleanupController $cleanupController;
 
+    /**
+     * @param EntityRepository<ScheduledTaskCollection> $scheduledTaskRepository
+     */
     public function __construct(
         EntityRepository $scheduledTaskRepository,
         SystemConfigService $systemConfigService,
@@ -23,6 +27,9 @@ class NewsletterCleanupTaskHandler extends ScheduledTaskHandler
         $this->cleanupController = $cleanupController;
     }
 
+    /**
+     * @return iterable<class-string>
+     */
     public static function getHandledMessages(): iterable
     {
         return [NewsletterCleanupTask::class];
@@ -31,7 +38,6 @@ class NewsletterCleanupTaskHandler extends ScheduledTaskHandler
     public function run(): void
     {
         $context = Context::createDefaultContext();
-
         $config = $this->systemConfigService->getDomain('IctDataCleanerPro.config');
 
         $enabled = $config['IctDataCleanerPro.config.enableSchedulerOfNewsletter'] ?? false;
@@ -43,7 +49,10 @@ class NewsletterCleanupTaskHandler extends ScheduledTaskHandler
 
         $this->cleanupController->cleanup($context, 'newsletterCleanup');
 
-        $this->systemConfigService->set("IctDataCleanerPro.config.newsletterCleanupLastRun", (new \DateTime())->format('Y-m-d H:i:s'));
+        $this->systemConfigService->set(
+            'IctDataCleanerPro.config.newsletterCleanupLastRun',
+            (new \DateTime())->format('Y-m-d H:i:s')
+        );
     }
 
     private function shouldRunNow(string $moduleKey, string $frequency): bool
@@ -51,15 +60,15 @@ class NewsletterCleanupTaskHandler extends ScheduledTaskHandler
         $lastRun = $this->systemConfigService->get("IctDataCleanerPro.config.{$moduleKey}LastRun");
         $now = new \DateTime();
 
-        if (!$lastRun) {
+        if (!is_string($lastRun)) {
             return true;
         }
 
         $last = new \DateTime($lastRun);
 
         return match ($frequency) {
-//            'weekly' => $last->modify('+7 days') <= $now,
-//            'monthly' => $last->modify('+1 month') <= $now,
+            // 'weekly' => $last->modify('+7 days') <= $now,
+            // 'monthly' => $last->modify('+1 month') <= $now,
             default => true,
         };
     }

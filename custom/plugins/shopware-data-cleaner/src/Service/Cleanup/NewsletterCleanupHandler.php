@@ -2,6 +2,9 @@
 
 namespace IctDataCleanerPro\Service\Cleanup;
 
+use DateTime;
+use Shopware\Core\Content\Newsletter\Aggregate\NewsletterRecipient\NewsletterRecipientCollection;
+use Shopware\Core\Content\Newsletter\Aggregate\NewsletterRecipient\NewsletterRecipientEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -11,9 +14,14 @@ use IctDataCleanerPro\Service\CleanupLoggerService;
 
 class NewsletterCleanupHandler implements CleanupHandlerInterface
 {
-    private EntityRepository $newsletterRecipientRepository;
-    private CleanupLoggerService $logger;
+    /** @var EntityRepository<NewsletterRecipientCollection> */
+    private readonly EntityRepository $newsletterRecipientRepository;
 
+    private readonly CleanupLoggerService $logger;
+
+    /**
+     * @param EntityRepository<NewsletterRecipientCollection> $newsletterRecipientRepository
+     */
     public function __construct(
         EntityRepository $newsletterRecipientRepository,
         CleanupLoggerService $logger
@@ -22,42 +30,49 @@ class NewsletterCleanupHandler implements CleanupHandlerInterface
         $this->logger = $logger;
     }
 
+    /**
+     * @param array<string, mixed> $config
+     * @return array{name: string, items: array<string, array{count: int, sample: list<array{id: string, name: string}>}>}
+     */
     public function cleanup(array $config, bool $dryRun, Context $context): array
     {
-        $results = [
-            'name' => $this->getName(),
-            'items' => []
-        ];
+        $items = [];
 
-        if (isset($config['newsletterCleanup.bouncedMonths'])) {
-            $bouncedResults = $this->cleanupBouncedRecipients(
-                (int) $config['newsletterCleanup.bouncedMonths'],
-                $dryRun,
-                $context
-            );
-            $results['items']['bounced_recipients'] = $bouncedResults;
+        $monthsRaw = $config['newsletterCleanup.bouncedMonths'] ?? null;
+        $months = is_numeric($monthsRaw) ? (int) $monthsRaw : null;
+
+        if ($months !== null) {
+            $items['bounced_recipients'] = $this->cleanupBouncedRecipients($months, $dryRun, $context);
         }
 
-        return $results;
+        return [
+            'name' => $this->getName(),
+            'items' => $items,
+        ];
     }
 
+    /**
+     * @return array{count: int, sample: list<array{id: string, name: string}>}
+     */
     private function cleanupBouncedRecipients(int $months, bool $dryRun, Context $context): array
     {
-        $cutoffDate = (new \DateTime())->modify("-{$months} months");
+        $cutoffDate = (new DateTime())->modify("-{$months} months");
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('status', 'rejected'));
-        $criteria->addFilter(new RangeFilter('createdAt', [RangeFilter::LT => $cutoffDate->format(\DATE_ATOM)]));
+        $criteria->addFilter(new RangeFilter('createdAt', [RangeFilter::LT => $cutoffDate->format(DATE_ATOM)]));
         $criteria->setLimit(1000);
 
-        $recipients = $this->newsletterRecipientRepository->search($criteria, $context);
+        /** @var NewsletterRecipientCollection $recipients */
+        $recipients = $this->newsletterRecipientRepository->search($criteria, $context)->getEntities();
 
+        /** @var list<array{id: string, name: string}> $sample */
         $sample = [];
         foreach ($recipients as $recipient) {
+            /** @var NewsletterRecipientEntity $recipient */
             $sample[] = [
                 'id' => $recipient->getId(),
-                'email' => $recipient->getEmail(),
-                'created_at' => $recipient->getCreatedAt()?->format('Y-m-d H:i:s')
+                'name' => $recipient->getEmail(),
             ];
         }
 
@@ -69,7 +84,7 @@ class NewsletterCleanupHandler implements CleanupHandlerInterface
 
         if (!$dryRun && $recipients->count() > 0) {
             $ids = array_map(
-                fn($e) => ['id' => $e->getId()],
+                static fn(NewsletterRecipientEntity $e): array => ['id' => $e->getId()],
                 array_values($recipients->getElements())
             );
 
@@ -82,7 +97,7 @@ class NewsletterCleanupHandler implements CleanupHandlerInterface
                         'count' => count($ids),
                         'ids' => array_column($ids, 'id'),
                     ]);
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $this->logger->logError('newsletter', $e, [
                         'action' => 'delete_bounced',
                         'ids' => array_column($ids, 'id'),
@@ -93,7 +108,7 @@ class NewsletterCleanupHandler implements CleanupHandlerInterface
 
         return [
             'count' => $recipients->count(),
-            'sample' => array_slice($sample, 0, 5)
+            'sample' => array_slice($sample, 0, 5),
         ];
     }
 

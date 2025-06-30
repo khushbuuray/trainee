@@ -3,6 +3,7 @@
 namespace IctDataCleanerPro\ScheduledTask;
 
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
+use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Core\Framework\Context;
@@ -13,6 +14,9 @@ class CategoryCleanupTaskHandler extends ScheduledTaskHandler
     private SystemConfigService $systemConfigService;
     private CleanupController $cleanupController;
 
+    /**
+     * @param EntityRepository<ScheduledTaskCollection> $scheduledTaskRepository
+     */
     public function __construct(
         EntityRepository $scheduledTaskRepository,
         SystemConfigService $systemConfigService,
@@ -23,6 +27,9 @@ class CategoryCleanupTaskHandler extends ScheduledTaskHandler
         $this->cleanupController = $cleanupController;
     }
 
+    /**
+     * @return iterable<class-string>
+     */
     public static function getHandledMessages(): iterable
     {
         return [CategoryCleanupTask::class];
@@ -33,19 +40,20 @@ class CategoryCleanupTaskHandler extends ScheduledTaskHandler
         $config = $this->systemConfigService->getDomain('IctDataCleanerPro.config');
         $enabled = $config['IctDataCleanerPro.config.enableSchedulerOfCategories'] ?? false;
         $frequency = $config['IctDataCleanerPro.config.categoryCleanupScheduleFrequency'] ?? 'weekly';
+
         if (!$enabled || !$this->shouldRunNow('categoryCleanup', $frequency)) {
             return;
         }
-        $this->cleanupController->cleanup(Context::createDefaultContext(), 'categoryCleanup');       
+
+        $this->cleanupController->cleanup(Context::createDefaultContext(), 'categoryCleanup');
     }
 
     private function shouldRunNow(string $moduleKey, string $frequency): bool
     {
-
         $lastRun = $this->systemConfigService->get("IctDataCleanerPro.config.{$moduleKey}LastRun");
         $now = new \DateTime();
 
-        if (!$lastRun) {
+        if (!is_string($lastRun)) {
             return true;
         }
 

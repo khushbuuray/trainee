@@ -6,6 +6,8 @@ use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use IctDataCleanerPro\Service\CleanupLoggerService;
+use Shopware\Core\Checkout\Cart\Cart;
+use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 
 class CartCleanupHandler implements CleanupHandlerInterface
 {
@@ -18,25 +20,29 @@ class CartCleanupHandler implements CleanupHandlerInterface
         $this->logger = $logger;
     }
 
+    /**
+     * @param array<string, mixed> $config
+     * @return array{name: string, items: array<string, array{count: int, sample: list<array{id: string, name: string, quantity: int, token: string, created_at: string}>}>}
+     */
     public function cleanup(array $config, bool $dryRun, Context $context): array
     {
         $results = [
             'name' => $this->getName(),
-            'items' => []
+            'items' => [],
         ];
 
-        if (isset($config['cartCleanup.abandonedDays'])) {
-            $cartResults = $this->cleanupAbandonedCarts(
-                (int) $config['cartCleanup.abandonedDays'],
-                $dryRun,
-                $context
-            );
+        if (isset($config['cartCleanup.abandonedDays']) && is_numeric($config['cartCleanup.abandonedDays'])) {
+            $days = (int) $config['cartCleanup.abandonedDays'];
+            $cartResults = $this->cleanupAbandonedCarts($days, $dryRun, $context);
             $results['items']['abandoned_carts'] = $cartResults;
         }
 
         return $results;
     }
 
+    /**
+     * @return array{count: int, sample: list<array{id: string, name: string, quantity: int, token: string, created_at: string}>}
+     */
     private function cleanupAbandonedCarts(int $days, bool $dryRun, Context $context): array
     {
         $date = new \DateTime();
@@ -50,12 +56,22 @@ class CartCleanupHandler implements CleanupHandlerInterface
             ->setParameter('date', $date->format('Y-m-d H:i:s'))
             ->setMaxResults(10);
 
+        /** @var list<array{token: string, payload: string|null, created_at: string}> $carts */
         $carts = $cartRepo->executeQuery()->fetchAllAssociative();
+
+        /** @var list<array{id: string, name: string, quantity: int, token: string, created_at: string}> $results */
         $results = [];
 
         foreach ($carts as $cartRow) {
-            $payload = unserialize($cartRow['payload']);
-            if (!($payload instanceof \Shopware\Core\Checkout\Cart\Cart)) {
+            $payloadRaw = $cartRow['payload'];
+
+            if (!is_string($payloadRaw)) {
+                continue;
+            }
+
+            $payload = @unserialize($payloadRaw);
+
+            if (!($payload instanceof Cart)) {
                 continue;
             }
 
@@ -68,7 +84,11 @@ class CartCleanupHandler implements CleanupHandlerInterface
                 $productName = $this->connection->fetchOne(
                     'SELECT name FROM product_translation WHERE product_id = :id',
                     ['id' => Uuid::fromHexToBytes($productId)]
-                ) ?: $item->getLabel();
+                );
+
+                if (!is_string($productName)) {
+                    $productName = (string) $item->getLabel();
+                }
 
                 $results[] = [
                     'id' => $productId,
@@ -98,7 +118,7 @@ class CartCleanupHandler implements CleanupHandlerInterface
                     'count' => count($results),
                     'cutoff' => $date->format('Y-m-d H:i:s'),
                 ]);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $this->logger->logError('cart', $e, [
                     'action' => 'delete',
                     'cutoff' => $date->format('Y-m-d H:i:s'),

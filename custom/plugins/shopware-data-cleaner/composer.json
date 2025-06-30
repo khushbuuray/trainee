@@ -13,6 +13,11 @@
   "require": {
     "shopware/core": "~6.6.0"
   },
+  "require-dev": {
+    "phpstan/phpstan": "^2.1",
+    "nunomaduro/phpinsights": "^2.13"
+  },
+
   "extra": {
     "shopware-plugin-class": "IctDataCleanerPro\\IctDataCleanerPro",
     "label": {
@@ -27,6 +32,12 @@
   "autoload": {
     "psr-4": {
       "IctDataCleanerPro\\": "src/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "symfony/runtime": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
     }
   }
 }

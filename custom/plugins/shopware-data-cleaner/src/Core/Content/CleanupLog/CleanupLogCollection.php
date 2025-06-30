@@ -5,6 +5,8 @@ namespace IctDataCleanerPro\Core\Content\CleanupLog;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
+ * @extends EntityCollection<CleanupLogEntity>
+ *
  * @method void add(CleanupLogEntity $entity)
  * @method void set(string $key, CleanupLogEntity $entity)
  * @method CleanupLogEntity[] getIterator()

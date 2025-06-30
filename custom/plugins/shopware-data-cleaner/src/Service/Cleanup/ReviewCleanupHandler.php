@@ -2,6 +2,9 @@
 
 namespace IctDataCleanerPro\Service\Cleanup;
 
+use DateTime;
+use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewCollection;
+use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -11,9 +14,14 @@ use IctDataCleanerPro\Service\CleanupLoggerService;
 
 class ReviewCleanupHandler implements CleanupHandlerInterface
 {
-    private EntityRepository $productReviewRepository;
-    private CleanupLoggerService $logger;
+    /** @var EntityRepository<ProductReviewCollection> */
+    private readonly EntityRepository $productReviewRepository;
 
+    private readonly CleanupLoggerService $logger;
+
+    /**
+     * @param EntityRepository<ProductReviewCollection> $productReviewRepository
+     */
     public function __construct(
         EntityRepository $productReviewRepository,
         CleanupLoggerService $logger
@@ -22,42 +30,49 @@ class ReviewCleanupHandler implements CleanupHandlerInterface
         $this->logger = $logger;
     }
 
+    /**
+     * @param array<string, mixed> $config
+     * @return array{name: string, items: array<string, array{count: int, sample: list<array{id: string, name: string}>}>}
+     */
     public function cleanup(array $config, bool $dryRun, Context $context): array
     {
-        $results = [
-            'name' => $this->getName(),
-            'items' => []
-        ];
+        $items = [];
 
-        if (isset($config['reviewCleanup.unapprovedDays'])) {
-            $results['items']['unapproved_reviews'] = $this->cleanupUnapprovedReviews(
+        if (isset($config['reviewCleanup.unapprovedDays']) && is_numeric($config['reviewCleanup.unapprovedDays'])) {
+            $items['unapproved_reviews'] = $this->cleanupUnapprovedReviews(
                 (int) $config['reviewCleanup.unapprovedDays'],
                 $dryRun,
                 $context
             );
         }
 
-        return $results;
+        return [
+            'name' => $this->getName(),
+            'items' => $items,
+        ];
     }
 
+    /**
+     * @return array{count: int, sample: list<array{id: string, name: string}>}
+     */
     private function cleanupUnapprovedReviews(int $days, bool $dryRun, Context $context): array
     {
-        $cutoff = (new \DateTime())->modify("-{$days} days");
+        $cutoff = (new DateTime())->modify("-{$days} days");
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('status', false));
         $criteria->addFilter(new RangeFilter('createdAt', [RangeFilter::LT => $cutoff->format(DATE_ATOM)]));
         $criteria->setLimit(1000);
 
-        $reviews = $this->productReviewRepository->search($criteria, $context);
+        /** @var ProductReviewCollection $reviews */
+        $reviews = $this->productReviewRepository->search($criteria, $context)->getEntities();
 
         $sample = [];
         foreach ($reviews as $review) {
+            /** @var ProductReviewEntity $review */
             $sample[] = [
                 'id' => $review->getId(),
-                'title' => $review->getTitle(),
-                'created_at' => $review->getCreatedAt()?->format('Y-m-d H:i:s'),
-                'status' => $review->getStatus() ? 'Approved' : 'Unapproved',
+                'name' => (string) $review->getTitle(),
             ];
         }
 
@@ -69,17 +84,16 @@ class ReviewCleanupHandler implements CleanupHandlerInterface
 
         if (!$dryRun && $reviews->count() > 0) {
             $ids = [];
-            foreach ($reviews->getElements() as $review) {
-                if ($review && $review->getId()) {
-                    $ids[] = ['id' => $review->getId()];
-                }
+
+            foreach ($reviews as $review) {
+                /** @var ProductReviewEntity $review */
+                $ids[] = ['id' => $review->getId()];
             }
 
             if (!empty($ids)) {
                 try {
-                    $event = $this->productReviewRepository->delete($ids, $context);
+                    $this->productReviewRepository->delete($ids, $context);
 
-                    // Confirm deletion
                     $remaining = $this->productReviewRepository->search(
                         new Criteria(array_column($ids, 'id')),
                         $context
@@ -89,8 +103,7 @@ class ReviewCleanupHandler implements CleanupHandlerInterface
                         'deleted' => array_column($ids, 'id'),
                         'remaining_count' => $remaining->getTotal(),
                     ]);
-
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $this->logger->logError('reviews', $e, [
                         'action' => 'delete_unapproved',
                         'ids' => array_column($ids, 'id'),
@@ -101,7 +114,7 @@ class ReviewCleanupHandler implements CleanupHandlerInterface
 
         return [
             'count' => $reviews->count(),
-            'sample' => $sample,
+            'sample' => array_slice($sample, 0, 5),
         ];
     }
 

@@ -5,25 +5,33 @@ namespace IctDataCleanerPro\Controller\Api;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use IctDataCleanerPro\Service\CleanupService;
+use Symfony\Component\Routing\Annotation\Route;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use Shopware\Core\Framework\Context;
+use IctDataCleanerPro\Service\CleanupService;
 use IctDataCleanerPro\Service\Cleanup\ProductCleanupHandler;
-use Symfony\Component\Routing\Annotation\Route;
+use IctDataCleanerPro\Core\Content\CleanupLog\CleanupLogEntity;
+use IctDataCleanerPro\Core\Content\CleanupLog\CleanupLogCollection;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 
 /**
  * @RouteScope(scopes={"api"})
  */
-
 class CleanupController extends AbstractController
 {
     private CleanupService $cleanupService;
+
+    /** @var EntityRepository<CleanupLogCollection> */
     private EntityRepository $cleanupLogRepository;
+
     private ProductCleanupHandler $productCleanupHandler;
 
+    /**
+     * @param EntityRepository<CleanupLogCollection> $cleanupLogRepository
+     */
     public function __construct(
         CleanupService $cleanupService,
         EntityRepository $cleanupLogRepository,
@@ -32,15 +40,6 @@ class CleanupController extends AbstractController
         $this->cleanupService = $cleanupService;
         $this->cleanupLogRepository = $cleanupLogRepository;
         $this->productCleanupHandler = $productCleanupHandler;
-    }
-
-    /**
-     * @Route("/api/ict-data-cleaner/hey", name="api.ict_data_cleaner.hey", methods={"GET"})
-     */
-    public function hey(): JsonResponse
-    {
-        dd('hi');
-        return new JsonResponse(['message' => 'Hey!']);
     }
 
     /**
@@ -55,7 +54,7 @@ class CleanupController extends AbstractController
                 'success' => true,
                 'data' => $results
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return new JsonResponse([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -69,15 +68,17 @@ class CleanupController extends AbstractController
     public function previewProductsNotSoldIn(Request $request, Context $context): JsonResponse
     {
         try {
-            $months = (int) $request->get('months', 6);
+            $monthsRaw = $request->get('months');
+            $months = is_numeric($monthsRaw) ? (int) $monthsRaw : 6;
+
             $config = ['productCleanup.monthsNotSold' => $months];
             $results = $this->productCleanupHandler->cleanup($config, false, $context);
 
             return new JsonResponse([
                 'success' => true,
-                'data' => $results['items']['products_not_sold']
+                'data' => $results['items']['products_not_sold'] ?? []
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return new JsonResponse([
                 'success' => false,
                 'message' => $e->getMessage()
@@ -88,24 +89,24 @@ class CleanupController extends AbstractController
     /**
      * @Route("/api/ict-data-cleaner/cleanup", name="api.ict_data_cleaner.cleanup", methods={"POST"})
      */
-    // public function cleanup(Request $request, string $module = null): JsonResponse
-    // {
-    //     try {
-    //         $context = Context::createDefaultContext();
-    //         $dryRun = $request->request->getBoolean('dryRun', false);
-    //         $results = $this->cleanupService->runCleanup($context, $dryRun, 'scheduled', $module);
+    public function cleanup(Request $request, string $module = null): JsonResponse
+    {
+        try {
+            $context = Context::createDefaultContext();
+            $dryRun = $request->request->getBoolean('dryRun', false);
+            $results = $this->cleanupService->runCleanup($context, $dryRun, 'scheduled', $module);
 
-    //         return new JsonResponse([
-    //             'success' => true,
-    //             'data' => $results
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         return new JsonResponse([
-    //             'success' => false,
-    //             'message' => $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
+            return new JsonResponse([
+                'success' => true,
+                'data' => $results
+            ]);
+        } catch (\Throwable $e) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 
     /**
      * @Route("/api/ict-data-cleaner/logs", name="api.ict_data_cleaner.logs", methods={"GET"})
@@ -121,18 +122,21 @@ class CleanupController extends AbstractController
             $criteria->setOffset(($page - 1) * $limit);
             $criteria->addSorting(new FieldSorting('runAt', FieldSorting::DESCENDING));
 
+            /** @var EntitySearchResult<CleanupLogCollection> $logs */
             $logs = $this->cleanupLogRepository->search($criteria, $context);
 
             $logData = [];
-            foreach ($logs->getElements() as $log) {
+
+            foreach ($logs->getEntities() as $log) {
                 $logData[] = [
                     'id' => $log->getId(),
                     'runAt' => $log->getRunAt()->format('Y-m-d H:i:s'),
                     'trigger' => $log->getTrigger(),
                     'mode' => $log->getMode(),
-                    'results' => $log->getResults()
+                    'results' => $log->getResults(),
                 ];
             }
+
 
             return new JsonResponse([
                 'success' => true,
@@ -141,11 +145,12 @@ class CleanupController extends AbstractController
                     'total' => $logs->getTotal()
                 ]
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return new JsonResponse([
                 'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
     }
+
 }

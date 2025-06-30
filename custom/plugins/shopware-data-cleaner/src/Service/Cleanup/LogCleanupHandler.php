@@ -1,9 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace IctDataCleanerPro\Service\Cleanup;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Uuid\Uuid;
 
 class LogCleanupHandler implements CleanupHandlerInterface
 {
@@ -14,116 +17,116 @@ class LogCleanupHandler implements CleanupHandlerInterface
         $this->connection = $connection;
     }
 
+    /**
+     * @param array<string, mixed> $config
+     * @return array{name: string, items: array<string, array{count: int, sample: list<array<string, mixed>>}>}
+     */
     public function cleanup(array $config, bool $dryRun, Context $context): array
     {
         $results = [
             'name' => $this->getName(),
-            'items' => []
+            'items' => [],
         ];
-        // Clean system logs
-        if (isset($config['systemLogCleanup.months'])) {
-            $logResults = $this->cleanupSystemLogs(
-                (int) $config['systemLogCleanup.months'],
-                $dryRun,
-                $context
-            );
-            $results['items']['system_logs'] = $logResults;
+
+        if (
+            isset($config['systemLogCleanup.months']) &&
+            is_numeric($config['systemLogCleanup.months'])
+        ) {
+            $months = (int) $config['systemLogCleanup.months'];
+            $results['items']['system_logs'] = $this->cleanupSystemLogs($months, $dryRun, $context);
         }
 
-        // Clean orphaned custom field sets
-        if ($config['systemLogCleanup.orphaned'] ?? false) {
-            $customFieldResults = $this->cleanupOrphanedCustomFieldSets($dryRun, $context);
-            $results['items']['orphaned_custom_field_sets'] = $customFieldResults;
+        if (!empty($config['systemLogCleanup.orphaned'])) {
+            $results['items']['orphaned_custom_field_sets'] = $this->cleanupOrphanedCustomFieldSets($dryRun, $context);
         }
 
         return $results;
     }
 
+    /**
+     * @return array{count: int, sample: list<array{table: string, count: int}>}
+     */
     private function cleanupSystemLogs(int $months, bool $dryRun, Context $context): array
     {
-        $date = new \DateTime();
-        $date->modify("-{$months} months");
+        $date = new \DateTimeImmutable("-{$months} months");
 
-        $tables = [
-            'log_entry',
-            'dead_message',
-            'messenger_messages'
-        ];
-
+        $tables = ['log_entry', 'dead_message', 'messenger_messages'];
         $totalCount = 0;
+
+        /** @var list<array{table: string, count: int}> $samples */
         $samples = [];
 
         foreach ($tables as $table) {
-            // Check if table exists
-            $tableExists = $this->connection->fetchOne(
+            $tableExistsRaw = $this->connection->fetchOne(
                 "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = ?",
                 [$table]
             );
+            $tableExists = is_numeric($tableExistsRaw) ? (int) $tableExistsRaw : 0;
 
-            if (!$tableExists) {
+            if ($tableExists === 0) {
                 continue;
             }
 
-            $countSql = "SELECT COUNT(*) as count FROM `{$table}` WHERE created_at < :date";
-            
             try {
-                $countResult = $this->connection->fetchAssociative($countSql, [
-                    'date' => $date->format('Y-m-d H:i:s')
-                ]);
-                
-                $count = (int) $countResult['count'];
+                $countResult = $this->connection->fetchAssociative(
+                    "SELECT COUNT(*) as count FROM `{$table}` WHERE created_at < :date",
+                    ['date' => $date->format('Y-m-d H:i:s')]
+                );
+
+                $count = isset($countResult['count']) && is_numeric($countResult['count'])
+                    ? (int) $countResult['count']
+                    : 0;
+
                 $totalCount += $count;
 
                 if ($count > 0) {
-                    $samples[] = [
-                        'table' => $table,
-                        'count' => $count
-                    ];
+                    $samples[] = ['table' => $table, 'count' => $count];
 
                     if (!$dryRun) {
-                        $deleteSql = "DELETE FROM `{$table}` WHERE created_at < :date";
-                        $this->connection->executeStatement($deleteSql, [
-                            'date' => $date->format('Y-m-d H:i:s')
-                        ]);
+                        $this->connection->executeStatement(
+                            "DELETE FROM `{$table}` WHERE created_at < :date",
+                            ['date' => $date->format('Y-m-d H:i:s')]
+                        );
                     }
                 }
-            } catch (\Exception $e) {
-                // Skip tables that don't have created_at column
+            } catch (\Throwable $e) {
+                // Table may not have `created_at`, skip silently
                 continue;
             }
         }
 
+
         return [
             'count' => $totalCount,
-            'sample' => array_slice($samples, 0, 5)
+            'sample' => array_slice($samples, 0, 5),
         ];
     }
 
+    /**
+     * @return array{count: int, sample: list<array{id: string, name: string}>}
+     */
     private function cleanupOrphanedCustomFieldSets(bool $dryRun, Context $context): array
     {
-        // This is a complex query and might need adjustment based on your specific custom field setup
-        $sql = <<<SQL
-SELECT cfs.id, cfs.name
-FROM custom_field_set cfs
-LEFT JOIN custom_field_set_relation cfsr ON cfs.id = cfsr.set_id
-WHERE cfsr.set_id IS NULL
-LIMIT 1000
-SQL;
+        /** @var list<array{id: string, name: string}> $customFieldSets */
+        $customFieldSets = $this->connection->fetchAllAssociative(<<<SQL
+            SELECT cfs.id, cfs.name
+            FROM custom_field_set cfs
+            LEFT JOIN custom_field_set_relation cfsr ON cfs.id = cfsr.set_id
+            WHERE cfsr.set_id IS NULL
+            LIMIT 1000
+        SQL);
 
-        $customFieldSets = $this->connection->fetchAllAssociative($sql);
+        if (!$dryRun && $customFieldSets !== []) {
+            $idBytes = [];
 
-        if (!$dryRun && !empty($customFieldSets)) {
-            $ids = array_map(function ($set) {
-                return ['id' => $set['id']];
-            }, $customFieldSets);
-            
-            // Assuming you have a custom_field_set.repository service
-            // If not, you'll need to use direct DBAL delete
-            // $this->customFieldSetRepository->delete($ids, $context);
-            
-            // Direct DBAL delete example:
-            $idBytes = array_map(fn($id) => \Shopware\Core\Framework\Uuid\Uuid::fromHexToBytes($id['id']), $customFieldSets);
-            if (!empty($idBytes)) {
+            foreach ($customFieldSets as $set) {
+                // All fields are defined as string, but we validate UUID format for safety
+                if (Uuid::isValid($set['id'])) {
+                    $idBytes[] = Uuid::fromHexToBytes($set['id']);
+                }
+            }
+
+            if ($idBytes !== []) {
                 $this->connection->executeStatement(
                     'DELETE FROM custom_field_set WHERE id IN (:ids)',
                     ['ids' => $idBytes],
@@ -134,7 +137,7 @@ SQL;
 
         return [
             'count' => count($customFieldSets),
-            'sample' => array_slice($customFieldSets, 0, 5)
+            'sample' => array_slice($customFieldSets, 0, 5),
         ];
     }
 

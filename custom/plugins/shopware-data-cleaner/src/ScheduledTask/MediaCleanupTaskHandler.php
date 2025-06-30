@@ -3,6 +3,7 @@
 namespace IctDataCleanerPro\ScheduledTask;
 
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
+use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use IctDataCleanerPro\Controller\Api\CleanupController;
@@ -13,6 +14,9 @@ class MediaCleanupTaskHandler extends ScheduledTaskHandler
     private SystemConfigService $systemConfigService;
     private CleanupController $cleanupController;
 
+    /**
+     * @param EntityRepository<ScheduledTaskCollection> $scheduledTaskRepository
+     */
     public function __construct(
         EntityRepository $scheduledTaskRepository,
         SystemConfigService $systemConfigService,
@@ -23,6 +27,9 @@ class MediaCleanupTaskHandler extends ScheduledTaskHandler
         $this->cleanupController = $cleanupController;
     }
 
+    /**
+     * @return iterable<class-string>
+     */
     public static function getHandledMessages(): iterable
     {
         return [MediaCleanupTask::class];
@@ -31,29 +38,29 @@ class MediaCleanupTaskHandler extends ScheduledTaskHandler
     public function run(): void
     {
         $context = Context::createDefaultContext();
-
         $config = $this->systemConfigService->getDomain('IctDataCleanerPro.config');
 
         $enabled = $config['IctDataCleanerPro.config.enableSchedulerOfMedia'] ?? false;
-
         $frequency = $config['IctDataCleanerPro.config.mediaCleanupScheduleFrequency'] ?? 'weekly';
-//dd($enabled);
+
         if (!$enabled || !$this->shouldRunNow('mediaCleanup', $frequency)) {
             return;
         }
 
         $this->cleanupController->cleanup($context, 'mediaCleanup');
 
-        $this->systemConfigService->set("IctDataCleanerPro.config.mediaCleanupLastRun", (new \DateTime())->format('Y-m-d H:i:s'));
+        $this->systemConfigService->set(
+            'IctDataCleanerPro.config.mediaCleanupLastRun',
+            (new \DateTime())->format('Y-m-d H:i:s')
+        );
     }
 
     private function shouldRunNow(string $moduleKey, string $frequency): bool
     {
-
         $lastRun = $this->systemConfigService->get("IctDataCleanerPro.config.{$moduleKey}LastRun");
         $now = new \DateTime();
 
-        if (!$lastRun) {
+        if (!is_string($lastRun)) {
             return true;
         }
 

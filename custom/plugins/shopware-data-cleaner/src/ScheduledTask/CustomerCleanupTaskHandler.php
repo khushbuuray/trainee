@@ -3,51 +3,57 @@
 namespace IctDataCleanerPro\ScheduledTask;
 
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
+use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Core\Framework\Context;
 use IctDataCleanerPro\Controller\Api\CleanupController;
-
 
 class CustomerCleanupTaskHandler extends ScheduledTaskHandler
 {
     private SystemConfigService $systemConfigService;
     private CleanupController $cleanupController;
 
-
+    /**
+     * @param EntityRepository<ScheduledTaskCollection> $scheduledTaskRepository
+     */
     public function __construct(
         EntityRepository $scheduledTaskRepository,
         SystemConfigService $systemConfigService,
         CleanupController $cleanupController
-
     ) {
         parent::__construct($scheduledTaskRepository);
         $this->systemConfigService = $systemConfigService;
         $this->cleanupController = $cleanupController;
-
     }
+
+    /**
+     * @return iterable<class-string>
+     */
     public static function getHandledMessages(): iterable
     {
         return [CustomerCleanupTask::class];
     }
 
-      public function run(): void
+    public function run(): void
     {
         $config = $this->systemConfigService->getDomain('IctDataCleanerPro.config');
         $enabled = $config['IctDataCleanerPro.config.enableSchedulerOfCustomer'] ?? false;
         $frequency = $config['IctDataCleanerPro.config.customerCleanupScheduleFrequency'] ?? 'weekly';
+
         if (!$enabled || !$this->shouldRunNow('customerCleanup', $frequency)) {
             return;
         }
+
         $this->cleanupController->cleanup(Context::createDefaultContext(), 'customerCleanup');
     }
 
-       private function shouldRunNow(string $moduleKey, string $frequency): bool
+    private function shouldRunNow(string $moduleKey, string $frequency): bool
     {
         $lastRun = $this->systemConfigService->get("IctDataCleanerPro.config.{$moduleKey}LastRun");
         $now = new \DateTime();
 
-        if (!$lastRun) {
+        if (!is_string($lastRun)) {
             return true;
         }
 
@@ -60,5 +66,3 @@ class CustomerCleanupTaskHandler extends ScheduledTaskHandler
         };
     }
 }
-
-
