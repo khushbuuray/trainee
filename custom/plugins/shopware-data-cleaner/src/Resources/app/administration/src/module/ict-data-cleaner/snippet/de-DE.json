@@ -53,7 +53,7 @@
     },
     "config": {
       "productCleanup": {
-        "monthsNotSold": "Produkte, die seit Monaten nicht verkauft wurden",
+        "monthsNotSold": "Produkte, die nicht älter als ein paar Monate verkauft werden",
         "deleteNeverSold": "Produkte, die nie verkauft wurden",
         "monthsDisabled": "Inaktive Produkte älter als Monate"
       },

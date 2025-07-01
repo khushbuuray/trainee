@@ -60,8 +60,8 @@ $this->cleanupService->runCleanup(Context::createDefaultContext(), false, 'sched
         $last = new \DateTime($lastRun);
 
         return match ($frequency) {
-            'weekly' => $last->modify('+7 days') <= $now,
-            'monthly' => $last->modify('+1 month') <= $now,
+            // 'weekly' => $last->modify('+7 days') <= $now,
+            // 'monthly' => $last->modify('+1 month') <= $now,
             default => true,
         };
     }

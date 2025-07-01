@@ -138,14 +138,16 @@ class OrderCleanupHandler implements CleanupHandlerInterface
 
         foreach ($orders as $order) {
 
+
             /** @var OrderEntity $order */
 
             $sample[] = [
 
                 'id' => $order->getId(),
-
-                'name' => $order->getOrderNumber() ?? 'N/A',
-
+                'orderNumber' => $order->getOrderNumber() ?? 'N/A',
+                'customerName' => $order->getOrderCustomer()->getFirstName() . ' ' . $order->getOrderCustomer()->getLastName(),
+                'email' => $order->getOrderCustomer()->getEmail(),
+                'orderDate' => $order->getOrderDate()->format(DATE_ATOM)
             ];
 
         }
@@ -160,7 +162,7 @@ class OrderCleanupHandler implements CleanupHandlerInterface
 
         ]);
  
-        if ($dryRun && $orders->count() > 0) {
+        if (!$dryRun && $orders->count() > 0) {
  
             $ids = array_values(
  
@@ -252,9 +254,7 @@ class OrderCleanupHandler implements CleanupHandlerInterface
             $order = $txn->getOrder();
 
             if ($order !== null) {
-
                 $orderIdsToDelete[$order->getId()] = $order->getOrderNumber() ?? 'N/A';
-
             }
 
         }
@@ -264,7 +264,6 @@ class OrderCleanupHandler implements CleanupHandlerInterface
         $sample = [];
 
         foreach ($orderIdsToDelete as $id => $name) {
-
             $sample[] = ['id' => $id, 'name' => $name];
 
         }

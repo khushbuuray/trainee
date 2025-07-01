@@ -72,7 +72,6 @@ class MediaCleanupHandler implements CleanupHandlerInterface
     private function cleanupOrphanedMedia(int $days, bool $dryRun, Context $context): array
     {
         $cutoff = (new DateTime())->modify("-{$days} days");
-
         // Step 1: Get theme media IDs
         $themeMediaIds = [];
 
@@ -122,7 +121,7 @@ class MediaCleanupHandler implements CleanupHandlerInterface
                 new EqualsAnyFilter('id', $excludeMediaIds),
             ]);
         }
-        $filters[] = new EqualsAnyFilter('documents.id', []);
+        // $filters[] = new EqualsAnyFilter('documents.id', []);
         $criteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_AND, $filters));
 
 
@@ -162,9 +161,9 @@ class MediaCleanupHandler implements CleanupHandlerInterface
             'excluded_ids' => $excludeMediaIds,
         ]);
 
-        if (!$dryRun && $idsToDelete !== []) {
+        if ($dryRun && $idsToDelete !== []) {
             try {
-                $this->mediaRepository->delete($idsToDelete, $context);
+             $this->mediaRepository->delete($idsToDelete, $context);
             } catch (\Throwable $e) {
                 $this->logger->logError('media', $e, [
                     'action' => 'delete_orphaned',
