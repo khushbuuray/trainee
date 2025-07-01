@@ -1,0 +1,149 @@
+{% block ict_cart_details_modal %}
+    {#for wishlist #}
+        <sw-modal
+                v-if="ictCart.lineItems === null"
+                :title="$tc('ict-cart.detailsModal.wishlistModalTitle')"
+                :isLoading="isLoading"
+                @modal-close="onClose">
+            {% block ict_cart_details_modal_line_items_grid %}
+                <sw-container type="row" class="ict-cart-details-line-items-grid">
+
+                    {% block ict_cart_details_modal_line_items_grid_grid %}
+                        <sw-data-grid :dataSource="items"
+                                      :columns="getLineItemWishlistColumns"
+                                      :fullPage="false"
+                                      :showSettings="false"
+                                      :showSelection="false"
+                                      :showActions="true"
+                                      :isLoading="isLoading"
+                                      :allowColumnEdit="false"
+                                      :allowInlineEdit="false"
+                                      :compactMode="false"
+                                      identifier="ict-cart-details-line-item-grid"
+                                      class="">
+
+                            {% block ict_cart_details_modal_line_items_grid_grid_columns %}
+                                {% block ict_cart_details_modal_line_items_grid_grid_columns_label %}
+                                    <template #column-label="{ item, isInlineEdit}">
+                                        {% block ict_cart_details_modal_line_items_grid_grid_columns_label_content %}
+                                            <span>
+                                                {{ item.translated.name }}
+                                            </span>
+                                        {% endblock %}
+                                    </template>
+                                {% endblock %}
+
+                                {% block ict_cart_details_modal_line_items_grid_grid_columns_quantity %}
+                                    <template #column-quantity="{ item, isInlineEdit}">
+                                        {% block ict_cart_details_modal_line_items_grid_grid_columns_quantity_content %}
+                                            <span>
+                                                {{ item.calculatedPrice.quantity }}
+                                            </span>
+                                        {% endblock %}
+                                    </template>
+                                {% endblock %}
+
+                                {% block ict_cart_details_modal_line_items_grid_grid_actions %}
+                                    <template #actions="{ item }">
+                                        {% block sw_order_line_items_grid_grid_actions_show %}
+                                            <sw-context-menu-item v-if="item && item.id"
+                                                                  icon="regular-eye"
+                                                                  @click="navigateToProduct(item.id)">
+                                                {% block sw_order_line_items_grid_grid_actions_show_label %}
+                                                    {{ $tc('ict-cart.detailsModal.contextMenuShowProduct') }}
+                                                {% endblock %}
+                                            </sw-context-menu-item>
+                                            <sw-context-menu-item v-else
+                                                                  :disabled="true"
+                                                                  variant="danger"
+                                                                  icon="regular-eye-slash">
+                                                {% block sw_order_line_items_grid_grid_actions_unavailable_label %}
+                                                    {{ $tc('ict-cart.detailsModal.contextMenuUnavailable') }}
+                                                {% endblock %}
+                                            </sw-context-menu-item>
+                                        {% endblock %}
+                                    </template>
+                                {% endblock %}
+                            {% endblock %}
+                        </sw-data-grid>
+                    {% endblock %}
+                </sw-container>
+            {% endblock %}
+        </sw-modal>
+
+    {#for cart #}
+    <sw-modal
+            v-else
+            :title="$tc('ict-cart.detailsModal.cartModalTitle')"
+            :isLoading="isLoading"
+            @modal-close="onClose">
+              
+        {% block ict_cart_details_modal_line_items_grid %}
+            <sw-container type="row" class="ict-cart-details-line-items-grid">
+
+                {% block ict_cart_details_modal_line_items_grid_grid %}
+                    <sw-data-grid :dataSource="items"
+                                  :columns="getLineItemColumns"
+                                  :fullPage="false"
+                                  :showSettings="false"
+                                  :showSelection="false"
+                                  :showActions="true"
+                                  :isLoading="isLoading"
+                                  :allowColumnEdit="false"
+                                  :allowInlineEdit="false"
+                                  :compactMode="false"
+                                  identifier="ict-cart-details-line-item-grid"
+                                  class="ict-cart-details-line-items-grid__data-grid">
+
+                        {% block ict_cart_details_modal_line_items_grid_grid_columns %}
+                            {% block ict_cart_details_modal_line_items_grid_grid_columns_label %}
+                                <template #column-label="{ item, isInlineEdit}">
+                                    {% block ict_cart_details_modal_line_items_grid_grid_columns_label_content %}
+                                        <span>
+                                            {{ item.label }}
+                                        </span>
+                                    {% endblock %}
+                                </template>
+                            {% endblock %}
+
+                            {% block ict_cart_details_modal_line_items_grid_grid_columns_quantity %}
+                                <template #column-quantity="{ item, isInlineEdit}">
+                                    {% block ict_cart_details_modal_line_items_grid_grid_columns_quantity_content %}
+                                        <span>
+                                            {{ item.quantity }}
+                                        </span>
+                                    {% endblock %}
+                                </template>
+                            {% endblock %}
+
+                            {% block ict_cart_details_modal_line_items_grid_grid_actions %}
+                                <template #actions="{ item }">
+                                    {% block sw_order_line_items_grid_grid_actions_show %}
+                                        <sw-context-menu-item v-if="item.type === 'product' && item.referencedId"
+                                                              icon="regular-eye"
+                                                              @click="navigateToProduct(item.referencedId)">
+                                            {% block sw_order_line_items_grid_grid_actions_show_label %}
+                                                {{ $tc('ict-cart.detailsModal.contextMenuShowProduct') }}
+                                            {% endblock %}
+                                        </sw-context-menu-item>
+
+                                        <sw-context-menu-item v-else
+                                                              :disabled="true"
+                                                              variant="danger"
+                                                              icon="regular-eye-slash">
+                                            {% block sw_order_line_items_grid_grid_actions_unavailable_label %}
+                                                {{ $tc('ict-cart.detailsModal.contextMenuUnavailable') }}
+                                            {% endblock %}
+                                        </sw-context-menu-item>
+                                    {% endblock %}
+                                </template>
+                            {% endblock %}  
+                        {% endblock %}
+                    </sw-data-grid>
+                {% endblock %}
+
+            </sw-container>
+        {% endblock %}
+        
+    </sw-modal>
+{% endblock %}

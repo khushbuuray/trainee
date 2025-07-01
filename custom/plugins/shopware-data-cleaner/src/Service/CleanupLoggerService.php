@@ -163,4 +163,11 @@ class CleanupLoggerService
             'trace' => $e->getTraceAsString(),
         ]);
     }
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function logInfo(string $entity, array $data = []): void
+    {
+        $this->logger->info("[Cleanup][{$entity}] Info", $data);
+    }
 }

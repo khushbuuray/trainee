@@ -1,0 +1,51 @@
+{
+    "name": "ict/ictech-limited-stock-notification",
+    "description": "Limited Stock Notification plugin when product add to cart or wishlist",
+    "type": "shopware-platform-plugin",
+    "version": "1.0.0",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "iCreative Technologies"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "ICTECH_LimitedStockNotification\\": "src/"
+        }
+    },
+    "require": {
+        "shopware/core": "^6.5 < 6.6",
+        "shopware/storefront": "^6.5 < 6.6",
+        "shopware/administration": "^6.5 < 6.6"
+    },
+    "extra": {
+        "shopware-plugin-class": "ICTECH_LimitedStockNotification\\ICTECH_LimitedStockNotification",
+        "label": {
+            "de-DE": "Benachrichtigung über begrenzte Bestände",
+            "en-GB": "Limited Stock Notification"
+        },
+        "description": {
+            "de-DE": "Benutzer werden automatisch benachrichtigt, wenn die Artikel in ihrem Einkaufswagen oder auf ihrer Wunschliste zur Neige gehen, und sie werden zum Kauf aufgefordert, bevor sie ausverkauft sind!",
+            "en-GB": "Automatically notifies users when items in their cart or wishlist are running low, urging them to buy before they sell out!"
+        },
+        "manufacturerLink": {
+            "de-DE": "https://www.icreativetechnologies.com",
+            "en-GB": "https://www.icreativetechnologies.com"
+        },
+        "supportLink": {
+            "de-DE": "https://support.icreativetechnologies.com",
+            "en-GB": "https://support.icreativetechnologies.com"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/runtime": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "require-dev": {
+        "nunomaduro/phpinsights": "^2.12",
+        "phpstan/phpstan": "^2.1"
+    }
+}

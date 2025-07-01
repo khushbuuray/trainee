@@ -145,7 +145,7 @@ class OrderCleanupHandler implements CleanupHandlerInterface
 
                 'id' => $order->getId(),
                 'orderNumber' => $order->getOrderNumber() ?? 'N/A',
-                'customerName' => $order->getOrderCustomer()->getFirstName() . ' ' . $order->getOrderCustomer()->getLastName(),
+                // 'customerName' => $order->getOrderCustomer()->getFirstName() . ' ' . $order->getOrderCustomer()->getLastName(),
                 'email' => $order->getOrderCustomer()->getEmail(),
                 'orderDate' => $order->getOrderDate()->format(DATE_ATOM)
             ];

@@ -1,0 +1,37 @@
+{
+  "ict-cart": {
+    "general": {
+      "mainMenuItemGeneral": "Cart/Wishlist",
+      "descriptionTextModule": "Manage cart and wishlist here.",
+      "listTitle": "Cart/Wishlist"
+    },
+    "list": {
+      "messageEmpty": "No carts or wishlists found",
+      "column": {
+        "email": "E-mail",
+        "lastMailSendAt": "Last reminder sent at",
+        "salesChannelDomain": "Shop",
+        "salesChannel": "Sales channel",
+        "createdAt": "Created at",
+        "updatedAt": "Last interaction",
+        "wishlistId": "Wishlist"
+      },
+      "placeholders": {
+        "lastMailSendAtPlaceholder": "Pending..."
+      }
+    },
+    "detailsModal": {
+      "cartModalTitle": "Cart details",
+      "wishlistModalTitle": "Wishlist details",
+      "columnProductName": "Name",
+      "columnQuantity": "Quantity",
+      "columnUnitPriceGross": "Unit price",
+      "columnTotalPriceGross": "Total price",
+      "contextMenuShowProduct": "Show product",
+      "contextMenuUnavailable": "Unsupported type"
+    },
+    "contextActions": {
+      "openDetails": "Open details"
+    }
+  }
+}

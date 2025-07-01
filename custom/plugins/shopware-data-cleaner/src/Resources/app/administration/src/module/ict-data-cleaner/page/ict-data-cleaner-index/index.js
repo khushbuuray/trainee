@@ -227,7 +227,6 @@ computed: {
     },
 
     previewAction(field) {
-    console.log("⚡️ previewAction called with:", field);
     this.showPreviewModal = true;
     this.gridReady = false;
     this.activePreviewKey = field;
@@ -240,7 +239,6 @@ computed: {
     const value = this.config[field];
 
     if (value === undefined) {
-        console.warn("❌ No config value for", field);
         this.gridReady = false;
         return;
     }
@@ -248,7 +246,6 @@ computed: {
     const key = `IctDataCleaner.config.${field}`; // Backend still expects full key
     const config = { [key]: value };
 
-    console.log("📦 Sending preview config:", config);
 
     httpClient.post("/ict-data-cleaner/preview", config, {
         headers: { Authorization: `Bearer ${token}` },
@@ -301,7 +298,6 @@ computed: {
         });
     })
     .catch(error => {
-        console.error("❌ Preview request failed:", error?.response || error);
         this.createNotificationError({
             title: "Preview Error",
             message: error?.response?.data?.errors?.[0]?.detail || "Preview failed.",
@@ -455,7 +451,6 @@ loadSystemConfig() {
         }
 
         this.config = formattedConfig;
-        console.log("✅ Final cleaned config:", this.config);
     });
 }
   },
