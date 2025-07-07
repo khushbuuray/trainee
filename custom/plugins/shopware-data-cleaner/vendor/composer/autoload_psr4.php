@@ -118,7 +118,7 @@ return array(
     'Laminas\\Code\\' => array($vendorDir . '/laminas/laminas-code/src'),
     'JsonSchema\\' => array($vendorDir . '/justinrainbow/json-schema/src/JsonSchema'),
     'JMS\\Serializer\\' => array($vendorDir . '/jms/serializer/src'),
-    'IctDataCleanerPro\\' => array($baseDir . '/src'),
+    'ICTECHDataCleanerPro\\' => array($baseDir . '/src'),
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
     'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),

@@ -1,6 +1,6 @@
 <?php return array(
     'root' => array(
-        'name' => 'ict/data-cleaner-pro',
+        'name' => 'ict/ictech-data-cleaner-pro',
         'pretty_version' => '1.0.0',
         'version' => '1.0.0.0',
         'reference' => null,
@@ -254,9 +254,9 @@
             'dev_requirement' => true,
         ),
         'friendsofphp/php-cs-fixer' => array(
-            'pretty_version' => 'v3.76.0',
-            'version' => '3.76.0.0',
-            'reference' => '0e3c484cef0ae9314b0f85986a36296087432c40',
+            'pretty_version' => 'v3.80.0',
+            'version' => '3.80.0.0',
+            'reference' => 'e49ed46b8f7adcc451d4cd2ed34eaae33372bc60',
             'type' => 'application',
             'install_path' => __DIR__ . '/../friendsofphp/php-cs-fixer',
             'aliases' => array(),
@@ -340,7 +340,7 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'ict/data-cleaner-pro' => array(
+        'ict/ictech-data-cleaner-pro' => array(
             'pretty_version' => '1.0.0',
             'version' => '1.0.0.0',
             'reference' => null,

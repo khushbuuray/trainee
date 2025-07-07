@@ -22,12 +22,12 @@ use PhpCsFixer\Tokenizer\Analyzer\GotoLabelAnalyzer;
  *
  * Its role is to provide the ability to analyze collection.
  *
- * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
- * @author Gregor Harlan <gharlan@web.de>
- *
  * @internal
  *
- * @phpstan-type _ClassyElementType 'case'|'const'|'method'|'property'|'trait_import'
+ * @phpstan-type _ClassyElementType 'case'|'const'|'method'|'property'|'promoted_property'|'trait_import'
+ *
+ * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
+ * @author Gregor Harlan <gharlan@web.de>
  */
 final class TokensAnalyzer
 {
@@ -866,6 +866,22 @@ final class TokensAnalyzer
                     'token' => $token,
                     'type' => 'method',
                 ];
+                $functionNameIndex = $this->tokens->getNextMeaningfulToken($index);
+                if ('__construct' === $this->tokens[$functionNameIndex]->getContent()) {
+                    $openParenthesis = $this->tokens->getNextMeaningfulToken($functionNameIndex);
+                    $closeParenthesis = $this->tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $openParenthesis);
+                    foreach ($this->tokens->findGivenKind([CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PUBLIC, CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PROTECTED, CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PRIVATE, FCT::T_READONLY], $openParenthesis, $closeParenthesis) as $kindElements) {
+                        foreach (array_keys($kindElements) as $promotedPropertyModifierIndex) {
+                            /** @var int $promotedPropertyVariableIndex */
+                            $promotedPropertyVariableIndex = $this->tokens->getNextTokenOfKind($promotedPropertyModifierIndex, [[T_VARIABLE]]);
+                            $elements[$promotedPropertyVariableIndex] = [
+                                'classIndex' => $classIndex,
+                                'token' => $this->tokens[$promotedPropertyVariableIndex],
+                                'type' => 'promoted_property',
+                            ];
+                        }
+                    }
+                }
             } elseif ($token->isGivenKind(T_CONST)) {
                 $elements[$index] = [
                     'classIndex' => $classIndex,

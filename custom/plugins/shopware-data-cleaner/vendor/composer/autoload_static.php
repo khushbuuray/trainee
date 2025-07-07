@@ -178,7 +178,7 @@ class ComposerStaticInitad1beac425fedde407567c459a65cb30
         ),
         'I' => 
         array (
-            'IctDataCleanerPro\\' => 18,
+            'ICTECHDataCleanerPro\\' => 21,
         ),
         'G' => 
         array (
@@ -680,7 +680,7 @@ class ComposerStaticInitad1beac425fedde407567c459a65cb30
         array (
             0 => __DIR__ . '/..' . '/jms/serializer/src',
         ),
-        'IctDataCleanerPro\\' => 
+        'ICTECHDataCleanerPro\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
