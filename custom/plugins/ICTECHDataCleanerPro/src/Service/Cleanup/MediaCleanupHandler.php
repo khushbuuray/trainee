@@ -158,7 +158,7 @@ class MediaCleanupHandler implements CleanupHandlerInterface
             'themes',
         ]);
         if ($dryRun) {
-        $criteria->setLimit(1000);
+         $criteria->setLimit(100000);
         }
         // $criteria->setLimit(3000);
 
