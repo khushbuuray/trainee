@@ -1,0 +1,460 @@
+import template from "./ict-data-cleaner-index.html.twig";
+import "./ict-data-cleaner-index.scss";
+
+const { Component, Mixin } = Shopware;
+const { Criteria } = Shopware.Data;
+
+Component.register("ict-data-cleaner-index", {
+  template,
+
+  inject: [
+    "repositoryFactory",
+    "systemConfigApiService",
+    "ICTECHDataCleanerPro",
+  ],
+
+  mixins: [Mixin.getByName("notification")],
+
+  data() {
+    return {
+      isLoading: false,
+      activeTab: "products",
+      isSaveSuccessful: false,
+      isDryRun: true,
+      previewResults: null,
+      showPreviewModal: false,
+      showConfirmModal: false,
+      totalItemsToDelete: 0,
+      salesChannelId: null,
+      config: {},
+      previewData: null,
+      selectedPreviewProducts: {},
+      gridKey: 0,
+      gridReady: false,
+      pagination: {},
+
+    };
+  },
+
+  created() {
+    this.loadSystemConfig();
+},
+
+computed: {
+  configDomain() {
+    return "ICTECHDataCleanerPro.config";
+  },
+
+  paginatedRows() {
+    const result = {};
+    if (!this.previewData?.items) return result;
+
+    for (const [key, group] of Object.entries(this.previewData.items)) {
+      const page = this.pagination?.[key]?.page || 1;
+      const limit = this.pagination?.[key]?.limit || 10;
+      result[key] = (group.sample || []).slice(
+        (page - 1) * limit,
+        page * limit
+      );
+    }
+
+    return result;
+  },
+
+  tabConfigs() {
+    return {
+      products: {
+        label: 'ict-data-cleaner.tabs.products',
+        fields: [
+          {
+            key: 'productCleanup.monthsNotSold',
+            label:'ict-data-cleaner.config.productCleanup.monthsNotSold',
+            type: 'int'
+          },
+          {
+            key: 'productCleanup.deleteNeverSold',
+            label: 'ict-data-cleaner.config.productCleanup.deleteNeverSold',
+            type: 'bool'
+          },
+          {
+            key: 'productCleanup.monthsDisabled',
+            label: 'ict-data-cleaner.config.productCleanup.monthsDisabled',
+            type: 'int'
+          }
+        ]
+      },
+      customers: {
+        label: 'ict-data-cleaner.tabs.customers',
+        fields: [
+          {
+            key: 'customerCleanup.guestMonths',
+            label: 'ict-data-cleaner.config.customerCleanup.guestMonths',
+            type: 'int'
+          },
+          {
+            key: 'customerCleanup.inactiveMonths',
+            label: 'ict-data-cleaner.config.customerCleanup.inactiveMonths',
+            type: 'int'
+          }
+        ]
+      },
+      carts: {
+        label: 'ict-data-cleaner.tabs.carts',
+        fields: [
+          {
+            key: 'cartCleanup.abandonedDays',
+            label: 'ict-data-cleaner.config.cartCleanup.abandonedDays',
+            type: 'int'
+          },
+          {
+            key: 'orderCleanup.cancelledAgeMonths',
+            label:'ict-data-cleaner.config.orderCleanup.cancelledAgeMonths',
+            type: 'int'
+          },
+          {
+            key: 'transactionCleanup.ageMonths',
+            label: 'ict-data-cleaner.config.transactionCleanup.ageMonths',
+            type: 'int'
+          }
+        ]
+      },
+      categories: {
+        label: 'ict-data-cleaner.tabs.categories',
+        fields: [
+          {
+            key: 'categoryCleanup.emptyCategories',
+            label: 'ict-data-cleaner.config.categoryCleanup.emptyCategories',
+            type: 'bool'
+          },
+          {
+            key: 'categoryCleanup.noSalesMonths',
+            label: 'ict-data-cleaner.config.categoryCleanup.noSalesMonths',
+            type: 'int'
+          }
+        ]
+      },
+      promotions: {
+        label: 'ict-data-cleaner.tabs.promotions',
+        fields: [
+          {
+            key: 'promotionCleanup.expiredMonths',
+            label: 'ict-data-cleaner.config.promotionCleanup.expiredMonths',
+            type: 'int'
+          },
+          {
+            key: 'promotionCleanup.unusedVoucherMonths',
+            label:'ict-data-cleaner.config.promotionCleanup.unusedVoucherMonths',
+            type: 'int'
+          },
+          {
+            key: 'cartRuleCleanup.orphaned',
+            label:'ict-data-cleaner.config.cartRuleCleanup.orphaned',
+            type: 'bool'
+          }
+        ]
+      },
+      cmsPages: {
+        label: 'ict-data-cleaner.tabs.cmsPages',
+        fields: [
+          {
+            key: 'cmsPageCleanup.unpublishedDraftsMonths',
+            label: 'ict-data-cleaner.config.cmsPageCleanup.unpublishedDraftsMonths',
+            type: 'int'
+          }
+        ]
+      },
+      reviews: {
+        label:'ict-data-cleaner.tabs.reviews',
+        fields: [
+          {
+            key: 'reviewCleanup.unapprovedDays',
+            label: 'ict-data-cleaner.config.reviewCleanup.unapprovedDays',
+            type: 'int'
+          }
+        ]
+      },
+      newsletter: {
+        label:'ict-data-cleaner.tabs.newsletter',
+        fields: [
+          {
+            key: 'newsletterCleanup.bouncedMonths',
+            label: 'ict-data-cleaner.config.newsletterCleanup.bouncedMonths',
+            type: 'int'
+          }
+        ]
+      },
+      media: {
+        label: 'ict-data-cleaner.tabs.media',
+        fields: [
+          {
+            key: 'mediaCleanup.orphanAgeDays',
+            label:'ict-data-cleaner.config.mediaCleanup.orphanAgeDays',
+            type: 'int'
+          }
+        ]
+      }
+    };
+  },
+  currentTabConfig() {
+  return this.tabConfigs[this.activeTab] || { label: '', fields: [] };
+  }
+
+},
+
+
+  methods: {
+    getColumnsForGroup(key) {
+      
+      const sample = this.previewData?.items?.[key]?.sample;
+      if (!Array.isArray(sample) || sample.length === 0) return [];
+
+      const firstRow = sample[0];
+      if (typeof firstRow !== "object" || firstRow === null) return [];
+
+      return Object.keys(firstRow)
+        .filter(field => field !== 'id')
+        .map(field => ({
+          property: field,
+          label: this.beautifyLabel(field),
+        }));
+    },
+
+    beautifyLabel(field) {
+      return field.replace(/_/g, " ").replace(/\b\w/g, char => char.toUpperCase());
+    },
+
+    setActiveTab(tabKey) {
+      this.activeTab = tabKey;
+    },
+
+    previewAction(field) {
+      
+    this.showPreviewModal = true;
+    this.gridReady = false;
+    this.activePreviewKey = field;
+
+    const httpClient = Shopware.Application.getContainer("init").httpClient;
+    const loginService = Shopware.Service("loginService");
+    const token = loginService.getToken();
+
+    // ✅ Use cleaned config directly
+    const value = this.config[field];      
+    if (value === undefined) {
+        this.gridReady = false;
+        return;
+    }
+
+    const key = `ICTECHDataCleanerPro.config.${field}`; // Backend still expects full key
+    const config = { [key]: value };
+      console.log(config);
+
+
+    httpClient.post("/ict-data-cleaner/preview", config, {
+        headers: { Authorization: `Bearer ${token}` },
+    })
+    .then(response => {
+        const data = response.data?.data;
+
+        if (!data?.items || !Object.keys(data.items).length) {
+            this.gridReady = false;
+            this.createNotificationWarning({
+                title: "No Preview Data",
+                message: "There is nothing to preview based on the current config.",
+            });
+            return;
+        }
+
+        this.previewData = data;
+        this.selectedPreviewProducts = {};
+        this.pagination = {};
+
+        Object.entries(this.previewData.items).forEach(([groupKey, group]) => {
+            const ids = (group.sample || []).map(p => p.id);
+            this.$set(this.selectedPreviewProducts, groupKey, ids);
+            this.$set(this.pagination, groupKey, {
+                page: 1,
+                limit: 10,
+                total: group.count || 0,
+            });
+        });
+
+        this.gridKey++;
+
+        this.$nextTick(() => {
+            this.gridReady = true;
+
+            this.$nextTick(() => {
+                requestAnimationFrame(() => {
+                    const previewGrids = this.$refs.previewGrid || {};
+
+                    if (Array.isArray(previewGrids)) {
+                        previewGrids.forEach(gridRef => gridRef?.selectAll?.(true));
+                    } else {
+                        Object.keys(this.previewData.items).forEach(key => {
+                            const gridRef = previewGrids[key];
+                            gridRef?.selectAll?.(true);
+                        });
+                    }
+                });
+            });
+        });
+    })
+    .catch(error => {
+        this.createNotificationError({
+            title: "Preview Error",
+            message: error?.response?.data?.errors?.[0]?.detail || "Preview failed.",
+        });
+    });
+},
+
+    async removeSelectedItems(entityKey) {
+      const allSelectedIds = Object.values(this.selectedPreviewProducts).flat();
+
+      if (!allSelectedIds.length) {
+        this.createNotificationWarning({
+          title: "No Selection",
+          message: "Please select at least one item.",
+        });
+        return;
+      }
+
+      const httpClient = Shopware.Application.getContainer("init").httpClient;
+      const loginService = Shopware.Service("loginService");
+      const token = loginService.getToken();
+
+      const payload = {
+        [`${entityKey}Ids`]: allSelectedIds,
+      };
+
+      try {
+        const response = await httpClient.post(
+          `/ict-data-cleaner/${entityKey}/remove`,
+          payload,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        this.createNotificationSuccess({
+          title: "Deleted",
+          message: `items deleted successfully`,
+        });
+
+        this.selectedPreviewProducts = {};
+        this.showPreviewModal = false;
+        await this.previewAction(this.activePreviewKey);
+      } catch (error) {
+        this.createNotificationError({
+          title: "Delete Failed",
+          message: error?.response?.data?.error || `Could not delete ${entityKey} items.`,
+        });
+      }
+    },
+
+    onProductSelectionChange(groupKey, selectedIds) {
+      this.$set(this.selectedPreviewProducts, groupKey, selectedIds);
+    },
+
+    onPageChange({ page, limit }, groupKey) {
+      this.$set(this.pagination, groupKey, {
+        page,
+        limit,
+        total: this.previewData?.items?.[groupKey]?.sample?.length || 0,
+      });
+
+      this.gridReady = false;
+
+      this.$nextTick(() => {
+        this.gridKey++;
+
+        this.$nextTick(() => {
+          this.gridReady = true;
+
+          this.$nextTick(() => {
+            const group = this.previewData?.items?.[groupKey];
+            if (!group) return;
+
+            const currentPageItems = (group.sample || [])
+              .slice((page - 1) * limit, page * limit)
+              .map((p) => p.id);
+
+            const currentSelected = Array.isArray(
+              this.selectedPreviewProducts[groupKey]
+            ) ? this.selectedPreviewProducts[groupKey] : [];
+
+            const updatedSelection = [...new Set([...currentSelected, ...currentPageItems])];
+
+            this.$set(this.selectedPreviewProducts, groupKey, updatedSelection);
+
+            const gridRefs = this.$refs.previewGrid;
+            const gridRef = Array.isArray(gridRefs)
+              ? gridRefs.find((g) => g.$attrs["ref-key"] === groupKey)
+              : gridRefs?.[groupKey];
+
+            if (gridRef?.selectAll) {
+              gridRef.selectAll(true);
+            }
+
+            this.onProductSelectionChange(groupKey, updatedSelection);
+          });
+        });
+      });
+    },
+
+    allSettings() {
+      return {
+        ...this.productSettings,
+        ...this.customerSettings,
+        ...this.cartSettings,
+        ...this.categorySettings,
+        ...this.promotionSettings,
+        ...this.cmsPageSettings,
+        ...this.reviewSettings,
+        ...this.newsletterSettings,
+        ...this.mediaSettings,
+            ...this.systemLogSettings, // ✅ missing here
+
+      };
+    },
+ getConfigValue(key, type = 'int') {
+  const value = this.config[key]; // ✅ No more prefix
+
+  if (type === 'bool') {
+    return value ? 'Yes' : 'No';
+  }
+
+  return value;
+},
+loadSystemConfig() {
+    this.systemConfigApiService.getValues('ICTECHDataCleanerPro.config').then(response => {
+        const formattedConfig = {};
+
+        for (const fullKey in response) {
+            const value = response[fullKey];
+
+            // Remove prefix
+            let key = fullKey.replace('ICTECHDataCleanerPro.config.', '');
+
+            // Match group name and rest
+            const match = key.match(/^([a-zA-Z]+Cleanup|[a-zA-Z]+VariantCleanup|[a-zA-Z]+ThumbnailCleanup|cacheCleanup|customFieldSetCleanup|systemLogCleanup|reviewCleanup|newsletterCleanup|mediaCleanup|promotionCleanup|orderCleanup|transactionCleanup|cmsPageCleanup|categoryCleanup|productCleanup|customerCleanup|cartRuleCleanup|cartCleanup)(.+)$/);
+
+            if (match) {
+                const group = match[1]; // e.g. productCleanup
+                const rest = match[2];  // e.g. MonthsNotSold
+
+                // Lowercase the first letter after the dot
+                const restFormatted = rest.charAt(0).toLowerCase() + rest.slice(1);
+
+                const finalKey = `${group}.${restFormatted}`;
+                formattedConfig[finalKey] = value;
+            } else {
+                // fallback for keys like: dryRunMode → dry.run.mode
+                const fallbackKey = key.replace(/([a-z])([A-Z])/g, '$1.$2').toLowerCase();
+                formattedConfig[fallbackKey] = value;
+            }
+        }
+
+        this.config = formattedConfig;
+    });
+}
+  },
+});
+

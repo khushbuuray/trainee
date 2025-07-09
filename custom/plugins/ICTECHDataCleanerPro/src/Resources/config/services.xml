@@ -1,0 +1,274 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Core Services -->
+        <service id="ICTECHDataCleanerPro\Service\CleanupService">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupLoggerService"/>
+            <argument type="tagged" tag="ict.cleanup.handler"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Service\CleanupLoggerService">
+            <argument type="service" id="ict_data_cleanup_log.repository"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="kernel"/>
+        </service>
+
+        <!-- Cleanup Handlers -->
+        <service id="ICTECHDataCleanerPro\Service\Cleanup\ProductCleanupHandler">
+            <argument type="service" id="product.repository"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupLoggerService"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="100"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Service\Cleanup\CustomerCleanupHandler">
+            <argument type="service" id="customer.repository"/>
+            <argument type="service" id="customer_address.repository"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupLoggerService"/>
+            <tag name="ict.cleanup.handler" priority="100"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Service\Cleanup\CartCleanupHandler">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupLoggerService"/>
+            <tag name="ict.cleanup.handler" priority="80"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Service\Cleanup\OrderCleanupHandler">
+            <argument type="service" id="order.repository"/>
+            <argument type="service" id="order_transaction.repository"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupLoggerService"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="70"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Service\Cleanup\CategoryCleanupHandler">
+            <argument type="service" id="category.repository"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupLoggerService"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="60"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Service\Cleanup\PromotionCleanupHandler">
+            <argument type="service" id="promotion.repository"/>
+            <argument type="service" id="rule.repository"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupLoggerService"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="55"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Service\Cleanup\CmsCleanupHandler">
+            <argument type="service" id="cms_page.repository"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupLoggerService"/>
+            <tag name="ict.cleanup.handler" priority="45"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Service\Cleanup\ReviewCleanupHandler">
+            <argument type="service" id="product_review.repository"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupLoggerService"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="40"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Service\Cleanup\NewsletterCleanupHandler">
+            <argument type="service" id="newsletter_recipient.repository"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupLoggerService"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="35"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Service\Cleanup\MediaCleanupHandler">
+            <argument type="service" id="media.repository"/>
+            <argument type="service" id="theme.repository"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupLoggerService"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="50"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Service\Cleanup\LogCleanupHandler">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="ict.cleanup.handler" priority="10"/>
+        </service>
+
+        <!-- Scheduled Tasks -->
+        <service id="ICTECHDataCleanerPro\ScheduledTask\ProductCleanupTask">
+            <tag name="shopware.scheduled.task"/>
+        </service>
+        <service id="ICTECHDataCleanerPro\ScheduledTask\ProductCleanupTaskHandler">
+            <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupService"/>    
+            <tag name="messenger.message_handler" handles="ICTECHDataCleanerPro\ScheduledTask\ProductCleanupTask"/>       
+        </service>
+
+        <service id="ICTECHDataCleanerPro\ScheduledTask\CustomerCleanupTask">
+            <tag name="shopware.scheduled.task"/>
+        </service>
+        <service id="ICTECHDataCleanerPro\ScheduledTask\CustomerCleanupTaskHandler">
+            <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupService"/>            
+            <tag name="messenger.message_handler" handles="ICTECHDataCleanerPro\ScheduledTask\CustomerCleanupTask"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\ScheduledTask\OrderCleanupTask">
+            <tag name="shopware.scheduled.task"/>
+        </service>
+        <service id="ICTECHDataCleanerPro\ScheduledTask\OrderCleanupTaskHandler">
+            <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupService"/>            
+            <tag name="messenger.message_handler" handles="ICTECHDataCleanerPro\ScheduledTask\OrderCleanupTask"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\ScheduledTask\CategoryCleanupTask">
+            <tag name="shopware.scheduled.task"/>
+        </service>
+        <service id="ICTECHDataCleanerPro\ScheduledTask\CategoryCleanupTaskHandler">
+            <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupService"/>          
+            <tag name="messenger.message_handler" handles="ICTECHDataCleanerPro\ScheduledTask\CategoryCleanupTask"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\ScheduledTask\PromotionCleanupTask">
+            <tag name="shopware.scheduled.task"/>
+        </service>
+        <service id="ICTECHDataCleanerPro\ScheduledTask\PromotionCleanupTaskHandler">
+            <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupService"/>           
+            <tag name="messenger.message_handler" handles="ICTECHDataCleanerPro\ScheduledTask\PromotionCleanupTask"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\ScheduledTask\CmsCleanupTask">
+            <tag name="shopware.scheduled.task"/>
+        </service>
+        <service id="ICTECHDataCleanerPro\ScheduledTask\CmsCleanupTaskHandler">
+            <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupService"/> 
+            <tag name="messenger.message_handler" handles="ICTECHDataCleanerPro\ScheduledTask\CmsCleanupTask"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\ScheduledTask\MediaCleanupTask">
+            <tag name="shopware.scheduled.task"/>
+        </service>
+        <service id="ICTECHDataCleanerPro\ScheduledTask\MediaCleanupTaskHandler" public="true">
+            <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupService"/>     
+            <tag name="messenger.message_handler" handles="ICTECHDataCleanerPro\ScheduledTask\MediaCleanupTask"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\ScheduledTask\NewsletterCleanupTask">
+            <tag name="shopware.scheduled.task"/>
+        </service>
+        <service id="ICTECHDataCleanerPro\ScheduledTask\NewsletterCleanupTaskHandler" public="true">
+            <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupService"/> 
+            <tag name="messenger.message_handler" handles="ICTECHDataCleanerPro\ScheduledTask\NewsletterCleanupTask"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\ScheduledTask\ReviewCleanupTask">
+            <tag name="shopware.scheduled.task"/>
+        </service>
+        <service id="ICTECHDataCleanerPro\ScheduledTask\ReviewCleanupTaskHandler" public="true">
+            <argument type="service" id="scheduled_task.repository"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupService"/>
+            <tag name="messenger.message_handler" handles="ICTECHDataCleanerPro\ScheduledTask\ReviewCleanupTask"/>
+        </service>
+
+        <!-- Console Commands -->
+        <service id="ICTECHDataCleanerPro\Command\CleanupCommand">
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupService"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Command\ProductCleanupCommand">
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\ProductCleanupHandler"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Command\CmsCleanupCommand" public="true">
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\CmsCleanupHandler"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Command\PromotionCleanupCommand" public="true">
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\PromotionCleanupHandler"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Command\MediaCleanupCommand" public="true">
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\MediaCleanupHandler"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Command\CustomerCleanupCommand">
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\CustomerCleanupHandler"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Command\ReviewCleanupCommand" public="true">
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\ReviewCleanupHandler"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Command\NewsletterCleanupCommand">
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\NewsletterCleanupHandler"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Command\CategoryCleanupCommand" public="true">
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\CategoryCleanupHandler"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Command\OrderCartCleanupCommand" public="true">
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\CartCleanupHandler"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\OrderCleanupHandler"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="ICTECHDataCleanerPro\Command\RunCleanupCommand">
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupService"/>
+            <tag name="console.command"/>
+        </service>
+
+        <!-- API Controller -->
+        <service id="ICTECHDataCleanerPro\Controller\Api\CleanupController" public="true">
+            <argument type="service" id="ICTECHDataCleanerPro\Service\CleanupService"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+<!--            <argument type="service" id="ict_data_cleanup_log.repository"/>-->
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\ProductCleanupHandler"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\CustomerCleanupHandler"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\CartCleanupHandler"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\OrderCleanupHandler"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\CategoryCleanupHandler"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\PromotionCleanupHandler"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\ReviewCleanupHandler"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\CmsCleanupHandler"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\NewsletterCleanupHandler"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\MediaCleanupHandler"/>
+            <argument type="service" id="ICTECHDataCleanerPro\Service\Cleanup\LogCleanupHandler"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <!-- Entity Definition -->
+        <service id="ICTECHDataCleanerPro\Core\Content\CleanupLog\CleanupLogDefinition">
+            <tag name="shopware.entity.definition"/>
+        </service>
+
+    </services>
+</container>

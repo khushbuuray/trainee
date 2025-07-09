@@ -1,0 +1,43 @@
+{
+  "name": "ict/ictech-data-cleaner-pro",
+  "description": "Data Cleanup Pro - Comprehensive data hygiene plugin for Shopware 6",
+  "type": "shopware-platform-plugin",
+  "license": "proprietary",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "ICT",
+      "email": "support@ict.com"
+    }
+  ],
+  "require": {
+    "shopware/core": "~6.6.0"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^2.1",
+    "nunomaduro/phpinsights": "^2.13"
+  },
+
+  "extra": {
+    "shopware-plugin-class": "ICTECHDataCleanerPro\\ICTECHDataCleanerPro",
+    "label": {
+      "de-DE": "Data Cleanup Pro",
+      "en-GB": "Data Cleanup Pro"
+    },
+    "description": {
+      "de-DE": "Umfassende Datenbereinigung für Shopware 6",
+      "en-GB": "Comprehensive data cleanup for Shopware 6"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "ICTECHDataCleanerPro\\": "src/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "symfony/runtime": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
+}
