@@ -1,0 +1,62 @@
+{
+    "name": "zeobv/bundle-products",
+    "description": "The bundle product extension for Shopware 6",
+    "version": "2.4.23",
+    "type": "shopware-platform-plugin",
+    "license": "proprietary",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "DizTech BV.",
+            "homepage": "https://www.diztech.nl",
+            "role": "Manufacturer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "shopware/core": "^6.6 <6.7.0",
+        "shopware/storefront": "^6.6 <6.7.0",
+        "shopware/administration": "^6.6 <6.7.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.8",
+        "nunomaduro/phpinsights": "dev-master",
+        "psr/simple-cache": "^1.0",
+        "phpunit/phpunit": "^9.6"
+    },
+    "extra": {
+        "shopware-plugin-class": "Zeobv\\BundleProducts\\ZeobvBundleProducts",
+        "copyright": "(c) DizTech BV. All Rights Reserved.",
+        "label": {
+            "de-DE": "Produkte bündeln",
+            "en-GB": "Bundle products",
+            "nl-NL": "Bundel Producten"
+        },
+        "description": {
+            "de-DE": "Weisen Sie einem Produkt über die Verwaltung Produkte zu und verkaufen Sie mehrere Produkte, während Sie nur eines auflisten",
+            "en-GB": "Assign products to a product via the administration and sell multiple products while only listing one.",
+            "nl-NL": "Wijs producten toe aan een product via de administratie en verkoop meerdere producten terwijl u er slechts één vermeldt"
+        },
+        "manufacturerLink": {
+            "de-DE": "https://www.diztech.nl",
+            "en-GB": "https://www.diztech.nl",
+            "nl-NL": "https://www.diztech.nl"
+        },
+        "supportLink": {
+            "de-DE": "https://www.diztech.nl",
+            "en-GB": "https://www.diztech.nl",
+            "nl-NL": "https://www.diztech.nl"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Zeobv\\BundleProducts\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "symfony/runtime": true
+        }
+    }
+}

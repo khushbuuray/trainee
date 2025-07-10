@@ -1,0 +1,32 @@
+{
+    "zeobv-bundle-products": {
+        "detail": {
+            "bundleCrossSellingTabLabel": "Bundle promotions",
+            "dataColumnDetail": "Details",
+            "dataColumnQuantity": "Quantity",
+            "dataColumnPrice": "Price",
+            "dataColumnTotal": "Total",
+            "dataColumnAvailable": "Available",
+            "tableHeaderText": "<h5>This bundle contains the following items</h5>",
+            "special" : "Special",
+            "description": "This product is included in one or more bundle packages. Check it out and take advantage of a good discount!",
+            "bundleInfo": "To the bundles",
+            "bundleMainProduct": "Bundle Info",
+            "manufacturerName" : "Manufacturer:",
+            "productSKU": "SKU:",
+            "productQuantity": "Quantity:",
+            "productAvailable": "Available:",
+            "productPrice": "Price:",
+            "bundleProductNameTitle": "Bundle Product Name",
+            "bundleProductQuickViewTitle": "Bundle Product",
+            "bundleProductModalTitle": "Bundle Product Pop-up"
+        },
+        "option": {
+            "includeBundle": "Also add items below to cart"
+        }
+    },
+    "checkout": {
+        "no_bundle_items": "At least one bundle item required.",
+        "bundle_conflict": "Cannot add different configurations of the same bundle to the cart. Please remove the conflicting bundle from the cart first."
+    }
+}

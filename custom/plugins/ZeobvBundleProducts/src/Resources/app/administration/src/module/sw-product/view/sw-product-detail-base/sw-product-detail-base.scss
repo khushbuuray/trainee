@@ -1,0 +1,39 @@
+.zeobv-bundle-product-connections-grid {
+    &-switches {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin-top: 15px;
+    
+        .zeobv-bundle-product-connections-grid-switch {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+    }
+
+    &-availability {
+        padding-top: 15px;
+        margin-top: 10px;
+        border-top: 1px solid #efefef;
+    }
+
+    &-availability-fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 15px;
+        margin-top: 15px;
+        padding-top: 30px;
+        border-top: 1px solid #efefef;
+    }
+
+    &-select {
+        margin-bottom: 15px;
+    }
+
+    &-discount-percentage {
+        // padding: 15px 30px 24px;
+        // background: #f7f7f7;
+        // border-radius: 5px;
+        // margin-top: 10px;
+        margin-bottom: 0;
+    }
+}

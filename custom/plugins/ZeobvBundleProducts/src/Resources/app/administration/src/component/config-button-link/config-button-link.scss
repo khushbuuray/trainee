@@ -1,0 +1,17 @@
+.sw-meteor-page__content{
+  .config-help-button{
+    .sw-container {
+      display: inline-block;
+      text-align: center;
+    }
+    &.sw-form-field-renderer {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+}
+.config-help-button a.btn-action.sw-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

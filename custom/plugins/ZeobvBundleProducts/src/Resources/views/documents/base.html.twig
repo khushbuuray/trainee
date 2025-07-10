@@ -1,0 +1,66 @@
+{% sw_extends '@Framework/documents/base.html.twig' %}
+
+{% set disableBundleProductItemPrices = config('ZeobvBundleProducts.config.disableBundleProductItemPrices') %}
+{% set hidebundleProductPriceinInvoice = config('ZeobvBundleProducts.config.hidebundleProductPriceinInvoice') %}
+{% set hideBundleChildlineItemsOnInvoiceDocument = config('ZeobvBundleProducts.config.hideBundleChildlineItemsOnInvoiceDocument') %}
+
+{# The position block is overwritten here. #}
+{% block position %}
+    {% if config.displayLineItems %}
+        {% set class = '' %}
+        {% if level > 0 %}
+            {% set class = " nested level-" ~ level %}
+        {% endif %}
+
+            {# Hide the child lineItem cart as per configuration. #}
+            {% if (hideBundleChildlineItemsOnInvoiceDocument == true) and (lineItem.type == 'bundle_product_item' or lineItem.payload.zeobvCustomLineItemType == 'bundle_product_item') %}
+                    <tr class="line-item{{ class }}{% if first %} first{% endif %}">
+                    {% block document_line_item_table_rows_empty %}
+                    {% endblock %}
+                </tr>
+            {% else %}
+                <tr class="line-item{{ class }}{% if first %} first{% endif %}">
+                    {% block document_line_item_table_rows %}
+                        {% block document_line_item_table_row_position %}
+                            {{ parent() }}
+                        {% endblock %}
+
+                        {% block document_line_item_table_row_product_number %}
+                            {{ parent() }}
+                        {% endblock %}
+
+                        {% block document_line_item_table_row_label %}
+                            {{ parent() }}
+                        {% endblock %}
+
+                        {% block document_line_item_table_row_quantity %}
+                            {{ parent() }}
+                        {% endblock %}
+
+                        {# Unit price and Total price is hide as per configuration. #}
+                        {% block document_line_item_table_prices %}
+                            {% if config.displayPrices %}
+                                {% block document_line_item_table_row_tax_rate %}
+                                    <td class="align-right">{% block document_line_item_table_column_tax_rate %}{% for tax in lineItem.price.taxRules %}{{ tax.taxRate }} % {% if loop.last %}{% else %}<br>{% endif %}{% endfor %}{% endblock %}</td>
+                                {% endblock %}
+                                {% block document_line_item_row_table_unit_price %}
+                                    {% if (lineItem.type == 'bundle_product_item') and (lineItem.unitPrice == 0.0 and disableBundleProductItemPrices == true and hidebundleProductPriceinInvoice == true)  %}
+                                        <td class="align-right">{% block document_line_item_column_table_unit_price_empty %}{% endblock %}</td>
+                                    {% else %}
+                                        <td class="align-right">{% block document_line_item_column_table_unit_price %}{{ lineItem.unitPrice|currency(currencyIsoCode, languageId) }}{% endblock %}</td>
+                                    {% endif %}
+                                {% endblock %}
+                                {% block document_line_item_table_row_total_price %}
+                                    {% if (lineItem.type == 'bundle_product_item') and (lineItem.totalPrice == 0.0 and disableBundleProductItemPrices == true and hidebundleProductPriceinInvoice == true)  %}
+                                        <td class="align-right">{% block document_line_item_table_column_total_price_empty %}{% endblock %}</td>
+                                    {% else %}
+                                        <td class="align-right">{% block document_line_item_table_column_total_price %}{{ lineItem.totalPrice|currency(currencyIsoCode, languageId) }}{% endblock %}</td>
+                                    {% endif %}
+                                {% endblock %}
+                            {% endif %}
+                        {% endblock %}
+                    {% endblock %}
+                </tr>
+            {% endif %}
+    {% endif %}
+{% endblock %}

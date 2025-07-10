@@ -1,0 +1,373 @@
+{% block zeobv_bundle_products_components_bundle_product_info %}
+    {% if products %}
+        <div class="zeobv-bundle-product-item-overview">
+            {{ "zeobv-bundle-products.detail.tableHeaderText"|trans|sw_sanitize }}
+
+            {% set showAvailabilityColumn = config('ZeobvBundleProducts.config.showBundleProductItemAvailabilityColumn') %}
+            {% set showThumbnail = config('ZeobvBundleProducts.config.showBundleProductItemThumbnailColumn') %}
+            {% set showManufacturer = config('ZeobvBundleProducts.config.showBundleProductItemManufacturer') %}
+            {% set showBundleProductNumber = config('ZeobvBundleProducts.config.showBundleProductNumber') %}
+            {% set showBundleProductDetailInPopUp = config('ZeobvBundleProducts.config.showBundleProductDetailInPopUp') %}
+            {% set showQuantity = config('ZeobvBundleProducts.config.showQuantityOfBundleItemsProductDetailPageTablePresentation') %}
+
+            <table data-diztech-bundle-configurator="true" data-diztech-bundle-configurator-options='{
+                "calculateBundlePriceUrl": "{{ url('frontend.zeobv.bundle-products.calculate-bundle-price', {bundleProductId: bundleProductId}) }}"
+            }' class="table product-bundle-products-table {% if allowItemSelection %}allow-selection{% endif %}">
+                {% block page_product_detail_price_block_table_head %}
+                    <thead class="product-bundle-products-head">
+                    {% block page_product_detail_price_block_table_head_inner %}
+                        <tr class="product-bundle-products-header-row">
+                            {% block zeobv_bundle_products_components_bundle_product_info_table_header_cell_name %}
+                                <th scope="col"
+                                    class="product-bundle-products-product-cell product-bundle-products-product-cell-name"
+                                    colspan="{{allowItemSelection ? (showQuantity ? 3 : 4) : (showQuantity ? 2 : 3) }}">
+                                    {{ "zeobv-bundle-products.detail.dataColumnDetail" | trans | sw_sanitize }}
+                                </th>
+                            {% endblock %}
+
+                            {% block zeobv_bundle_products_components_bundle_product_info_table_header_cell_quantity %}
+                                {% if(showQuantity == true ) %}
+                                    <th scope="col"
+                                    class="product-bundle-products-product-cell product-bundle-products-product-cell-qty">
+                                        {{ "zeobv-bundle-products.detail.dataColumnQuantity"|trans|sw_sanitize }}
+                                    </th>
+                                {% endif %}
+                            {% endblock %}
+
+                            {% block zeobv_bundle_products_components_bundle_product_info_table_header_cell_available %}
+                                {% if showAvailabilityColumn %}
+                                    <th scope="col"
+                                        class="product-bundle-products-product-cell product-bundle-products-product-cell-available">
+                                        {{ "zeobv-bundle-products.detail.dataColumnAvailable"|trans|sw_sanitize }}
+                                    </th>
+                                {% endif %}
+                            {% endblock %}
+
+                            {% block zeobv_bundle_products_components_bundle_product_info_table_header_cell_price %}
+                                {% if showPrices %}
+                                    <th scope="col"
+                                        class="product-bundle-products-product-cell product-bundle-products-product-cell-price">
+                                        {{ "zeobv-bundle-products.detail.dataColumnPrice"|trans|sw_sanitize }}
+                                    </th>
+                                {% endif %}
+                            {% endblock %}
+                        </tr>
+                    {% endblock %}
+                    </thead>
+                {% endblock %}
+
+                {% block zeobv_bundle_products_components_bundle_product_info_table_body %}
+                    <tbody class="product-bundle-products-body">
+                    {% block zeobv_bundle_products_components_bundle_product_info_table_body_inner %}
+                        {% set total = 0 %}
+
+                        {% set mediaIds = products|map(product => product.cover ? product.cover.mediaId : null)|filter(mediaId => mediaId) %}
+                        {% if mediaIds %}
+                            {% set mediaCollection = searchMedia(mediaIds, context.context) %}
+                        {% endif %}
+
+                        {% for product in products|sort((a, b) => a.extensions.zeobvProductBundleConnection.position - b.extensions.zeobvProductBundleConnection.position) %}
+                            {% set connectionId = product.extensions.zeobvProductBundleConnection.id %}
+                            {% set quantity = product.extensions.zeobvProductBundleConnection.quantity %}
+                            {% set comment = product.extensions.zeobvProductBundleConnection.comment %}
+                            {% set modifiable = product.extensions.zeobvProductBundleConnection.modifiable %}
+                            {% set optional = product.extensions.zeobvProductBundleConnection.optional %}
+                            {% set variant = product.options.elements %}
+                            {% set minQuantity = product.minPurchase ? product.minPurchase : 1 %}
+                            {% set maxQuantity = product.maxPurchase ? product.maxPurchase : 100 %}
+
+                            {% if product.isCloseout %}
+                                {% set maxQuantity = min(maxQuantity, product.availableStock) %}
+                            {% endif %}
+
+                            {% if allowQtySelection %}
+                                {% set quantity = min(quantity, maxQuantity) %}
+                                {% set quantity = max(quantity, minQuantity) %}
+                            {% endif %}
+
+                            {% if quantity < 1 %}
+                                {% set quantity = 1 %}
+                            {% endif %}
+
+                            {% set defaultVariant = product.children|length ? product.children|first : null %}
+
+                            {% sw_include '@Storefront/zeobv-bundle-products/components/bundle-content-fields.html.twig' with {
+                                bundleProductId: bundleProductId,
+                                connectionId: connectionId,
+                                product: product,
+                                showProductId: not allowItemSelection
+                            } %}
+
+                            {% set price = product.calculatedPrice %}
+                            
+                            {% if product.calculatedPrices|length > 0 %}
+                                {% set price = product.calculatedPrices|filter((calculatedPrice) => calculatedPrice.quantity <= quantity)|last %}
+
+                                {% if not price %}
+                                    {% for advancePrice in product.prices %}
+                                        {% if advancePrice.quantityStart <= quantity and advancePrice.quantityEnd >= quantity %}
+                                            {% set price = product.calculatedPrices|filter(
+                                                (calculatedPrice) => calculatedPrice.quantity <= advancePrice.quantityEnd
+                                            )|last %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endif %}
+
+                            {% if quantity > 1 %}
+                                {% set price = quantity * price.unitPrice %}
+                            {% else %}
+                                {% set price = price.unitPrice %}
+                            {% endif %}
+
+                            {% if not allowItemSelection or product.available %}
+                                {% set total = total + price %}
+                            {% endif %}
+
+                            <tr class="product-bundle-products-product-row">
+                                {% block zeobv_bundle_products_components_bundle_product_info_table_body_cell_item_selection %}
+                                    {% if allowItemSelection %}
+                                        <td 
+                                            scope="row"
+                                            class="product-bundle-products-product-cell product-bundle-products-cell-thin product-bundle-products-product-cell-checkbox"
+                                        >
+                                            {% if optional %}
+                                                <label for="product-selection-{{product.id}}">
+                                                    <input
+                                                        id="product-selection-{{product.id}}"
+                                                        class="bundle-product-item-selection bundle-product-item-selection-{{ connectionId }} form-check-input"
+                                                        data-product-id="{{ defaultVariant ? defaultVariant.id : product.id }}"
+                                                        data-connection-id="{{ connectionId }}"
+                                                        name="lineItems[{{ bundleProductId }}][bundleContent][{{ connectionId }}][included]"
+                                                        type="checkbox"
+                                                        value="1"
+                                                        {% if not product.available or not optional %}
+                                                        disabled="disabled"
+                                                        {% else %}
+                                                        checked="checked"
+                                                        {% endif %}
+                                                    />
+                                                </label>
+                                            {% else %}
+                                                <label for="product-selection-{{product.id}}">
+                                                    <input
+                                                        id="product-selection-{{product.id}}"
+                                                        class="bundle-product-item-selection bundle-product-item-selection-{{ connectionId }} form-check-input"
+                                                        data-product-id="{{ defaultVariant ? defaultVariant.id : product.id }}"
+                                                        data-connection-id="{{ connectionId }}"
+                                                        data-optional="false"
+                                                        type="checkbox"
+                                                        disabled="disabled"
+                                                        checked="checked"
+                                                        value="1"
+                                                    />
+                                                    <input
+                                                        name="lineItems[{{ bundleProductId }}][bundleContent][{{ connectionId }}][included]"
+                                                        type="hidden"
+                                                        value="1"
+                                                    />
+                                                </label>
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                {% endblock %}
+
+                                {% block zeobv_bundle_products_components_bundle_product_info_table_body_cell_thumb %}
+                                    {% if showThumbnail %}
+                                        <td scope="row"
+                                            class="product-bundle-products-product-cell product-bundle-products-cell-thin product-bundle-products-product-cell-thumbnail"
+                                        >
+                                            {% if product.cover.mediaId %}
+                                                {% set productCover = mediaCollection.get(product.cover.mediaId) %}
+                                                {% sw_thumbnails 'minimal-image-thumbnails' with {
+                                                    media: productCover,
+                                                    sizes: {
+                                                        'default': '20px'
+                                                    },
+                                                    attributes: {
+                                                        'class': 'img-fluid quickview-minimal-img',
+                                                        'alt': ( product.cover.translated.alt ?: ''),
+                                                        'title': (product.cover.translated.title ?: '')
+                                                    }
+                                                } %}
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                {% endblock %}
+
+                                {% block zeobv_bundle_products_components_bundle_product_info_table_body_cell_name %}
+                                    {% if not showThumbnail %}
+                                        {% if showAvailabilityColumn and not showThumbnail and not showQuantity %}
+                                            {% set colspanValue = 3 %}
+                                        {% else %}
+                                            {% set colspanValue = 1 %}
+                                        {% endif %}
+                                    {% elseif showQuantity %}
+                                        {% set colspanValue = 1 %}
+                                    {% elseif showThumbnail and showAvailabilityColumn %}
+                                        {% set colspanValue = 2 %}
+                                    {% elseif not showThumbnail and showAvailabilityColumn %}
+                                        {% set colspanValue = 3 %}
+                                    {% elseif showThumbnail and showQuantity and showAvailabilityColumn %}
+                                        {% set colspanValue = 1 %}
+                                    {% elseif showThumbnail and showQuantity and not showAvailabilityColumn %}
+                                        {% set colspanValue = 1 %}
+                                    {% elseif not showThumbnail and not showQuantity and showAvailabilityColumn %}
+                                        {% set colspanValue = 3 %}
+                                    {% elseif showQuantity and not showThumbnail and not showAvailabilityColumn %}
+                                        {% set colspanValue = 1 %}
+                                    {% endif %}
+
+                                    <td scope="row" class="product-bundle-products-product-cell product-bundle-products-cell-thin" colspan="{{ colspanValue }}">
+
+                                        {% sw_include '@Storefront/zeobv-bundle-products/components/bundle-item-details.html.twig' %}
+
+                                        {% if allowVariantSelection %}
+                                            {% sw_include '@Storefront/zeobv-bundle-products/components/bundle-variant-select.html.twig' with {
+                                                defaultVariant: defaultVariant,
+                                                bundleProductId: bundleProductId,
+                                                connectionId: connectionId,
+                                                quantity: quantity
+                                            } %}
+                                        {% endif %}
+
+                                        {% block product_table_mobile %}
+                                            {% if showQuantity %}
+                                                <div class="mobile-meta">
+                                                    <span class="mobile-meta-label">
+                                                        {{ "zeobv-bundle-products.detail.productQuantity"|trans|sw_sanitize }}
+                                                    </span>
+                                                    <span class="mobile-meta-value">
+                                                        {% if allowQtySelection and modifiable %}
+                                                            {% sw_include '@Storefront/zeobv-bundle-products/components/bundle-quantity-select.html.twig' with {
+                                                                product: product,
+                                                                defaultVariant: defaultVariant,
+                                                                minQuantity: minQuantity,
+                                                                maxQuantity: maxQuantity,
+                                                                quantity: quantity
+                                                            } %}
+                                                        {% else %}
+                                                            {{ quantity }}
+                                                        {% endif %}
+                                                    </span>
+                                                </div>
+                                            {% endif %}
+
+                                            {% if showAvailabilityColumn %}
+                                                <div class="mobile-meta">
+                                                    <span class="mobile-meta-label">
+                                                        {{ "zeobv-bundle-products.detail.productAvailable"|trans|sw_sanitize }}
+                                                    </span>
+                                                    <span class="mobile-meta-value">
+                                                        {% if product.available %}
+                                                            {% sw_icon 'checkmark' style { 'size': 'xs' } %}
+                                                        {% else %}
+                                                            {% sw_icon 'x' style { 'size': 'xs' } %}
+                                                        {% endif %}
+                                                    </span>
+                                                </div>
+                                            {% endif %}
+
+                                            {% if showPrices %}
+                                                <div class="mobile-meta">
+                                                    <span class="mobile-meta-label">
+                                                        {{ "zeobv-bundle-products.detail.productPrice"|trans|sw_sanitize }}
+                                                    </span>
+
+                                                    <span 
+                                                        class="mobile-meta-value"
+                                                        data-price-{{ connectionId }}="{{ price }}"
+                                                    >
+                                                        {{ price|currency }}
+                                                    </span>
+                                                </div>
+                                            {% endif %}
+                                        {% endblock %}
+                                    </td>
+                                {% endblock %}
+
+                                {% block zeobv_bundle_products_components_bundle_product_info_table_body_cell_quantity %}
+                                    {% if(showQuantity == true ) %}
+                                        <td class="product-bundle-products-product-cell product-bundle-products-cell-thin product-bundle-products-product-cell-qty"
+                                            colspan="{{ showThumbnail ? "1" : 2}}"
+                                        >
+                                            {% if allowQtySelection and modifiable %}
+                                                {% sw_include '@Storefront/zeobv-bundle-products/components/bundle-quantity-select.html.twig' with {
+                                                    product: product,
+                                                    defaultVariant: defaultVariant,
+                                                    minQuantity: minQuantity,
+                                                    maxQuantity: maxQuantity,
+                                                    quantity: quantity
+                                                } %}
+                                            {% else %}
+                                                {{ quantity }}
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                {% endblock %}
+
+                                {% block zeobv_bundle_products_components_bundle_product_info_table_body_cell_available %}
+                                    {% if showAvailabilityColumn %}
+                                        <td class="product-bundle-products-product-cell product-bundle-products-product-cell-available">
+                                            <div 
+                                                id="zeobv-bundle-item-availability-{{connectionId}}" 
+                                                class="zeobv-bundle-item-availability zeobv-bundle-item-availability{% if product.available %}--available{% else %}--unavailable{% endif %}"
+                                            >
+                                                {% sw_icon 'checkmark' style { 'size': 'sm', 'class': 'available' } %}
+                                                {% sw_icon 'x' style { 'size': 'sm', 'class': 'unavailable' } %}
+                                            </div>
+                                        </td>
+                                    {% endif %}
+                                {% endblock %}
+
+                                {% block zeobv_bundle_products_components_bundle_product_info_table_body_cell_price %}
+                                    {% if showPrices %}
+                                        <td class="product-bundle-products-product-cell product-bundle-products-product-cell-price"
+                                            colspan="{{ (showThumbnail ? (showQuantity ? 2 : 3) : (showQuantity ? 1 : 3)) }}"
+                                        >
+                                            <span data-price-{{ connectionId }}="{{ price }}">
+                                                {{ price|currency }}
+                                            </span>
+                                        </td>
+                                    {% endif %}
+                                {% endblock %}
+                            </tr>
+                        {% endfor %}
+
+                        {% block zeobv_bundle_products_components_bundle_product_info_table_footer %}
+                            {% if showPrices and showTotalPrice %}
+                                <tr class="product-bundle-products-total-row">
+                                    {% block zeobv_bundle_products_components_bundle_product_info_table_body_cell_total_label %}
+                                        <th scope="row"
+                                            colspan="{% if allowItemSelection %}
+                                                {{ showThumbnail and showAvailabilityColumn ? 5 : 4 }}
+                                            {% else %}{{ showThumbnail and showAvailabilityColumn ? 4 : 3 }}{% endif %}"
+                                            class="product-bundle-products-product-cell product-bundle-total-cell">
+                                            <span class="product-bundle-total-label">
+                                                {{ "zeobv-bundle-products.detail.dataColumnTotal"|trans|sw_sanitize }}
+                                            </span>
+
+                                            <span 
+                                                class="product-bundle-total-value"
+                                                data-price-total="{{ total }}"
+                                            >
+                                                {{ total|currency }}
+                                            </span>
+                                        </th>
+                                    {% endblock %}
+
+                                    {% block zeobv_bundle_products_components_bundle_product_info_table_body_cell_total_price %}
+                                        <td class="product-bundle-products-product-cell product-bundle-products-product-cell-total">
+                                            <span data-price-total="{{ total }}">{{ total|currency }}</span>
+                                        </td>
+                                    {% endblock %}
+                                </tr>
+                            {% endif %}
+                        {% endblock %}
+                    {% endblock %}
+                    </tbody>
+                {% endblock %}
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

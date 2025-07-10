@@ -1,0 +1,61 @@
+{
+    "sw-product": {
+        "detailBase": {
+            "cardTitleBundleProducts": "Bundle produkt konfiguration",
+            "bundleVirtualAvailability": "Virtuelle Verfügbarkeit bündeln"
+        },
+        "bundle": {
+            "field": {
+                "productLabel": "Produkts",
+                "productBundleShowOnStorefrontSwitchLabel": "Produkte im Bundle im Store anzeigen",
+                "productBundleShowItemPricesOnStorefrontSwitchLabel": "Preise für Bündelartikel im Storefront anzeigen",
+                "productBundleShowTotalItemPriceOnStorefrontSwitchLabel": "Gesamtpreis im Schaufenster anzeigen",
+                "offerBundleOptionally": "Angebotsbündel optional",
+                "allowItemSelection": "Artikelauswahl zulassen",
+                "allowQtySelection": "Auswahl der Anzahl zulassen",
+                "productBundleDiscountPercentage": "Prozentsatz der Ermäßigung",
+                "option": {
+                    "priceModeInherit": "Globale Konfiguration verwenden",
+                    "priceModeMeet": "Anpassung der Produktpreise an den Bündelpreis",
+                    "priceModeSum": "Summe der Preise der Produkte im Paket zur Berechnung des neuen Paketpreises",
+                    "priceModeDisabled": "Führen Sie keine Berechnungen durch"
+                },
+                "virtualStock": "Bestand",
+                "virtualAvailableStock": "Verfügbarer Bestand",
+                "virtualAvailable": "Verfügbar"
+            },
+            "message": {
+                "saveSuccess": "Die Bündelproduktverbindungen wurden erfolgreich gespeichert.",
+                "saveError": "Beim Speichern des Bundle-Produkts ist ein Fehler aufgetreten. Bitte aktualisieren Sie die Seite und versuchen Sie es erneut."
+            }
+        }
+    },
+    "sw-order": {
+        "zeobv-bundle-connections": {
+            "modal": {
+                "openLabel": "Bundle-Details anzeigen",
+                "modalTitle": "Produkte im Bundle",
+                "quantityLabel": "Anzahl",
+                "commentLabel": "Hinweis"
+            }
+        }
+    },
+    "sw-import-export": {
+        "profile": {
+            "productBundleConnectionLabel": "Produktverbindungen bündeln"
+        }
+    },
+    "zeobv-bundle-product": {
+        "connection-grid": {
+            "productLabel": "Produkt",
+            "quantityLabel": "Anzahl",
+            "positionLabel": "Position",
+            "modifiableLabel": "Änderbar",
+            "optionalLabel": "Optional",
+            "commentLabel": "Hinweis"
+        },
+        "knowledgeBasePluginConfig": {
+            "buttonLabel": "Plugin-Anleitung und FAQ's"
+        }
+    }
+}

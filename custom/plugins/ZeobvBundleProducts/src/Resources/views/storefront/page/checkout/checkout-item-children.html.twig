@@ -1,0 +1,37 @@
+{% sw_extends '@Storefront/storefront/page/checkout/checkout-item-children.html.twig' %}
+
+{% set showManufacturer = config('ZeobvBundleProducts.config.showBundleProductItemManufacturer') %}
+{% set showQuantityCartAndCheckout = config('ZeobvBundleProducts.config.showQuantityOfBundleItemsInCartAndCheckout') %}
+{% set showProductNumber = config('ZeobvBundleProducts.config.showBundleProductNumber') %}
+{% set showItemPrices = lineItem.payload.customFields.zeobvBundleProductsShowItemPricesOnStorefront %}
+
+{% block page_checkout_item_child_total_price %}
+    {% if showItemPrices %}
+        {% if not nestedLineItem.type is same as("bundle_product_item") or not nestedLineItem.payload.zeobvHideBundleProductPricesInStorefront %}
+            {{ parent() }}
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block page_checkout_item_child_headline_label %}
+    <div class="cart-item-child-label-bullet">
+        <div class="swag-fade-container swag-fade-container-shrinked">
+            {% if showQuantityCartAndCheckout %}
+                <span>{{ nestedLineItem.quantity }}{{ "checkout.quantityTimes"|trans|sw_sanitize }}</span> 
+            {% endif %}
+
+            {{ nestedLineItem.label|trans }}
+            
+            <div class="sub-text">
+                {% if showManufacturer and nestedLineItem.payload.manufacturer.name %}
+                    <span class="manufacturer-name">{{ nestedLineItem.payload.manufacturer.name }}</span>
+                {% endif %}
+                {% if showProductNumber and nestedLineItem.payload.productNumber %}
+                    <span class="product-number">{{ nestedLineItem.payload.productNumber }}</span>
+                {% endif %}
+            </div>
+        </div>
+        <a href="#" class="swag-fading-link-more swag-fade-link-hidden">{{ 'checkout.lineItemShowMore'|trans|sw_sanitize }}</a>
+        <a href="#" class="swag-fading-link-less swag-fade-link-hidden">{{ 'checkout.lineItemShowLess'|trans|sw_sanitize }}</a>
+    </div>
+{% endblock %}

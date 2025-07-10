@@ -1,0 +1,9 @@
+{% sw_extends '@Storefront/storefront/component/buy-widget/buy-widget-form.html.twig' %}
+
+{% block buy_widget_buy_container %}
+    {{ parent() }}
+    
+    {% sw_include '@Storefront/zeobv-bundle-products/components/buy-widget-form.html.twig' with {
+        product: product
+    } %}
+{% endblock %}

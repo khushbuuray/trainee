@@ -1,0 +1,49 @@
+{% set defaultVariant = product.children|length ? product.children|first : null %}
+{% set quantity = product.extensions.zeobvProductBundleConnection.quantity %}
+{% set minQuantity = product.minPurchase ? product.minPurchase : 1 %}
+{% set maxQuantity = product.maxPurchase ? product.maxPurchase : 100 %}
+
+{% if product.isCloseout %}
+    {% set maxQuantity = min(maxQuantity, product.availableStock) %}
+{% endif %}
+
+{% if allowQtySelection %}
+    {% set quantity = min(quantity, maxQuantity) %}
+    {% set quantity = max(quantity, minQuantity) %}
+{% endif %}
+
+{% if quantity < 1 %}
+    {% set quantity = 1 %}
+{% endif %}
+
+{% if showProductId %}
+    <input 
+        id="product-selection-{{product.id}}"
+        class="bundle-product-item-selection"
+        data-product-id="{{ defaultVariant ? defaultVariant.id : product.id }}"
+        data-connection-id="{{ connectionId }}"
+        name="lineItems[{{ bundleProductId }}][bundleContent][{{ connectionId }}][included]"
+        type="hidden"
+        value="1"
+    /> 
+{% endif %}
+
+<input 
+    type="hidden" 
+    id="zeobv-bundle-item-product-{{product.id}}"
+    name="lineItems[{{ bundleProductId }}][bundleContent][{{ connectionId }}][productId]"
+    value="{{ defaultVariant ? defaultVariant.id : product.id }}"
+>
+
+<input 
+    type="hidden" 
+    name="lineItems[{{ bundleProductId }}][bundleContent][{{ connectionId }}][isChild]"
+    value="{{ defaultVariant ? 1 : 0 }}"
+>
+
+<input 
+    type="hidden"
+    id="zeobv-bundle-item-quantity-{{connectionId}}"
+    name="lineItems[{{ bundleProductId }}][bundleContent][{{ connectionId }}][quantity]"
+    value="{{ quantity }}"
+>

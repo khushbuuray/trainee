@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CLI command for automated cleanup
 - Scheduled task support
 - Detailed logging system
-- Dry-run mode for safe operations
 - Configurable retention periods
 - Email notifications
 - Multi-language support (EN/DE)

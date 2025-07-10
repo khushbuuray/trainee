@@ -1,0 +1,118 @@
+{% block zeobv_bundle_main_products_info %}
+
+    <div class="col-12 bundle-sub-product-info">
+        <h4>{{ "zeobv-bundle-products.detail.special"|trans|sw_sanitize }}</h4>
+        <p>{{ "zeobv-bundle-products.detail.description"|trans|sw_sanitize }}</p>
+
+        <a 
+            href="#" 
+            data-bs-toggle="modal"
+            data-bs-target="#bundleMainProductModal"
+        >
+            {{ "zeobv-bundle-products.detail.bundleInfo"|trans|sw_sanitize }}
+        </a>
+    </div>
+{% endblock %}
+
+{% block zeobv_bundle_main_products_info_modal %}
+    <div class="modal fade"
+         id="bundleMainProductModal"
+         data-backdrop="static"
+         tabindex="-1"
+         role="dialog"
+         aria-hidden="true">
+
+        {% block zeobv_bundle_main_products_info_modal_dialog %}
+            <div class="modal-dialog modal-dialog-centered {% if bundleMainProducts|length >= 3 %}modal-xl{% elseif bundleMainProducts|length == 2 %}modal-lg{% endif %}"
+                 role="dialog">
+
+                {% block zeobv_bundle_main_products_info_modal_content %}
+                    <div class="modal-content">
+
+                        {% block zeobv_bundle_main_products_info_modal_header %}
+                            <div class="modal-header">
+
+                                {% block zeobv_bundle_main_products_info_modal_header_title %}
+                                    <h5 class="modal-title">{{ "zeobv-bundle-products.detail.bundleMainProduct"|trans|sw_sanitize }}</h5>
+                                {% endblock %}
+
+                                {% block zeobv_bundle_main_products_info_modal_header_close_button %}
+                                    <button class="btn-close"
+                                            type="button"
+                                            data-bs-dismiss="modal"
+                                            aria-label="Close">
+                                    </button>
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
+
+                        {% block zeobv_bundle_main_products_info_modal_body %}
+                            <div class="modal-body">
+                                {% set productSliderOptions = {
+                                    productboxMinWidth: '300px',
+                                    slider: {
+                                        gutter: 30,
+                                        autoplayButtonOutput: false,
+                                        nav: false,
+                                        mouseDrag: false,
+                                        controls: true,
+                                        autoplay:  false
+                                    }
+                                } %}
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="base-slider product-slider has-nav"
+                                             data-product-slider="true"
+                                             data-product-slider-options="{{ productSliderOptions|json_encode }}">
+
+                                            {% block zeobv_bundle_product_slider_inner %}
+                                                {% block zeobv_bundle_product_slider_element %}
+                                                    <div class="{% if bundleMainProducts|length >= 3 %}col-lg-4 col-md-6 {% elseif bundleMainProducts|length == 2 %}col-lg-6 col-md-6{% endif %}">
+                                                        <div class="product-slider-container"
+                                                             data-product-slider-container="true">
+                                                            {% for product in bundleMainProducts %}
+                                                                {% block zeobv_bundle_product_slider_inner_item %}
+                                                                    <div class="product-slider-item">
+                                                                        {% sw_include '@Storefront/storefront/component/product/card/box.html.twig' with {
+                                                                            'layout': 'standard',
+                                                                            'displayMode': 'standard'
+                                                                        } %}
+                                                                    </div>
+                                                                {% endblock %}
+
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endblock %}
+
+                                                {% block zeobv_bundle_product_slider_controls %}
+                                                    <div class="product-slider-controls-container">
+                                                        <div class="base-slider-controls"
+                                                             data-product-slider-controls="true">
+                                                            {% block zeobv_bundle_product_slider_controls_items %}
+                                                                <button class="base-slider-controls-prev product-slider-controls-prev">
+                                                                    {% block zeobv_bundle_product_slider_controls_items_prev_icon %}
+                                                                        {% sw_icon 'arrow-head-left' %}
+                                                                    {% endblock %}
+                                                                </button>
+                                                                <button class="base-slider-controls-next product-slider-controls-next">
+                                                                    {% block zeobv_bundle_product_slider_controls_items_next_icon %}
+                                                                        {% sw_icon 'arrow-head-right' %}
+                                                                    {% endblock %}
+                                                                </button>
+                                                            {% endblock %}
+                                                        </div>
+                                                    </div>
+                                                {% endblock %}
+                                            {% endblock %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

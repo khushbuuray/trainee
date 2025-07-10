@@ -1,0 +1,24 @@
+{% sw_extends '@Storefront/storefront/page/account/order-history/order-detail-list-item-children.html.twig' %}
+
+{% set showManufacturer = config('ZeobvBundleProducts.config.showBundleProductItemManufacturer') %}
+{% set showQuantityCartAndCheckout = config('ZeobvBundleProducts.config.showQuantityOfBundleItemsInCartAndCheckout') %}
+{% set showItemPrices = lineItem.payload.customFields.zeobvBundleProductsShowItemPricesOnStorefront %}
+
+{% block page_account_order_item_child_total_price %}
+    {% if showItemPrices %}
+            {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block page_checkout_item_child_headline_label %}
+    <div class="cart-item-child-label-bullet">
+        <div class="swag-fade-container swag-fade-container-shrinked">
+            {{ nestedLineItem.label|trans }}
+            {% if showManufacturer and nestedLineItem.payload.manufacturer.name %}
+                <span class="manufacturer-name">{{ nestedLineItem.payload.manufacturer.name }}</span>
+            {% endif %}
+        </div>
+        <a href="#" class="swag-fading-link-more swag-fade-link-hidden">{{ 'checkout.lineItemShowMore'|trans|sw_sanitize }}</a>
+        <a href="#" class="swag-fading-link-less swag-fade-link-hidden">{{ 'checkout.lineItemShowLess'|trans|sw_sanitize }}</a>
+    </div>
+{% endblock %}

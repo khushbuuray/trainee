@@ -1,0 +1,58 @@
+{% set visibilityResult = product.visibilities.elements|first %}
+
+{% if product.available and product.active and visibilityResult.visibility != "10" %}
+    {% if(showBundleProductDetailInPopUp == true ) %}
+        <a href="{{ seoUrl('frontend.detail.page', {productId: product.id}) }}"
+            class="line-item-label"
+            title="{{ "zeobv-bundle-products.detail.bundleProductQuickViewTitle"|trans|sw_sanitize }}"
+            {% if controllerAction is same as('index') %}
+                data-ajax-modal="modal"
+                data-modal-class="quickview-modal"
+                data-url="{{ path('widgets.quickview.minimal', { 'productId': product.id }) }}"
+            {% endif %}
+        >
+            {{ product.translated.name }} {% if comment %} | {{ comment }} {% endif %}
+        </a>
+
+    {% else %}
+
+        <a href="{{ seoUrl('frontend.detail.page', {productId: product.id}) }}" title="{{ "zeobv-bundle-products.detail.bundleProductNameTitle"|trans|sw_sanitize }}">
+            {{ product.translated.name }} {% if comment %} | {{ comment }} {% endif %}
+        </a>
+
+    {% endif %}
+
+{% else %}
+    {{ product.translated.name }} {% if comment %} | {{ comment }} {% endif %}
+{% endif %}
+
+<div class="sub-text">
+    {% if showManufacturer and product.manufacturer.name %}
+        <span class="manufacturer-name">{{ product.manufacturer.name }}</span>
+    {% endif %}
+    {% if showBundleProductNumber and product.productNumber %}
+        <span class="product-number">{{ product.productNumber }}</span>
+    {% endif %}
+</div>
+
+<div class="product-bundle-details-characteristics">
+    {% if variant|length > 0 %}
+        {% for option in variant %}
+            {% block component_line_item_variant_characteristics_option_group %}
+                <span class="product-bundle-details-characteristics-option-group">
+                    {{ option.group.translated.name }}:
+                </span>
+            {% endblock %}
+            {% block component_line_item_variant_characteristics_option %}
+                <span class="product-bundle-details-characteristics-option">
+                    {{ option.translated.name }}
+                </span>
+            {% endblock %}
+            {% if product.options.elements|last != option %}
+                {% block component_line_item_variant_characteristics_divider %}
+                    {{ ' | ' }}
+                {% endblock %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>

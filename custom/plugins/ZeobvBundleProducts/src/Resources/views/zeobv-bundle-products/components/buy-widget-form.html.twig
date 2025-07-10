@@ -1,0 +1,63 @@
+{% block zeobv_bundle_products_buy_widget_form %}
+
+    {% set status = config('ZeobvBundleProducts.config.active') %}
+    {% if status === true %}
+        {% block zeobv_bundle_products_buy_widget_form_bundle_optional %}
+            {% if product.customFields.zeobvBundleProductsOfferBundleOptionally == true %}
+                <div class="zeobv-bundle-products__bundle-optional">
+                    {% block zeobv_bundle_products_buy_widget_form_bundle_optional_checkbox %}
+                        <input 
+                            id="zeobvBundleOptionalCheckbox" 
+                            class="zeobv-bundle-products__bundle-optional-checkbox form-check-input"
+                            type="checkbox"
+                            name="lineItems[{{ product.id }}][includeBundleContent]"
+                            value="1"
+                            checked
+                        />
+                    {% endblock %}
+
+                    {% block zeobv_bundle_products_buy_widget_form_bundle_optional_label %}
+                        <label 
+                            for="zeobvBundleOptionalCheckbox"
+                            class="zeobv-bundle-products__bundle-optional-label custom-control-label"
+                        >
+                            {{ "zeobv-bundle-products.option.includeBundle"|trans|sw_sanitize }}
+                        </label>
+                    {% endblock %}
+                </div>
+            {% else %}
+                <input 
+                    type="hidden"
+                    name="lineItems[{{ product.id }}][includeBundleContent]"
+                    value="1"
+                />
+            {% endif %}
+        {% endblock %}
+
+        {% block zeobv_bundle_products_buy_widget_form_bundle_contents %}
+            {% set productsInBundle = product.extensions.zeobvBundleProducts.salesChannelProducts %}
+
+            {% if product.customFields.zeobvBundleProductsShowOnStorefront %}
+                {% sw_include '@ZeobvBundleProducts/zeobv-bundle-products/components/bundle-product-info.html.twig' with {
+                    bundleProductId: product.id,
+                    products: productsInBundle,
+                    allowItemSelection: product.extensions.zeobvBundleProducts.config.allowItemSelection,
+                    allowQtySelection: product.extensions.zeobvBundleProducts.config.allowQuantitySelection,
+                    allowVariantSelection: product.extensions.zeobvBundleProducts.config.allowVariantSelection,
+                    showPrices: product.customFields.zeobvBundleProductsShowItemPricesOnStorefront,
+                    showTotalPrice: product.customFields.zeobvBundleProductsShowItemsTotalPriceOnStorefront
+                } %}
+            {% else %}
+                {% set bundleProductId = product.id %}
+                {% for product in productsInBundle %}
+                    {% sw_include '@Storefront/zeobv-bundle-products/components/bundle-content-fields.html.twig' with {
+                        bundleProductId: bundleProductId,
+                        connectionId: product.extensions.zeobvProductBundleConnection.id,
+                        product: product,
+                        showProductId: true
+                    } %}
+                {% endfor %}
+            {% endif %}
+        {% endblock %}
+    {% endif %}
+{% endblock %}

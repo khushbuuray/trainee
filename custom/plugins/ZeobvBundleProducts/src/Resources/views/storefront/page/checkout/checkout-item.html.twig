@@ -1,0 +1,57 @@
+{% sw_extends '@Storefront/storefront/page/checkout/checkout-item.html.twig' %}
+
+{% set isBundleProduct = lineItem.children.count > 0 and lineItem.type is same as('product') %}
+{% set isBundleLineItem = lineItem.type is same as("bundle_product_item") %}
+{% set hideBundleCartAndCheckout = config('ZeobvBundleProducts.config.hideBundleInformationInShoppingCartAndCheckout') %}
+{% set hideBundleChildren = lineItem.payload.zeobvHideBundleProductChildrenInStorefront or hideBundleCartAndCheckout %}
+
+{% block page_checkout_item_container %}
+    {% if isBundleLineItem and hideBundleChildren %}
+        {# hide #}
+    {% elseif isBundleProduct and hideBundleChildren %}
+        {% set isNested = false %}
+        {{ parent() }}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block page_checkout_item_info_image_link %}
+    {% if isBundleProduct %}
+        <a href="{{ seoUrl('frontend.detail.page', {'productId': lineItem.referencedId}) }}"
+           class="cart-item-img-link"
+           title="{{ lineItem.label }}"
+                {% if controllerAction is same as('confirmPage') %}
+                    data-toggle="modal"
+                    data-modal-class="quickview-modal"
+                    data-url="{{ path('widgets.quickview.minimal', { 'productId': lineItem.referencedId }) }}"
+                {% endif %}
+        >
+            {% block page_checkout_item_info_image_element %}
+                {{ parent() }}
+            {% endblock %}
+        </a>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+ {% block page_checkout_item_unit_price_wrapper %}
+     {% if isBundleProduct %}
+         {% block page_checkout_item_unit_price_label %}
+             {{ parent() }}
+         {% endblock %}
+
+         {% block page_checkout_item_unit_price_inner %}
+             {{ parent() }}
+         {% endblock %}
+     {% else %}
+         {{ parent() }}
+     {% endif %}
+ {% endblock %}
+
+{% block page_checkout_item_children_template %}
+    {% if hideBundleChildren == false %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

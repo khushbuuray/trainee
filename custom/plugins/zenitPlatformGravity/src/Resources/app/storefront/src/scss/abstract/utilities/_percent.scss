@@ -1,4 +1,0 @@
-@function percent($size) {
-    $percentSize: strip-unit($size) * 1%;
-    @return #{$percentSize};
-}

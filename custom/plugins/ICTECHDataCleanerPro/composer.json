@@ -20,6 +20,7 @@
 
   "extra": {
     "shopware-plugin-class": "ICTECHDataCleanerPro\\ICTECHDataCleanerPro",
+    "plugin-icon": "ictech.png",
     "label": {
       "de-DE": "Data Cleanup Pro",
       "en-GB": "Data Cleanup Pro"

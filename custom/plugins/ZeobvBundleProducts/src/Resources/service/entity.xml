@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="Zeobv\BundleProducts\Core\Content\Product\Aggregate\ProductBundleConnection\ProductBundleConnectionDefinition">
+            <tag name="shopware.entity.definition" entity="zeobv_product_bundle_connection" />
+        </service>
+
+        <service id="Zeobv\BundleProducts\Extension\Checkout\Order\Aggregate\OrderLineItemExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+
+        <service id="Zeobv\BundleProducts\Extension\Content\Product\BundleProductExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+    </services>
+</container>

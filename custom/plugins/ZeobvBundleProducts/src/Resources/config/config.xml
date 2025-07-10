@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../../../../../../vendor/shopware/platform/src/Core/System/SystemConfig/Schema/config.xsd">
+    <card>
+        <component name="config-button-link">
+            <name>knowledgeBasePluginConfig</name>
+        </component>
+    </card>
+
+    <card>
+        <title>Bundle product Settings</title>
+        <title lang="de-DE">Produkt bündeln Einstellungen</title>
+        <title lang="nl-NL">Bundel product Instellingen</title>
+
+        <input-field type="bool">
+            <name>active</name>
+            <label>Active</label>
+            <label lang="de-DE">Aktiviert</label>
+            <label lang="nl-NL">Geactiveerd</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>bundleProductPriceMode</name>
+
+            <label>Select the bundle price calculation mode</label>
+            <label lang="de-DE">Wählen Sie den Modus für die Berechnung des Bündelpreises</label>
+            <label lang="nl-NL">Selecteer de berekeningswijze voor de bundelprijs</label>
+
+            <options>
+                <option>
+                    <id>meetProductPrice</id>
+                    <name>Adjust the product prices to fit within the bundle price</name>
+                    <name lang="de-DE">Anpassung der Produktpreise an den Bündelpreis</name>
+                    <name lang="nl-NL">Pas de productprijzen aan zodat ze in de bundelprijs passen</name>
+                </option>
+                <option>
+                    <id>sumProductPrices</id>
+                    <name>Sum prices of products in bundle to calculate new bundle price</name>
+                    <name lang="de-DE">Summe der Preise der Produkte im Paket zur Berechnung des neuen Paketpreises</name>
+                    <name lang="nl-NL">Tel de prijzen op van de producten in de bundel om de nieuwe bundelprijs te berekenen</name>
+                </option>
+                <option>
+                    <id>noCalculation</id>
+                    <name>Don't perform any calculations</name>
+                    <name lang="de-DE">Führen Sie keine Berechnungen durch</name>
+                    <name lang="nl-NL">Voer geen berekeningen uit</name>
+                </option>
+            </options>
+            
+            <defaultValue>meetProductPrice</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>overrideStockFieldOfBundleProduct</name>
+            <label>Override "Stock" field of bundle product</label>
+            <label lang="de-DE">Überschreiben des Feldes "Bestand" des Bündelprodukts</label>
+            <label lang="nl-NL">Overschrijf "Voorraad" veld van bundel product</label>
+            <helpText>Enabling this option will allows the plugin to also override the "Stock" field. The available stock of a bundle product will always be determined on the lowest available stock of the products inside the bundle.</helpText>
+            <helpText lang="de-DE">Wenn Sie diese Option aktivieren, kann das Plugin auch das Feld "Bestand" außer Kraft setzen. Der verfügbare Bestand eines Bundle-Produkts wird immer anhand des niedrigsten verfügbaren Bestands der Produkte innerhalb des Bundles ermittelt.</helpText>
+            <helpText lang="nl-NL">Door deze optie in te schakelen zal de plugin ook het "Voorraad" veld overschrijven. De beschikbare voorraad van een bundel product zal altijd bepaald worden op de laagste beschikbare voorraad van de producten binnen de bundel.</helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>divideStockByItemQuantity</name>
+            <label>Divide "Stock" field by the quantity of the product inside the bundle</label>
+            <label lang="de-DE">Teilen Sie das Feld "Bestand" durch die Menge des Produkts im Bündel</label>
+            <label lang="nl-NL">Deel het veld "Voorraad" door de hoeveelheid van het product in de bundel.</label>
+            <helpText>Ensure the above option is checked before checking this option. When this option is enabled the stock will be, just like the available stock, divided by the bundled quantity of the product the stock is inherited from.</helpText>
+            <helpText lang="de-DE">Stellen Sie sicher, dass die obige Option aktiviert ist, bevor Sie diese Option aktivieren. Wenn diese Option aktiviert ist, wird der Bestand, genau wie der verfügbare Bestand, durch die gebündelte Menge des Produkts geteilt, von dem der Bestand geerbt wurde.</helpText>
+            <helpText lang="nl-NL">Zorg ervoor dat de bovenstaande optie is aangevinkt voordat u deze optie aanvinkt. Als deze optie is ingeschakeld, wordt de voorraad, net als de beschikbare voorraad, gedeeld door de gebundelde hoeveelheid van het product waarvan de voorraad wordt geërfd.</helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>disableBundleProductItemPrices</name>
+            <label>Set the price of products inside a bundle to 0.00</label>
+            <label lang="de-DE">Den Preis von Produkten innerhalb eines Pakets auf 0,00 setzen</label>
+            <label lang="nl-NL">Stel de prijs van producten binnen een bundel in op 0.00</label>
+            <helpText>Enabling this option makes sure the price of line items belonging to a bundle get set to 0.00</helpText>
+            <helpText lang="de-DE">Die Aktivierung dieser Option stellt sicher, dass der Preis von Positionen, die zu einem Bundle gehören, auf 0,00 gesetzt wird.</helpText>
+            <helpText lang="nl-NL">Het inschakelen van deze optie zorgt ervoor dat de prijs van regelitems die tot een bundel behoren op 0.00 wordt gezet</helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>overrideMaxPurchase</name>
+            <label>Override Max. order quantity</label>
+            <label lang="de-DE">Maximalabnahme überschreiben</label>
+            <label lang="nl-NL">Maximale afname overschrijven</label>
+            <helpText>Ensures the Max. order quantity field of the bundle product is overwritten with the lowest value from the products inside the bundle.</helpText>
+            <helpText lang="de-DE">Stellt sicher, dass das Feld Maximalabnahme des Bundle-Produkts mit dem niedrigsten Wert aus den Produkten innerhalb des Bundles überschrieben wird.</helpText>
+            <helpText lang="nl-NL">Zorgt ervoor dat het veld Max. afname van het bundelproduct wordt overschreven met de laagste waarde van de producten in de bundel.</helpText>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>overridePurchasePrice</name>
+            <label>Override Override "purchase price" field of bundle product</label>
+            <label lang="de-DE">Überschreiben Überschreiben des Feldes "Einkaufspreis" des Bündelprodukts</label>
+            <label lang="nl-NL">Overschrijf het "aankoopprijs" veld van bundelproduct</label>
+            <helpText>Enabling this option will allow the plugin to also override the "purchase price" field.</helpText>
+            <helpText lang="de-DE">Wenn Sie diese Option aktivieren, kann das Plugin auch das Feld "Einkaufspreis" überschreiben.</helpText>
+            <helpText lang="nl-NL">Als je deze optie inschakelt, kan de plugin ook het veld "aankoopprijs" overschrijven.</helpText>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>overrideBundleWeight</name>
+            <label>Override bundle weight</label>
+            <label lang="de-DE">Bundle-Gewicht überschreiben</label>
+            <label lang="nl-NL">Bundelgewicht overschrijven</label>
+            <helpText>Useful in combination with Pickware and certain shipping integrations</helpText>
+            <helpText lang="de-DE">Nützlich in Kombination mit Pickware und bestimmten Versandintegrationen</helpText>
+            <helpText lang="nl-NL">Nuttig in combinatie met Pickware en bepaalde verzendintegraties</helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>markBundleProductUnavailable</name>
+            <label>Mark bundle product unavailable if one of its children is unavailable</label>
+            <label lang="de-DE">Bündelprodukt als nicht verfügbar markieren, wenn einer der darin enthaltenen Artikel nicht verfügbar ist</label>
+            <label lang="nl-NL">Markeer bundelproduct als niet beschikbaar als een van zijn sub producten niet beschikbaar is</label>
+            <helpText>When this option is enabled the bundle product will be marked unavailable if one of its children is unavailable.</helpText>
+            <helpText lang="de-DE">Wenn diese Option aktiviert ist, wird das Bundle-Produkt als nicht verfügbar markiert, wenn eines seiner Kinder nicht verfügbar ist.</helpText>
+            <helpText lang="nl-NL">Als deze optie is ingeschakeld zal het bundelproduct als niet beschikbaar worden gemarkeerd als een van zijn kinderen niet beschikbaar is.</helpText>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="float">
+            <name>bundleWeightOverride</name>
+            <step>0.01</step>
+            <label>Fixed value of bundle weight</label>
+            <label lang="de-DE">Fester Wert des Bündelgewichts</label>
+            <label lang="nl-NL">Vaste waarde van bundelgewicht</label>
+            <helpText>Useful in combination with Pickware and certain shipping integrations</helpText>
+            <helpText lang="de-DE">Nützlich in Kombination mit Pickware und bestimmten Versandintegrationen</helpText>
+            <helpText lang="nl-NL">Nuttig in combinatie met Pickware en bepaalde verzendintegraties</helpText>
+            <defaultValue>0.01</defaultValue>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Bundle product item presentation</title>
+        <title lang="de-DE">Präsentation der Produkte in Bündeln</title>
+        <title lang="nl-NL">Presentatie van producten in bundel</title>
+
+        <input-field type="bool">
+            <name>showBundleProductItemAvailabilityColumn</name>
+            <label>Show the bundle product item availability</label>
+            <label lang="de-DE">Anzeige der Verfügbarkeit des Bündelprodukts</label>
+            <label lang="nl-NL">Toon de bundel product item beschikbaarheid</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>showBundleProductItemThumbnailColumn</name>
+            <label>Show the thumbnail image of products in the bundle</label>
+            <label lang="de-DE">Anzeigen der Miniaturansicht der Produkte im Bündel</label>
+            <label lang="nl-NL">Toon de miniatuurafbeelding van de producten in de bundel</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>showBundleProductItemManufacturer</name>
+            <label>Show the manufacturer name</label>
+            <label lang="de-DE">Anzeigen des Herstellernamens</label>
+            <label lang="nl-NL">Toon de naam van de fabrikant</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>showBundleProductNumber</name>
+            <label>Show the Product Number of items in bundle</label>
+            <label lang="de-DE">Anzeigen der Produktnummer der Artikel im Bündel</label>
+            <label lang="nl-NL">Toon het productnummer van de artikelen in de bundel</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>showQuantityOfBundleItemsProductDetailPageTablePresentation</name>
+            <label>Show quantity of bundle items in the product detail page table presentation.</label>
+            <label lang="de-DE">Zeigen Sie die Menge der Bündelartikel in der tabelle auf der produktdetailseite präsentation an.</label>
+            <label lang="nl-NL">Toon het aantal bundelitems in de tabel op de pagina productdetail presentatie.</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>showQuantityOfBundleItemsInCartAndCheckout</name>
+            <label>Show quantity of bundle items in cart and checkout</label>
+            <label lang="de-DE">Menge der Bündelartikel im Warenkorb und an der Kasse anzeigen</label>
+            <label lang="nl-NL">Aantal bundelartikelen tonen in winkelwagen en kassa</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>showBundleProductDetailInPopUp</name>
+            <label>Show bundle product detail in pop up</label>
+            <label lang="de-DE">Bündelprodukt-Details im Pop-up anzeigen</label>
+            <label lang="nl-NL">Toon bundel productdetails in pop-up</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+        
+        <input-field type="bool">
+            <name>hideBundleInformationInShoppingCartAndCheckout</name>
+            <label>Hide bundle information in shopping cart and checkout</label>
+            <label lang="de-DE">Ausblenden von Bundle-Informationen im Warenkorb und an der Kasse</label>
+            <label lang="nl-NL">Verberg bundelinformatie in winkelwagen en kassa</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>hidebundleProductPriceinInvoice</name>
+            <label>Hide bundle line item prices on invoice if price is 0.0</label>
+            <label lang="de-DE">Ausblenden von Bundle-Positionspreisen auf der Rechnung, wenn der Preis 0,0 ist</label>
+            <label lang="nl-NL">Verberg prijzen van bundels op factuur als prijs 0.0 is</label>
+            <helpText>When this option is enabled the bundle line item prices on invoice will be hidden if the price is 0.0</helpText>
+            <helpText lang="de-DE">Wenn diese Option aktiviert ist, werden die Preise der Bundle-Positionen auf der Rechnung ausgeblendet, wenn der Preis 0,0 beträgt.</helpText>
+            <helpText lang="nl-NL">Als deze optie is ingeschakeld, worden de prijzen van bundels op de factuur verborgen als de prijs 0,0 is.</helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>hideBundleChildlineItemsOnInvoiceDocument</name>
+            <label>Hide bundle child line items on invoice and delivery documents</label>
+            <label lang="de-DE">Ausblenden von Bündelunterpositionen auf Rechnungen und Lieferdokumenten</label>
+            <label lang="nl-NL">Verberg gebundelde kindregelitems op facturen en leveringsdocumenten</label>
+            <helpText>When this option is enabled bundle child line items will be hidden on invoice and delivery documents</helpText>
+            <helpText lang="de-DE">Wenn diese Option aktiviert ist, werden untergeordnete Positionen auf Rechnungs- und Lieferdokumenten ausgeblendet.</helpText>
+            <helpText lang="nl-NL">Als deze optie is ingeschakeld, worden gebundelde kindregelitems verborgen op factuur- en leveringsdocumenten.</helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>hideBundleChildlineItemsOnOrderConfirmationMail</name>
+            <label>Hide bundle child line items on order confirmation mail</label>
+            <label lang="de-DE">Bündelunterpositionen in der Auftragsbestätigungsmail ausblenden</label>
+            <label lang="nl-NL">Verberg bundel kindregelitems op orderbevestigingsmail</label>
+            <helpText>When this option is enabled bundle child line items will be hidden on order confirmation mail</helpText>
+            <helpText lang="de-DE">Wenn diese Option aktiviert ist, werden untergeordnete Positionen in der Auftragsbestätigung ausgeblendet.</helpText>
+            <helpText lang="nl-NL">Als deze optie is ingeschakeld, worden gebundelde kindregelitems verborgen in de orderbevestigingsmail.</helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>bundleChildlineItemsPriceZeroInDhlShippingLabel</name>
+            <label>Set bundle child line item price to 0.1 in DHL shipping label</label>
+            <label lang="de-DE">Bundle-Kind-Positionspreis im DHL-Versandetikett auf 0,1 setzen</label>
+            <label lang="nl-NL">Stel de prijs van het bundelkind in op 0,1 in het DHL-vervoerslabel.</label>
+            <helpText>When this option is enabled, the price of bundle child line items will be set to 0.1 in the DHL shipping label.</helpText>
+            <helpText lang="de-DE">Wenn diese Option aktiviert ist, wird der Preis der untergeordneten Bundle-Positionen im DHL-Versandetikett auf 0,1 gesetzt.</helpText>
+            <helpText lang="nl-NL">Als deze optie is ingeschakeld, wordt de prijs van gebundelde kindregelitems ingesteld op 0,1 in het DHL verzendlabel.</helpText>
+            <defaultValue>true</defaultValue>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Product in bundles presentation</title>
+        <title lang="de-DE">Präsentation "Produkt im Bündel"</title>
+        <title lang="nl-NL">"Presentatie "Product in bundels</title>
+
+        <input-field type="bool">
+            <name>disableReferenceToBundleProductsFromProductDetailPage</name>
+            <label>Disable reference to the bundle product from the product detail page</label>
+            <label lang="de-DE">Deaktiviere den Verweis auf das Bundle-Produkt auf der Produkt-Detailseite</label>
+            <label lang="nl-NL">Verwijzingen naar het bundelproduct op de productdetailpagina uitschakelen</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>bundleReferencesDisplayMode</name>
+            <label>How do you want to present the references to the product bundles?</label>
+            <label lang="de-DE">Wie wollen Sie die Verweise auf die Produktbündel darstellen?</label>
+            <label lang="nl-NL">Hoe wil je de verwijzingen naar de productbundels presenteren?</label>
+            <options>
+                <option>
+                    <id>note_with_modal</id>
+                    <name>Note with modal</name>
+                    <name lang="de-DE">Hinweis mit Modal</name>
+                    <name lang="nl-NL">Opmerking met modaal</name>
+                </option>
+                <option>
+                    <id>cross_selling</id>
+                    <name>Cross Selling</name>
+                    <name lang="de-DE">Cross Selling</name>
+                    <name lang="nl-NL">Cross Selling</name>
+                </option>
+            </options>
+            <defaultValue>note_with_modal</defaultValue>
+        </input-field>
+
+        <input-field type="int">
+            <name>maxNumberOfProductDetailBundleReferences</name>
+            <label>Max number of bundle references on the product detail page</label>
+            <label lang="de-DE">Maximale Anzahl von Bundle-Referenzen auf der Produkt-Detailseite</label>
+            <label lang="nl-NL">Max. aantal bundelreferenties op de productdetailpagina</label>
+            <helpText>It's smart to limit the amount of references made to bundles from the product detail page for performance reasons. Resolving a bundle product has a performance impact.</helpText>
+            <helpText lang="de-DE">Aus Leistungsgründen ist es sinnvoll, die Anzahl der Verweise auf Bundles auf der Produktdetailseite zu begrenzen. Das Auflösen eines Bundle-Produkts hat Auswirkungen auf die Leistung.</helpText>
+            <helpText lang="nl-NL">Om prestatieredenen is het slim om het aantal verwijzingen naar bundels op de productdetailpagina te beperken. Het oplossen van een bundelproduct heeft gevolgen voor de prestaties.</helpText>
+            <defaultValue>10</defaultValue>
+        </input-field>
+
+        <input-field type="colorpicker">
+            <name>backgroundColorOfTheMainProductSpecialCard</name>
+            <label>Background color of the main product special card.</label>
+            <label lang="de-DE">Hintergrundfarbe der Hauptprodukt-Sonderkarte.</label>
+            <label lang="nl-NL">Achtergrondkleur van de speciale hoofdkaart van het product.</label>
+            <css>background-color-main-product-special-card</css>
+            <defaultValue>#f9f9f9</defaultValue>
+        </input-field>
+
+        <input-field type="colorpicker">
+            <name>borderColorOfTheMainProductSpecialCard</name>
+            <label>Border color of the main product special card.</label>
+            <label lang="de-DE">Farbe der Umrandung der Sonderkarte für das Hauptprodukt.</label>
+            <label lang="nl-NL">Randkleur van de speciale kaart van het hoofdproduct.</label>
+            <css>border-color-of-the-main-product-special-card</css>
+            <defaultValue>#f9f9f9</defaultValue>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Backwards compatibility settings</title>
+        <title lang="de-DE">Einstellungen zur Abwärtskompatibilität</title>
+        <title lang="nl-NL">Instellingen voor compatibiliteit</title>
+
+        <input-field type="bool">
+            <name>useLegacyBundleFitPriceCalculation</name>
+            <label>(DEPRECATED, Removed from Shopware 6.7) Use legacy bundle Fit Price calculation</label>
+            <label lang="de-DE">(VERALTET, Entfernt aus Shopware 6.7) Verwende die alte "Fit Price"-Bündelpreisberechnung</label>
+            <label lang="nl-NL">(KOMT TE VERVALLEN, Verwijderd vanaf Shopware 6.7) Gebruik de oude "Fit Price" bundelprijsberekening</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>useCustomLineItemType</name>
+            <label>(DEPRECATED, Removed from Shopware 6.7) Use a custom line item type instead of the default 'Product' line item type</label>
+            <label lang="de-DE">(VERALTET, Entfernt aus Shopware 6.7) Verwenden Sie einen benutzerdefinierten Positionstyp anstelle des Standardpositionstyps 'Produkt'.</label>
+            <label lang="nl-NL">(KOMT TE VERVALLEN, Verwijderd vanaf Shopware 6.7) Gebruik een aangepast regelitem type in plaats van het standaard 'Product' regelitem type</label>
+            <helpText>It is recommended to disable this option since it is only introduced to offer backwards compatibility for existing customers relying on this old implementation.</helpText>
+            <helpText lang="de-DE">Es wird empfohlen, diese Option zu deaktivieren, da sie nur eingeführt wurde, um die Abwärtskompatibilität für bestehende Kunden zu gewährleisten, die auf diese alte Implementierung angewiesen sind.</helpText>
+            <helpText lang="nl-NL">Het wordt aanbevolen om deze optie uit te schakelen, omdat ze alleen is ingevoerd om achterwaartse compatibiliteit te bieden aan bestaande klanten die op deze oude implementatie vertrouwen.</helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>enableBundleProductStockManagement</name>
+            <label>(DEPRECATED, Removed from Shopware 6.7) Enable bundle product stock management</label>
+            <label lang="de-DE">(VERALTET, Entfernt aus Shopware 6.7) Bündelprodukt-Bestandsverwaltung aktivieren</label>
+            <label lang="nl-NL">(KOMT TE VERVALLEN, Verwijderd vanaf Shopware 6.7) Beheer van voorraad van gebundelde producten inschakelen</label>
+            <helpText>DEPRECATED and no longer needed when disabling the above option. Enabling this option let's the plugin update the stock of products inside a bundle.</helpText>
+            <helpText lang="de-DE">VERALTET und wird nicht mehr benötigt, wenn du die obige Option deaktivierst. Wenn Sie diese Option aktivieren, kann das Plugin den Bestand der Produkte in einem Bundle aktualisieren.</helpText>
+            <helpText lang="nl-NL">KOMT TE VERVALLEN. Door deze optie in te schakelen kan de plugin de voorraad van producten in een bundel bijwerken.</helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+    </card>
+</config>

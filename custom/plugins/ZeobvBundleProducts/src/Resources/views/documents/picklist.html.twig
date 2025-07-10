@@ -1,0 +1,208 @@
+{% sw_extends '@PickwareErpStarter/documents/picklist.html.twig' %}
+
+
+{# By overwriting the whole document_body we ignore Shopware's position loop, summary, comment payment_shipping
+   and shipping_address #}
+{% block document_body %}
+    {{ block('logo') }}
+    {{ block('letter_header') }}
+
+    {# Initialize empty array to store child line items #}
+    {% set childItems = [] %}
+
+    {# First loop: Collect all child line items and group them by parent ID #}
+    {% for nodeToCheck in pickingRouteNodes %}
+        {% if nodeToCheck.orderLineItem %}
+            {% set orderLineItem = nodeToCheck.orderLineItem %}
+        {% else %}
+            {% set orderLineItem = nodeToCheck.orderLineItems[0] %}
+        {% endif %}
+        {% if orderLineItem.parentId|length > 0 %}
+            {% set key = orderLineItem.parentId %}
+            {% set nodeToCheck = nodeToCheck|merge({isChildItem: true}) %}
+
+            {# Add child item to existing parent group or create new group #}
+            {% if childItems[key] %}
+                {% set items = childItems[key]|merge([nodeToCheck]) %}
+            {% else %}
+                {% set items = [nodeToCheck] %}
+            {% endif %}
+
+            {# Sort child items by position #}
+            {% set items = items|sort((a, b) => a.orderLineItem.postion - b.orderLineItem.position) %}
+
+            {% set childItems = childItems|merge({(key): items}) %}
+        {% endif %}
+    {% endfor %}
+
+    {# Initialize empty array to store the final sorted picking route nodes #}
+    {% set sortedPickingRouteNodes = [] %}
+
+    {# Second loop: Create final sorted array with parents followed by their children #}
+    {% for pickingRouteNode in pickingRouteNodes %}
+        {% if pickingRouteNode.orderLineItem %}
+            {% set orderLineItem = pickingRouteNode.orderLineItem %}
+        {% else %}
+            {% set orderLineItem = pickingRouteNode.orderLineItems[0] %}
+        {% endif %}
+        {% if not orderLineItem.parentId %}
+            {# If this is a parent item with children, add parent followed by children #}
+            {% if childItems[orderLineItem.id] %}
+                {% set sortedPickingRouteNodes = sortedPickingRouteNodes|merge([pickingRouteNode]) %}
+                {% for childItem in childItems[orderLineItem.id] %}
+                    {% set sortedPickingRouteNodes = sortedPickingRouteNodes|merge([childItem]) %}
+                {% endfor %}
+            {% else %}
+                {# If no children, just add the item #}
+                {% set sortedPickingRouteNodes = sortedPickingRouteNodes|merge([pickingRouteNode]) %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {# Removes the company configuration (company address etc) from the letter_header block #}
+    {% block document_sender_address %}
+    {% endblock %}
+
+    {# document headline is hardcoded since the headline block of the base template is in the first table (which is
+       completely overwritten in this document_body block) #}
+    <div class="document-title-container">
+        <h1>
+            {{ 'pickware-erp-starter.picklist-document.title' | trans | sw_sanitize }}
+            <span class="title-ordernumber">{{ order.orderNumber }}</span>
+        </h1>
+        <h2>
+            {{ 'pickware-erp-starter.picklist-document.sub-title' | trans | sw_sanitize }}
+            <span class="bold">{{ 'pickware-erp-starter.picklist-document.warehouse-label' | trans({'%warehouseName%': warehouse.name, '%warehouseCode%': warehouse.code}) | sw_sanitize }}</span>
+        </h2>
+        {% if config.documentComment is not empty %}
+            <p class="pickingInstruction">
+                <b>{{ 'pickware-erp-starter.picklist-document.document-comment' | trans | sw_sanitize }}:</b>
+                {{ config.documentComment | sw_sanitize }}
+            </p>
+        {% endif %}
+    </div>
+
+    {% if pickingRouteNodes | length !== 0 %}
+
+    {# Check if any route has multiple bin locations in its route (on this page) #}
+    {% set alterantiveBinLocationsExist = false %}
+    {% for pickingRouteNode in pickingRouteNodes %}
+        {% if pickingRouteNode.pickLocations | length > 1 %}
+            {% set alterantiveBinLocationsExist = true %}
+        {% endif %}
+    {% endfor %}
+
+    <div class="line-item-container">
+        <table class="line-item-table">
+            <thead>
+            <tr class="line-item-table-header">
+                <th style="width: 30%" class="first-column">
+                    {{ 'pickware-erp-starter.picklist-document.columns.bin-location' | trans | sw_sanitize }}
+                    {% if alterantiveBinLocationsExist %}
+                        <br>
+                        {{ 'pickware-erp-starter.picklist-document.columns.alternative' | trans | sw_sanitize }}
+                    {% endif %}
+                </th>
+                <th style="width: 20%">{{ 'pickware-erp-starter.picklist-document.columns.product-number' | trans | sw_sanitize }}</th>
+                <th style="width: 35%">{{ 'pickware-erp-starter.picklist-document.columns.product-name' | trans | sw_sanitize }}</th>
+                <th style="width: 10%" class="align-right quantity-cell">{{ 'pickware-erp-starter.picklist-document.columns.quantity' | trans | sw_sanitize }}</th>
+                <th style="width: 5%" class="align-right">{{ 'pickware-erp-starter.picklist-document.columns.picked' | trans | sw_sanitize }}</th>
+            </tr>
+            </thead>
+
+            {% for pickingRouteNode in sortedPickingRouteNodes %}
+                {# Multiple order line items can reference the same product (e.g. custom products in different
+                configurations. Since picking is done per product (not per order line item), the same picking route
+                note = the same product can reference multiple order line items. #}
+                {% for orderLineItem in pickingRouteNode.orderLineItems %}
+                {# If the same product is part of the order in multiple order line items (e.g. custom products) we
+                cannot differentiate "which" order line item needs to be picked in which quantity. We only now this
+                per product (not per order line item). Workaround: show the ordered quantity instead. #}
+                    {% if pickingRouteNode.orderLineItems | length === 1 %}
+                        {% set quantityToPick = pickingRouteNode.quantity %}
+                    {% else %}
+                        {% set quantityToPick = orderLineItem.quantity %}
+                    {% endif %}
+                    {% if orderLineItem.product is not null %}
+                        {% set productName = orderLineItem.product.id | pickware_erp_product_name({ optionsTemplate: "<br /> <span class=\"variant-description\">{{ options | join(', ') }}</span>" }) | sw_sanitize %}
+                        {% set productNumber = orderLineItem.product.productNumber | sw_sanitize %}
+                    {% elseif orderLineItem.payload['productNumber'].length >= 1 %}
+                        {% set productName = orderLineItem.label | sw_sanitize %}
+                        {% set productNumber = orderLineItem.payload['productNumber'] | sw_sanitize %}
+                    {% else %}
+                        {% set productName = orderLineItem.label | sw_sanitize %}
+                        {% set productNumber = '' %}
+                    {% endif %}
+                    {% set orderLineItemAdditionalRows %}
+                        {% sw_include '@Framework/documents/components/picklist-custom-product-row.html.twig' with {
+                            customProducts: customProducts,
+                            lineItem: orderLineItem
+                        } %}
+                        {% sw_include '@Framework/documents/components/picklist-picking-instruction-row.html.twig' with {
+                            orderLineItem: orderLineItem
+                        } %}
+                    {% endset %}
+                    {% set numberOfAdditionalRows = 1 + orderLineItemAdditionalRows | trim | split('</tr>') | length - 1 %}
+
+                    {% if pickingRouteNode.pickLocations | length == 0 %}
+                        {# No stock locations are listed. Show a single 'unknown' location. #}
+                        <tr class="line-item single-stock-location">
+                            <td rowspan="{{ numberOfAdditionalRows }}" class="first-column left-bordered">{{ 'pickware-erp-starter.picklist-document.unknown' | trans | sw_sanitize }}</td>
+                            <td class="line-item-breakable">{{ productNumber }}</td>
+                            <td class="line-item-breakable" style="{% if orderLineItem.parentId %} padding-left: 10px {% endif %}">{{ productName | raw }}</td>
+                            <td class="align-right bold larger quantity-cell">{{ quantityToPick }}</td>
+                            <td class="picked-cell"></td>
+                        </tr>
+                    {% else %}
+                        {# Show the main stock location with optional alternative locations #}
+                        <tr class="line-item {% if pickingRouteNode.pickLocations | length == 1 %}single-stock-location{% else %}main-stock-location{% endif %}">
+                            <td rowspan="{{ numberOfAdditionalRows }}" class="bold larger first-column left-bordered">
+                                {{ pickingRouteNode.pickLocations | first | sw_sanitize }}
+                                {% if pickingRouteNode.pickLocations | length > 1 %}
+                                    <br />
+                                    <span class="alternative-stock-locations">(<!--
+                                    {% for pickLocation in pickingRouteNode.pickLocations %}
+                                        {% if loop.first == false%}
+                                            -->{{ pickLocation }}{% if loop.last == false %}, {% endif %}<!--
+                                        {% endif %}
+                                    {% endfor %}
+                                    -->)</span>
+                                {% endif %}
+                            </td>
+                            <td class="line-item-breakable">{{ productNumber }}</td>
+                            <td class="line-item-breakable" style="{% if orderLineItem.parentId %} padding-left: 10px {% endif %}">{{ productName | raw }}</td>
+                            <td class="align-right bold larger quantity-cell">{{ quantityToPick }}</td>
+                            <td class="picked-cell"></td>
+                        </tr>
+                    {% endif %}
+                    {% if orderLineItemAdditionalRows | trim %}
+                        {{ orderLineItemAdditionalRows }}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </table>
+    </div>
+
+    {% else %}
+    <div class="line-item-container">
+        <p id="emptyList">
+            {{ 'pickware-erp-starter.picklist-document.empty-list' | trans | sw_sanitize }}
+        </p>
+    </div>
+
+    {% endif %}
+
+    {% if order.customerComment is not empty %}
+        <p id="customerComment">
+            <b>{{ 'pickware-erp-starter.picklist-document.customer-comment' | trans | sw_sanitize }}:</b>
+            {{ order.customerComment | sw_sanitize }}
+        </p>
+    {% endif %}
+
+    {% if config.documentComment is not empty %}
+        <p id="documentComment" class="pickingInstruction">
+            <b>{{ 'pickware-erp-starter.picklist-document.document-comment' | trans | sw_sanitize }}:</b>
+            {{ config.documentComment | sw_sanitize }}
+        </p>
+    {% endif %}
+{% endblock %}

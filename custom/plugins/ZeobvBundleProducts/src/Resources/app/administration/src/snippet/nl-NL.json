@@ -1,0 +1,61 @@
+{
+    "sw-product": {
+        "detailBase": {
+            "cardTitleBundleProducts": "Bundle product configuratie",
+            "bundleVirtualAvailability": "Bundel virtuele beschikbaarheid"
+        },
+        "bundle": {
+            "field": {
+                "productLabel": "Producten in bundel",
+                "productBundleShowOnStorefrontSwitchLabel": "Toon producten in bundel op storefront",
+                "productBundleShowItemPricesOnStorefrontSwitchLabel": "Toon bundel item prijzen op storefront",
+                "productBundleShowTotalItemPriceOnStorefrontSwitchLabel": "Toon totale prijs op storefront",
+                "offerBundleOptionally": "Bundel optioneel aanbieden",
+                "allowItemSelection": "Item selectie toestaan",
+                "allowQtySelection": "Selectie van aantal toestaan",
+                "productBundleDiscountPercentage": "Kortings percentage",
+                "option": {
+                    "priceModeInherit": "Globale configuratie gebruiken",
+                    "priceModeMeet": "Pas de productprijzen aan zodat ze in de bundelprijs passen",
+                    "priceModeSum": "Tel de prijzen op van de producten in de bundel om de nieuwe bundelprijs te berekenen",
+                    "priceModeDisabled": "Voer geen berekeningen uit"
+                },
+                "virtualStock": "Voorraad",
+                "virtualAvailableStock": "Beschikbare voorraad",
+                "virtualAvailable": "Beschikbaar"
+            },
+            "message": {
+                "saveSuccess": "De productverbindingen van de bundel zijn succesvol opgeslagen.",
+                "saveError": "Er is een fout opgetreden bij het opslaan van het bundelproduct, vernieuw de pagina en probeer het opnieuw."
+            }
+        }
+    },
+    "sw-order": {
+        "zeobv-bundle-connections": {
+            "modal": {
+                "openLabel": "Toon bundel details",
+                "modalTitle": "Producten in bundel",
+                "quantityLabel": "Aantal",
+                "commentLabel": "Opmerking"
+            }
+        }
+    },
+    "sw-import-export": {
+        "profile": {
+            "productBundleConnectionLabel": "Bundel product connecties"
+        }
+    },
+    "zeobv-bundle-product": {
+        "connection-grid": {
+            "productLabel": "Product",
+            "quantityLabel": "Aantal",
+            "positionLabel": "Positie",
+            "modifiableLabel": "Aanpasbaar",
+            "optionalLabel": "Optioneel",
+            "commentLabel": "Opmerking"
+        },
+        "knowledgeBasePluginConfig": {
+            "buttonLabel": "Plugin-gids en veelgestelde vragen"
+        }
+    }
+}

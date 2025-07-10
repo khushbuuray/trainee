@@ -1,0 +1,93 @@
+{% block zeobv_bundle_connections_modal %}
+    <sw-modal :title="$tc('sw-order.zeobv-bundle-connections.modal.modalTitle')"
+              :isLoading="isLoading"
+              @modal-close="onClose">
+        {% block zeobv_bundle_connections_modal_line_items_grid %}
+            <sw-container type="row" class="zeobv-bundle-connections-line-items-grid">
+
+                {% block zeobv_bundle_connections_modal_line_items_grid_grid %}
+                    <sw-data-grid 
+                        :dataSource="item.children"
+                        :columns="getLineItemColumns"
+                        :fullPage="false"
+                        :showSettings="false"
+                        :showSelection="false"
+                        :showActions="true"
+                        :isLoading="isLoading"
+                        :allowColumnEdit="false"
+                        :allowInlineEdit="false"
+                        :compactMode="false"
+                        identifier="zeobv-bundle-connections-line-item-grid"
+                        class="zeobv-bundle-connections-line-items-grid__data-grid"
+                    >
+                        {% block zeobv_bundle_connections_modal_line_items_grid_grid_columns %}
+                            {% block zeobv_bundle_connections_modal_line_items_grid_grid_columns_label %}
+                                <template #column-label="{ item, isInlineEdit}">
+                                    {% block zeobv_bundle_connections_modal_line_items_grid_grid_columns_label_content %}
+                                        <template>
+                                            {{ item.label }}
+                                        </template>
+                                    {% endblock %}
+                                </template>
+                            {% endblock %}
+
+                            {% block zeobv_bundle_connections_modal_line_items_grid_grid_columns_unit_price %}
+                                <template #column-comment="{ item, isInlineEdit}">
+                                    {% block zeobv_bundle_connections_modal_line_items_grid_grid_columns_comment_content %}
+                                        <template>
+                                            {{ item.payload.comment }}
+                                        </template>
+                                    {% endblock %}
+                                </template>
+                            {% endblock %}
+
+                            {% block zeobv_bundle_connections_modal_line_items_grid_grid_columns_unit_price %}
+                                <template #column-unitPrice="{ item, isInlineEdit}">
+                                    {% block zeobv_bundle_connections_modal_line_items_grid_grid_columns_unit_price_content %}
+                                        <template>
+                                            {{ currencyFilter(item.unitPrice.toFixed(2)) }}
+                                        </template>
+                                    {% endblock %}
+                                </template>
+                            {% endblock %}
+
+                            {% block zeobv_bundle_connections_modal_line_items_grid_grid_columns_unit_price %}
+                                <template #column-quantity="{ item, isInlineEdit}">
+                                    {% block zeobv_bundle_connections_modal_line_items_grid_grid_columns_quantity_content %}
+                                        <template>
+                                            {{ item.quantity }}
+                                        </template>
+                                    {% endblock %}
+                                </template>
+                            {% endblock %}
+
+                            {% block zeobv_bundle_connections_modal_line_items_grid_grid_columns_totalPrice %}
+                                <template #column-totalPrice="{ item, isInlineEdit}">
+                                    {% block zeobv_bundle_connections_modal_line_items_grid_grid_columns_totalPrice_content %}
+                                        <template>
+                                            {{ currencyFilter(item.totalPrice.toFixed(2)) }}
+                                        </template>
+                                    {% endblock %}
+                                </template>
+                            {% endblock %}
+
+                            {% block zeobv_bundle_connections_modal_line_items_grid_grid_actions %}
+                                <template #actions="{ item }">
+                                    {% block sw_order_line_items_grid_grid_actions_show %}
+                                        <sw-context-menu-item 
+                                            @click="navigateToProduct(item.referencedId)"
+                                        >
+                                            {% block sw_order_line_items_grid_grid_actions_show_label %}
+                                                {{ $tc('sw-order.detailBase.contextMenuShowProduct') }}
+                                            {% endblock %}
+                                        </sw-context-menu-item>
+                                    {% endblock %}
+                                </template>
+                            {% endblock %}
+                        {% endblock %}
+                    </sw-data-grid>
+                {% endblock %}
+            </sw-container>
+        {% endblock %}
+    </sw-modal>
+{% endblock %}

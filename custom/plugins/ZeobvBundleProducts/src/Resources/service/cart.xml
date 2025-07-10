@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="Zeobv\BundleProducts\Core\Checkout\Cart\Collectors\BundleProductCollector">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Price\QuantityPriceCalculator" />
+            <argument type="service" id="zeobv.bundle_products.service.bundle_discount_calculator" />
+            <argument type="service" id="zeobv.bundle_products.service.config_service" />
+            <argument type="service" id="product.repository" />
+
+            <!-- Inject after all -->
+            <tag name="shopware.cart.collector" priority="0" />
+        </service>
+
+        <service id="Zeobv\BundleProducts\Core\Checkout\Cart\Collectors\BundleProductProcessor">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Price\QuantityPriceCalculator" />
+            <argument type="service" id="zeobv.bundle_products.service.bundle_discount_calculator" />
+            <argument type="service" id="zeobv.bundle_products.service.bundle_product_reconfigurator" />
+
+            <!-- Inject after product processor(5000), promotion processor(4900) and custom product processor(4950) -->
+            <tag name="shopware.cart.processor" priority="4950" />
+        </service>
+    </services>
+</container>

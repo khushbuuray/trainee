@@ -1,0 +1,28 @@
+@import './product-bundle-products-table';
+@import './cart';
+
+$background-color-main-product-special-card: #efefef !default;
+$border-color-of-the-main-product-special-card: #efefef !default;
+
+.bundle-sub-product-info {
+    padding: 15px;
+    background: $background-color-main-product-special-card;
+    border: 1px solid $border-color-of-the-main-product-special-card;
+    margin-bottom: 15px;
+}
+
+.zeobv-bundle-products {
+    &__bundle-optional {
+        padding: 10px 15px;
+        background: var(--bs-light);
+        margin-top: 15px;
+    }
+
+    &__bundle-optional-checkbox {
+        margin-top: 2px;
+    }
+
+    &__bundle-optional-label {
+        margin-left: 10px;
+    }
+}

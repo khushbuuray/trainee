@@ -1,0 +1,26 @@
+{% block sw_order_line_items_grid_actions %}
+    {% parent %}
+
+    <zeobv-bundle-connections-modal 
+        v-if="bundleConnectionModalOpen"
+        :item="bundleConnectionModalItem"
+        :order="order"
+        :isLoading="isLoading"
+        :onClose="closeBundleConnectionModal"
+    ></zeobv-bundle-connections-modal>
+{% endblock %}
+
+{% block sw_order_line_items_grid_grid_actions_show %}
+    {% parent %}
+
+    {% block zeobv_bundle_products_order_line_items_grid_grid_actions_open_bundle_relations %}
+        <sw-context-menu-item
+            :disabled="!isBundleItem(item)"
+            @click="openBundleConnectionModalForItem(item)"
+        >
+            {% block zeobv_bundle_products_order_line_items_grid_grid_actions_open_bundle_relations_label %}
+                {{ $tc('sw-order.zeobv-bundle-connections.modal.openLabel') }}
+            {% endblock %}
+        </sw-context-menu-item>
+    {% endblock %}
+{% endblock %}

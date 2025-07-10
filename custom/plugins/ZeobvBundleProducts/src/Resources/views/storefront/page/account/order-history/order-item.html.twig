@@ -1,0 +1,9 @@
+{% sw_extends '@Storefront/storefront/page/account/order-history/order-item.html.twig' %}
+
+{% block page_account_order_item_context_menu_reorder_form_line_items_input %}
+	{% for lineItem in order.lineItems|filter((item) => item.parentId === null) %}
+		{% block page_account_order_item_context_menu_reorder_form_line_item_input %}
+			{{ parent() }}
+		{% endblock %}
+	{% endfor %}
+{% endblock %}

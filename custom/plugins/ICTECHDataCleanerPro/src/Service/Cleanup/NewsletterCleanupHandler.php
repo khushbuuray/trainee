@@ -61,7 +61,7 @@ class NewsletterCleanupHandler implements CleanupHandlerInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('status', 'rejected'));
         $criteria->addFilter(new RangeFilter('createdAt', [RangeFilter::LT => $cutoffDate->format(DATE_ATOM)]));
-        $criteria->setLimit(1000);
+        $criteria->setLimit(10000);
 
         /** @var NewsletterRecipientCollection $recipients */
         $recipients = $this->newsletterRecipientRepository->search($criteria, $context)->getEntities();

@@ -1,0 +1,107 @@
+{% block sw_product_detail_base_category_card %}
+    {% parent %}
+    <sw-card v-if="!product.childCount" :title="$tc('sw-product.detailBase.cardTitleBundleProducts')" :isLoading="loading.product">
+        <sw-single-select
+            v-model:value="zeobvBundleProductPriceMode"
+            class="zeobv-bundle-product-connections-grid-select"
+            size="large"
+            :options="priceModes"
+        ></sw-single-select>
+
+        <zeobv-bundle-product-connections-grid
+            :discount="zeobvBundleProductsDiscountPercentage"
+            :loading="loading.product"
+            :showDiscountField="showDiscountField"
+            :product="product"
+            :products-in-bundle="productsInBundle"
+            :allow-quantity-selection="showAllowQtySelectionSwitch && zeobvBundleProductsAllowQtySelection"
+            :allow-item-selection="showAllowItemSelectionSwitch && zeobvBundleProductsAllowItemSelection"
+            :onAddNewRow="onAddNewRow"
+            @item-delete="onItemDelete"
+            @update:discount="onDiscountUpdated"
+            @updated="onBundleConnectionsUpdated"
+        >
+        </zeobv-bundle-product-connections-grid>
+
+        <div class="zeobv-bundle-product-connections-grid-switches">
+            <sw-switch-field
+                v-if="showShowBundleProductsOnStorefrontSwitch"
+                v-model:value="zeobvBundleProductsShowOnStorefront"
+                class="zeobv-bundle-product-connections-grid-switch"
+                :error="productExtensionsError"
+                :label="$tc('sw-product.bundle.field.productBundleShowOnStorefrontSwitchLabel')"
+            ></sw-switch-field>
+            
+            <sw-switch-field
+                v-if="showAllowItemSelectionSwitch"
+                v-model:value="zeobvBundleProductsAllowItemSelection"
+                class="zeobv-bundle-product-connections-grid-switch"
+                :error="productExtensionsError"
+                :label="$tc('sw-product.bundle.field.allowItemSelection')"
+            ></sw-switch-field>
+
+            <sw-switch-field
+                v-if="showAllowQtySelectionSwitch"
+                v-model:value="zeobvBundleProductsAllowQtySelection"
+                class="zeobv-bundle-product-connections-grid-switch"
+                :error="productExtensionsError"
+                :label="$tc('sw-product.bundle.field.allowQtySelection')"
+            ></sw-switch-field>
+
+            <sw-switch-field
+                v-if="showOfferBundleOptionallySwitch"
+                v-model:value="zeobvBundleProductsOfferBundleOptionally"
+                class="zeobv-bundle-product-connections-grid-switch"
+                :error="productExtensionsError"
+                :label="$tc('sw-product.bundle.field.offerBundleOptionally')"
+            ></sw-switch-field>
+
+            <sw-switch-field
+                v-if="showShowItemPricesOnStorefrontSwitch"
+                v-model:value="zeobvBundleProductsShowItemPricesOnStorefront"
+                class="zeobv-bundle-product-connections-grid-switch"
+                :error="productExtensionsError"
+                :label="$tc('sw-product.bundle.field.productBundleShowItemPricesOnStorefrontSwitchLabel')"
+            ></sw-switch-field>
+
+            <sw-switch-field
+                v-if="showShowTotalPriceOnStorefrontSwitch"
+                v-model:value="zeobvBundleProductsShowItemsTotalPriceOnStorefront"
+                class="zeobv-bundle-product-connections-grid-switch"
+                :error="productExtensionsError"
+                :label="$tc('sw-product.bundle.field.productBundleShowTotalItemPriceOnStorefrontSwitchLabel')"
+            ></sw-switch-field>
+        </div>
+
+        <div v-if="pickwareFound && productsInBundle.length > 0" class="zeobv-bundle-product-connections-grid-availability">
+            <strong>{{ $tc('sw-product.detailBase.bundleVirtualAvailability') }}</strong>
+
+            <div class="zeobv-bundle-product-connections-grid-availability-fields">
+                <sw-text-field
+                    v-model:value="product.stock"
+                    :disabled="true"
+                    :label="$tc('sw-product.bundle.field.virtualStock')"
+                ></sw-text-field>
+                
+                <sw-text-field
+                    v-model:value="product.availableStock"
+                    :disabled="true"
+                    :label="$tc('sw-product.bundle.field.virtualAvailableStock')"
+                ></sw-text-field>
+                
+                <sw-switch-field
+                    v-model:value="product.available"
+                    :disabled="true"
+                    :label="$tc('sw-product.bundle.field.virtualAvailable')"
+                ></sw-switch-field>
+                
+                <sw-switch-field
+                    v-model:value="product.isCloseout"
+                    :label="$tc('sw-product.settingsForm.labelIsCloseout')"
+                    :help-text="$tc('sw-product.settingsForm.isCloseoutHelpText')"
+                    :disabled="true"
+                />
+            </div>
+        </div>
+    </sw-card>
+{% endblock %}

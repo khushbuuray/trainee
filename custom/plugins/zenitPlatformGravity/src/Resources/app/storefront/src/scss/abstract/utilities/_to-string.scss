@@ -1,4 +1,0 @@
-// use interpolation to convert into string
-@function to-string($value) {
-    @return #{$value};
-}

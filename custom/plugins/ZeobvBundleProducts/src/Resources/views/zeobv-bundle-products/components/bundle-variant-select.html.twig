@@ -1,0 +1,54 @@
+{% if product.parentId is null and product.childCount > 0 %}
+    <select 
+        class="zeobv-bundle-item-variant-select form-select"
+        data-product-id="{{ product.id }}"
+        data-connection-id="{{ connectionId }}"
+        onchange="document.querySelector('input[name=\'lineItems[{{ bundleProductId }}][bundleContent][{{ connectionId }}][productId]\']').value = this.value"
+    >
+        {% for productChild in product.children %}
+            {% set price = productChild.calculatedPrice %}
+            {% set isFromPrice = false %}
+
+            {% if productChild.calculatedPrices|length > 0 %}
+                {% set isFromPrice = true %}
+                {% set price = productChild.calculatedPrices|filter((calculatedPrice) => calculatedPrice.quantity <= quantity)|last %}
+
+                {% if not price %}
+                    {% for advancePrice in productChild.prices %}
+                        {% if advancePrice.quantityStart <= quantity and advancePrice.quantityEnd >= quantity %}
+                            {% set price = productChild.calculatedPrices|filter(
+                                (calculatedPrice) => calculatedPrice.quantity <= advancePrice.quantityEnd
+                                )|last %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+
+            <option
+                value="{{ productChild.id }}"
+                {% if defaultVariant.id is same as(productChild.id) %}selected="selected"{% endif %}
+            >
+                {% set options = productChild.options|sort((a, b) => a.group.translated.name <=> b.group.translated.name) %}
+                {% for option in options %}
+                    <span class="product-bundle-details-characteristics-option-group">
+                        {{ option.group.translated.name }}:
+                    </span>
+
+                    <span class="product-bundle-details-characteristics-option">
+                        {{ option.translated.name }}
+                    </span>
+
+                    {% if options|last != option %}
+                        {{ ' | ' }}
+                    {% endif %}
+                {% endfor %}
+
+                {% if price %}
+                    <span class="product-bundle-details-price">
+                        ({{ isFromPrice ? 'From ' : null }}{{ price.unitPrice|currency }}*)
+                    </span>
+                {% endif %}
+            </option>
+        {% endfor %}
+    </select>
+{% endif %}

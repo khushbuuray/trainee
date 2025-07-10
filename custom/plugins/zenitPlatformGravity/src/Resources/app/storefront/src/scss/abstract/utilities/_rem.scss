@@ -1,5 +1,0 @@
-@function rem($size) {
-    $remSize: strip-unit($size) / 16;
-    @return $remSize * 1rem;
-    // @return #{$remSize}; can not calc with strings
-}

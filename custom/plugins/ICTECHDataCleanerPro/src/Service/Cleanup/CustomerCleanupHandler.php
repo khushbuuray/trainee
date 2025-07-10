@@ -156,7 +156,7 @@ class CustomerCleanupHandler implements CleanupHandlerInterface
             ]),
         ]));
         $criteria->addAssociation('addresses');
-        $criteria->setLimit(1000);
+        $criteria->setLimit(10000);
 
         /** @var EntitySearchResult<CustomerCollection> $result */
         $result = $this->customerRepository->search($criteria, $context);

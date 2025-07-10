@@ -35,7 +35,6 @@ class ICTECHDataCleanerPro extends Plugin
             mkdir($logDir, 0775, true);
         }
 
-        echo "Created log folder at: $logDir\n";
     }
 
 

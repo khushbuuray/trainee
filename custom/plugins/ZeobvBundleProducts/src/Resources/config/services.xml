@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <imports>
+        <import resource="../service/subscriber.xml"/>
+        <import resource="../service/cart.xml"/>
+        <import resource="../service/entity.xml"/>
+        <import resource="../service/snippet.xml"/>
+        <import resource="../service/command.xml"/>
+        <import resource="../service/repository.xml"/>
+        <import resource="../service/decorator.xml"/>
+        <import resource="../service/message-bus.xml"/>
+        <import resource="../service/controller.xml"/>
+        <import resource="../service/resolver.xml"/>
+    </imports>
+
+    <services>
+        <service id="zeobv.bundle_products.service.bundle_discount_calculator" class="Zeobv\BundleProducts\Service\BundlePriceCalculator" public="true">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxDetector" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Price\QuantityPriceCalculator" />
+            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Price\ProductPriceCalculator"/>
+            <argument type="service" id="zeobv.bundle_products.service.config_service"/>
+        </service>
+
+        <service id="zeobv.bundle_products.service.order_enrichment_service" class="Zeobv\BundleProducts\Service\OrderEnrichmentService" public="true">
+            <argument type="service" id="order.repository" />
+            <argument type="service" id="sales_channel.product.repository" />
+            <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="order_delivery_position.repository" />
+            <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Processor" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\LineItemFactoryRegistry" />
+        </service>
+
+        <service id="zeobv.bundle_products.service.bundle_product_reconfigurator" class="Zeobv\BundleProducts\Service\BundleProductReconfigurator" public="true">
+            <argument type="service" id="product.repository" />
+            <argument type="service" id="zeobv.bundle_products.factory.product_bundle_factory" />
+            <argument type="service" id="zeobv.bundle_products.transformer.bundle_product_transformer" />
+            <argument type="service" id="zeobv.bundle_products.service.bundle_discount_calculator" />
+            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Price\ProductPriceCalculator"/>
+        </service>
+
+        <service id="zeobv.bundle_products.service.config_service" class="Zeobv\BundleProducts\Service\ConfigService" public="true">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+        </service>
+
+        <service id="zeobv.bundle_products.factory.product_bundle_factory" class="Zeobv\BundleProducts\Factory\ProductBundleFactory" public="true">
+            <argument type="service" id="zeobv.bundle_products.service.config_service" />
+        </service>
+
+        <service id="zeobv.bundle_products.transformer.bundle_product_transformer" class="Zeobv\BundleProducts\Transformer\BundleProductTransformer" public="true">
+            <argument type="service" id="zeobv.bundle_products.service.config_service" />
+        </service>
+    </services>
+</container>

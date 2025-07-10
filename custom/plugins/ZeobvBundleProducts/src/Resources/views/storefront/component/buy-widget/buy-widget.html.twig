@@ -1,0 +1,18 @@
+{% sw_extends '@Storefront/storefront/component/buy-widget/buy-widget.html.twig' %}
+
+{% block buy_widget_buy_container %}
+    {{ parent() }}
+
+    {% block zeobv_bundle_products_info %}
+        {% set bundleReferencesDisplayMode = config('ZeobvBundleProducts.config.bundleReferencesDisplayMode') %}
+
+        {% if 
+            page.product.extensions.bundleMainProducts.total > 0
+            and bundleReferencesDisplayMode == 'note_with_modal'
+        %}
+            {% sw_include '@ZeobvBundleProducts/zeobv-bundle-products/components/bundle-reference/note-with-modal.html.twig' with {
+                bundleMainProducts: page.product.extensions.bundleMainProducts.elements
+            } %}
+        {% endif %}
+    {% endblock %}
+{% endblock %}

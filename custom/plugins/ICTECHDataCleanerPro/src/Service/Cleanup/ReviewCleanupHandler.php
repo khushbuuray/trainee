@@ -62,7 +62,7 @@ class ReviewCleanupHandler implements CleanupHandlerInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('status', false));
         $criteria->addFilter(new RangeFilter('createdAt', [RangeFilter::LT => $cutoff->format(DATE_ATOM)]));
-        $criteria->setLimit(1000);
+        $criteria->setLimit(10000);
 
         /** @var ProductReviewCollection $reviews */
         $reviews = $this->productReviewRepository->search($criteria, $context)->getEntities();

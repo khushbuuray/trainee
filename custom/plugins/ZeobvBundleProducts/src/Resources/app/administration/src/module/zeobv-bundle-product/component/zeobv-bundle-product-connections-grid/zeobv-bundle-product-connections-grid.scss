@@ -1,0 +1,36 @@
+
+.zeobv-bundle-product-connections-grid {
+    &__actions-container {
+        margin-bottom: 30px;
+    }
+
+    &__btn-add {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    &__data-grid {
+        &.sw-data-grid--actions {
+            .sw-data-grid__bulk {
+                right: 88px;
+                left: 30px;
+            }
+        }
+
+        .sw-entity-single-select {
+            &__selection-text {
+                display: inline-block;
+                padding-left: 8px;
+                max-width: 90%;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                vertical-align: middle;
+                margin-bottom: 5px;
+            }
+
+            &__selection-input, &__selection-input.is--expanded {
+                padding: 5px 8px;
+            }
+        }
+    }
+}

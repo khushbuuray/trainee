@@ -1,0 +1,32 @@
+{
+    "zeobv-bundle-products": {
+        "detail": {
+            "bundleCrossSellingTabLabel": "Bijpassende combipakketten",
+            "dataColumnDetail": "Details",
+            "dataColumnQuantity": "Aantal",
+            "dataColumnPrice": "Prijs",
+            "dataColumnTotal": "Totaal",
+            "dataColumnAvailable": "Beschikbaar",
+            "tableHeaderText": "<h5>Deze bundel bevat de volgende afzonderlijke artikelen:</h5>",
+            "special" : "Speciaal",
+            "description": "Dit product is opgenomen in een of meer bundelpakketten. Bekijk het en profiteer van een goede korting!",
+            "bundleInfo": "Naar de bundels",
+            "bundleMainProduct": "Bundel Info",
+            "manufacturerName" : "Fabrikant:",
+            "productSKU": "SKU:",
+            "productQuantity": "Aantal:",
+            "productAvailable": "Beschikbaar:",
+            "productPrice": "Prijs:",
+            "bundleProductNameTitle": "Bundel Productnaam",
+            "bundleProductQuickViewTitle": "Bundelproduct",
+            "bundleProductModalTitle": "Bundel Product Pop-up"
+        },
+        "option": {
+            "includeBundle": "Onderstaande artikelen ook aan winkelwagen toevoegen"
+        }
+    },
+    "checkout": {
+        "no_bundle_items": "Ten minste één bundelitem vereist.",
+        "bundle_conflict": "Kan niet verschillende configuraties van dezelfde bundel toevoegen aan de winkelwagen. Verwijder eerst de conflicterende bundel uit de winkelwagen."
+    }
+}

@@ -1,0 +1,50 @@
+{% sw_extends '@Storefront/storefront/component/product/card/action.html.twig' %}
+
+{% block component_product_box_action_inner %}
+    {% set id = product.id %}
+    <div class="product-action">
+        {% set isAvailable = not product.isCloseout or (product.availableStock >= product.minPurchase) %}
+        {% set displayFrom = product.calculatedPrices.count > 1 %}
+        {% set bundleIsConfigurable = product.extensions.zeobvBundleProducts.isConfigurable %}
+        {% set displayBuyButton = not bundleIsConfigurable and isAvailable and not displayFrom and product.childCount <= 0 %}
+        {% set showQuantitySelect = not product.states is defined or DOWNLOAD_STATE not in product.states or (DOWNLOAD_STATE in product.states and product.maxPurchase !== 1) %}
+
+        {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
+            {% block component_product_box_action_buy %}
+                {{ parent() }}
+            {% endblock %}
+        {% else %}
+            {% block component_product_box_action_detail %}
+                {{ parent() }}
+            {% endblock %}
+        {% endif %}
+    </div>
+
+    {# @deprecated tag:v6.7.0 - Block, including the content will be removed. "product-name" and "product-id" will be hold inside "data-product-information" in box-standard.html.twig instead. #}
+    {% if not feature('v6.7.0.0') %}
+        {% block component_product_box_action_meta %}
+            {{ parent() }}
+        {% endblock %}
+    {% endif %}
+{% endblock %}
+
+{% block component_product_box_action_buy_info %}
+    {{ parent() }}
+    
+    <div class="zeobv-product-bundle-contents">
+        <input 
+            type="hidden"
+            name="lineItems[{{ product.id }}][includeBundleContent]"
+            value="1"
+        />
+        {% set productsInBundle = product.extensions.zeobvBundleProducts.salesChannelProducts %}
+        {% for productOfBundle in productsInBundle %}
+            {% sw_include '@Storefront/zeobv-bundle-products/components/bundle-content-fields.html.twig' with {
+                bundleProductId: product.id,
+                connectionId: productOfBundle.extensions.zeobvProductBundleConnection.id,
+                product: productOfBundle,
+                showProductId: true
+            } %}
+        {% endfor %}
+    </div>
+{% endblock %}

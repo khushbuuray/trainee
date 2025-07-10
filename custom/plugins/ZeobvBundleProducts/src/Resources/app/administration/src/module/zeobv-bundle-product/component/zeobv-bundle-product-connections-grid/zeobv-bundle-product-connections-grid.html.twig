@@ -1,0 +1,160 @@
+{% block zeobv_bundle_product_connections_grid %}
+    <sw-container type="row" class="zeobv-bundle-product-connections-grid">
+
+        {% block zeobv_bundle_product_connections_grid_actions %}
+            <sw-container
+                class="zeobv-bundle-product-connections-grid__actions-container"
+                columns="1fr auto"
+                gap="16px"
+                v-show="editable">
+                        
+                <sw-number-field
+                    v-if="showDiscountField"
+                    class="zeobv-bundle-product-connections-grid-discount-percentage"
+                    :value="discount"
+                    numberType="int"
+                    :min="0"
+                    :placeholder="$tc('sw-product.bundle.field.productBundleDiscountPercentage')"
+                    @update:value="onDiscountPercentageChanged"
+                >
+                    <template #suffix>
+                        %
+                    </template>
+                </sw-number-field>
+
+                {% block zeobv_bundle_product_connections_grid_create_actions %}
+                    <div class="zeobv-bundle-product-connections-grid__btn-add">
+                        {% block zeobv_bundle_product_connections_grid_add_product %}
+                            <sw-button
+                                class="zeobv-bundle-product-connections-grid__actions-container-add-product-btn"
+                                variant="ghost"
+                                size="small"
+                                @click="onAddNewRow">
+                                {{ $tc('sw-order.detailBase.buttonAddProduct') }}
+                            </sw-button>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </sw-container>
+        {% endblock %}
+
+        {% block zeobv_bundle_product_connections_grid_grid %}
+            <sw-data-grid
+                :loading="loading"
+                :dataSource="bundleConnections"
+                :columns="columns"
+                :fullPage="false"
+                :showSettings="true"
+                :showSelection="editable"
+                :showActions="true"
+                :isLoading="isLoading"
+                :allowColumnEdit="false"
+                :allowInlineEdit="false"
+                :compactMode="false"
+                identifier="zeobv-bundle-product-connections-grid"
+                class="zeobv-bundle-product-connections-grid__data-grid"
+                @selection-change="onSelectionChanged"
+                :isRecordEditable="(item) => true"
+            >
+                {% block zeobv_bundle_product_connections_grid_grid_columns %}
+                    {% block zeobv_bundle_product_connections_grid_grid_columns_position %}
+                        <template #column-position="{ item, isInlineEdit }">
+                            {% block zeobv_bundle_product_connections_grid_grid_columns_position %}
+                                <sw-data-grid-column-position
+                                        v-model:value="bundleConnections"
+                                        :show-value="true"
+                                        :item="item"
+                                        :disabled="false"
+                                        @position-changed="onPositionChanged"
+                                ></sw-data-grid-column-position>
+                            {% endblock %}
+                        </template>
+                    {% endblock %}
+
+                    {% block zeobv_bundle_product_connections_grid_grid_columns_label %}
+                        <template #column-product="{ item, isInlineEdit}">
+                            {% block zeobv_bundle_product_connections_grid_grid_columns_label %}
+                                <sw-entity-single-select
+                                    entity="product"
+                                    :labelCallback="productSelectionLabel"
+                                    :value="item.productId ? item.productId : ''"
+                                    :context="context"
+                                    :criteria="productSelectCriteria"
+                                    @update:value="(value) => onProductSelected(item, value)">
+                                </sw-entity-single-select>
+                            {% endblock %}
+                        </template>
+                    {% endblock %}
+
+                    {% block zeobv_bundle_product_connections_grid_grid_columns_quantity %}
+                        <template #column-quantity="{ item, isInlineEdit }">
+                            {% block zeobv_bundle_product_connections_grid_grid_columns_quantity %}
+                                <sw-number-field
+                                    numberType="int"
+                                    v-model:value="item.quantity"
+                                    :min="1"
+                                    size="small"
+                                    placeholder="0">
+                                </sw-number-field>
+                            {% endblock %}
+                        </template>
+                    {% endblock %}
+
+                    {% block zeobv_bundle_product_connections_grid_grid_columns_comment %}
+                        <template #column-comment="{ item, isInlineEdit }">
+                            {% block zeobv_bundle_product_connections_grid_grid_columns_comment %}
+                                <sw-text-field
+                                    v-model:value="item.comment"
+                                    size="small">
+                                </sw-text-field>
+                            {% endblock %}
+                        </template>
+                    {% endblock %}
+
+                    {% block zeobv_bundle_product_connections_grid_grid_columns_modifiable %}
+                        <template v-if="allowQuantitySelection" #column-modifiable="{ item, isInlineEdit }">
+                            {% block zeobv_bundle_product_connections_grid_grid_columns_modifiable %}
+                                <sw-switch-field 
+                                    v-model:value="item.modifiable">
+                                </sw-switch-field>
+                            {% endblock %}
+                        </template>
+                    {% endblock %}
+                    
+                    {% block zeobv_bundle_product_connections_grid_grid_columns_optional %}
+                        <template v-if="allowItemSelection" #column-optional="{ item, isInlineEdit }">
+                            {% block zeobv_bundle_product_connections_grid_grid_columns_optional %}
+                                <sw-switch-field 
+                                    v-model:value="item.optional">
+                                </sw-switch-field>
+                            {% endblock %}
+                        </template>
+                    {% endblock %}
+
+                    {% block zeobv_bundle_product_connections_grid_grid_actions %}
+                        <template #actions="{ item, index }">
+                            {% block zeobv_bundle_product_connections_grid_grid_actions_show %}
+                            <sw-context-menu-item
+                                :routerLink="{ name: 'sw.product.detail', params: { id: item.productId } }">
+                                {% block zeobv_bundle_product_connections_grid_grid_actions_show_label %}
+                                    {{ $tc('sw-order.detailBase.contextMenuShowProduct') }}
+                                {% endblock %}
+                            </sw-context-menu-item>
+                            {% endblock %}
+                        </template>
+                    {% endblock %}
+
+                    {% block zeobv_bundle_product_connections_grid_bulk_actions %}
+                        <template #bulk>
+                            {% block zeobv_bundle_product_connections_grid_bulk_actions_delete %}
+                                <a class="link link-danger" @click="onDeleteSelectedItems">
+                                    {{ $tc('global.default.delete') }}
+                                </a>
+                            {% endblock %}
+                        </template>
+                    {% endblock %}
+                {% endblock %}
+            </sw-data-grid>
+        {% endblock %}
+    </sw-container>
+{% endblock %}

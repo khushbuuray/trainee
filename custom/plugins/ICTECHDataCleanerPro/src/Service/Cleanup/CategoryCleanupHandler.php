@@ -125,7 +125,7 @@ class CategoryCleanupHandler implements CleanupHandlerInterface
         $cutoffDate->modify("-{$months} months");
 
         $criteria = new Criteria();
-        $criteria->setLimit(1000);
+        $criteria->setLimit(10000);
         $criteria->addFilter(new EqualsFilter('type', 'page'));
         $criteria->addFilter(new EqualsFilter('navigationSalesChannels.id', null));
         $criteria->addFilter(new EqualsFilter('footerSalesChannels.id', null));

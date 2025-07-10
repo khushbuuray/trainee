@@ -1,0 +1,14 @@
+{% sw_extends '@Storefront/storefront/component/line-item/element/children-wrapper.html.twig' %}
+
+{% set isSumPriceMode = config('ZeobvBundleProducts.config.bundleProductPriceMode') is same as('sumProductPrices') %}
+
+{% block component_line_item_children_elements %}
+    <div class="container line-item-children-elements collapse" id="{{ childrenCollapseId }}">
+        {% for nestedLineItem in lineItem.children %}
+            {% sw_include '@Storefront/storefront/component/line-item/line-item.html.twig' with {
+                lineItem: nestedLineItem,
+                mainLineItems: lineItem
+            } %}
+        {% endfor %}
+    </div>
+{% endblock %}

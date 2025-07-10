@@ -87,7 +87,7 @@ class ProductCleanupHandler implements CleanupHandlerInterface
                 RangeFilter::GT => $cutoff->format(DATE_ATOM)
             ])
         ]));
-        $criteria->setLimit(1000);
+        $criteria->setLimit(10000);
  
         /** @var ProductCollection $products */
         $products = $this->productRepository->search($criteria, $context)->getEntities();
@@ -137,7 +137,7 @@ class ProductCleanupHandler implements CleanupHandlerInterface
         $criteria->addAssociation('orderLineItems');
         $criteria->addFilter(new EqualsFilter('orderLineItems.id', null));
         $criteria->addFilter(new EqualsFilter('parentId', null));
-        $criteria->setLimit(1000);
+        $criteria->setLimit(10000);
  
         /** @var ProductCollection $products */
         $products = $this->productRepository->search($criteria, $context)->getEntities();
@@ -191,7 +191,7 @@ class ProductCleanupHandler implements CleanupHandlerInterface
             new RangeFilter('updatedAt', [RangeFilter::LTE => $cutoff->format(DATE_ATOM)]),
             new EqualsFilter('updatedAt', null)
         ]));
-        $criteria->setLimit(1000);
+        $criteria->setLimit(10000);
  
         /** @var ProductCollection $products */
         $products = $this->productRepository->search($criteria, $context)->getEntities();

@@ -1,0 +1,53 @@
+{% sw_extends '@Storefront/storefront/component/line-item/type/product.html.twig' %}
+
+{% set hideBundleCartAndCheckout = config('ZeobvBundleProducts.config.hideBundleInformationInShoppingCartAndCheckout') %}
+{% set hideBundleChildren = lineItem.payload.zeobvHideBundleProductChildrenInStorefront or hideBundleCartAndCheckout %}
+
+{% block component_line_item_type_product %}
+    <div class="{{ lineItemClasses }}">
+        <div class="row line-item-row">
+
+            {% block component_line_item_type_product_col_info %}
+                {{ parent() }}
+            {% endblock %}
+
+            {% block component_line_item_type_product_col_quantity %}
+                {{ parent() }}
+            {% endblock %}
+
+            {% if showTaxPrice %}
+                {% block component_line_item_type_product_col_tax_price %}
+                    {{ parent() }}
+                {% endblock %}
+            {% else %}
+                {% block component_line_item_type_product_col_unit_price %}
+                    {{ parent() }}
+                {% endblock %}
+            {% endif %}
+
+            {% block component_line_item_type_product_col_total_price %}
+                {{ parent() }}
+            {% endblock %}
+
+            {% if showRemoveButton %}
+                {% block component_line_item_type_product_col_remove %}
+                    {{ parent() }}
+                {% endblock %}
+            {% endif %}
+
+            {% if hideBundleChildren == false %}
+                {% if lineItem.children.count > 0 %}
+                    {% block component_line_item_type_container_children %}
+                        {% sw_include '@Storefront/storefront/component/line-item/element/children-wrapper.html.twig' %}
+                    {% endblock %}
+                {% endif %}
+            {% endif %}
+        </div>
+
+        {% if displayMode === 'order' %}
+            {% block component_line_item_type_product_downloads_table %}
+                {{ parent() }}
+            {% endblock %}
+        {% endif %}
+    </div>
+{% endblock %}

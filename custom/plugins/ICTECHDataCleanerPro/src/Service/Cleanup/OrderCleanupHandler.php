@@ -128,7 +128,7 @@ class OrderCleanupHandler implements CleanupHandlerInterface
 
         $criteria->addFilter(new RangeFilter('createdAt', [RangeFilter::LT => $cutoff->format(DATE_ATOM)]));
 
-        $criteria->setLimit(1000);
+        $criteria->setLimit(10000);
  
         /** @var OrderCollection $orders */
 
@@ -239,7 +239,7 @@ class OrderCleanupHandler implements CleanupHandlerInterface
 
         $criteria->addAssociation('order');
 
-        $criteria->setLimit(1000);
+        $criteria->setLimit(10000);
  
         /** @var OrderTransactionCollection $transactions */
 

@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="Zeobv\BundleProducts\Storefront\Subscriber\OrderDetailPageSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="Zeobv\BundleProducts\Storefront\Subscriber\SalesChannelBundleProductSubscriber">
+            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Price\ProductPriceCalculator"/>
+            <argument type="service" id="zeobv.bundle_products.repository.bundle_product_repository" />
+            <argument type="service" id="zeobv.bundle_products.service.config_service" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="Zeobv\BundleProducts\Core\Subscriber\OrderLineItemQuantitySubscriber">
+            <argument type="service" id="order_line_item.repository" />
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="Zeobv\BundleProducts\Core\Subscriber\ProductSubscriber">
+            <argument type="service" id="zeobv.bundle_products.repository.bundle_product_repository" />
+            <argument type="service" id="zeobv.bundle_products.factory.product_bundle_factory" />
+            <argument type="service" id="zeobv.bundle_products.transformer.bundle_product_transformer" />
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="Zeobv\BundleProducts\Core\Subscriber\OrderWrittenSubscriber">
+            <argument type="service" id="zeobv.bundle_products.service.order_enrichment_service" />
+            <argument type="service" id="logger"/>
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="Zeobv\BundleProducts\Core\Subscriber\BundleProductStockUpdater">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="zeobv.bundle_products.service.config_service"/>
+            <argument type="service" id="messenger.bus.shopware" />
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+    </services>
+</container>

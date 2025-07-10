@@ -1,0 +1,32 @@
+{
+    "zeobv-bundle-products": {
+        "detail": {
+            "bundleCrossSellingTabLabel": "Passende Kombi-Pakete",
+            "dataColumnDetail": "Einzelheiten",
+            "dataColumnQuantity": "Menge",
+            "dataColumnPrice": "Preis",
+            "dataColumnTotal": "Gesamt",
+            "dataColumnAvailable": "Verfügbar",
+            "tableHeaderText": "<h5>Dieses Bundle enthält folgende Einzelartikel:</h5>",
+            "special" : "Besonderes",
+            "description": "Dieses Produkt ist in einem oder mehreren Bundle-Paketen enthalten. Probieren Sie es aus und profitieren Sie von einem guten Rabatt!",
+            "bundleInfo": "Zu den Bündeln",
+            "bundleMainProduct": "Re: SW6 PlugIn Artikel-Sets, Stücklisten & Bundles",
+            "manufacturerName" : "Hersteller:",
+            "productSKU": "SKU:",
+            "productQuantity": "Menge:",
+            "productAvailable": "Verfügbar:",
+            "productPrice": "Preis:",
+            "bundleProductNameTitle": "Bündel Produktname",
+            "bundleProductQuickViewTitle": "Gebündeltes Produkt",
+            "bundleProductModalTitle": "Produkt-Pop-up bündeln"
+        },
+        "option": {
+            "includeBundle": "Legen Sie auch folgende Artikel in den Warenkorb"
+        }
+    },
+    "checkout": {
+        "no_bundle_items": "Mindestens eine Bündelposition erforderlich.",
+        "bundle_conflict": "Es ist nicht möglich, verschiedene Konfigurationen desselben Bundles in den Warenkorb zu legen. Bitte entfernen Sie das widersprüchliche Bundle zuerst aus dem Warenkorb."
+    }
+}

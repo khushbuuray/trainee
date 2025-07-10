@@ -1,0 +1,66 @@
+
+.line-item-children-elements {
+    &.with-list-price {
+        .line-item-total-price-value {
+            text-decoration: line-through;
+        }
+    }
+}
+
+.line-item {
+    .cart-list-price {
+        text-decoration: line-through;
+        font-size: 0.8em;
+        color: var(--bs-gray);
+    }
+}
+
+.cart-item {
+    &-bundle_product_item {
+        .cart-item-img {
+            max-height: 60px;
+            width: 60px;
+        }
+
+        .cart-item-img-container {
+            width: 60px;
+        }
+
+        .cart-item-details {
+            margin-bottom: 0;
+        }
+
+        .cart-item-details-container {
+            .cart-item-details {
+                margin-right: 0;
+            }
+
+            .cart-item-price {
+                margin-left: 0;
+            }
+        }
+    }
+}
+
+.cart-item-child-label-bullet,
+.cart-aside-item-child-label-bullet {
+    .sub-text {
+        display: flex;
+        gap: 15px;
+    }
+
+    .manufacturer-name,
+    .product-number {
+        display: block;
+        font-size: 0.8em;
+        font-weight: bold;
+        color: lighten($sw-text-color, 20);
+    }
+
+    .product-bundle-details-characteristics-option-group,
+    .product-bundle-details-characteristics-option {
+        font-size: 0.8em;
+        font-weight: bold;
+        color: lighten($sw-text-color, 20);
+    }
+}

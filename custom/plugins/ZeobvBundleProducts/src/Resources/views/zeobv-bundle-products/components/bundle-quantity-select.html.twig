@@ -1,0 +1,22 @@
+{% set purchaseSteps = product.purchaseSteps ? product.purchaseSteps : 1 %}
+<select
+    class="zeobv-bundle-item-qty-select zeobv-bundle-item-qty-select-{{connectionId}} form-select"
+    data-product-id="{{ defaultVariant ? defaultVariant.id : product.id }}"
+    data-connection-id="{{ connectionId }}"
+    {% if not product.available %}
+    disabled="disabled"
+    {% endif %}
+>
+    {% set lastNumber = minQuantity - purchaseSteps %}
+    {% for number in minQuantity..maxQuantity %}
+        {% if lastNumber is same as(number - purchaseSteps) %}
+            <option 
+                value="{{ number }}" 
+                {% if number == quantity %} selected {% endif %}
+            >
+                {{ number }}
+            </option> 
+            {% set lastNumber = number %}
+        {% endif %}
+    {% endfor %}
+</select>

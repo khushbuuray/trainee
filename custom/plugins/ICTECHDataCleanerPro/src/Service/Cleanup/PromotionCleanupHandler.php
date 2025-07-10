@@ -77,7 +77,7 @@ class PromotionCleanupHandler implements CleanupHandlerInterface
         $criteria = new Criteria();
         $criteria->addFilter(new RangeFilter('validUntil', [RangeFilter::LT => $cutoff->format(DATE_ATOM)]));
         $criteria->addAssociation('translations');
-        $criteria->setLimit(1000);
+        $criteria->setLimit(10000);
 
         /** @var PromotionCollection $promotions */
         $promotions = $this->promotionRepository->search($criteria, $context)->getEntities();
@@ -127,7 +127,7 @@ class PromotionCleanupHandler implements CleanupHandlerInterface
         $criteria->addFilter(new RangeFilter('createdAt', [RangeFilter::LT => $cutoff->format(DATE_ATOM)]));
         $criteria->addFilter(new EqualsFilter('orderLineItems.id', null));
         $criteria->addAssociation('orderLineItems');
-        $criteria->setLimit(1000);
+        $criteria->setLimit(10000);
 
         /** @var PromotionCollection $promotions */
         $promotions = $this->promotionRepository->search($criteria, $context)->getEntities();
@@ -184,7 +184,7 @@ class PromotionCleanupHandler implements CleanupHandlerInterface
             new EqualsFilter('shippingMethods.id', null),
             new EqualsFilter('paymentMethods.id', null),
         ]));
-        $criteria->setLimit(1000);
+        $criteria->setLimit(10000);
 
         /** @var RuleCollection $rules */
         $rules = $this->ruleRepository->search($criteria, $context)->getEntities();

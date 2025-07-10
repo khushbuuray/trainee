@@ -1,5 +1,0 @@
-@function remToPx($size) {
-    $pxSize: strip-unit($size) * 16;
-    @return $pxSize * 1px;
-    //@return #{$pxSize}px; can not calc with strings
-}
